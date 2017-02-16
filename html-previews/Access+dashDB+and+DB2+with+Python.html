@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Use SQL with data in Hadoop Pytho</title>
+<title>Access dashDB and DB2 with Pytho</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -477,30 +477,26 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Use-SQL-with-data-in-Hadoop-Python">Use SQL with data in Hadoop Python<a class="anchor-link" href="#Use-SQL-with-data-in-Hadoop-Python">&#182;</a></h1><p>This notebook shows you how to query data stored in Hadoop using SQL. Apache Hadoop is an open source software framework used for storing and manipulating big data. The notebook shows you how you can use <a href="http://www.ibm.com/software/data/infosphere/hadoop/big-sql.html">IBM Big SQL</a> to access data in Hadoop without having to learn new languages or skills.</p>
-<p>The notebook uses a Big SQL sandbox environment to show you how to get started with SQL on Hadoop.</p>
-<p>To query the data stored in Hadoop, you can use <a href="http://www.ibm.com/software/data/infosphere/hadoop/big-sql.html">IBM Big SQL</a>. This notebook shows you how to issue queries of any size on data stored in Hadoop.</p>
+<h1 id="Access-dashDB-and-DB2-with-Python">Access dashDB and DB2 with Python<a class="anchor-link" href="#Access-dashDB-and-DB2-with-Python">&#182;</a></h1><p>This notebook shows how to access a dashDB data warehouse or DB2 database when using Python. The examples use a dashDB warehouse, but the instructions apply to both dashDB and DB2.</p>
 <h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><ol>
-<li><a href="#what_is_big_sql">What is Big SQL</a></li>
-<li><a href="#load_libraries">Load libraries</a></li>
-<li><a href="#access_data">Access_data</a></li>
-<li><a href="#query_data">Query data</a></li>
-<li><a href="#summary">Summary</a></li>
+<li><a href="#Setup">Setup</a> </li>
+<li><a href="#Import-the-ibmdbpy-Python-library">Import the <em>ibmdbpy</em> Python library</a></li>
+<li><a href="#Identify-and-enter-the-database-connection-credentials">Identify and enter the database connection credentials</a></li>
+<li><a href="#Create-the-database-connection">Create the database connection</a></li>
+<li><a href="#Use-dataframe-to-read-and-manipulate-tables">Use dataframe to read and manipulate tables</a></li>
+<li><a href="#Close-the-database-connection">Close the database connection</a></li>
+<li><a href="#Summary">Summary</a></li>
 </ol>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="what_is_big_sql"></a></p>
-<h2 id="What-is-Big-SQL?">What is Big SQL?<a class="anchor-link" href="#What-is-Big-SQL?">&#182;</a></h2><p><a href="http://www.ibm.com/software/data/infosphere/hadoop/big-sql.html">IBM Big SQL</a> is a data warehouse system for Hadoop that you can use to summarize, query, and analyze data. It provides standards-compliant SQL access to data in Hadoop.</p>
-<p>This notebook shows you how to access the sandbox environment to get your own set of credentials.</p>
-<p><a id="load_libraries"></a></p>
-<h2 id="Load-libraries">Load libraries<a class="anchor-link" href="#Load-libraries">&#182;</a></h2><p>In order to connect to a remote Hadoop cluster with Big SQL and then run SQL queries on data stored in Hadoop, the <code>ibm_db</code> library must be installed. The first time you run the notebook, if loading the library fails, you will need to install it with the following command:</p>
+<h2 id="Setup">Setup<a class="anchor-link" href="#Setup">&#182;</a></h2><p>Before beginning you will need a <em>dashDB</em> warehouse. dashDB is a fully managed cloud data warehouse, purpose-built for analytics. It offers massively parallel processing (MPP) scale and compatibility with a wide range of business intelligence (BI) tools.</p>
+<p>Try dashDB free of charge on IBM Bluemix.</p>
+<h3 align = "center">
+[Launch a dashDB service through Bluemix](https://console.ng.bluemix.net/?direct=classic/&amp;cm_mc_uid=&amp;cm_mc_sid_50200000=1453781614#/store/cloudOEPaneId=store&amp;serviceOfferingGuid=7c87c148-e1a4-4cb8-81f8-c5e74be7684b&CampID=DSWB)
+</h3><p><a class="ibm-tooltip" href="https://console.ng.bluemix.net/catalog/services/dashdb" target="_blank" title="" id="ibm-tooltip-0">
+<img alt="IBM Bluemix.Get started now" height="193" width="153" src="https://ibm.box.com/shared/static/42yt39czuksqdi278xpy96txtlw3lfmb.png" >
+</a></p>
+<h2 id="Import-the-ibmdbpy-Python-library">Import the <em>ibmdbpy</em> Python library<a class="anchor-link" href="#Import-the-ibmdbpy-Python-library">&#182;</a></h2><p>Python support for dashDB and DB2 is provided by the <a href="https://pypi.python.org/pypi/ibmdbpy">ibmdbpy Python library</a>. Connecting to dashDB or DB2 is also enabled by a DB2 driver, libdb2.so.</p>
+<p>The JDBC Connection is based on a Java virtual machine. From the ibmdbpy library you can use JDBC to connect to a remote dashDB/DB2 instance. To be able to use JDBC to connect, we need to import the <em>JayDeBeApi</em> package.</p>
+<p>Run the following commands to install and load the JayDeBeApi package and the ibmdbpy library into your notebook:</p>
 
 </div>
 </div>
@@ -510,7 +506,53 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">!</span>pip install --user ibm_db
+<div class=" highlight hl-ipython2"><pre><span class="o">!</span>pip install jaydebeapi --user  
+<span class="o">!</span>pip install ibmdbpy --user 
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">jaydebeapi</span>
+<span class="kn">from</span> <span class="nn">ibmdbpy</span> <span class="kn">import</span> <span class="n">IdaDataBase</span>
+<span class="kn">from</span> <span class="nn">ibmdbpy</span> <span class="kn">import</span> <span class="n">IdaDataFrame</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;CLASSPATH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;/usr/local/src/data-connectors-1.4.1/db2jcc4-10.5.0.6.jar&quot;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">jpype</span>
+<span class="n">args</span><span class="o">=</span><span class="s">&#39;-Djava.class.path=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;CLASSPATH&#39;</span><span class="p">]</span>
+<span class="n">jvm</span> <span class="o">=</span> <span class="n">jpype</span><span class="o">.</span><span class="n">getDefaultJVMPath</span><span class="p">()</span>
+<span class="n">jpype</span><span class="o">.</span><span class="n">startJVM</span><span class="p">(</span><span class="n">jvm</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -523,135 +565,16 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Run the following cell to load the library once it is installed:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">ibm_db</span><span class="p">;</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>To connect to the database for this notebook, you need to get your own set of credentials.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="access_data"></a></p>
-<h2 id="Access-data">Access data<a class="anchor-link" href="#Access-data">&#182;</a></h2><p>To access the Big SQL technology preview sandbox environment, you need your own access credentials. To get your credentials:</p>
-<ol>
-<li><p>Sign up for a free Big SQL sandbox account on <a href="https://my.imdemocloud.com/users/sign_up">IBM Analytics Demo Cloud</a>.</p>
-</li>
-<li><p>To set up your account, follow the instructions in the activation email that you are sent.
-Note: Your user name is different from your email address. For example, the user name for <code>jane.doe@example.com</code> might be <code>jane doe</code>. You will see your user name in the top-right corner of Demo Cloud when you're logged in.</p>
-</li>
-<li><p>Log in to <a href="https://my.imdemocloud.com/users/sign_up">IBM Analytics Demo Cloud</a> and click <strong>Big SQL Technology Sandbox</strong>. You are automatically approved to join.</p>
-</li>
-</ol>
-<p>Add your <code>username</code> and <code>password</code> between the quotation marks in the code cell below and run the cell:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">username</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
-<span class="n">password</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
-<span class="n">database</span> <span class="o">=</span> <span class="s">&quot;bigsql&quot;</span><span class="p">;</span>
-<span class="n">hostname</span> <span class="o">=</span> <span class="s">&quot;iop-bi-master.imdemocloud.com&quot;</span><span class="p">;</span>
-<span class="n">port</span> <span class="o">=</span> <span class="s">&quot;32051&quot;</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Finally, to connect to the Big SQL sandbox environment from the notebook, run the following cell:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">conn_string</span> <span class="o">=</span> <span class="p">(</span>
-      <span class="s">&quot;DRIVER={{IBM DB2 ODBC DRIVER}};&quot;</span>
-      <span class="s">&quot;DATABASE={0};&quot;</span>
-      <span class="s">&quot;HOSTNAME={1};&quot;</span>
-      <span class="s">&quot;PORT={2};&quot;</span>
-      <span class="s">&quot;PROTOCOL=TCPIP;&quot;</span>
-      <span class="s">&quot;UID={3};&quot;</span>
-      <span class="s">&quot;PWD={4};&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">database</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">);</span>
-
-<span class="n">conn</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">conn_string</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You are now connected to the Big SQL sandbox from the notebook.</p>
-<p>If you saw an error, check that you filled in your user name and password correctly.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="query_data"></a></p>
-<h2 id="Query-data">Query data<a class="anchor-link" href="#Query-data">&#182;</a></h2><p>In this section, you will create a sample table, named <code>testTable</code>, load some data into it, and execute a query. Before you do this, you need to check if the table already exists in the sandbox environment, and if it does, remove it so that you can start from scratch.</p>
-<p>To prepare and execute a single SQL statement, you will use the <code>ibm_db.exec_immediate()</code> function. The function takes the following arguments:</p>
+<h2 id="Identify-and-enter-the-database-connection-credentials">Identify and enter the database connection credentials<a class="anchor-link" href="#Identify-and-enter-the-database-connection-credentials">&#182;</a></h2><p>Connecting to dashDB or a DB2 database requires the following information:</p>
 <ul>
-<li><code>connection</code>  <ul>
-<li>A valid database connection resource returned from the <code>ibm_db.connect()</code> function.</li>
+<li>Database name </li>
+<li>Host DNS name or IP address </li>
+<li>Host port</li>
+<li>Connection protocol</li>
+<li>User ID</li>
+<li>User password</li>
 </ul>
-</li>
-<li><code>statement</code>  <ul>
-<li>A string that contains the SQL statement. This string can include an XQuery expression that is wrapped by an XMLQUERY clause.</li>
-</ul>
-</li>
-</ul>
-<p><strong>Note:</strong> Big SQL has only one database called <code>bigsql</code> and you cannot create a new database. However, you can have your own schema, which defaults to your user name. When you connect to the database using your name and execute <code>CREATE HADOOP TABLE testTable</code>, a table called <code>YOUR_USER_NAME.testTable</code> is created under your schema.</p>
-<p>In this notebook, you will use your schema. Run the next cell to ensure you are using your schema:</p>
+<p>All of this information must be captured in a connection string in a subsequent step. Provide the dashDB or DB2 connection information as shown:</p>
 
 </div>
 </div>
@@ -661,8 +584,11 @@ Note: Your user name is different from your email address. For example, the user
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">query</span> <span class="o">=</span> <span class="s">&quot;USE &quot;</span><span class="o">+</span><span class="n">username</span><span class="o">+</span><span class="s">&quot;;&quot;</span><span class="p">;</span>
-<span class="n">ibm_db</span><span class="o">.</span><span class="n">exec_immediate</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">query</span><span class="p">);</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">dsn_uid</span> <span class="o">=</span> <span class="s">&quot;&lt;id&gt;&quot;</span><span class="p">;</span>  <span class="c"># e.g.  dash104434</span>
+<span class="n">dsn_pwd</span> <span class="o">=</span> <span class="s">&quot;&lt;password&gt;&quot;</span>   <span class="c"># e.g. xxxx</span>
+<span class="n">dsn_hostname</span> <span class="o">=</span><span class="s">&quot;&lt;host&gt;&quot;</span>  <span class="c"># e.g.  awh-yp-small03.services.dal.bluemix.net</span>
+<span class="n">dsn_port</span> <span class="o">=</span> <span class="s">&quot;&lt;port&gt;&quot;</span>   <span class="c"># e.g.  50001</span>
+<span class="n">dsn_database</span> <span class="o">=</span> <span class="s">&quot;&lt;database&gt;&quot;</span>   <span class="c"># e.g. BLUDB </span>
 </pre></div>
 
 </div>
@@ -675,7 +601,8 @@ Note: Your user name is different from your email address. For example, the user
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then run the next cell to remove the sample table <code>testTable</code> if it already exists to enable creating a new one:</p>
+<h2 id="Create-the-database-connection">Create the database connection<a class="anchor-link" href="#Create-the-database-connection">&#182;</a></h2><p>The following code snippet creates a connection string <code>connection_string</code>
+and uses the <code>connection_string</code> to create a DB2 connection object:</p>
 
 </div>
 </div>
@@ -685,8 +612,8 @@ Note: Your user name is different from your email address. For example, the user
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">query</span> <span class="o">=</span> <span class="s">&quot;DROP TABLE IF EXISTS testTable&quot;</span>
-<span class="n">ibm_db</span><span class="o">.</span><span class="n">exec_immediate</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">query</span><span class="p">);</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">connection_string</span><span class="o">=</span><span class="s">&#39;jdbc:db2://&#39;</span><span class="o">+</span><span class="n">dsn_hostname</span><span class="o">+</span><span class="s">&#39;:&#39;</span><span class="o">+</span><span class="n">dsn_port</span><span class="o">+</span><span class="s">&#39;/&#39;</span><span class="o">+</span><span class="n">dsn_database</span><span class="o">+</span><span class="s">&#39;:user=&#39;</span><span class="o">+</span><span class="n">dsn_uid</span><span class="o">+</span><span class="s">&#39;;password=&#39;</span><span class="o">+</span><span class="n">dsn_pwd</span><span class="o">+</span><span class="s">&quot;;&quot;</span> 
+<span class="n">idadb</span><span class="o">=</span><span class="n">IdaDataBase</span><span class="p">(</span><span class="n">dsn</span><span class="o">=</span><span class="n">connection_string</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -699,7 +626,7 @@ Note: Your user name is different from your email address. For example, the user
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now create a new <code>testTable</code> database table with two columns named <code>column1</code> and <code>column2</code>. To create the table in your schema, run the cell below:</p>
+<h2 id="Use-dataframe-to-read-and-manipulate-tables">Use dataframe to read and manipulate tables<a class="anchor-link" href="#Use-dataframe-to-read-and-manipulate-tables">&#182;</a></h2><p>You can now use the connection object <code>conn</code> to query the database:</p>
 
 </div>
 </div>
@@ -709,8 +636,21 @@ Note: Your user name is different from your email address. For example, the user
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">query</span> <span class="o">=</span> <span class="s">&quot;CREATE HADOOP TABLE testTable (column1 INT, column2 STRING)&quot;</span>
-<span class="n">ibm_db</span><span class="o">.</span><span class="n">exec_immediate</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">query</span><span class="p">);</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">df</span><span class="o">=</span><span class="n">idadb</span><span class="o">.</span><span class="n">show_tables</span><span class="p">(</span><span class="n">show_all</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">idadb</span><span class="o">.</span><span class="n">exists_table_or_view</span><span class="p">(</span><span class="s">&#39;GOSALESDW.EMP_EXPENSE_FACT&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -723,7 +663,9 @@ Note: Your user name is different from your email address. For example, the user
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Then insert some sample data into your <code>testTable</code> database table:</p>
+<p>Using our previously opened IdaDataBase instance named ‘idadb’, we can open one or several IdaDataFrame objects. They behave like pointers to remote tables.</p>
+<p>Let us open the <em>EMP_EXPENSE_FACT</em> data set, assuming it is stored in the database under the name ‘GOSALESDW.EMP_EXPENSE_FACT’. The following cell assigns the dataset to a pandas DataFrame.</p>
+<p>The <a href="http://pandas.pydata.org/">Pandas data analysis library</a> provides high-performance, easy-to-use data structures and data analysis tools for the Python programming language. Pandas allows easy processing and manipulation of tabular data, so it is a perfect fit for data extracted from relational databases.</p>
 
 </div>
 </div>
@@ -733,8 +675,7 @@ Note: Your user name is different from your email address. For example, the user
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">query</span> <span class="o">=</span> <span class="s">&quot;INSERT INTO testTable VALUES (1,&#39;Text1&#39;); &quot;</span>
-<span class="n">ibm_db</span><span class="o">.</span><span class="n">exec_immediate</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">query</span><span class="p">);</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">idadf</span> <span class="o">=</span> <span class="n">IdaDataFrame</span><span class="p">(</span><span class="n">idadb</span><span class="p">,</span> <span class="s">&#39;GOSALESDW.EMP_EXPENSE_FACT&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -747,7 +688,8 @@ Note: Your user name is different from your email address. For example, the user
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now retrieve and show this data:</p>
+<p>You can very easily explore the data in the IdaDataFrame by using built in functions.</p>
+<p>Use IdaDataFrame.head to get the first n records of your data set (default 5):</p>
 
 </div>
 </div>
@@ -757,11 +699,7 @@ Note: Your user name is different from your email address. For example, the user
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">query</span> <span class="o">=</span> <span class="s">&quot;SELECT * FROM testTable&quot;</span><span class="p">;</span>
-<span class="n">stmt</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">exec_immediate</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">query</span><span class="p">);</span>
-<span class="n">dictionary</span><span class="o">=</span><span class="n">ibm_db</span><span class="o">.</span><span class="n">fetch_both</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
-<span class="k">print</span> <span class="s">&quot;The COLUMN1 value is : &quot;</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">[</span><span class="s">&quot;COLUMN1&quot;</span><span class="p">]</span>
-<span class="k">print</span> <span class="s">&quot;The COLUMN2 value is : &quot;</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">[</span><span class="s">&quot;COLUMN2&quot;</span><span class="p">]</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">idadf</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -774,21 +712,7 @@ Note: Your user name is different from your email address. For example, the user
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Query-big-data">Query big data<a class="anchor-link" href="#Query-big-data">&#182;</a></h3><p>In this section you will use sample data that is provided in Big SQL by default. You will learn how to run queries and create reports about a fictional company named Sample Outdoor Company.</p>
-<p>The GOSALESDW schema will be used. It contains fact tables for the following areas:</p>
-<ul>
-<li>Distribution</li>
-<li>Finance</li>
-<li>Geography</li>
-<li>Marketing</li>
-<li>Organization</li>
-<li>Personnel</li>
-<li>Products</li>
-<li>Retailers</li>
-<li>Sales</li>
-<li>Time</li>
-</ul>
-<p>Run the next cell to use the GOSALESDW schema and show the names and employee IDs of 10 employees:</p>
+<p>Use IdaDataFrame.tail to get the last n records of your data set (default 5):</p>
 
 </div>
 </div>
@@ -798,14 +722,7 @@ Note: Your user name is different from your email address. For example, the user
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">query</span> <span class="o">=</span> <span class="s">&quot;use GOSALESDW;&quot;</span><span class="p">;</span>
-<span class="n">stmt</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">exec_immediate</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">query</span><span class="p">);</span>
-<span class="n">query</span> <span class="o">=</span> <span class="s">&quot;select * from EMP_EMPLOYEE_DIM LIMIT 10&quot;</span><span class="p">;</span>
-<span class="n">stmt</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">exec_immediate</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">query</span><span class="p">);</span>
-<span class="n">dictionary</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">fetch_both</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
-<span class="k">while</span> <span class="n">dictionary</span> <span class="o">!=</span> <span class="bp">False</span><span class="p">:</span>
-    <span class="k">print</span> <span class="s">&quot;ID: &quot;</span><span class="p">,</span>  <span class="n">dictionary</span><span class="p">[</span><span class="s">&quot;EMPLOYEE_KEY&quot;</span><span class="p">]</span> <span class="p">,</span> <span class="s">&quot; -- Name: &quot;</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">[</span><span class="s">&quot;EMPLOYEE_NAME&quot;</span><span class="p">]</span>
-    <span class="n">dictionary</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">fetch_both</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">idadf</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -818,8 +735,8 @@ Note: Your user name is different from your email address. For example, the user
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can improve the <code>SELECT</code> statement by adding a <em>predicate</em> to the second statement to return fewer rows. A predicate is a condition on a query that reduces and narrows the focus of the result. A predicate on a query with a multi-way join can improve the performance of the query.</p>
-<p>Run the next cell to narrow the search to return results from America only:</p>
+<p><strong>Note:</strong> Because dashDB operates on a distributed system, the order of rows using IdaDataFrame.head and IdaDataFrame.tail is not guaranteed unless the table is sorted (using an ‘ORDER BY’ clause) or a column is declared as index for the IdaDataFrame (parameter/attribute indexer).</p>
+<p>IdaDataFrame also implements most attributes that are available in a pandas DataFrame:</p>
 
 </div>
 </div>
@@ -829,10 +746,20 @@ Note: Your user name is different from your email address. For example, the user
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">query</span> <span class="o">=</span> <span class="s">&quot;SELECT * FROM gosalesdw.go_region_dim WHERE region_en LIKE &#39;Amer%&#39;;&quot;</span><span class="p">;</span>
-<span class="n">stmt</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">exec_immediate</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">query</span><span class="p">);</span>
-<span class="n">dictionary</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">fetch_both</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
-<span class="n">dictionary</span><span class="p">[</span><span class="s">&#39;REGION_CODE&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">idadf</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">idadf</span><span class="o">.</span><span class="n">columns</span>
 </pre></div>
 
 </div>
@@ -845,7 +772,7 @@ Note: Your user name is different from your email address. For example, the user
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can also run a query that returns the number of rows in a table.</p>
+<p>Several standard statistics functions from the pandas interface are also available for IdaDataFrame. For example, let us calculate the covariance matrix for the iris data set:</p>
 
 </div>
 </div>
@@ -855,10 +782,7 @@ Note: Your user name is different from your email address. For example, the user
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">query</span> <span class="o">=</span> <span class="s">&quot;SELECT COUNT(*) FROM gosalesdw.go_region_dim;&quot;</span><span class="p">;</span>
-<span class="n">stmt</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">exec_immediate</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">query</span><span class="p">);</span>
-<span class="n">dictionary</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">fetch_both</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
-<span class="n">dictionary</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">idadf</span><span class="o">.</span><span class="n">cov</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -871,7 +795,7 @@ Note: Your user name is different from your email address. For example, the user
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To learn what products were ordered from Sample Outdoor Company, and by what method they were ordered, you must join the information from multiple tables in the <code>gosalesdw</code> database because it is a relational database where not everything is in one table.</p>
+<p>It is possible to subset the rows of an IdaDataFrame by accessing the IdaDataFrame with a slice object. You can also use the IdaDataFrame.loc attribute, which contains an ibmdbpy.Loc object. However, the row selection might be inaccurate if the current IdaDataFrame is not sorted or does not contain an indexer. This is due to the fact that dashDB stores the data across several nodes if available. Moreover, because dashDB is a column oriented database, row numbers are undefined:</p>
 
 </div>
 </div>
@@ -881,28 +805,8 @@ Note: Your user name is different from your email address. For example, the user
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">lis</span><span class="o">=</span><span class="p">[]</span>
-<span class="n">query</span> <span class="o">=</span><span class="s">&quot;</span><span class="se">\</span>
-<span class="s">SELECT pnumb.product_name, sales.quantity, </span><span class="se">\</span>
-<span class="s">  meth.order_method_en </span><span class="se">\</span>
-<span class="s">FROM </span><span class="se">\</span>
-<span class="s">  gosalesdw.sls_sales_fact sales, </span><span class="se">\</span>
-<span class="s">  gosalesdw.sls_product_dim prod, </span><span class="se">\</span>
-<span class="s">  gosalesdw.sls_product_lookup pnumb, </span><span class="se">\</span>
-<span class="s">  gosalesdw.sls_order_method_dim meth </span><span class="se">\</span>
-<span class="s">WHERE </span><span class="se">\</span>
-<span class="s">  pnumb.product_language=&#39;EN&#39; </span><span class="se">\</span>
-<span class="s">  AND sales.product_key=prod.product_key </span><span class="se">\</span>
-<span class="s">  AND prod.product_number=pnumb.product_number </span><span class="se">\</span>
-<span class="s">  AND meth.order_method_key=sales.order_method_key LIMIT 10;&quot;</span>
-<span class="n">stmt</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">exec_immediate</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span> <span class="n">query</span><span class="p">);</span>
-<span class="n">dictionary</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">fetch_both</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
-<span class="k">while</span> <span class="n">dictionary</span> <span class="o">!=</span> <span class="bp">False</span><span class="p">:</span>
-    <span class="n">lis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span>
-    <span class="n">dictionary</span> <span class="o">=</span> <span class="n">ibm_db</span><span class="o">.</span><span class="n">fetch_both</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
-    
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">lis</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">idadf_new</span> <span class="o">=</span> <span class="n">idadf</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span> <span class="c"># Select the first 10 rows</span>
+<span class="n">idadf_new</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -915,10 +819,30 @@ Note: Your user name is different from your email address. For example, the user
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="summary"></a></p>
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>In this sample, you learned how to query data stored in Hadoop using SQL based on sample data in a Big SQL sandbox environment.</p>
-<p><a id="resources"></a></p>
-<h3 id="Resources">Resources<a class="anchor-link" href="#Resources">&#182;</a></h3><p>For more information on Big SQL, see <a href="https://www.ibm.com/support/knowledgecenter/SSPT3X_2.1.2/com.ibm.swg.im.infosphere.biginsights.bigsql.doc/doc/bsql_reference.html">Big SQL</a>.</p>
+<h2 id="Close-the-database-connection">Close the database connection<a class="anchor-link" href="#Close-the-database-connection">&#182;</a></h2><p>To ensure expected behaviors, IdaDataBase instances need to be closed. Closing the <em>IdaDataBase</em> is equivalent to closing the connection: once the connection is closed, it is no longer possible to use the <em>IdaDataBase</em> instance and any IdaDataFrame instances that were opened on this connection.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">idadb</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>This notebook demonstrated how to establish a connection to a dashDB / DB2 database from Python using the ibmdbpy library.</p>
 
 </div>
 </div>
