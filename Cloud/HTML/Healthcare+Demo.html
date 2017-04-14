@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>h</title>
+<title>tes</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -791,16 +791,17 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Build-a-Python-app-on-the-Streaming-Analytics-service">Build a Python app on the Streaming Analytics service<a class="anchor-link" href="#Build-a-Python-app-on-the-Streaming-Analytics-service">&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You can create a Python app in this notebook, and then build and deploy this app on the IBM Streaming Analytics service in IBM Bluemix. The Streaming Analytics service is built on IBM Streams technology. You do not need a local version of IBM Streams to build apps for this service.</p>
+<h1 id="Healthcare-Python-Streaming-Application-Demo">Healthcare Python Streaming Application Demo<a class="anchor-link" href="#Healthcare-Python-Streaming-Application-Demo">&#182;</a></h1><p>This Python notebook shows how to create an app with Python that ingests and analyzes streaming data from a feed, and then visualizes the data in a notebook. You submit this app to be built in the Streaming Analytics service in IBM Bluemix.</p>
+<p>To create the app, you use the <a href="http://ibmstreams.github.io/streamsx.documentation//docs/python/1.6/python-appapi-devguide/index.html" target="_blank" rel="noopener noreferrer">IBM Streams Python API</a>. The API is provided in the streamsx package, which is integrated in DSX. You also use the API to access data streams from views defined in the app once it's running on the Streaming Analytics service.</p>
+<p>The app subscribes to the <em>ingest-physionet</em> topic (<a href="https://www.physionet.org/" target="_blank" rel="noopener noreferrer">Physionet database</a>) containing the patient data, performs analysis on the patient data to calculate vital data for all patients, and finally creates a view for displaying the results in this notebook.</p>
+<p>Submitting the Python app from the notebook to the Streaming Analytics service allows data to be retrieved from the view server. Once the data has been retrieved, it can be analyzed, manipulated, or visualized like any other data accessed from a notebook. In the case of this demo, waveform graphs and numerical widgets display the healthcare data of the patient.</p>
+<p>This notebook runs in a <strong>Python 3.5</strong> environment. You should be familiar with Python and <a href="http://datascience.ibm.com/docs/content/getting-started/quick-overview.html#notebooks" target="_blank" rel="noopener noreferrer">Jupyter Notebooks</a>. This notebook also assumes that you are familiar with medical terms.</p>
+<p><strong>Tip:</strong> If you leave the notebook or the output or prompts are not displayed after running a cell, click <strong>Kernel -&gt; Restart</strong> on the menu bar to rerun the cell.</p>
+<p>The following diagram outlines the architecture of this demo. This notebook provides a pre-compiled IBM Streams application to simulate patient data, and publish the data to a topic shown in the <strong>Ingest</strong> box. The patient data is submitted to the ingest-physionet topic so that the data feed can be consumed by the app you're going to build later in this notebook. When running the cells of this notebook, you are creating the information shown in the <strong>Analytics</strong> and <strong>Visualization</strong> boxes of the diagram.</p>
+<p><img src='https://github.com/IBMStreams/streamsx.health/blob/develop/samples/HealthcareJupyterDemo/images/architecture_diagram.jpg?raw=true' alt="Demo Architecture" title="Demo Architecture"></img></p>
+<p>The data shown in the <strong>Ingest</strong> box of the diagram is obtained and processed for you to monitor and analyze the information in the <strong>Visualization</strong> box. The waveform data is shown in the graphs and numerical data is displayed in the black boxes. The <strong>Poincare plot</strong> graph above the black boxes analyzes the interval of the heartbeat's R wave to the next R wave (RR). The R wave is an upward deflection that is easily identified in the ECG. The R peak is the maximum amplitude of the R wave. This data is aggregated and continuously updated using the Streaming Analytics service.</p>
+<p>In Python, you can create a view object to connect the Python app to the view server. The <strong>Streams View Server</strong> shown in the <strong>Analytics</strong> box is the view function in the code which defines how Python can receive data from the view server. 
+Each blue box is an operator in a Streams app. The operator then analyzes the data (tuples), sends it to the view server and to the downstream app. As a result, the live stream can be pulled as the data is being analyzed. The up arrow in the diagram indicates notebook requests to connect to the view server to receive data from a particular view. The down arrow retrieves the data to present it in the notebook as rendered graphics or visualizations.</p>
 
 </div>
 </div>
@@ -810,57 +811,12 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This notebook shows how to define a simple Python app and run it on the Streaming Analytics service on the cloud. The app runs as a <em>job</em> on the IBM Streaming Analytics service and it prints <code>Hello</code> and <code>World!</code> to the Application Dashboard console.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>To create the app, you use the Python Application API. The API is provided in the streamsx package, which is integrated in DSX. You can also use the API to access data streams from views defined in any app that is running on the Streaming Analytics service.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Tip:</strong> If you leave the notebook or you are not prompted after running a cell, click <strong>Kernel -&gt; Restart</strong> on the menu bar to rerun the cell.</p>
-<p>This notebook runs in a Python 3.5 environment. You should be familiar with Python, <a href="https://console.ng.bluemix.net/docs/services/StreamingAnalytics/index.html#gettingstarted" target="_blank" rel="noopener noreferrer">
-streaming analytics</a>, and <a href="http://datascience.ibm.com/docs/content/getting-started/quick-overview.html#notebooks" target="_blank" rel="noopener noreferrer">
-Jupyter Notebooks</a>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<ol>
-<li><a href="#setup">Setting up your environment</a></li>
-<li><a href="#create">Creating a simple app</a></li>
-<li><a href="#build">Building the application</a></li>
-<li><a href="#visualize">Viewing application console messages</a></li>
-<li><a href="#summary">Summary and next steps</a></li>
-</ol>
-<hr>
+<h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><p>This notebook is divided into the following parts:</p>
+<p><a href="#setup">Part 1: Setup</a><br>
+<a href="#createfeed">Part 2: Create a data feed</a><br>
+<a href="#buildapp">Part 3: Build a streaming app</a><br>
+<a href="#visualization">Part 4: Visualization</a><br>
+<a href="#summary">Part 5: Summary and next steps</a><br></p>
 
 </div>
 </div>
@@ -871,46 +827,42 @@ Jupyter Notebooks</a>.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="setup"></a></p>
-<h2 id="1.-Setting-up-your-environment">1. Setting up your environment<a class="anchor-link" href="#1.-Setting-up-your-environment">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Complete the following steps to set up your environment:</p>
-<ol>
-<li><a href="#start">Start the Streaming Analytics service</a></li>
-<li><a href="#access">Set up access to the service</a></li>
-</ol>
+<h2 id="Part-1:-Setup">Part 1: Setup<a class="anchor-link" href="#Part-1:-Setup">&#182;</a></h2><p>Complete the following steps to set up your DSX environment:</p>
+<p><a href="#install">1.1 Install the healthcare demo software package </a><br>
+<a href="#startservice">1.2 Start a Streaming Analytics service</a><br>
+<a href="#setupservice">1.3 Set up access to the service</a><br></p>
+<p><a id="install"></a></p>
+<h3 id="1.1-Install-the-healthcare-tutorial-package">1.1 Install the healthcare tutorial package<a class="anchor-link" href="#1.1-Install-the-healthcare-tutorial-package">&#182;</a></h3><p>Run the following cell to install the latest software that contains Python functions required for this healthcare tutorial.</p>
 
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="o">!</span>pip install --user --upgrade <span class="s2">&quot;git+https://github.com/IBMStreams/streamsx.health.git#egg=healthdemo&amp;subdirectory=samples/HealthcareJupyterDemo/package&quot;</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="start"></a></p>
-<h3 id="1.1-Start-the-Streaming-Analytics-service">1.1 Start the Streaming Analytics service<a class="anchor-link" href="#1.1-Start-the-Streaming-Analytics-service">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Open the Bluemix web portal and <a href="https://console.ng.bluemix.net/" target="_blank" rel="noopener noreferrer">log in or sign up for a free Bluemix account</a>.</p>
+<p><a id="startservice"></a></p>
+<h3 id="1.2-Start-a-Streaming-Analytics-service">1.2 Start a Streaming Analytics service<a class="anchor-link" href="#1.2-Start-a-Streaming-Analytics-service">&#182;</a></h3><p>Open the Bluemix web portal and <a href="https://console.ng.bluemix.net/" target="_blank" rel="noopener noreferrer">log in or sign up for a free Bluemix account</a>.</p>
 <p>Ensure that your Streaming Analytics service is running in Bluemix.</p>
 <p>If you don’t have a service, you can create one as follows:</p>
 <ol>
 <li>Click <strong>Catalog</strong> or <strong>Create Service</strong>, browse for <code>Streaming Analytics</code> and then click on it. <br></li>
-<li>Follow the instructions on the Streaming Analytics catalog page, type the <em>Service name</em> to set up your service.<br>
-<img src='https://github.com/orzade/streamsx-notebooks/blob/master/servicename.png?raw=true' alt="Type your service name and click on Create" title="Streaming Analytics catalog - Type your service name"></img><br></li>
+<li>Follow the instructions on the Streaming Analytics catalog page, type the <em>Service name</em> to set up your service. 
+<img src='https://github.com/orzade/streamsx-notebooks/blob/master/servicename.png?raw=true' alt="Type your service name and click on Create" title="Streaming Analytics catalog - Type your service name"></img> </li>
 <li>Click <strong>Create</strong> to open the Streaming Analytics service dashboard. Your service starts automatically.</li>
 </ol>
 
@@ -922,19 +874,16 @@ Jupyter Notebooks</a>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="access"></a></p>
-<h3 id="1.2-Set-up-access-to-the-service">1.2 Set up access to the service<a class="anchor-link" href="#1.2-Set-up-access-to-the-service">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Before you create an application with this notebook, you must first provide the information that your streaming app needs to access the service. You can find this information on the Streaming Analytics service dashboard. It includes the service name, the service credentials, and the connection URL for the service.</p>
-<p>Start by running the following cell, and then entering the name of your service when prompted.</p>
-<p><strong>Tip:</strong> If you are not prompted to enter the service name, click <strong>Kernel -&gt; Restart</strong> on the menu bar and rerun the cell.</p>
+<p><a id="setupservice"></a></p>
+<h3 id="1.3-Set-up-access-to-the-service">1.3 Set up access to the service<a class="anchor-link" href="#1.3-Set-up-access-to-the-service">&#182;</a></h3><p>You must provide the information that your streaming app needs to access the service.</p>
+<p>Run the following cell, and enter your service credentials when prompted.</p>
+<p><strong>Tip:</strong></p>
+<ul>
+<li>To copy your service credentials, open the Streaming Analytics service dashboard click <strong>Service Credentials</strong>, then <strong>View Credentials</strong>, and finally click the Copy icon and paste your service credentials when prompted.<br>
+<img src='https://github.com/orzade/streamsx-notebooks/blob/master/copyservicecredentials.png?raw=true' alt="Copy your service credentials" title="Streaming Analytics catalog - Copy your service credentials"></img>
+<br></li>
+<li>If you are not prompted to enter the service credentials, click <strong>Kernel -&gt; Restart</strong> on the menu bar and rerun the cell.</li>
+</ul>
 
 </div>
 </div>
@@ -944,33 +893,13 @@ Jupyter Notebooks</a>.</p>
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="n">service_name</span><span class="o">=</span><span class="nb">input</span><span class="p">(</span><span class="s">&#39;Streaming Analytics service name:&#39;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In the next step you have to enter your service credentials. To copy your service credentials, open the Streaming Analytics service dashboard click <strong>Service Credentials</strong>, then <strong>View Credentials</strong>, and finally click the Copy icon.
-<img src='https://github.com/orzade/streamsx-notebooks/blob/master/copyservicecredentials.png?raw=true' alt="Copy your service credentials" title="Streaming Analytics catalog - Copy your service credentials"></img></p>
-<p>Then run the following cell and paste your service credentials when prompted.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="kn">import</span> <span class="nn">getpass</span>
+<div class=" highlight hl-ipython3"><pre><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">getpass</span>
+<span class="kn">from</span> <span class="nn">streamsx.topology.context</span> <span class="k">import</span> <span class="n">ConfigParams</span>
 <span class="n">credentials</span><span class="o">=</span><span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="s">&#39;Streaming Analytics credentials:&#39;</span><span class="p">)</span>
+
+<span class="n">vs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;streaming-analytics&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Streaming Analytics&#39;</span><span class="p">,</span> <span class="s">&#39;credentials&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">credentials</span><span class="p">)}]}</span>
+<span class="n">config</span><span class="o">=</span><span class="p">{</span><span class="n">ConfigParams</span><span class="o">.</span><span class="n">VCAP_SERVICES</span><span class="p">:</span> <span class="n">vs</span><span class="p">,</span> <span class="n">ConfigParams</span><span class="o">.</span><span class="n">SERVICE_NAME</span><span class="p">:</span> <span class="s">&#39;Streaming Analytics&#39;</span><span class="p">}</span>
 </pre></div>
 
 </div>
@@ -983,116 +912,14 @@ Jupyter Notebooks</a>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="create"></a></p>
-<h2 id="2.-Creating-a-simple-Python-app">2. Creating a simple Python app<a class="anchor-link" href="#2.-Creating-a-simple-Python-app">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Streaming analytics apps are intended for real-time data processing. They should be iterable and run for an undefined amount of time.</p>
-<p>The first component of this simple app defines the topology object which contains the information about the structure of the content and enables you to define the data source. The topology source specifies an iterable stream source and prints the contents of the stream to the application console.</p>
-<p>Run the following cell to build this simple app. The result won't be displayed here.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="kn">from</span> <span class="nn">streamsx.topology.topology</span> <span class="k">import</span> <span class="n">Topology</span>
-<span class="kn">from</span> <span class="nn">streamsx.topology.context</span> <span class="k">import</span> <span class="o">*</span>
-
-<span class="n">topo</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="s">&#39;hello_world&#39;</span><span class="p">)</span>
-<span class="n">hw</span> <span class="o">=</span> <span class="n">topo</span><span class="o">.</span><span class="n">source</span><span class="p">([</span><span class="s">&#39;World!&#39;</span><span class="p">,</span> <span class="s">&#39;Hello&#39;</span><span class="p">])</span>
-<span class="n">hw</span><span class="o">.</span><span class="n">print</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="build"></a></p>
-<h2 id="3.-Building-the-application">3. Building the application<a class="anchor-link" href="#3.-Building-the-application">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Run the following cell to submit the declarations defined in your app to the STREAMING_ANALYTICS_SERVICE. The <code>topo</code> object in the code represents the application topology and it passes the service credentials (VCAP_SERVICES) in the configuration as parameters to the Streaming Analytics dashboard. <a href="https://console.ng.bluemix.net/docs/services/StreamingAnalytics/r_vcap_services.html#r_vcap_services" target="_blank" rel="noopener noreferrer">VCAP_SERVICES</a> is an environment variable provided by Bluemix to interact with its services.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="kn">import</span> <span class="nn">json</span> 
-<span class="n">vs</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;streaming-analytics&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">service_name</span><span class="p">,</span> <span class="s">&#39;credentials&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span> <span class="p">(</span><span class="n">credentials</span><span class="p">)}]}</span>
-<span class="n">cfg</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">cfg</span><span class="p">[</span><span class="n">ConfigParams</span><span class="o">.</span><span class="n">VCAP_SERVICES</span><span class="p">]</span> <span class="o">=</span> <span class="n">vs</span>
-<span class="n">cfg</span><span class="p">[</span><span class="n">ConfigParams</span><span class="o">.</span><span class="n">SERVICE_NAME</span><span class="p">]</span> <span class="o">=</span> <span class="n">service_name</span>
-<span class="n">submit</span><span class="p">(</span><span class="s">&#39;STREAMING_ANALYTICS_SERVICE&#39;</span><span class="p">,</span> <span class="n">topo</span><span class="p">,</span> <span class="n">cfg</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s">&#39;Submitted job to service:&#39;</span><span class="p">,</span> <span class="n">service_name</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>After the app is built on the Streaming Analytics service, you can monitor the app using the Streams Console for your service.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="view"></a></p>
-<h2 id="4.-Viewing-application-console-messages">4. Viewing application console messages<a class="anchor-link" href="#4.-Viewing-application-console-messages">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In the Streams Console, the Application Dashboard shows a summary of all of the jobs that are running on the service.  </p>
+<p><a id="createfeed"></a></p>
+<h2 id="Part-2:-Create-a-data-feed">Part 2: Create a data feed<a class="anchor-link" href="#Part-2:-Create-a-data-feed">&#182;</a></h2><p>You can now submit the precompiled Physionet microservice to the Streaming Analytics service on IBM Bluemix to create a data feed:</p>
 <ol>
-<li>From your Streaming Analytics service dashboard, double-click the service you want to monitor. Then click <strong>Launch</strong> to open the Streams Console which displays the Application Dashboard by default.</li>
-<li>From the Application Dashboard, click the <strong>Log Viewer</strong> icon on the left toolbar.
-<br>
-<img src='https://github.com/orzade/streamsx-notebooks/blob/master/HW_ApplicationDashboard.png?raw=true' alt="Application Dashboard view with jobs and service running" title="Application Dashboard view with jobs and service running"></img><br></li>
-<li>Expand the Log Navigation Tree and click the PE (processing element).</li>
-<li>From the <strong>Log Viewer</strong> panel, select the <strong>Console Log</strong> tab. </li>
-<li>Click <strong>Load console messages</strong>. 
-You should see the strings <code>Hello</code> and <code>World!</code> printed in the <strong>Console Log</strong>. 
-<img src='https://github.com/orzade/streamsx-notebooks/blob/master/HW_Console_Log.png?raw=true' alt="The console viewer with Hello World! messages" title="The console viewer with Hello World! messages"></img></li>
+<li>Download the resources you need from <a href="https://github.com/IBMStreams/streamsx.health/releases" target="_blank" rel="noopener noreferrer">https://github.com/IBMStreams/streamsx.health/releases</a> to build the <em>PhysionetIngestServiceMulti.sab</em> application bundle file in your local system.</li>
+<li>Open the <strong>Streams Console</strong> and click on <strong>Submit Job</strong> in the upper left part of the <strong>Application Dashboard</strong>.
+<img src='https://github.com/orzade/streamsx-notebooks/blob/master/submitjob.png?raw=true' alt="Click Submit Job" title="Click Submit Job"></img></li>
+<li>On the <strong>Submit Job</strong> view select the application bundle file PhysionetIngestServiceMulti.sab from your local file system and click <strong>Submit</strong> to upload the file.</li>
+<li>On the <strong>Submission-Time Parameters</strong> window set the number of patients to 3 or more in the <strong>Value</strong> field and click <strong>OK</strong>.</li>
 </ol>
 
 </div>
@@ -1103,38 +930,266 @@ You should see the strings <code>Hello</code> and <code>World!</code> printed in
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="buildapp"></a></p>
+<h2 id="Part-3:-Build-a-streaming-app">Part 3: Build a streaming app<a class="anchor-link" href="#Part-3:-Build-a-streaming-app">&#182;</a></h2><p>Now you're ready to create the <strong>HealthcareDemo</strong> Python streaming application, and submit it to the Streaming Analytics service, where the app will be remotely built and deployed.</p>
+<p>The following cell contains source code for the Python Topology application. This is a Python streaming application that ingests the patient data from the <em>ingest-physionet</em> topic (<a href="https://www.physionet.org/" target="_blank" rel="noopener noreferrer">Physionet database</a>) and performs analysis on the patient data to calculate vital data for all patients. It finally creates a view for displaying the result of the analysis.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="kn">from</span> <span class="nn">streamsx.topology</span> <span class="k">import</span> <span class="n">schema</span>
+<span class="kn">from</span> <span class="nn">streamsx.topology.topology</span> <span class="k">import</span> <span class="n">Topology</span>
+<span class="kn">from</span> <span class="nn">streamsx.topology.context</span> <span class="k">import</span> <span class="n">submit</span>
+
+<span class="c">## The healthdemo package provides tools to analyze patient data</span>
+<span class="c">## See https://github.com/IBMStreams/streamsx.health/tree/develop/samples/HealthcareJupyterDemo/package</span>
+<span class="kn">from</span> <span class="nn">healthdemo.patientmonitoring_functions</span> <span class="k">import</span> <span class="n">streaming_rpeak</span>
+<span class="kn">from</span> <span class="nn">healthdemo.healthcare_functions</span> <span class="k">import</span> <span class="n">GenTimestamp</span><span class="p">,</span> <span class="n">aggregate</span>
+<span class="kn">from</span> <span class="nn">healthdemo.windows</span> <span class="k">import</span> <span class="n">SlidingWindow</span>
+
+<span class="n">topo</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="s">&#39;HealthcareDemo&#39;</span><span class="p">)</span>
+
+<span class="c">## The ingest-physionet provides data at a rate of 125 tuples/sec</span>
+<span class="n">sample_rate</span> <span class="o">=</span> <span class="mi">125</span>
+
+<span class="c">## Subscribe to the topic</span>
+<span class="n">patients_data</span> <span class="o">=</span> <span class="n">topo</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s">&#39;ingest-physionet&#39;</span><span class="p">,</span> <span class="n">schema</span><span class="o">.</span><span class="n">CommonSchema</span><span class="o">.</span><span class="n">Json</span><span class="p">)</span>
+            
+<span class="c">## Add timestamp to the data, so you can perform windowing</span>
+<span class="n">patients_data</span> <span class="o">=</span> <span class="n">patients_data</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">GenTimestamp</span><span class="p">(</span><span class="n">sample_rate</span><span class="p">))</span>
+
+<span class="c">## Generate a window based on the provided sample_rate</span>
+<span class="n">patients_data</span> <span class="o">=</span> <span class="n">patients_data</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">SlidingWindow</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="n">sample_rate</span><span class="p">,</span> <span class="n">trigger</span><span class="o">=</span><span class="n">sample_rate</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="c">## Aggregate the data within the window and create a tuple</span>
+<span class="n">patients_data</span> <span class="o">=</span> <span class="n">patients_data</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">aggregate</span><span class="p">)</span>
+
+<span class="c">## Process data from &#39;ECG Lead II&#39; and calculate RPeak and RR delta</span>
+<span class="n">patients_data</span> <span class="o">=</span> <span class="n">streaming_rpeak</span><span class="p">(</span><span class="n">patients_data</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">,</span> <span class="n">data_label</span><span class="o">=</span><span class="s">&#39;ECG Lead II&#39;</span><span class="p">)</span>
+
+<span class="c">## Create view for viewing patient vital data</span>
+<span class="n">patients_vital</span> <span class="o">=</span> <span class="n">patients_data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;patients_vital&#39;</span><span class="p">)</span>
+
+<span class="n">rc</span> <span class="o">=</span> <span class="n">submit</span><span class="p">(</span><span class="s">&#39;STREAMING_ANALYTICS_SERVICE&#39;</span><span class="p">,</span> <span class="n">topo</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s">&quot;DONE&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="visualization"></a></p>
+<h2 id="Part-4:-Visualization">Part 4: Visualization<a class="anchor-link" href="#Part-4:-Visualization">&#182;</a></h2><p>Complete the following steps to visualize the results of your app:</p>
+<p><a href="#setupgraphs">4.1 Setup graphs for plotting patient vitals</a><br>
+<a href="#providedata">4.2 Provide data for the graphs</a><br>
+<a href="#displaygraphs">4.3 Display the graphs</a><br></p>
+<p><a id="setupgraphs"></a></p>
+<h3 id="4.1-Setup-graphs-for-plotting-patient-vitals">4.1 Setup graphs for plotting patient vitals<a class="anchor-link" href="#4.1-Setup-graphs-for-plotting-patient-vitals">&#182;</a></h3><p>This cell initializes the nine graphs which will be used to display one patient's vital data.</p>
+<p>Each property of the patient's vital data is identified by the signal label. Each graph is initialized by providing the signal label it plots and a title.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="kn">from</span> <span class="nn">healthdemo.medgraphs</span> <span class="k">import</span> <span class="n">ECGGraph</span><span class="p">,</span> <span class="n">PoincareGraph</span><span class="p">,</span> <span class="n">NumericText</span><span class="p">,</span> <span class="n">ABPNumericText</span>
+
+<span class="c">## Select which patient&#39;s data to plot</span>
+<span class="n">patientId</span> <span class="o">=</span> <span class="s">&#39;patient-1&#39;</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&#39;leadII_poincare&#39;</span><span class="p">:</span> <span class="n">PoincareGraph</span><span class="p">(</span><span class="n">signal_label</span><span class="o">=</span><span class="s">&#39;Poincare - ECG Lead II&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;Poincare - ECG Lead II&#39;</span><span class="p">),</span>
+    <span class="s">&#39;ecg_leadII_graph&#39;</span><span class="p">:</span> <span class="n">ECGGraph</span><span class="p">(</span><span class="n">signal_label</span><span class="o">=</span><span class="s">&#39;ECG Lead II&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;ECG Lead II&#39;</span><span class="p">,</span> 
+                                 <span class="n">plot_width</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">min_range</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">max_range</span><span class="o">=</span><span class="mf">2.0</span><span class="p">),</span>
+    <span class="s">&#39;ecg_leadV_graph&#39;</span><span class="p">:</span> <span class="n">ECGGraph</span><span class="p">(</span><span class="n">signal_label</span><span class="o">=</span><span class="s">&#39;ECG Lead V&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;ECG Lead V&#39;</span><span class="p">,</span> <span class="n">plot_width</span><span class="o">=</span><span class="mi">600</span><span class="p">),</span>
+    <span class="s">&#39;resp_graph&#39;</span><span class="p">:</span> <span class="n">ECGGraph</span><span class="p">(</span><span class="n">signal_label</span><span class="o">=</span><span class="s">&#39;Resp&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;Resp&#39;</span><span class="p">,</span> <span class="n">min_range</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_range</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">plot_width</span><span class="o">=</span><span class="mi">600</span><span class="p">),</span>
+    <span class="s">&#39;pleth_graph&#39;</span><span class="p">:</span> <span class="n">ECGGraph</span><span class="p">(</span><span class="n">signal_label</span><span class="o">=</span><span class="s">&#39;Pleth&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;Pleth&#39;</span><span class="p">,</span> <span class="n">min_range</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_range</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">plot_width</span><span class="o">=</span><span class="mi">600</span><span class="p">),</span>
+    <span class="s">&#39;hr_numeric&#39;</span><span class="p">:</span> <span class="n">NumericText</span><span class="p">(</span><span class="n">signal_label</span><span class="o">=</span><span class="s">&#39;HR&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;HR&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;#7cc7ff&#39;</span><span class="p">),</span>
+    <span class="s">&#39;pulse_numeric&#39;</span><span class="p">:</span> <span class="n">NumericText</span><span class="p">(</span><span class="n">signal_label</span><span class="o">=</span><span class="s">&#39;PULSE&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;PULSE&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;#e71d32&#39;</span><span class="p">),</span>
+    <span class="s">&#39;spo2_numeric&#39;</span><span class="p">:</span> <span class="n">NumericText</span><span class="p">(</span><span class="n">signal_label</span><span class="o">=</span><span class="s">&#39;SpO2&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;SpO2&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;#8cd211&#39;</span><span class="p">),</span>
+    <span class="s">&#39;abp_numeric&#39;</span><span class="p">:</span> <span class="n">ABPNumericText</span><span class="p">(</span><span class="n">abp_sys_label</span><span class="o">=</span><span class="s">&#39;ABP Systolic&#39;</span><span class="p">,</span> <span class="n">abp_dia_label</span><span class="o">=</span><span class="s">&#39;ABP Diastolic&#39;</span><span class="p">,</span> 
+                                  <span class="n">title</span><span class="o">=</span><span class="s">&#39;ABP&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;#fdd600&#39;</span><span class="p">)</span>            
+<span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>There is no output data displayed here.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="providedata"></a></p>
+<h3 id="4.2-Provide-data-for-the-graphs">4.2 Provide data for the graphs<a class="anchor-link" href="#4.2-Provide-data-for-the-graphs">&#182;</a></h3><p>This cell is responsible for propagating the graph objects with data in the view.</p>
+<p>The view data contains vital data for all patients, and is continuously retrieved from the Streaming Analytics service in a background job.  Each graph object receives data for a specified patient. The graph objects extract and store the data that is relevant for that particular graph.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="kn">from</span> <span class="nn">healthdemo.utils</span> <span class="k">import</span> <span class="n">get_patient_id</span>
+
+<span class="c">## load BokehJS visualization library (must be loaded in a separate cell)</span>
+<span class="kn">from</span> <span class="nn">bokeh.io</span> <span class="k">import</span> <span class="n">output_notebook</span><span class="p">,</span> <span class="n">push_notebook</span>
+<span class="kn">from</span> <span class="nn">bokeh.resources</span> <span class="k">import</span> <span class="n">INLINE</span>
+<span class="n">output_notebook</span><span class="p">(</span><span class="n">resources</span><span class="o">=</span><span class="n">INLINE</span><span class="p">)</span>
+<span class="o">%</span><span class="k">autosave</span> 0
+<span class="o">%</span><span class="k">reload_ext</span> autoreload
+<span class="o">%</span><span class="k">autoreload</span> 1
+
+<span class="n">continue_data_collection</span> <span class="o">=</span> <span class="k">True</span>
+
+<span class="c">## retrieve data from Streams view in a background job</span>
+<span class="k">def</span> <span class="nf">data_collector</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">g</span><span class="p">):</span>
+    <span class="n">queue</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">start_data_fetch</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">continue_data_collection</span><span class="p">:</span>
+        <span class="n">tup</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">patientId</span> <span class="o">==</span> <span class="n">get_patient_id</span><span class="p">(</span><span class="n">tup</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">graphtype</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
+                <span class="n">g</span><span class="p">[</span><span class="n">graphtype</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tup</span><span class="p">)</span>
+    <span class="n">view</span><span class="o">.</span><span class="n">stop_data_fetch</span><span class="p">()</span>
+            
+<span class="kn">from</span> <span class="nn">IPython.lib</span> <span class="k">import</span> <span class="n">backgroundjobs</span> <span class="k">as</span> <span class="n">bg</span>
+<span class="n">jobs</span> <span class="o">=</span> <span class="n">bg</span><span class="o">.</span><span class="n">BackgroundJobManager</span><span class="p">()</span>
+<span class="n">jobs</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">data_collector</span><span class="p">,</span> <span class="n">patients_vital</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="displaygraphs"></a></p>
+<h3 id="4.3-Display-the-graphs">4.3 Display the graphs<a class="anchor-link" href="#4.3-Display-the-graphs">&#182;</a></h3><p>This cell is responsible for laying out and displaying the graphs.</p>
+<p>Each time a call to <code>update()</code> is made on a graph object, the next data point is retrieved and displayed. Each graph object maintains an internal queue so that each time a call to <code>update()</code> is made, the next element in the queue is retrieved and removed.</p>
+<p>There is a loop that continuously calls the <code>update()</code> method on each of the graphs for 60 seconds. After each graph has been updated, a call to <code>push_notebook()</code> is made, which causes the notebook to update the graphics.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">bokeh.io</span> <span class="k">import</span> <span class="n">show</span>
+<span class="kn">from</span> <span class="nn">bokeh.layouts</span> <span class="k">import</span> <span class="n">column</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">widgetbox</span>
+
+<span class="c">## display graphs for a patient</span>
+<span class="n">show</span><span class="p">(</span>
+    <span class="n">row</span><span class="p">(</span>
+        <span class="n">column</span><span class="p">(</span>
+            <span class="n">graph</span><span class="p">[</span><span class="s">&#39;ecg_leadII_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_figure</span><span class="p">(),</span> 
+            <span class="n">graph</span><span class="p">[</span><span class="s">&#39;ecg_leadV_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_figure</span><span class="p">(),</span> 
+            <span class="n">graph</span><span class="p">[</span><span class="s">&#39;resp_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_figure</span><span class="p">(),</span>
+            <span class="n">graph</span><span class="p">[</span><span class="s">&#39;pleth_graph&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()</span>
+        <span class="p">),</span> 
+        <span class="n">column</span><span class="p">(</span>
+            <span class="n">graph</span><span class="p">[</span><span class="s">&#39;leadII_poincare&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_figure</span><span class="p">(),</span>
+            <span class="n">widgetbox</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="s">&#39;hr_numeric&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()),</span>
+            <span class="n">widgetbox</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="s">&#39;pulse_numeric&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()),</span>
+            <span class="n">widgetbox</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="s">&#39;spo2_numeric&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_figure</span><span class="p">()),</span>
+            <span class="n">widgetbox</span><span class="p">(</span><span class="n">graph</span><span class="p">[</span><span class="s">&#39;abp_numeric&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_figure</span><span class="p">())</span>
+        <span class="p">)</span>
+    <span class="p">),</span>
+    
+    <span class="c"># If using bokeh &gt; 0.12.2, uncomment the following statement</span>
+    <span class="c">#notebook_handle=True</span>
+<span class="p">)</span>
+
+<span class="c">## Timeout(in seconds) before stopping the graph</span>
+<span class="n">timeout</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">endtime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">timeout</span>
+
+<span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">endtime</span><span class="p">:</span>
+    <span class="c">## update graphs</span>
+    <span class="k">for</span> <span class="n">graphtype</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">:</span>
+        <span class="n">graph</span><span class="p">[</span><span class="n">graphtype</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+    <span class="c">## update notebook </span>
+    <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">cnt</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">push_notebook</span><span class="p">()</span> <span class="c">## refresh the graphs</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.008</span><span class="p">)</span>
+    
+<span class="c"># Stop data collection running in background thread</span>
+<span class="n">continue_data_collection</span> <span class="o">=</span> <span class="k">False</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To plot the graph for a different patient, change <code>patientId</code> in <a href="#setupgraphs">4.1 Setup graphs for plotting patient vitals</a>, and rerun the cells.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="summary"></a></p>
-<h2 id="5.-Summary-and-next-steps">5. Summary and next steps<a class="anchor-link" href="#5.-Summary-and-next-steps">&#182;</a></h2><p>You learned how to create a simple app with Python, without installing IBM Streams on-premises. You also learned how to deploy the app to your Streaming Analytics service on the cloud, and monitor your service in the Application Dashboard console.</p>
-<p>To stop the application, go to the Application Dashboard view and click <strong>Cancel Jobs</strong>.<br></p>
+<h2 id="Part-5:-Summary-and-next-steps">Part 5: Summary and next steps<a class="anchor-link" href="#Part-5:-Summary-and-next-steps">&#182;</a></h2><p>You learned how to create an app with Python that ingests and analyzes streaming data from a feed, and then visualizes the data in the notebook. You submitted this app to be built in the Streaming Analytics service in Bluemix.</p>
 <p>Check out other notebooks in this series:</p>
 <ul>
-<li><a href="https://apsportal.ibm.com/exchange/public/entry/view/9fc33ce7301f10e21a9f92039cad29a6" target="_blank" rel="noopener noreferrer">Healthcare Python Streaming Application Demo</a> </li>
+<li><a href="https://apsportal.ibm.com/exchange/public/entry/view/9fc33ce7301f10e21a9f92039ca9c6e8" target="_blank" rel="noopener noreferrer">Build a Python app on the Streaming Analytics service</a> </li>
 <li><a href="https://apsportal.ibm.com/exchange/public/entry/view/9fc33ce7301f10e21a9f92039ca60bb7" target="_blank" rel="noopener noreferrer">Build and use a data model in real time with the Python API</a> </li>
 </ul>
 <p>Dig deeper:</p>
 <ul>
 <li><a href="http://ibmstreams.github.io/streamsx.documentation/docs/latest/python/python-appapi-devguide/#developing-ibm-streams-applications-with-python" target="_blank" rel="noopener noreferrer">Developing IBM Streams applications with Python</a> </li>
 <li><a href="https://www.ibm.com/support/knowledgecenter/SSCRJU/SSCRJU_welcome.html" target="_blank" rel="noopener noreferrer">IBM Streams documentation</a> </li>
+<li><a href="https://github.com/IBMStreams/streamsx.health/tree/develop/samples/HealthcareJupyterDemo/package" target="_blank" rel="noopener noreferrer">IBM streamsx.health healthdemo</a> </li>
 </ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Author">Author<a class="anchor-link" href="#Author">&#182;</a></h3><p>Dan Debrunner is an STSM and architect at IBM who specializes in IBM Streams technology.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p>James Cancilla is a software developer who specializes in streaming technology and cloud solutions.<br/>
+Kendrick Wong is a software developer who specializes in streaming technology and cloud solutions.</p>
 <p>Copyright © 2017 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
