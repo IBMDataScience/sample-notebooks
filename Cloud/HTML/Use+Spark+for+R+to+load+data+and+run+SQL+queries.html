@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Spark+POT+Lab+</title>
+<title>Use Spark for R to load data and run SQL querie</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -791,24 +791,9 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Introduction-to-Apache-Spark-lab,-part-3:-machine-learning">Introduction to Apache Spark lab, part 3: machine learning<a class="anchor-link" href="#Introduction-to-Apache-Spark-lab,-part-3:-machine-learning">&#182;</a></h1><p>In this notebook you'll learn how to create a model for purchase recommendations using the alternating least squares algorithm of the Apache Spark machine learning library. Machine learning is based on algorithms that can learn from data without relying on rules-based programming.</p>
-<p>"A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P if its performance at tasks in T, as measured by P, improves with experience E"
--Tom M. Mitchell</p>
-<p>This notebook uses pySpark, the Python API for Spark. Some knowledge of Python is recommended. This notebook runs on Python 2 with Spark 2.0.</p>
-<p>If you are new to Apache Spark, see the first two parts of this lab:</p>
-<ul>
-<li><a href="https://apsportal.ibm.com/exchange/public/entry/view/95811fca38af4ccbea8acf8658bedcfc">Introduction to Apache Spark lab, part 1: Basic Concepts</a></li>
-<li><a href="https://apsportal.ibm.com/exchange/public/entry/view/5ad1c820f57809ddec9a040e37b2bd55">Introduction to Apache Spark lab, part 2: Querying data</a>  </li>
-</ul>
-<h2 id="Spark-machine-learning-library">Spark machine learning library<a class="anchor-link" href="#Spark-machine-learning-library">&#182;</a></h2><p><a href="http://spark.apache.org/docs/latest/mllib-guide.html">Apache Spark’s machine learning library</a> makes practical machine learning scalable and easy. The library consists of common machine learning algorithms and utilities, including classification, regression, clustering, collaborative filtering (this notebook!), dimensionality reduction, lower-level optimization primitives, and higher-level pipeline APIs.</p>
-<p>The library has two packages:</p>
-<ul>
-<li>spark.mllib contains the original API that handles data in RDDs. It's in maintenance mode, but fully supported.</li>
-<li>spark.ml contains a newer API for constructing ML pipelines. It handles data in DataFrames. It's being actively enhanced.</li>
-</ul>
-<h2 id="Alternating-least-squares-algorithm">Alternating least squares algorithm<a class="anchor-link" href="#Alternating-least-squares-algorithm">&#182;</a></h2><p>The alternating least squares (ALS) algorithm provides collaborative filtering between customers and products to find products that the customers might like, based on their previous purchases or ratings.</p>
-<p>The ALS algorithm creates a matrix of all customers versus all products. Most cells in the matrix are empty, which means the customer hasn't bought that product. The ALS algorithm then fills in the probability of customers buying products that they haven't bought yet, based on similarities between customer purchases and similarities between products. The algorithm uses the least squares computation to minimize the estimation errors, and alternates between fixing the customer factors and solving for product factors and fixing the product factors and solving for customer factors.</p>
-<p>You don't, however, need to understand how the ALS algorithm works to use it! Spark machine learning algorithms have default values that work well in most cases.</p>
+<h1 id="Use-Spark-for-R-to-load-data-and-run-SQL-queries">Use Spark for R to load data and run SQL queries<a class="anchor-link" href="#Use-Spark-for-R-to-load-data-and-run-SQL-queries">&#182;</a></h1><p>This notebook introduces basic Spark concepts and helps you to start using Spark for R.</p>
+<p>Some familiarity with R is recommended. This notebook runs on R with Spark 2.0.</p>
+<p>In this notebook, you'll use the publicly available <strong>mtcars</strong> data set from <em>Motor Trend</em> magazine to learn some basic R. You'll learn how to load data, create a Spark DataFrame, aggregate data, run mathematical formulas, and run SQL queries against the data.</p>
 
 </div>
 </div>
@@ -818,26 +803,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><ol>
-<li><a href="#getdata">Get the data</a><br></li>
-<li><a href="#prepare">Prepare and shape the data</a><br>
- 2.1 <a href="#prepare1">Format the data</a><br>
- 2.2 <a href="#prepare2">Clean the data</a><br>
- 2.3 <a href="#prepare3">Create a DataFrame</a><br>
- 2.4 <a href="#prepare4">Remove unneeded columns</a><br></li>
-<li><a href="#split">Split the data into three sets</a><br></li>
-<li><a href="#model">Build recommendation models</a><br></li>
-<li><a href="#test">Test the models</a><br>
- 5.1 <a href="#test1">Clean the cross validation data set</a><br>
- 5.2 <a href="#test2">Run the models on the cross validation data set</a><br>
- 5.3 <a href="#test3">Calculate the accuracy for each model</a><br>
- 5.4 <a href="#test4">Confirm the best model</a><br></li>
-<li><a href="#implement">Implement the mode</a><br>
- 6.1 <a href="#implement1">Create a DataFrame for the customer and all products</a><br>
- 6.2 <a href="#implement2">Rate each product</a><br>
- 6.3 <a href="#implement3">Find the top recommendations</a><br>
- 6.4 <a href="#implement4">Compare purchased and recommended products</a><br></li>
-<li><a href="#summary">Summary and next steps</a></li>
+<h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><p>This notebook contains these main sections:</p>
+<ol>
+<li><a href="#Load_a_DataFrame">Load a DataFrame</a></li>
+<li><a href="#Initialize_an_SQLContext">Initialize an SQLContext</a></li>
+<li><a href="#Create_a_Spark_DataFrame">Create a Spark DataFrame</a></li>
+<li><a href="#Aggregate_data_after_grouping_by_columns">Aggregate data after grouping by columns</a></li>
+<li><a href="#Operate_on_columns">Operate on columns</a></li>
+<li><a href="#Run_SQL_queries_from_the_Spark_DataFrame">Run SQL queries from the Spark DataFrame</a></li>
 </ol>
 
 </div>
@@ -848,11 +821,19 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="getdata"></a></p>
-<h2 id="1.-Get-the-data">1. Get the data<a class="anchor-link" href="#1.-Get-the-data">&#182;</a></h2><p>The data set contains the transactions of an online retailer of gift items for the period from 01/12/2010 to 09/12/2011. Many of the customers are wholesalers.</p>
-<p>You'll be using a slightly modified version of this data set: <a href="http://archive.ics.uci.edu/ml/datasets/Online+Retail">http://archive.ics.uci.edu/ml/datasets/Online+Retail</a>.</p>
-<p>Here's a glimpse of the data:</p>
-<p><img src='https://raw.githubusercontent.com/rosswlewis/RecommendationPoT/master/FullFile.png' width="80%" height="80%"></img></p>
+<p><a id='Load_a_DataFrame'></a></p>
+<h2 id="1.-Load-a-DataFrame">1. Load a DataFrame<a class="anchor-link" href="#1.-Load-a-DataFrame">&#182;</a></h2><p>A DataFrame is a distributed collection of data that is organized into named columns. The built-in R DataFrame called <strong>mtcars</strong> includes observations on the following 11 variables:</p>
+<p><code>[, 1]    mpg     Miles / (US) gallon</code><br>
+<code>[, 2]    cyl     Number of cylinders</code><br>
+<code>[, 3]    disp    Displacement (cu. in.)</code><br>
+<code>[, 4]    hp      Gross horsepower</code><br>
+<code>[, 5]    drat    Rear axle ratio</code><br>
+<code>[, 6]    wt      Weight (1000 lbs)</code><br>
+<code>[, 7]    qsec    1/4 mile time (seconds)</code><br>
+<code>[, 8]    vs      0 = V-engine, 1 = straight engine</code><br>
+<code>[, 9]    am      Transmission (0 = automatic, 1 = manual)</code><br>
+<code>[,10]    gear    Number of forward gears</code><br>
+<code>[,11]    carb    Number of carburetors</code></p>
 
 </div>
 </div>
@@ -862,7 +843,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Download the CSV version of the data set, from which commas in the product descriptions are removed:</p>
+<p>Preview the first 3 rows of the DataFrame by using the head() function:</p>
 
 </div>
 </div>
@@ -872,8 +853,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">!</span>rm <span class="s1">&#39;OnlineRetail.csv.gz&#39;</span> -f
-<span class="o">!</span>wget https://raw.githubusercontent.com/rosswlewis/RecommendationPoT/master/OnlineRetail.csv.gz
+<div class=" highlight hl-r"><pre><span class="kp">head</span><span class="p">(</span>mtcars<span class="p">,</span> <span class="m">3</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -885,20 +865,19 @@ div#notebook {
 
 
 <div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>--2017-06-08 10:10:31--  https://raw.githubusercontent.com/rosswlewis/RecommendationPoT/master/OnlineRetail.csv.gz
-Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.48.133
-Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.48.133|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 7483128 (7.1M) [application/octet-stream]
-Saving to: ‘OnlineRetail.csv.gz’
 
-100%[======================================&gt;] 7,483,128   7.66MB/s   in 0.9s   
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th></th><th scope=col>mpg</th><th scope=col>cyl</th><th scope=col>disp</th><th scope=col>hp</th><th scope=col>drat</th><th scope=col>wt</th><th scope=col>qsec</th><th scope=col>vs</th><th scope=col>am</th><th scope=col>gear</th><th scope=col>carb</th></tr></thead>
+<tbody>
+	<tr><th scope=row>Mazda RX4</th><td>21.0 </td><td>6    </td><td>160  </td><td>110  </td><td>3.90 </td><td>2.620</td><td>16.46</td><td>0    </td><td>1    </td><td>4    </td><td>4    </td></tr>
+	<tr><th scope=row>Mazda RX4 Wag</th><td>21.0 </td><td>6    </td><td>160  </td><td>110  </td><td>3.90 </td><td>2.875</td><td>17.02</td><td>0    </td><td>1    </td><td>4    </td><td>4    </td></tr>
+	<tr><th scope=row>Datsun 710</th><td>22.8 </td><td>4    </td><td>108  </td><td> 93  </td><td>3.85 </td><td>2.320</td><td>18.61</td><td>1    </td><td>1    </td><td>4    </td><td>1    </td></tr>
+</tbody>
+</table>
 
-2017-06-08 10:10:35 (7.66 MB/s) - ‘OnlineRetail.csv.gz’ saved [7483128/7483128]
-
-</pre>
 </div>
+
 </div>
 
 </div>
@@ -910,7 +889,7 @@ Saving to: ‘OnlineRetail.csv.gz’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Put the data into an RDD and print the first 5 rows:</p>
+<p>Convert the car name data, which appears in the row names, into an actual column so that Spark can read it as a column:</p>
 
 </div>
 </div>
@@ -920,10 +899,10 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">loadRetailData</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s">&quot;OnlineRetail.csv.gz&quot;</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">print</span> <span class="n">row</span>
+<div class=" highlight hl-r"><pre>mtcars<span class="o">$</span>car <span class="o">&lt;-</span> <span class="kp">rownames</span><span class="p">(</span>mtcars<span class="p">)</span>
+mtcars <span class="o">&lt;-</span> mtcars<span class="p">[,</span><span class="kt">c</span><span class="p">(</span><span class="m">12</span><span class="p">,</span><span class="m">1</span><span class="o">:</span><span class="m">11</span><span class="p">)]</span>
+<span class="kp">rownames</span><span class="p">(</span>mtcars<span class="p">)</span> <span class="o">&lt;-</span> <span class="m">1</span><span class="o">:</span><span class="kp">nrow</span><span class="p">(</span>mtcars<span class="p">)</span>
+<span class="kp">head</span><span class="p">(</span>mtcars<span class="p">)</span>
 </pre></div>
 
 </div>
@@ -935,14 +914,22 @@ Saving to: ‘OnlineRetail.csv.gz’
 
 
 <div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>InvoiceNo,StockCode,Description,Quantity,InvoiceDate,UnitPrice,CustomerID,Country
-536365,85123A,WHITE HANGING HEART T-LIGHT HOLDER,6,12/1/10 8:26,2.55,17850,United Kingdom
-536365,71053,WHITE METAL LANTERN,6,12/1/10 8:26,3.39,17850,United Kingdom
-536365,84406B,CREAM CUPID HEARTS COAT HANGER,8,12/1/10 8:26,2.75,17850,United Kingdom
-536365,84029G,KNITTED UNION FLAG HOT WATER BOTTLE,6,12/1/10 8:26,3.39,17850,United Kingdom
-</pre>
+
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th scope=col>car</th><th scope=col>mpg</th><th scope=col>cyl</th><th scope=col>disp</th><th scope=col>hp</th><th scope=col>drat</th><th scope=col>wt</th><th scope=col>qsec</th><th scope=col>vs</th><th scope=col>am</th><th scope=col>gear</th><th scope=col>carb</th></tr></thead>
+<tbody>
+	<tr><td>Mazda RX4        </td><td>21.0             </td><td>6                </td><td>160              </td><td>110              </td><td>3.90             </td><td>2.620            </td><td>16.46            </td><td>0                </td><td>1                </td><td>4                </td><td>4                </td></tr>
+	<tr><td>Mazda RX4 Wag    </td><td>21.0             </td><td>6                </td><td>160              </td><td>110              </td><td>3.90             </td><td>2.875            </td><td>17.02            </td><td>0                </td><td>1                </td><td>4                </td><td>4                </td></tr>
+	<tr><td>Datsun 710       </td><td>22.8             </td><td>4                </td><td>108              </td><td> 93              </td><td>3.85             </td><td>2.320            </td><td>18.61            </td><td>1                </td><td>1                </td><td>4                </td><td>1                </td></tr>
+	<tr><td>Hornet 4 Drive   </td><td>21.4             </td><td>6                </td><td>258              </td><td>110              </td><td>3.08             </td><td>3.215            </td><td>19.44            </td><td>1                </td><td>0                </td><td>3                </td><td>1                </td></tr>
+	<tr><td>Hornet Sportabout</td><td>18.7             </td><td>8                </td><td>360              </td><td>175              </td><td>3.15             </td><td>3.440            </td><td>17.02            </td><td>0                </td><td>0                </td><td>3                </td><td>2                </td></tr>
+	<tr><td>Valiant          </td><td>18.1             </td><td>6                </td><td>225              </td><td>105              </td><td>2.76             </td><td>3.460            </td><td>20.22            </td><td>1                </td><td>0                </td><td>3                </td><td>1                </td></tr>
+</tbody>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -954,36 +941,8 @@ Saving to: ‘OnlineRetail.csv.gz’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Each row in the RDD is a string that correlates to a line in the CSV file.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare"></a></p>
-<h2 id="2.-Prepare-and-shape-the-data">2. Prepare and shape the data<a class="anchor-link" href="#2.-Prepare-and-shape-the-data">&#182;</a></h2><p>It's been said that preparing and shaping data is 80% of a data scientist's job. Having the right data in the right format is critical for getting accurate results.</p>
-<p>To get the data ready, complete these tasks:</p>
-<ol>
-<li><a href="#prepare1">Format the data</a></li>
-<li><a href="#prepare2">Clean the data</a></li>
-<li><a href="#prepare3">Create a DataFrame</a></li>
-<li><a href="#prepare4">Remove unneeded columns</a></li>
-</ol>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare1"></a></p>
-<h3 id="2.1-Format-the-data">2.1 Format the data<a class="anchor-link" href="#2.1-Format-the-data">&#182;</a></h3><p>Remove the header from the RDD and split the string in each row with a comma:</p>
+<p><a id='Initialize_an_SQLContext'></a></p>
+<h2 id="2.-Initialize-an-SQLContext">2. Initialize an SQLContext<a class="anchor-link" href="#2.-Initialize-an-SQLContext">&#182;</a></h2><p>To work with a DataFrame, you need an SQLContext. You create this SQLContext by using <code>sparkRSQL.init(sc)</code>. A SparkContext named sc, which has been created for you, is used to initialize the SQLContext:</p>
 
 </div>
 </div>
@@ -993,33 +952,10 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">header</span> <span class="o">=</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-<span class="n">loadRetailData</span> <span class="o">=</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span> <span class="o">!=</span> <span class="n">header</span><span class="p">)</span><span class="o">.</span>\
-                            <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">))</span>
-
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">print</span> <span class="n">row</span>
+<div class=" highlight hl-r"><pre>sqlContext <span class="o">&lt;-</span> sparkR.session<span class="p">(</span>sc<span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[u&apos;536365&apos;, u&apos;85123A&apos;, u&apos;WHITE HANGING HEART T-LIGHT HOLDER&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;2.55&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-[u&apos;536365&apos;, u&apos;71053&apos;, u&apos;WHITE METAL LANTERN&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;3.39&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-[u&apos;536365&apos;, u&apos;84406B&apos;, u&apos;CREAM CUPID HEARTS COAT HANGER&apos;, u&apos;8&apos;, u&apos;12/1/10 8:26&apos;, u&apos;2.75&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-[u&apos;536365&apos;, u&apos;84029G&apos;, u&apos;KNITTED UNION FLAG HOT WATER BOTTLE&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;3.39&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-[u&apos;536365&apos;, u&apos;84029E&apos;, u&apos;RED WOOLLY HOTTIE WHITE HEART.&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;3.39&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1029,13 +965,8 @@ Saving to: ‘OnlineRetail.csv.gz’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare2"></a></p>
-<h3 id="2.2-Clean-the-data">2.2 Clean the data<a class="anchor-link" href="#2.2-Clean-the-data">&#182;</a></h3><p>Remove the rows that have incomplete data. Keep only the rows that meet the following criteria:</p>
-<ul>
-<li>The purchase quantity is greater than 0 </li>
-<li>The customer ID not equal to 0 </li>
-<li>The stock code is not blank after you remove non-numeric characters</li>
-</ul>
+<p><a id='Create_a_Spark_DataFrame'></a></p>
+<h2 id="3.-Create-a-Spark-DataFrame">3. Create a Spark DataFrame<a class="anchor-link" href="#3.-Create-a-Spark-DataFrame">&#182;</a></h2><p>Using the SQLContext and the loaded local DataFrame, create a Spark DataFrame and print the schema, or structure, of the DataFrame:</p>
 
 </div>
 </div>
@@ -1045,86 +976,8 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">re</span>
-
-<span class="n">loadRetailData</span> <span class="o">=</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>\
-                                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;\D&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">!=</span> <span class="mi">0</span> \
-                                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[[u&apos;536365&apos;, u&apos;85123A&apos;, u&apos;WHITE HANGING HEART T-LIGHT HOLDER&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;2.55&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;], [u&apos;536365&apos;, u&apos;71053&apos;, u&apos;WHITE METAL LANTERN&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;3.39&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]]
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare3"></a></p>
-<h3 id="2.3-Create-a-DataFrame">2.3 Create a DataFrame<a class="anchor-link" href="#2.3-Create-a-DataFrame">&#182;</a></h3><p>First, create an SQLContext and map each line to a row:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SQLContext</span><span class="p">,</span> <span class="n">Row</span>
-<span class="n">sqlContext</span> <span class="o">=</span> <span class="n">SQLContext</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
-
-<span class="c">#Convert each line to a Row.</span>
-<span class="n">loadRetailData</span> <span class="o">=</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="n">Row</span><span class="p">(</span><span class="n">inv</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>\
-                                    <span class="n">stockCode</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;\D&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>\
-                                    <span class="n">description</span><span class="o">=</span><span class="n">l</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>\
-                                    <span class="n">quant</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>\
-                                    <span class="n">invDate</span><span class="o">=</span><span class="n">l</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>\
-                                    <span class="n">price</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span>\
-                                    <span class="n">custId</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">6</span><span class="p">]),</span>\
-                                    <span class="n">country</span><span class="o">=</span><span class="n">l</span><span class="p">[</span><span class="mi">7</span><span class="p">]))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a DataFrame and show the inferred schema:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">retailDf</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">loadRetailData</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">retailDf</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<div class=" highlight hl-r"><pre>sdf <span class="o">&lt;-</span> createDataFrame<span class="p">(</span>mtcars<span class="p">,</span> schema <span class="o">=</span> <span class="kc">NULL</span><span class="p">)</span> 
+printSchema<span class="p">(</span>sdf<span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1138,16 +991,18 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>root
- |-- country: string (nullable = true)
- |-- custId: long (nullable = true)
- |-- description: string (nullable = true)
- |-- inv: long (nullable = true)
- |-- invDate: string (nullable = true)
- |-- price: double (nullable = true)
- |-- quant: long (nullable = true)
- |-- stockCode: long (nullable = true)
-
-None
+ |-- car: string (nullable = true)
+ |-- mpg: double (nullable = true)
+ |-- cyl: double (nullable = true)
+ |-- disp: double (nullable = true)
+ |-- hp: double (nullable = true)
+ |-- drat: double (nullable = true)
+ |-- wt: double (nullable = true)
+ |-- qsec: double (nullable = true)
+ |-- vs: double (nullable = true)
+ |-- am: double (nullable = true)
+ |-- gear: double (nullable = true)
+ |-- carb: double (nullable = true)
 </pre>
 </div>
 </div>
@@ -1161,7 +1016,130 @@ None
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Register the DataFrame as a table so that you can run SQL queries on it and show the first two rows:</p>
+<p>Display the content of the Spark DataFrame:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre>SparkR<span class="o">::</span><span class="kp">head</span><span class="p">(</span>sdf<span class="p">,</span> <span class="m">32</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th scope=col>car</th><th scope=col>mpg</th><th scope=col>cyl</th><th scope=col>disp</th><th scope=col>hp</th><th scope=col>drat</th><th scope=col>wt</th><th scope=col>qsec</th><th scope=col>vs</th><th scope=col>am</th><th scope=col>gear</th><th scope=col>carb</th></tr></thead>
+<tbody>
+	<tr><td>Mazda RX4          </td><td>21.0               </td><td>6                  </td><td>160.0              </td><td>110                </td><td>3.90               </td><td>2.620              </td><td>16.46              </td><td>0                  </td><td>1                  </td><td>4                  </td><td>4                  </td></tr>
+	<tr><td>Mazda RX4 Wag      </td><td>21.0               </td><td>6                  </td><td>160.0              </td><td>110                </td><td>3.90               </td><td>2.875              </td><td>17.02              </td><td>0                  </td><td>1                  </td><td>4                  </td><td>4                  </td></tr>
+	<tr><td>Datsun 710         </td><td>22.8               </td><td>4                  </td><td>108.0              </td><td> 93                </td><td>3.85               </td><td>2.320              </td><td>18.61              </td><td>1                  </td><td>1                  </td><td>4                  </td><td>1                  </td></tr>
+	<tr><td>Hornet 4 Drive     </td><td>21.4               </td><td>6                  </td><td>258.0              </td><td>110                </td><td>3.08               </td><td>3.215              </td><td>19.44              </td><td>1                  </td><td>0                  </td><td>3                  </td><td>1                  </td></tr>
+	<tr><td>Hornet Sportabout  </td><td>18.7               </td><td>8                  </td><td>360.0              </td><td>175                </td><td>3.15               </td><td>3.440              </td><td>17.02              </td><td>0                  </td><td>0                  </td><td>3                  </td><td>2                  </td></tr>
+	<tr><td>Valiant            </td><td>18.1               </td><td>6                  </td><td>225.0              </td><td>105                </td><td>2.76               </td><td>3.460              </td><td>20.22              </td><td>1                  </td><td>0                  </td><td>3                  </td><td>1                  </td></tr>
+	<tr><td>Duster 360         </td><td>14.3               </td><td>8                  </td><td>360.0              </td><td>245                </td><td>3.21               </td><td>3.570              </td><td>15.84              </td><td>0                  </td><td>0                  </td><td>3                  </td><td>4                  </td></tr>
+	<tr><td>Merc 240D          </td><td>24.4               </td><td>4                  </td><td>146.7              </td><td> 62                </td><td>3.69               </td><td>3.190              </td><td>20.00              </td><td>1                  </td><td>0                  </td><td>4                  </td><td>2                  </td></tr>
+	<tr><td>Merc 230           </td><td>22.8               </td><td>4                  </td><td>140.8              </td><td> 95                </td><td>3.92               </td><td>3.150              </td><td>22.90              </td><td>1                  </td><td>0                  </td><td>4                  </td><td>2                  </td></tr>
+	<tr><td>Merc 280           </td><td>19.2               </td><td>6                  </td><td>167.6              </td><td>123                </td><td>3.92               </td><td>3.440              </td><td>18.30              </td><td>1                  </td><td>0                  </td><td>4                  </td><td>4                  </td></tr>
+	<tr><td>Merc 280C          </td><td>17.8               </td><td>6                  </td><td>167.6              </td><td>123                </td><td>3.92               </td><td>3.440              </td><td>18.90              </td><td>1                  </td><td>0                  </td><td>4                  </td><td>4                  </td></tr>
+	<tr><td>Merc 450SE         </td><td>16.4               </td><td>8                  </td><td>275.8              </td><td>180                </td><td>3.07               </td><td>4.070              </td><td>17.40              </td><td>0                  </td><td>0                  </td><td>3                  </td><td>3                  </td></tr>
+	<tr><td>Merc 450SL         </td><td>17.3               </td><td>8                  </td><td>275.8              </td><td>180                </td><td>3.07               </td><td>3.730              </td><td>17.60              </td><td>0                  </td><td>0                  </td><td>3                  </td><td>3                  </td></tr>
+	<tr><td>Merc 450SLC        </td><td>15.2               </td><td>8                  </td><td>275.8              </td><td>180                </td><td>3.07               </td><td>3.780              </td><td>18.00              </td><td>0                  </td><td>0                  </td><td>3                  </td><td>3                  </td></tr>
+	<tr><td>Cadillac Fleetwood </td><td>10.4               </td><td>8                  </td><td>472.0              </td><td>205                </td><td>2.93               </td><td>5.250              </td><td>17.98              </td><td>0                  </td><td>0                  </td><td>3                  </td><td>4                  </td></tr>
+	<tr><td>Lincoln Continental</td><td>10.4               </td><td>8                  </td><td>460.0              </td><td>215                </td><td>3.00               </td><td>5.424              </td><td>17.82              </td><td>0                  </td><td>0                  </td><td>3                  </td><td>4                  </td></tr>
+	<tr><td>Chrysler Imperial  </td><td>14.7               </td><td>8                  </td><td>440.0              </td><td>230                </td><td>3.23               </td><td>5.345              </td><td>17.42              </td><td>0                  </td><td>0                  </td><td>3                  </td><td>4                  </td></tr>
+	<tr><td>Fiat 128           </td><td>32.4               </td><td>4                  </td><td> 78.7              </td><td> 66                </td><td>4.08               </td><td>2.200              </td><td>19.47              </td><td>1                  </td><td>1                  </td><td>4                  </td><td>1                  </td></tr>
+	<tr><td>Honda Civic        </td><td>30.4               </td><td>4                  </td><td> 75.7              </td><td> 52                </td><td>4.93               </td><td>1.615              </td><td>18.52              </td><td>1                  </td><td>1                  </td><td>4                  </td><td>2                  </td></tr>
+	<tr><td>Toyota Corolla     </td><td>33.9               </td><td>4                  </td><td> 71.1              </td><td> 65                </td><td>4.22               </td><td>1.835              </td><td>19.90              </td><td>1                  </td><td>1                  </td><td>4                  </td><td>1                  </td></tr>
+	<tr><td>Toyota Corona      </td><td>21.5               </td><td>4                  </td><td>120.1              </td><td> 97                </td><td>3.70               </td><td>2.465              </td><td>20.01              </td><td>1                  </td><td>0                  </td><td>3                  </td><td>1                  </td></tr>
+	<tr><td>Dodge Challenger   </td><td>15.5               </td><td>8                  </td><td>318.0              </td><td>150                </td><td>2.76               </td><td>3.520              </td><td>16.87              </td><td>0                  </td><td>0                  </td><td>3                  </td><td>2                  </td></tr>
+	<tr><td>AMC Javelin        </td><td>15.2               </td><td>8                  </td><td>304.0              </td><td>150                </td><td>3.15               </td><td>3.435              </td><td>17.30              </td><td>0                  </td><td>0                  </td><td>3                  </td><td>2                  </td></tr>
+	<tr><td>Camaro Z28         </td><td>13.3               </td><td>8                  </td><td>350.0              </td><td>245                </td><td>3.73               </td><td>3.840              </td><td>15.41              </td><td>0                  </td><td>0                  </td><td>3                  </td><td>4                  </td></tr>
+	<tr><td>Pontiac Firebird   </td><td>19.2               </td><td>8                  </td><td>400.0              </td><td>175                </td><td>3.08               </td><td>3.845              </td><td>17.05              </td><td>0                  </td><td>0                  </td><td>3                  </td><td>2                  </td></tr>
+	<tr><td>Fiat X1-9          </td><td>27.3               </td><td>4                  </td><td> 79.0              </td><td> 66                </td><td>4.08               </td><td>1.935              </td><td>18.90              </td><td>1                  </td><td>1                  </td><td>4                  </td><td>1                  </td></tr>
+	<tr><td>Porsche 914-2      </td><td>26.0               </td><td>4                  </td><td>120.3              </td><td> 91                </td><td>4.43               </td><td>2.140              </td><td>16.70              </td><td>0                  </td><td>1                  </td><td>5                  </td><td>2                  </td></tr>
+	<tr><td>Lotus Europa       </td><td>30.4               </td><td>4                  </td><td> 95.1              </td><td>113                </td><td>3.77               </td><td>1.513              </td><td>16.90              </td><td>1                  </td><td>1                  </td><td>5                  </td><td>2                  </td></tr>
+	<tr><td>Ford Pantera L     </td><td>15.8               </td><td>8                  </td><td>351.0              </td><td>264                </td><td>4.22               </td><td>3.170              </td><td>14.50              </td><td>0                  </td><td>1                  </td><td>5                  </td><td>4                  </td></tr>
+	<tr><td>Ferrari Dino       </td><td>19.7               </td><td>6                  </td><td>145.0              </td><td>175                </td><td>3.62               </td><td>2.770              </td><td>15.50              </td><td>0                  </td><td>1                  </td><td>5                  </td><td>6                  </td></tr>
+	<tr><td>Maserati Bora      </td><td>15.0               </td><td>8                  </td><td>301.0              </td><td>335                </td><td>3.54               </td><td>3.570              </td><td>14.60              </td><td>0                  </td><td>1                  </td><td>5                  </td><td>8                  </td></tr>
+	<tr><td>Volvo 142E         </td><td>21.4               </td><td>4                  </td><td>121.0              </td><td>109                </td><td>4.11               </td><td>2.780              </td><td>18.60              </td><td>1                  </td><td>1                  </td><td>4                  </td><td>2                  </td></tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Try different ways of retrieving subsets of the data. For example, get the first 5 values in the <strong>mpg</strong> column:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-r"><pre>SparkR<span class="o">::</span><span class="kp">head</span><span class="p">(</span>select<span class="p">(</span>sdf<span class="p">,</span> sdf<span class="o">$</span>mpg<span class="p">),</span><span class="m">5</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th scope=col>mpg</th></tr></thead>
+<tbody>
+	<tr><td>21.0</td></tr>
+	<tr><td>21.0</td></tr>
+	<tr><td>22.8</td></tr>
+	<tr><td>21.4</td></tr>
+	<tr><td>18.7</td></tr>
+</tbody>
+</table>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Filter the DataFrame to retain only rows with <strong>mpg</strong> values that are less than 18:</p>
 
 </div>
 </div>
@@ -1171,8 +1149,7 @@ None
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">retailDf</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;retailPurchases&quot;</span><span class="p">)</span>
-<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;SELECT * FROM retailPurchases limit 2&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<div class=" highlight hl-r"><pre>SparkR<span class="o">::</span><span class="kp">head</span><span class="p">(</span>SparkR<span class="o">::</span>filter<span class="p">(</span>sdf<span class="p">,</span> sdf<span class="o">$</span>mpg <span class="o">&lt;</span> <span class="m">18</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -1183,50 +1160,21 @@ None
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[7]:</div>
+<div class="output_area"><div class="prompt"></div>
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>country</th>
-      <th>custId</th>
-      <th>description</th>
-      <th>inv</th>
-      <th>invDate</th>
-      <th>price</th>
-      <th>quant</th>
-      <th>stockCode</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>United Kingdom</td>
-      <td>17850</td>
-      <td>WHITE HANGING HEART T-LIGHT HOLDER</td>
-      <td>536365</td>
-      <td>12/1/10 8:26</td>
-      <td>2.55</td>
-      <td>6</td>
-      <td>85123</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>United Kingdom</td>
-      <td>17850</td>
-      <td>WHITE METAL LANTERN</td>
-      <td>536365</td>
-      <td>12/1/10 8:26</td>
-      <td>3.39</td>
-      <td>6</td>
-      <td>71053</td>
-    </tr>
-  </tbody>
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th scope=col>car</th><th scope=col>mpg</th><th scope=col>cyl</th><th scope=col>disp</th><th scope=col>hp</th><th scope=col>drat</th><th scope=col>wt</th><th scope=col>qsec</th><th scope=col>vs</th><th scope=col>am</th><th scope=col>gear</th><th scope=col>carb</th></tr></thead>
+<tbody>
+	<tr><td>Duster 360        </td><td>14.3              </td><td>8                 </td><td>360.0             </td><td>245               </td><td>3.21              </td><td>3.57              </td><td>15.84             </td><td>0                 </td><td>0                 </td><td>3                 </td><td>4                 </td></tr>
+	<tr><td>Merc 280C         </td><td>17.8              </td><td>6                 </td><td>167.6             </td><td>123               </td><td>3.92              </td><td>3.44              </td><td>18.90             </td><td>1                 </td><td>0                 </td><td>4                 </td><td>4                 </td></tr>
+	<tr><td>Merc 450SE        </td><td>16.4              </td><td>8                 </td><td>275.8             </td><td>180               </td><td>3.07              </td><td>4.07              </td><td>17.40             </td><td>0                 </td><td>0                 </td><td>3                 </td><td>3                 </td></tr>
+	<tr><td>Merc 450SL        </td><td>17.3              </td><td>8                 </td><td>275.8             </td><td>180               </td><td>3.07              </td><td>3.73              </td><td>17.60             </td><td>0                 </td><td>0                 </td><td>3                 </td><td>3                 </td></tr>
+	<tr><td>Merc 450SLC       </td><td>15.2              </td><td>8                 </td><td>275.8             </td><td>180               </td><td>3.07              </td><td>3.78              </td><td>18.00             </td><td>0                 </td><td>0                 </td><td>3                 </td><td>3                 </td></tr>
+	<tr><td>Cadillac Fleetwood</td><td>10.4              </td><td>8                 </td><td>472.0             </td><td>205               </td><td>2.93              </td><td>5.25              </td><td>17.98             </td><td>0                 </td><td>0                 </td><td>3                 </td><td>4                 </td></tr>
+</tbody>
 </table>
-</div>
+
 </div>
 
 </div>
@@ -1240,8 +1188,8 @@ None
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare4"></a></p>
-<h3 id="2.4-Remove-unneeded-columns">2.4 Remove unneeded columns<a class="anchor-link" href="#2.4-Remove-unneeded-columns">&#182;</a></h3><p>The only columns you need are <code>custId</code>, <code>stockCode</code>, and a new column, <code>purch</code>, which has a value of 1 to indicate that the customer purchased the product:</p>
+<p><a id='Aggregate_data_after_grouping_by_columns'></a></p>
+<h2 id="4.-Aggregate-data-after-grouping-by-columns">4. Aggregate data after grouping by columns<a class="anchor-link" href="#4.-Aggregate-data-after-grouping-by-columns">&#182;</a></h2><p>Spark DataFrames support a number of common functions to aggregate data after grouping. For example, you can compute the average weight of cars as a function of the number of cylinders:</p>
 
 </div>
 </div>
@@ -1251,17 +1199,7 @@ None
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">query</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
-<span class="s">SELECT </span>
-<span class="s">    custId, stockCode, 1 as purch</span>
-<span class="s">FROM </span>
-<span class="s">    retailPurchases </span>
-<span class="s">group </span>
-<span class="s">    by custId, stockCode&quot;&quot;&quot;</span>
-<span class="n">retailDf</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-<span class="n">retailDf</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;retailDf&quot;</span><span class="p">)</span>
-
-<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;select * from retailDf limit 10&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<div class=" highlight hl-r"><pre>SparkR<span class="o">::</span><span class="kp">head</span><span class="p">(</span>summarize<span class="p">(</span>groupBy<span class="p">(</span>sdf<span class="p">,</span> sdf<span class="o">$</span>cyl<span class="p">),</span> wtavg <span class="o">=</span> avg<span class="p">(</span>sdf<span class="o">$</span>wt<span class="p">)))</span>
 </pre></div>
 
 </div>
@@ -1272,83 +1210,18 @@ None
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
+<div class="output_area"><div class="prompt"></div>
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>custId</th>
-      <th>stockCode</th>
-      <th>purch</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>18074</td>
-      <td>22224</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>13705</td>
-      <td>21889</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>15862</td>
-      <td>22441</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>15862</td>
-      <td>21592</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>12838</td>
-      <td>22739</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>12838</td>
-      <td>22149</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>14078</td>
-      <td>22548</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>14078</td>
-      <td>22423</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>12433</td>
-      <td>21977</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>14696</td>
-      <td>84360</td>
-      <td>1</td>
-    </tr>
-  </tbody>
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th scope=col>cyl</th><th scope=col>wtavg</th></tr></thead>
+<tbody>
+	<tr><td>8       </td><td>3.999214</td></tr>
+	<tr><td>4       </td><td>2.285727</td></tr>
+	<tr><td>6       </td><td>3.117143</td></tr>
+</tbody>
 </table>
-</div>
+
 </div>
 
 </div>
@@ -1362,14 +1235,7 @@ None
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="split"></a></p>
-<h2 id="3.-Split-the-data-into-three-sets">3. Split the data into three sets<a class="anchor-link" href="#3.-Split-the-data-into-three-sets">&#182;</a></h2><p>You'll split the data into three sets:</p>
-<ul>
-<li>a testing data set (10% of the data)</li>
-<li>a cross-validation data set (10% of the data)</li>
-<li>a training data set (80% of the data)</li>
-</ul>
-<p>Split the data randomly and create a DataFrame for each data set:</p>
+<p>You can also sort the output from the aggregation to determine the most popular cylinder configuration in the DataFrame:</p>
 
 </div>
 </div>
@@ -1379,19 +1245,8 @@ None
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">testDf</span><span class="p">,</span> <span class="n">cvDf</span><span class="p">,</span> <span class="n">trainDf</span> <span class="o">=</span> <span class="n">retailDf</span><span class="o">.</span><span class="n">randomSplit</span><span class="p">([</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span><span class="o">.</span><span class="mi">8</span><span class="p">],</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="s">&quot;trainDf count: &quot;</span><span class="p">,</span> <span class="n">trainDf</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span> <span class="s">&quot; example: &quot;</span>
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">trainDf</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="k">print</span> <span class="n">row</span>
-<span class="k">print</span>
-
-<span class="k">print</span> <span class="s">&quot;cvDf count: &quot;</span><span class="p">,</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span> <span class="s">&quot; example: &quot;</span>
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="k">print</span> <span class="n">row</span>
-<span class="k">print</span>
-
-<span class="k">print</span> <span class="s">&quot;testDf count: &quot;</span><span class="p">,</span> <span class="n">testDf</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span> <span class="s">&quot; example: &quot;</span>
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">testDf</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="k">print</span> <span class="n">row</span>
-<span class="k">print</span>
+<div class=" highlight hl-r"><pre>car_counts <span class="o">&lt;-</span>summarize<span class="p">(</span>groupBy<span class="p">(</span>sdf<span class="p">,</span> sdf<span class="o">$</span>cyl<span class="p">),</span> count <span class="o">=</span> n<span class="p">(</span>sdf<span class="o">$</span>wt<span class="p">))</span>
+SparkR<span class="o">::</span><span class="kp">head</span><span class="p">(</span>arrange<span class="p">(</span>car_counts<span class="p">,</span> desc<span class="p">(</span>car_counts<span class="o">$</span>count<span class="p">)))</span>
 </pre></div>
 
 </div>
@@ -1403,21 +1258,19 @@ None
 
 
 <div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>trainDf count:  208123  example: 
-Row(custId=12359, stockCode=23345, purch=1)
-Row(custId=12363, stockCode=20685, purch=1)
 
-cvDf count:  25876  example: 
-Row(custId=12349, stockCode=23545, purch=1)
-Row(custId=12388, stockCode=22960, purch=1)
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th scope=col>cyl</th><th scope=col>count</th></tr></thead>
+<tbody>
+	<tr><td>8 </td><td>14</td></tr>
+	<tr><td>4 </td><td>11</td></tr>
+	<tr><td>6 </td><td> 7</td></tr>
+</tbody>
+</table>
 
-testDf count:  26113  example: 
-Row(custId=12362, stockCode=22372, purch=1)
-Row(custId=12391, stockCode=20985, purch=1)
-
-</pre>
 </div>
+
 </div>
 
 </div>
@@ -1429,14 +1282,8 @@ Row(custId=12391, stockCode=20985, purch=1)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="model"></a></p>
-<h2 id="4.-Build-recommendation-models">4. Build recommendation models<a class="anchor-link" href="#4.-Build-recommendation-models">&#182;</a></h2><p>Machine learning algorithms have standard parameters and hyperparameters. Standard parameters specify data and options. Hyperparameters control the performance of the algorithm.</p>
-<p>The ALS algorithm has these hyperparameters:</p>
-<ul>
-<li>The <code>rank</code> hyperparameter represents the number of features. The default value of <code>rank</code> is 10.</li>
-<li>The <code>maxIter</code> hyperparameter represents the number of iterations to run the least squares computation. The default value of <code>maxIter</code> is 10.</li>
-</ul>
-<p>Use the training DataFrame to train three models with the ALS algorithm with different values for the <code>rank</code> and <code>maxIter</code> hyperparameters. Assign the <code>userCol</code>, <code>itemCol</code>, and <code>ratingCol</code> parameters to the appropriate data columns. Set the <code>implicitPrefs</code> parameter to <code>true</code> so that the algorithm can predict latent factors.</p>
+<p><a id='Operate_on_columns'></a></p>
+<h2 id="5.-Operate-on-columns">5. Operate on columns<a class="anchor-link" href="#5.-Operate-on-columns">&#182;</a></h2><p>SparkR provides a number of functions that you can apply directly to columns for data processing. In the following example, a basic arithmetic function converts lbs to metric tons:</p>
 
 </div>
 </div>
@@ -1446,18 +1293,8 @@ Row(custId=12391, stockCode=20985, purch=1)
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.ml.recommendation</span> <span class="kn">import</span> <span class="n">ALS</span>
-
-<span class="n">als1</span> <span class="o">=</span> <span class="n">ALS</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span><span class="n">userCol</span><span class="o">=</span><span class="s">&quot;custId&quot;</span><span class="p">,</span><span class="n">itemCol</span><span class="o">=</span><span class="s">&quot;stockCode&quot;</span><span class="p">,</span><span class="n">ratingCol</span><span class="o">=</span><span class="s">&quot;purch&quot;</span><span class="p">,</span><span class="n">implicitPrefs</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">model1</span> <span class="o">=</span> <span class="n">als1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trainDf</span><span class="p">)</span>
-
-<span class="n">als2</span> <span class="o">=</span> <span class="n">ALS</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">userCol</span><span class="o">=</span><span class="s">&quot;custId&quot;</span><span class="p">,</span><span class="n">itemCol</span><span class="o">=</span><span class="s">&quot;stockCode&quot;</span><span class="p">,</span><span class="n">ratingCol</span><span class="o">=</span><span class="s">&quot;purch&quot;</span><span class="p">,</span><span class="n">implicitPrefs</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">model2</span> <span class="o">=</span> <span class="n">als2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trainDf</span><span class="p">)</span>
-
-<span class="n">als3</span> <span class="o">=</span> <span class="n">ALS</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span><span class="n">userCol</span><span class="o">=</span><span class="s">&quot;custId&quot;</span><span class="p">,</span><span class="n">itemCol</span><span class="o">=</span><span class="s">&quot;stockCode&quot;</span><span class="p">,</span><span class="n">ratingCol</span><span class="o">=</span><span class="s">&quot;purch&quot;</span><span class="p">,</span><span class="n">implicitPrefs</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">model3</span> <span class="o">=</span> <span class="n">als3</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trainDf</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="s">&quot;The models are trained&quot;</span>
+<div class=" highlight hl-r"><pre>sdf<span class="o">$</span>wtTon <span class="o">&lt;-</span> sdf<span class="o">$</span>wt <span class="o">*</span> <span class="m">0.45</span>
+SparkR<span class="o">::</span><span class="kp">head</span><span class="p">(</span>select<span class="p">(</span>sdf<span class="p">,</span> sdf<span class="o">$</span>car<span class="p">,</span> sdf<span class="o">$</span>wt<span class="p">,</span> sdf<span class="o">$</span>wtTon<span class="p">),</span><span class="m">6</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1469,10 +1306,22 @@ Row(custId=12391, stockCode=20985, purch=1)
 
 
 <div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>The models are trained
-</pre>
+
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th scope=col>car</th><th scope=col>wt</th><th scope=col>wtTon</th></tr></thead>
+<tbody>
+	<tr><td>Mazda RX4        </td><td>2.620            </td><td>1.17900          </td></tr>
+	<tr><td>Mazda RX4 Wag    </td><td>2.875            </td><td>1.29375          </td></tr>
+	<tr><td>Datsun 710       </td><td>2.320            </td><td>1.04400          </td></tr>
+	<tr><td>Hornet 4 Drive   </td><td>3.215            </td><td>1.44675          </td></tr>
+	<tr><td>Hornet Sportabout</td><td>3.440            </td><td>1.54800          </td></tr>
+	<tr><td>Valiant          </td><td>3.460            </td><td>1.55700          </td></tr>
+</tbody>
+</table>
+
 </div>
+
 </div>
 
 </div>
@@ -1484,11 +1333,8 @@ Row(custId=12391, stockCode=20985, purch=1)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="test"></a></p>
-<h2 id="5.-Test-the-models">5. Test the models<a class="anchor-link" href="#5.-Test-the-models">&#182;</a></h2><p>First, test the three models on the cross-validation data set, and then on the testing data set.</p>
-<p>You'll know the model is accurate when the prediction values for products that the customers have already bought are close to 1.</p>
-<p><a id="test1"></a></p>
-<h3 id="5.1-Clean-the-cross-validation-data-set">5.1 Clean the cross validation data set<a class="anchor-link" href="#5.1-Clean-the-cross-validation-data-set">&#182;</a></h3><p>Remove any of the customers or products in the cross-validation data set that are not in the training data set:</p>
+<p><a id='Run_SQL_queries_from_the_Spark_DataFrame'></a></p>
+<h2 id="6.-Run-SQL-queries-from-the-Spark-DataFrame">6. Run SQL queries from the Spark DataFrame<a class="anchor-link" href="#6.-Run-SQL-queries-from-the-Spark-DataFrame">&#182;</a></h2><p>You can register a Spark DataFrame as a temporary table and then run SQL queries over the data. The <code>sql</code> function enables an application to run SQL queries programmatically and returns the result as a DataFrame:</p>
 
 </div>
 </div>
@@ -1498,15 +1344,10 @@ Row(custId=12391, stockCode=20985, purch=1)
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">UserDefinedFunction</span>
-<span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">BooleanType</span>
-<span class="n">customers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">trainDf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">custId</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
-<span class="n">stock</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">trainDf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+<div class=" highlight hl-r"><pre>registerTempTable<span class="p">(</span>sdf<span class="p">,</span> <span class="s">&quot;cars&quot;</span><span class="p">)</span>
 
-<span class="k">print</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-<span class="n">cvDf</span> <span class="o">=</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span> <span class="ow">in</span> <span class="n">stock</span> <span class="ow">and</span>\
-                                           <span class="n">line</span><span class="o">.</span><span class="n">custId</span> <span class="ow">in</span> <span class="n">customers</span><span class="p">)</span><span class="o">.</span><span class="n">toDF</span><span class="p">()</span>
-<span class="k">print</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+highgearcars <span class="o">&lt;-</span> sql<span class="p">(</span>sqlContext<span class="p">,</span> <span class="s">&quot;SELECT car, gear FROM cars WHERE gear &gt;= 5&quot;</span><span class="p">)</span>
+SparkR<span class="o">::</span><span class="kp">head</span><span class="p">(</span>highgearcars<span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1518,490 +1359,31 @@ Row(custId=12391, stockCode=20985, purch=1)
 
 
 <div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>25876
-25846
-</pre>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>Warning message:
+“&apos;registerTempTable&apos; is deprecated.
+Use &apos;createOrReplaceTempView&apos; instead.
+See help(&quot;Deprecated&quot;)”Warning message:
+“&apos;sql(sqlContext...)&apos; is deprecated.
+Use &apos;sql(sqlQuery)&apos; instead.
+See help(&quot;Deprecated&quot;)”</pre>
 </div>
 </div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="test2"></a></p>
-<h3 id="5.2-Run-the-models-on-the-cross-validation-data-set">5.2 Run the models on the cross-validation data set<a class="anchor-link" href="#5.2-Run-the-models-on-the-cross-validation-data-set">&#182;</a></h3><p>Run the model with the cross-validation DataFrame by using the <code>transform</code> function and print the first two rows of each set of predictions:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">predictions1</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">cvDf</span><span class="p">)</span>
-<span class="n">predictions2</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">cvDf</span><span class="p">)</span>
-<span class="n">predictions3</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">cvDf</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="n">predictions1</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">predictions2</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">predictions3</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
 
 <div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[Row(custId=14606, stockCode=20735, purch=1, prediction=0.03523101285099983), Row(custId=16464, stockCode=20735, purch=1, prediction=0.009832920506596565)]
-[Row(custId=14606, stockCode=20735, purch=1, prediction=0.044680818915367126), Row(custId=16464, stockCode=20735, purch=1, prediction=0.010469556786119938)]
-[Row(custId=14606, stockCode=20735, purch=1, prediction=0.1028711274266243), Row(custId=16464, stockCode=20735, purch=1, prediction=0.004285106901079416)]
-</pre>
-</div>
-</div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="test3"></a></p>
-<h3 id="5.3-Calculate-the-accuracy-for-each-model">5.3 Calculate the accuracy for each model<a class="anchor-link" href="#5.3-Calculate-the-accuracy-for-each-model">&#182;</a></h3><p>You'll use the mean squared error calculation to determine accuracy by comparing the prediction values for products to the actual purchase values. Remember that if a customer purchased a product, the value in the <code>purch</code> column is 1. The mean squared error calculation measures the average of the squares of the errors between what is estimated and the existing data. The lower the mean squared error value, the more accurate the model.</p>
-<p>For all predictions, subtract the prediction from the actual purchase value (1), square the result, and calculate the mean of all of the squared differences:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">meanSquaredError1</span> <span class="o">=</span> <span class="n">predictions1</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">purch</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">prediction</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">meanSquaredError2</span> <span class="o">=</span> <span class="n">predictions2</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">purch</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">prediction</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">meanSquaredError3</span> <span class="o">=</span> <span class="n">predictions3</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">purch</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">prediction</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    
-<span class="k">print</span> <span class="s">&#39;Mean squared error = </span><span class="si">%.4f</span><span class="s"> for our first model&#39;</span> <span class="o">%</span> <span class="n">meanSquaredError1</span>
-<span class="k">print</span> <span class="s">&#39;Mean squared error = </span><span class="si">%.4f</span><span class="s"> for our second model&#39;</span> <span class="o">%</span> <span class="n">meanSquaredError2</span>
-<span class="k">print</span> <span class="s">&#39;Mean squared error = </span><span class="si">%.4f</span><span class="s"> for our third model&#39;</span> <span class="o">%</span> <span class="n">meanSquaredError3</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Mean squared error = 0.7388 for our first model
-Mean squared error = 0.6990 for our second model
-Mean squared error = 0.6681 for our third model
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The third model (model3) has the lowest mean squared error value, so it's the most accurate.</p>
-<p>Notice that of the three models, model3 has the highest values for the hyperparameters. At this point you might be tempted to run the model with even higher values for <code>rank</code> and <code>maxIter</code>. However, you might not get better results. Increasing the values of the hyperparameters increases the time for the model to run. Also, you don't want to overfit the model so that it exactly fits the original data. In that case, you wouldn't get any recommendations! For best results, keep the values of the hyperparameters close to the defaults.</p>
-<p><a id="test4"></a></p>
-<h3 id="5.4-Confirm-the-best-model">5.4 Confirm the best model<a class="anchor-link" href="#5.4-Confirm-the-best-model">&#182;</a></h3><p>Now run model3 on the testing data set to confirm that it's the best model. You want to make sure that the model is not over-matched to the cross-validation data. It's possible for a model to match one subset of the data well but not another. If the values of the mean squared error for the testing data set and the cross-validation data set are close, then you've confirmed that the model works for all the data.</p>
-<p>Clean the testing data set, run model3 on the testing data set, and calculate the mean squared error:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">filteredTestDf</span> <span class="o">=</span> <span class="n">testDf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span> <span class="ow">in</span> <span class="n">stock</span> <span class="ow">and</span>\
-                                              <span class="n">line</span><span class="o">.</span><span class="n">custId</span> <span class="ow">in</span> <span class="n">customers</span><span class="p">)</span><span class="o">.</span><span class="n">toDF</span><span class="p">()</span>
-<span class="n">predictions4</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">filteredTestDf</span><span class="p">)</span>
-<span class="n">meanSquaredError4</span> <span class="o">=</span> <span class="n">predictions4</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">purch</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">prediction</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    
-<span class="k">print</span> <span class="s">&#39;Mean squared error = </span><span class="si">%.4f</span><span class="s"> for our best model&#39;</span> <span class="o">%</span> <span class="n">meanSquaredError4</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Mean squared error = 0.6693 for our best model
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>That's pretty close. The model works for all the data.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="implement"></a></p>
-<h2 id="6.-Implement-the-model">6. Implement the model<a class="anchor-link" href="#6.-Implement-the-model">&#182;</a></h2><p>Use the best model to predict which products a specific customer might be interested in purchasing.</p>
-<p><a id="implement1"></a></p>
-<h3 id="6.1-Create-a-DataFrame-for-the-customer-and-all-products">6.1 Create a DataFrame for the customer and all products<a class="anchor-link" href="#6.1-Create-a-DataFrame-for-the-customer-and-all-products">&#182;</a></h3><p>Create a DataFrame in which each row has the customer ID (15544) and a product ID:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">lit</span>
-
-<span class="n">stock15544</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">trainDf</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">trainDf</span><span class="p">[</span><span class="s">&#39;custId&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">15544</span><span class="p">)</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
-
-<span class="n">userItems</span> <span class="o">=</span> <span class="n">trainDf</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&quot;stockCode&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span><span class="o">.</span>\
-            <span class="n">withColumn</span><span class="p">(</span><span class="s">&#39;custId&#39;</span><span class="p">,</span> <span class="n">lit</span><span class="p">(</span><span class="mi">15544</span><span class="p">))</span><span class="o">.</span>\
-            <span class="n">rdd</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stock15544</span><span class="p">)</span><span class="o">.</span><span class="n">toDF</span><span class="p">()</span>
-
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">userItems</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">print</span> <span class="n">row</span><span class="o">.</span><span class="n">stockCode</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">custId</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>21899 15544
-22429 15544
-21209 15544
-22201 15544
-23506 15544
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="implement2"></a></p>
-<h3 id="6.2-Rate-each-product">6.2 Rate each product<a class="anchor-link" href="#6.2-Rate-each-product">&#182;</a></h3><p>Run the <code>transform</code> function to create a prediction value for each product:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">userItems</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">userItems</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">userItems</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">print</span> <span class="n">row</span><span class="o">.</span><span class="n">stockCode</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">custId</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">prediction</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>20735 15544 0.00423703156412
-21220 15544 0.0538208372891
-21700 15544 0.069147542119
-22097 15544 -0.0548023916781
-22223 15544 0.020398337394
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="implement3"></a></p>
-<h3 id="6.3-Find-the-top-recommendations">6.3 Find the top recommendations<a class="anchor-link" href="#6.3-Find-the-top-recommendations">&#182;</a></h3><p>Print the top five product recommendations:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">userItems</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;predictions&quot;</span><span class="p">)</span>
-<span class="n">query</span> <span class="o">=</span> <span class="s">&quot;select * from predictions order by prediction desc limit 5&quot;</span>
-
-<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[17]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>stockCode</th>
-      <th>custId</th>
-      <th>prediction</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>22326</td>
-      <td>15544</td>
-      <td>0.529536</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>21242</td>
-      <td>15544</td>
-      <td>0.524287</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>21559</td>
-      <td>15544</td>
-      <td>0.501251</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>22090</td>
-      <td>15544</td>
-      <td>0.490788</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>22367</td>
-      <td>15544</td>
-      <td>0.482872</td>
-    </tr>
-  </tbody>
+<div class="output_html rendered_html output_subarea ">
+<table>
+<thead><tr><th scope=col>car</th><th scope=col>gear</th></tr></thead>
+<tbody>
+	<tr><td>Porsche 914-2 </td><td>5             </td></tr>
+	<tr><td>Lotus Europa  </td><td>5             </td></tr>
+	<tr><td>Ford Pantera L</td><td>5             </td></tr>
+	<tr><td>Ferrari Dino  </td><td>5             </td></tr>
+	<tr><td>Maserati Bora </td><td>5             </td></tr>
+</tbody>
 </table>
-</div>
-</div>
 
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="implement4"></a></p>
-<h3 id="6.4-Compare-purchased-and-recommended-products">6.4 Compare purchased and recommended products<a class="anchor-link" href="#6.4-Compare-purchased-and-recommended-products">&#182;</a></h3><p>Here's a view of the products that customer 15544 bought:</p>
-<p><img src='https://raw.githubusercontent.com/rosswlewis/RecommendationPoT/master/user.png' width="80%" height="80%"></img></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This customer bought lots of children's gifts and some holiday items.</p>
-<p>Look at the descriptions of the recommended products to see if they are in the same categories.</p>
-<div class="alert alert-block alert-info">Note: The ALS algorithm uses some randomness, so the recommendations you get might be different from these.</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">stockItems</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;select distinct stockCode, description from retailPurchases&quot;</span><span class="p">)</span>
-<span class="n">stockItems</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;stockItems&quot;</span><span class="p">)</span>
-
-<span class="n">query</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
-<span class="s">select </span>
-<span class="s">    predictions.*,</span>
-<span class="s">    stockItems.description</span>
-<span class="s">from</span>
-<span class="s">    predictions</span>
-<span class="s">inner join stockItems on</span>
-<span class="s">    predictions.stockCode = stockItems.stockCode</span>
-<span class="s">order by predictions.prediction desc</span>
-<span class="s">limit 10</span>
-<span class="s">&quot;&quot;&quot;</span>
-<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[18]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>stockCode</th>
-      <th>custId</th>
-      <th>prediction</th>
-      <th>description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>22326</td>
-      <td>15544</td>
-      <td>0.529536</td>
-      <td>ROUND SNACK BOXES SET OF4 WOODLAND</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>21242</td>
-      <td>15544</td>
-      <td>0.524287</td>
-      <td>RED RETROSPOT PLATE</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>21559</td>
-      <td>15544</td>
-      <td>0.501251</td>
-      <td>STRAWBERRY LUNCH BOX WITH CUTLERY</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>22090</td>
-      <td>15544</td>
-      <td>0.490788</td>
-      <td>PAPER BUNTING RETROSPOT</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>22367</td>
-      <td>15544</td>
-      <td>0.482872</td>
-      <td>CHILDRENS APRON SPACEBOY DESIGN</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>21987</td>
-      <td>15544</td>
-      <td>0.476816</td>
-      <td>PACK OF 6 SKULL PAPER CUPS</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>21122</td>
-      <td>15544</td>
-      <td>0.467991</td>
-      <td>SET/10 PINK POLKADOT PARTY CANDLES</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>22417</td>
-      <td>15544</td>
-      <td>0.461298</td>
-      <td>PACK OF 60 SPACEBOY CAKE CASES</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>21124</td>
-      <td>15544</td>
-      <td>0.456542</td>
-      <td>SET/10 BLUE POLKADOT PARTY CANDLES</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>21156</td>
-      <td>15544</td>
-      <td>0.455864</td>
-      <td>RETROSPOT CHILDRENS APRON</td>
-    </tr>
-  </tbody>
-</table>
-</div>
 </div>
 
 </div>
@@ -2015,7 +1397,7 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The recommended products look pretty similar to the purchased products, and, in some cases, are actually the same. Your model works!</p>
+<h2 id="That's-it!">That's it!<a class="anchor-link" href="#That's-it!">&#182;</a></h2><p>You successfully completed this notebook! You learned how to load a DataFrame, view and filter the data, aggregate the data, perform operations on the data in specific columns, and run SQL queries against the data. For more information about Spark, see the <a href="http://spark.apache.org/docs/latest/quick-start.html">Spark Quick Start Guide</a>.</p>
 
 </div>
 </div>
@@ -2025,20 +1407,7 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="summary"></a></p>
-<h2 id="7.-Summary-and-next-steps">7. Summary and next steps<a class="anchor-link" href="#7.-Summary-and-next-steps">&#182;</a></h2><p>You created a predictive model that makes product recommendations for customers and verified that it works.</p>
-<p>Dig deeper:</p>
-<ul>
-<li><a href="http://spark.apache.org/docs/latest/mllib-collaborative-filtering.html">Collaborative Filtering</a></li>
-<li><a href="http://spark.apache.org/docs/latest/ml-guide.html">Spark Machine Learning Library (MLlib) Guide</a></li>
-<li><a href="http://spark.apache.org/docs/latest/api/python/index.html">Spark Python API Docs</a></li>
-</ul>
-<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p>Carlo Appugliese is a Spark and Hadoop evangelist at IBM.<br>
-Braden Callahan is a Big Data Technical Specialist for IBM.<br>
-Ross Lewis is a Big Data Technical Sales Specialist for IBM.<br>
-Mokhtar Kandil is a World Wide Big Data Technical Specialist for IBM.</p>
-<h2 id="Data-citation">Data citation<a class="anchor-link" href="#Data-citation">&#182;</a></h2><p>Daqing Chen, Sai Liang Sain, and Kun Guo, Data mining for the online retail industry: A case study of RFM model-based customer segmentation using data mining, Journal of Database Marketing and Customer Strategy Management, Vol. 19, No. 3, pp. 197-208, 2012 (Published online before print: 27 August 2012. doi: 10.1057/dbm.2012.17).</p>
-<p>Chen, D. (2012). UCI Machine Learning Repository [<a href="http://archive.ics.uci.edu/ml">http://archive.ics.uci.edu/ml</a>]. Irvine, CA: University of California, School of Information and Computer Science.</p>
+<h2 id="Want-to-learn-more?">Want to learn more?<a class="anchor-link" href="#Want-to-learn-more?">&#182;</a></h2><h3>Free courses on <a href="https://bigdatauniversity.com/courses/?utm_source=tutorial-dashdb-python&utm_medium=github&utm_campaign=bdu/" rel="noopener noreferrer" target="_blank">Big Data University</a>: <a href="https://bigdatauniversity.com/courses/?utm_source=tutorial-dashdb-python&utm_medium=github&utm_campaign=bdu" rel="noopener noreferrer" target="_blank"><img src = "https://ibm.box.com/shared/static/xomeu7dacwufkoawbg3owc8wzuezltn6.png" width=600px> </a></h3>
 
 </div>
 </div>
@@ -2048,8 +1417,18 @@ Mokhtar Kandil is a World Wide Big Data Technical Specialist for IBM.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><hr>
-Copyright &copy; IBM Corp. 2017. This notebook and its source code are released under the terms of the MIT License.</p>
+<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Saeed Aghabozorgi</strong>, PhD, is a Data Scientist in IBM with a track record of developing enterprise-level applications that substantially increases clients' ability to turn data into actionable knowledge. He is a researcher in the data mining field and an expert in developing advanced analytic methods like machine learning and statistical modelling on large data sets.</p>
+<p><strong>Polong Lin</strong> is a Data Scientist at IBM in Canada. Under the Emerging Technologies division, Polong is responsible for educating the next generation of data scientists through Big Data University. Polong is a regular speaker in conferences and meetups, and holds an M.Sc. in Cognitive Psychology.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Copyright © 2016, 2017 Big Data University. This notebook and its source code are released under the terms of the <a href="https://bigdatauniversity.com/mit-license/" rel="noopener noreferrer" target="_blank">MIT License</a>.</p>
 
 </div>
 </div>

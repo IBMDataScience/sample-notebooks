@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Spark+POT+Lab+</title>
+<title>House Building with worker skill</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -791,24 +791,79 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Introduction-to-Apache-Spark-lab,-part-3:-machine-learning">Introduction to Apache Spark lab, part 3: machine learning<a class="anchor-link" href="#Introduction-to-Apache-Spark-lab,-part-3:-machine-learning">&#182;</a></h1><p>In this notebook you'll learn how to create a model for purchase recommendations using the alternating least squares algorithm of the Apache Spark machine learning library. Machine learning is based on algorithms that can learn from data without relying on rules-based programming.</p>
-<p>"A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P if its performance at tasks in T, as measured by P, improves with experience E"
--Tom M. Mitchell</p>
-<p>This notebook uses pySpark, the Python API for Spark. Some knowledge of Python is recommended. This notebook runs on Python 2 with Spark 2.0.</p>
-<p>If you are new to Apache Spark, see the first two parts of this lab:</p>
+<h1 id="House-Building-with-worker-skills">House Building with worker skills<a class="anchor-link" href="#House-Building-with-worker-skills">&#182;</a></h1><p>This tutorial includes everything you need to set up decision optimization engines, build constraint programming models.</p>
+<p>When you finish this tutorial, you'll have a foundational knowledge of <em>Prescriptive Analytics</em>.</p>
+<blockquote><p>This notebook is part of the <strong><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html">Prescriptive Analytics for Python</a></strong></p>
+<p>It requires a valid subscription to <strong>Decision Optimization on the Cloud</strong>. Try it for free <a href="https://developer.ibm.com/docloud">here</a></p>
+</blockquote>
+<p>This notebook runs on Python 2 with Spark 2.0.</p>
+<p>Table of contents:</p>
 <ul>
-<li><a href="https://apsportal.ibm.com/exchange/public/entry/view/95811fca38af4ccbea8acf8658bedcfc">Introduction to Apache Spark lab, part 1: Basic Concepts</a></li>
-<li><a href="https://apsportal.ibm.com/exchange/public/entry/view/5ad1c820f57809ddec9a040e37b2bd55">Introduction to Apache Spark lab, part 2: Querying data</a>  </li>
+<li><a href="#Describe-the-business-problem">Describe the business problem</a></li>
+<li><a href="#How--decision-optimization-can-help">How decision optimization (prescriptive analytics) can help</a></li>
+<li><a href="#Use-decision-optimization">Use decision optimization</a><ul>
+<li><a href="#Step-1:-Download-the-library">Step 1: Download the library</a></li>
+<li><a href="#Step-2:-Set-up-the-prescriptive-engine">Step 2: Set up the engines</a></li>
+<li><a href="#Step-3:-Model-the-data">Step 3: Model the Data</a></li>
+<li><a href="#Step-4:-Set-up-the-prescriptive-model">Step 4: Set up the prescriptive model</a><ul>
+<li><a href="#Define-the-decision-variables">Define the decision variables</a></li>
+<li><a href="#Express-the-business-constraints">Express the business constraints</a></li>
+<li><a href="#Express-the-objective">Express the objective</a></li>
+<li><a href="#Solve-with-Decision-Optimization-solve-service">Solve with Decision Optimization solve service</a></li>
 </ul>
-<h2 id="Spark-machine-learning-library">Spark machine learning library<a class="anchor-link" href="#Spark-machine-learning-library">&#182;</a></h2><p><a href="http://spark.apache.org/docs/latest/mllib-guide.html">Apache Spark’s machine learning library</a> makes practical machine learning scalable and easy. The library consists of common machine learning algorithms and utilities, including classification, regression, clustering, collaborative filtering (this notebook!), dimensionality reduction, lower-level optimization primitives, and higher-level pipeline APIs.</p>
-<p>The library has two packages:</p>
+</li>
+<li><a href="#Step-5:-Investigate-the-solution-and-then-run-an-example-analysis">Step 5: Investigate the solution and run an example analysis</a></li>
+</ul>
+</li>
+<li><a href="#Summary">Summary</a></li>
+</ul>
+<hr>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Describe-the-business-problem">Describe the business problem<a class="anchor-link" href="#Describe-the-business-problem">&#182;</a></h3><ul>
+<li><p>This is a problem of building five houses in different locations; the masonry, roofing, painting, etc. must be scheduled. Some tasks must necessarily take place before others and these requirements are expressed through precedence constraints.</p>
+</li>
+<li><p>There are three workers, and each worker has a given skill level for each task. Each task requires one worker; the worker assigned must have a non-null skill level for the task. A worker can be assigned to only one task at a time.</p>
+</li>
+<li><p>Each house has a deadline.</p>
+</li>
+<li><p>The objective is to maximize the skill levels of the workers assigned to the tasks.</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h2 id="How--decision-optimization-can-help">How  decision optimization can help<a class="anchor-link" href="#How--decision-optimization-can-help">&#182;</a></h2><ul>
+<li><p>Prescriptive analytics technology recommends actions based on desired outcomes, taking into account specific scenarios, resources, and knowledge of past and current events. This insight can help your organization make better decisions and have greater control of business outcomes.</p>
+</li>
+<li><p>Prescriptive analytics is the next step on the path to insight-based actions. It creates value through synergy with predictive analytics, which analyzes data to predict future outcomes.</p>
+</li>
+<li><p>Prescriptive analytics takes that insight to the next level by suggesting the optimal way to handle that future situation. Organizations that can act fast in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.<br>
+<br/></p>
+</li>
+<li><p>For example:</p>
 <ul>
-<li>spark.mllib contains the original API that handles data in RDDs. It's in maintenance mode, but fully supported.</li>
-<li>spark.ml contains a newer API for constructing ML pipelines. It handles data in DataFrames. It's being actively enhanced.</li>
+<li>Automate complex decisions and trade-offs to better manage limited resources.</li>
+<li>Take advantage of a future opportunity or mitigate a future risk.</li>
+<li>Proactively update recommendations based on changing events.</li>
+<li>Meet operational goals, increase customer loyalty, prevent threats and fraud, and optimize business processes.</li>
 </ul>
-<h2 id="Alternating-least-squares-algorithm">Alternating least squares algorithm<a class="anchor-link" href="#Alternating-least-squares-algorithm">&#182;</a></h2><p>The alternating least squares (ALS) algorithm provides collaborative filtering between customers and products to find products that the customers might like, based on their previous purchases or ratings.</p>
-<p>The ALS algorithm creates a matrix of all customers versus all products. Most cells in the matrix are empty, which means the customer hasn't bought that product. The ALS algorithm then fills in the probability of customers buying products that they haven't bought yet, based on similarities between customer purchases and similarities between products. The algorithm uses the least squares computation to minimize the estimation errors, and alternates between fixing the customer factors and solving for product factors and fixing the product factors and solving for customer factors.</p>
-<p>You don't, however, need to understand how the ALS algorithm works to use it! Spark machine learning algorithms have default values that work well in most cases.</p>
+</li>
+</ul>
 
 </div>
 </div>
@@ -818,28 +873,15 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><ol>
-<li><a href="#getdata">Get the data</a><br></li>
-<li><a href="#prepare">Prepare and shape the data</a><br>
- 2.1 <a href="#prepare1">Format the data</a><br>
- 2.2 <a href="#prepare2">Clean the data</a><br>
- 2.3 <a href="#prepare3">Create a DataFrame</a><br>
- 2.4 <a href="#prepare4">Remove unneeded columns</a><br></li>
-<li><a href="#split">Split the data into three sets</a><br></li>
-<li><a href="#model">Build recommendation models</a><br></li>
-<li><a href="#test">Test the models</a><br>
- 5.1 <a href="#test1">Clean the cross validation data set</a><br>
- 5.2 <a href="#test2">Run the models on the cross validation data set</a><br>
- 5.3 <a href="#test3">Calculate the accuracy for each model</a><br>
- 5.4 <a href="#test4">Confirm the best model</a><br></li>
-<li><a href="#implement">Implement the mode</a><br>
- 6.1 <a href="#implement1">Create a DataFrame for the customer and all products</a><br>
- 6.2 <a href="#implement2">Rate each product</a><br>
- 6.3 <a href="#implement3">Find the top recommendations</a><br>
- 6.4 <a href="#implement4">Compare purchased and recommended products</a><br></li>
-<li><a href="#summary">Summary and next steps</a></li>
-</ol>
-
+<p><h2>About Detailed Scheduling concepts</h2></p>
+<p><p></p>
+<ul>
+<li> Scheduling consists of assigning starting and completion times to a set of activities while satisfying different types of constraints (resource availability, precedence relationships, … ) and optimizing some criteria (minimizing tardiness, …)
+<!-- <img src = "./house_building_utils/activity.png" > -->
+<img src = "https://github.com/IBMDecisionOptimization/docplex-examples/blob/master/examples/cp/jupyter/house_building_utils/activity.PNG?raw=true " >
+<li> Time is considered as a continuous dimension: domain of possible start/completion times for an activity is potentially very large
+<li>Beside start and completion times of activities, other types of decision variables are often involved in real industrial scheduling problems (resource allocation, optional activities …)
+</ul>
 </div>
 </div>
 </div>
@@ -848,12 +890,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="getdata"></a></p>
-<h2 id="1.-Get-the-data">1. Get the data<a class="anchor-link" href="#1.-Get-the-data">&#182;</a></h2><p>The data set contains the transactions of an online retailer of gift items for the period from 01/12/2010 to 09/12/2011. Many of the customers are wholesalers.</p>
-<p>You'll be using a slightly modified version of this data set: <a href="http://archive.ics.uci.edu/ml/datasets/Online+Retail">http://archive.ics.uci.edu/ml/datasets/Online+Retail</a>.</p>
-<p>Here's a glimpse of the data:</p>
-<p><img src='https://raw.githubusercontent.com/rosswlewis/RecommendationPoT/master/FullFile.png' width="80%" height="80%"></img></p>
-
+<h2 id="Use-decision-optimization">Use decision optimization<a class="anchor-link" href="#Use-decision-optimization">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -862,7 +899,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Download the CSV version of the data set, from which commas in the product descriptions are removed:</p>
+<h3 id="Step-1:-Download-the-library">Step 1: Download the library<a class="anchor-link" href="#Step-1:-Download-the-library">&#182;</a></h3><p>Run the following code to install Decision Optimization CPLEX Modeling library.  The <em>DOcplex</em> library contains the two modeling packages, Mathematical Programming and Constraint Programming, referred to earlier.</p>
 
 </div>
 </div>
@@ -872,35 +909,18 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">!</span>rm <span class="s1">&#39;OnlineRetail.csv.gz&#39;</span> -f
-<span class="o">!</span>wget https://raw.githubusercontent.com/rosswlewis/RecommendationPoT/master/OnlineRetail.csv.gz
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">sys</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">docplex.cp</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">&#39;real_prefix&#39;</span><span class="p">):</span>
+        <span class="c">#we are in a virtual env.</span>
+        <span class="o">!</span>pip install docplex
+    <span class="k">else</span><span class="p">:</span>
+        <span class="o">!</span>pip install --user docplex
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>--2017-06-08 10:10:31--  https://raw.githubusercontent.com/rosswlewis/RecommendationPoT/master/OnlineRetail.csv.gz
-Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.48.133
-Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.48.133|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 7483128 (7.1M) [application/octet-stream]
-Saving to: ‘OnlineRetail.csv.gz’
-
-100%[======================================&gt;] 7,483,128   7.66MB/s   in 0.9s   
-
-2017-06-08 10:10:35 (7.66 MB/s) - ‘OnlineRetail.csv.gz’ saved [7483128/7483128]
-
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -910,7 +930,20 @@ Saving to: ‘OnlineRetail.csv.gz’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Put the data into an RDD and print the first 5 rows:</p>
+<p>Note that the more global package <i>docplex</i> contains another subpackage <i>docplex.mp</i> that is dedicated to Mathematical Programming, another branch of optimization.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Step-2:-Set-up-the-prescriptive-engine">Step 2: Set up the prescriptive engine<a class="anchor-link" href="#Step-2:-Set-up-the-prescriptive-engine">&#182;</a></h3><ul>
+<li>Subscribe to the <a href="https://developer.ibm.com/docloud">Decision Optimization on Cloud solve service</a>.</li>
+<li>Get the service URL and your personal API key.</li>
+</ul>
 
 </div>
 </div>
@@ -920,70 +953,22 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">loadRetailData</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s">&quot;OnlineRetail.csv.gz&quot;</span><span class="p">)</span>
-
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">print</span> <span class="n">row</span>
+<div class=" highlight hl-ipython2"><pre><span class="c"># Initialize IBM Decision Optimization credentials</span>
+<span class="n">SVC_URL</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="c"># ENTER YOUR URL HERE</span>
+<span class="n">SVC_KEY</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="c"># ENTER YOUR KEY HERE</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>InvoiceNo,StockCode,Description,Quantity,InvoiceDate,UnitPrice,CustomerID,Country
-536365,85123A,WHITE HANGING HEART T-LIGHT HOLDER,6,12/1/10 8:26,2.55,17850,United Kingdom
-536365,71053,WHITE METAL LANTERN,6,12/1/10 8:26,3.39,17850,United Kingdom
-536365,84406B,CREAM CUPID HEARTS COAT HANGER,8,12/1/10 8:26,2.75,17850,United Kingdom
-536365,84029G,KNITTED UNION FLAG HOT WATER BOTTLE,6,12/1/10 8:26,3.39,17850,United Kingdom
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Each row in the RDD is a string that correlates to a line in the CSV file.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare"></a></p>
-<h2 id="2.-Prepare-and-shape-the-data">2. Prepare and shape the data<a class="anchor-link" href="#2.-Prepare-and-shape-the-data">&#182;</a></h2><p>It's been said that preparing and shaping data is 80% of a data scientist's job. Having the right data in the right format is critical for getting accurate results.</p>
-<p>To get the data ready, complete these tasks:</p>
-<ol>
-<li><a href="#prepare1">Format the data</a></li>
-<li><a href="#prepare2">Clean the data</a></li>
-<li><a href="#prepare3">Create a DataFrame</a></li>
-<li><a href="#prepare4">Remove unneeded columns</a></li>
-</ol>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare1"></a></p>
-<h3 id="2.1-Format-the-data">2.1 Format the data<a class="anchor-link" href="#2.1-Format-the-data">&#182;</a></h3><p>Remove the header from the RDD and split the string in each row with a comma:</p>
+<p>And for display of the solution, ensure last version of matplotlib is available:</p>
 
 </div>
 </div>
@@ -993,33 +978,15 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">header</span> <span class="o">=</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-<span class="n">loadRetailData</span> <span class="o">=</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span> <span class="o">!=</span> <span class="n">header</span><span class="p">)</span><span class="o">.</span>\
-                            <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">))</span>
-
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">print</span> <span class="n">row</span>
+<div class=" highlight hl-ipython2"><pre><span class="k">try</span><span class="p">:</span>
+   <span class="kn">import</span> <span class="nn">matplotlib</span>
+   <span class="k">if</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&lt;</span> <span class="s">&quot;1.4.3&quot;</span><span class="p">:</span>
+        <span class="o">!</span>pip install --upgrade matplotlib
+<span class="k">except</span><span class="p">:</span>
+   <span class="o">!</span>pip install --user matplotlib
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[u&apos;536365&apos;, u&apos;85123A&apos;, u&apos;WHITE HANGING HEART T-LIGHT HOLDER&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;2.55&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-[u&apos;536365&apos;, u&apos;71053&apos;, u&apos;WHITE METAL LANTERN&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;3.39&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-[u&apos;536365&apos;, u&apos;84406B&apos;, u&apos;CREAM CUPID HEARTS COAT HANGER&apos;, u&apos;8&apos;, u&apos;12/1/10 8:26&apos;, u&apos;2.75&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-[u&apos;536365&apos;, u&apos;84029G&apos;, u&apos;KNITTED UNION FLAG HOT WATER BOTTLE&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;3.39&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-[u&apos;536365&apos;, u&apos;84029E&apos;, u&apos;RED WOOLLY HOTTIE WHITE HEART.&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;3.39&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1029,13 +996,7 @@ Saving to: ‘OnlineRetail.csv.gz’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare2"></a></p>
-<h3 id="2.2-Clean-the-data">2.2 Clean the data<a class="anchor-link" href="#2.2-Clean-the-data">&#182;</a></h3><p>Remove the rows that have incomplete data. Keep only the rows that meet the following criteria:</p>
-<ul>
-<li>The purchase quantity is greater than 0 </li>
-<li>The customer ID not equal to 0 </li>
-<li>The stock code is not blank after you remove non-numeric characters</li>
-</ul>
+<p>Now, we need to import all required modeling functions that are provided by the <i>docplex.cp</i> package:</p>
 
 </div>
 </div>
@@ -1045,30 +1006,12 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">re</span>
-
-<span class="n">loadRetailData</span> <span class="o">=</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>\
-                                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;\D&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">!=</span> <span class="mi">0</span> \
-                                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">docplex.cp.model</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">stdout</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[[u&apos;536365&apos;, u&apos;85123A&apos;, u&apos;WHITE HANGING HEART T-LIGHT HOLDER&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;2.55&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;], [u&apos;536365&apos;, u&apos;71053&apos;, u&apos;WHITE METAL LANTERN&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;3.39&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]]
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1078,8 +1021,16 @@ Saving to: ‘OnlineRetail.csv.gz’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare3"></a></p>
-<h3 id="2.3-Create-a-DataFrame">2.3 Create a DataFrame<a class="anchor-link" href="#2.3-Create-a-DataFrame">&#182;</a></h3><p>First, create an SQLContext and map each line to a row:</p>
+<h3 id="Step-3:-Model-the-data">Step 3: Model the data<a class="anchor-link" href="#Step-3:-Model-the-data">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Planning contains the number of houses and the max amount of periods (<i>days</i>) for our schedule</p>
 
 </div>
 </div>
@@ -1089,18 +1040,9 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SQLContext</span><span class="p">,</span> <span class="n">Row</span>
-<span class="n">sqlContext</span> <span class="o">=</span> <span class="n">SQLContext</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
-
-<span class="c">#Convert each line to a Row.</span>
-<span class="n">loadRetailData</span> <span class="o">=</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="n">Row</span><span class="p">(</span><span class="n">inv</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>\
-                                    <span class="n">stockCode</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;\D&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>\
-                                    <span class="n">description</span><span class="o">=</span><span class="n">l</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>\
-                                    <span class="n">quant</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>\
-                                    <span class="n">invDate</span><span class="o">=</span><span class="n">l</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>\
-                                    <span class="n">price</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span>\
-                                    <span class="n">custId</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">6</span><span class="p">]),</span>\
-                                    <span class="n">country</span><span class="o">=</span><span class="n">l</span><span class="p">[</span><span class="mi">7</span><span class="p">]))</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">NB_HOUSES</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">MAX_AMOUNT_OF_PERIODS</span> <span class="o">=</span> <span class="mi">318</span>
+<span class="n">HOUSES</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">NB_HOUSES</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1113,7 +1055,7 @@ Saving to: ‘OnlineRetail.csv.gz’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a DataFrame and show the inferred schema:</p>
+<p>All tasks must start and end between 0 and the max amount of periods</p>
 
 </div>
 </div>
@@ -1123,35 +1065,10 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">retailDf</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">loadRetailData</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">retailDf</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">period_domain</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">MAX_AMOUNT_OF_PERIODS</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>root
- |-- country: string (nullable = true)
- |-- custId: long (nullable = true)
- |-- description: string (nullable = true)
- |-- inv: long (nullable = true)
- |-- invDate: string (nullable = true)
- |-- price: double (nullable = true)
- |-- quant: long (nullable = true)
- |-- stockCode: long (nullable = true)
-
-None
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1161,8 +1078,79 @@ None
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Register the DataFrame as a table so that you can run SQL queries on it and show the first two rows:</p>
+<p>For each task type in the house building project, the following table shows the duration of the task in days along with the tasks that must be finished before the task can start. A worker can only work on one task at a time; each task, once started, may not be interrupted.</p>
+<p>
 
+<table>
+<thead><tr>
+<th><em>Task</em></th>
+<th><em>Duration</em></th>
+<th><em>Preceding tasks</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>masonry</td>
+<td>35</td>
+<td></td>
+</tr>
+<tr>
+<td>carpentry</td>
+<td>15</td>
+<td>masonry</td>
+</tr>
+<tr>
+<td>plumbing</td>
+<td>40</td>
+<td>masonry</td>
+</tr>
+<tr>
+<td>ceiling</td>
+<td>15</td>
+<td>masonry</td>
+</tr>
+<tr>
+<td>roofing</td>
+<td>5</td>
+<td>carpentry</td>
+</tr>
+<tr>
+<td>painting</td>
+<td>10</td>
+<td>ceiling</td>
+</tr>
+<tr>
+<td>windows</td>
+<td>5</td>
+<td>roofing</td>
+</tr>
+<tr>
+<td>facade</td>
+<td>10</td>
+<td>roofing, plumbing</td>
+</tr>
+<tr>
+<td>garden</td>
+<td>5</td>
+<td>roofing, plumbing</td>
+</tr>
+<tr>
+<td>moving</td>
+<td>5</td>
+<td>windows, facade, garden, painting</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Tasks'-durations">Tasks' durations<a class="anchor-link" href="#Tasks'-durations">&#182;</a></h5>
 </div>
 </div>
 </div>
@@ -1171,66 +1159,21 @@ None
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">retailDf</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;retailPurchases&quot;</span><span class="p">)</span>
-<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;SELECT * FROM retailPurchases limit 2&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">Task</span> <span class="o">=</span> <span class="p">(</span><span class="n">namedtuple</span><span class="p">(</span><span class="s">&quot;Task&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;duration&quot;</span><span class="p">]))</span>
+<span class="n">TASKS</span> <span class="o">=</span> <span class="p">{</span><span class="n">Task</span><span class="p">(</span><span class="s">&quot;masonry&quot;</span><span class="p">,</span>   <span class="mi">35</span><span class="p">),</span>
+         <span class="n">Task</span><span class="p">(</span><span class="s">&quot;carpentry&quot;</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+         <span class="n">Task</span><span class="p">(</span><span class="s">&quot;plumbing&quot;</span><span class="p">,</span>  <span class="mi">40</span><span class="p">),</span>
+         <span class="n">Task</span><span class="p">(</span><span class="s">&quot;ceiling&quot;</span><span class="p">,</span>   <span class="mi">15</span><span class="p">),</span>
+         <span class="n">Task</span><span class="p">(</span><span class="s">&quot;roofing&quot;</span><span class="p">,</span>    <span class="mi">5</span><span class="p">),</span>
+         <span class="n">Task</span><span class="p">(</span><span class="s">&quot;painting&quot;</span><span class="p">,</span>  <span class="mi">10</span><span class="p">),</span>
+         <span class="n">Task</span><span class="p">(</span><span class="s">&quot;windows&quot;</span><span class="p">,</span>    <span class="mi">5</span><span class="p">),</span>
+         <span class="n">Task</span><span class="p">(</span><span class="s">&quot;facade&quot;</span><span class="p">,</span>    <span class="mi">10</span><span class="p">),</span>
+         <span class="n">Task</span><span class="p">(</span><span class="s">&quot;garden&quot;</span><span class="p">,</span>     <span class="mi">5</span><span class="p">),</span>
+         <span class="n">Task</span><span class="p">(</span><span class="s">&quot;moving&quot;</span><span class="p">,</span>     <span class="mi">5</span><span class="p">),</span>
+        <span class="p">}</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[7]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>country</th>
-      <th>custId</th>
-      <th>description</th>
-      <th>inv</th>
-      <th>invDate</th>
-      <th>price</th>
-      <th>quant</th>
-      <th>stockCode</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>United Kingdom</td>
-      <td>17850</td>
-      <td>WHITE HANGING HEART T-LIGHT HOLDER</td>
-      <td>536365</td>
-      <td>12/1/10 8:26</td>
-      <td>2.55</td>
-      <td>6</td>
-      <td>85123</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>United Kingdom</td>
-      <td>17850</td>
-      <td>WHITE METAL LANTERN</td>
-      <td>536365</td>
-      <td>12/1/10 8:26</td>
-      <td>3.39</td>
-      <td>6</td>
-      <td>71053</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -1240,9 +1183,7 @@ None
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare4"></a></p>
-<h3 id="2.4-Remove-unneeded-columns">2.4 Remove unneeded columns<a class="anchor-link" href="#2.4-Remove-unneeded-columns">&#182;</a></h3><p>The only columns you need are <code>custId</code>, <code>stockCode</code>, and a new column, <code>purch</code>, which has a value of 1 to indicate that the customer purchased the product:</p>
-
+<h5 id="The-tasks-precedences">The tasks precedences<a class="anchor-link" href="#The-tasks-precedences">&#182;</a></h5>
 </div>
 </div>
 </div>
@@ -1251,108 +1192,25 @@ None
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">query</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
-<span class="s">SELECT </span>
-<span class="s">    custId, stockCode, 1 as purch</span>
-<span class="s">FROM </span>
-<span class="s">    retailPurchases </span>
-<span class="s">group </span>
-<span class="s">    by custId, stockCode&quot;&quot;&quot;</span>
-<span class="n">retailDf</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-<span class="n">retailDf</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;retailDf&quot;</span><span class="p">)</span>
-
-<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;select * from retailDf limit 10&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">TaskPrecedence</span> <span class="o">=</span> <span class="p">(</span><span class="n">namedtuple</span><span class="p">(</span><span class="s">&quot;TaskPrecedence&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;beforeTask&quot;</span><span class="p">,</span> <span class="s">&quot;afterTask&quot;</span><span class="p">]))</span>
+<span class="n">TASK_PRECEDENCES</span> <span class="o">=</span> <span class="p">{</span><span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;masonry&quot;</span><span class="p">,</span>   <span class="s">&quot;carpentry&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;masonry&quot;</span><span class="p">,</span>   <span class="s">&quot;plumbing&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;masonry&quot;</span><span class="p">,</span>   <span class="s">&quot;ceiling&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;carpentry&quot;</span><span class="p">,</span> <span class="s">&quot;roofing&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;ceiling&quot;</span><span class="p">,</span>   <span class="s">&quot;painting&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;roofing&quot;</span><span class="p">,</span>   <span class="s">&quot;windows&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;roofing&quot;</span><span class="p">,</span>   <span class="s">&quot;facade&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;plumbing&quot;</span><span class="p">,</span>  <span class="s">&quot;facade&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;roofing&quot;</span><span class="p">,</span>   <span class="s">&quot;garden&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;plumbing&quot;</span><span class="p">,</span>  <span class="s">&quot;garden&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;windows&quot;</span><span class="p">,</span>   <span class="s">&quot;moving&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;facade&quot;</span><span class="p">,</span>    <span class="s">&quot;moving&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;garden&quot;</span><span class="p">,</span>    <span class="s">&quot;moving&quot;</span><span class="p">),</span>
+                    <span class="n">TaskPrecedence</span><span class="p">(</span><span class="s">&quot;painting&quot;</span><span class="p">,</span>  <span class="s">&quot;moving&quot;</span><span class="p">),</span>
+                   <span class="p">}</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>custId</th>
-      <th>stockCode</th>
-      <th>purch</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>18074</td>
-      <td>22224</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>13705</td>
-      <td>21889</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>15862</td>
-      <td>22441</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>15862</td>
-      <td>21592</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>12838</td>
-      <td>22739</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>12838</td>
-      <td>22149</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>14078</td>
-      <td>22548</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>14078</td>
-      <td>22423</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>12433</td>
-      <td>21977</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>14696</td>
-      <td>84360</td>
-      <td>1</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -1362,15 +1220,90 @@ None
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="split"></a></p>
-<h2 id="3.-Split-the-data-into-three-sets">3. Split the data into three sets<a class="anchor-link" href="#3.-Split-the-data-into-three-sets">&#182;</a></h2><p>You'll split the data into three sets:</p>
-<ul>
-<li>a testing data set (10% of the data)</li>
-<li>a cross-validation data set (10% of the data)</li>
-<li>a training data set (80% of the data)</li>
-</ul>
-<p>Split the data randomly and create a DataFrame for each data set:</p>
+<p>There are three workers with varying skill levels in regard to the ten tasks. If a worker has a skill level of zero for a task, he may not be assigned to the task.</p>
+<p>
 
+<table>
+<thead><tr>
+<th><em>Task</em></th>
+<th><em>Joe</em></th>
+<th><em>Jack</em></th>
+<th><em>Jim</em></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>masonry</td>
+<td>9</td>
+<td>5</td>
+<td>0</td>
+</tr>
+<tr>
+<td>carpentry</td>
+<td>7</td>
+<td>0</td>
+<td>5</td>
+</tr>
+<tr>
+<td>plumbing</td>
+<td>0</td>
+<td>7</td>
+<td>0</td>
+</tr>
+<tr>
+<td>ceiling</td>
+<td>5</td>
+<td>8</td>
+<td>0</td>
+</tr>
+<tr>
+<td>roofing</td>
+<td>6</td>
+<td>7</td>
+<td>0</td>
+</tr>
+<tr>
+<td>painting</td>
+<td>0</td>
+<td>9</td>
+<td>6</td>
+</tr>
+<tr>
+<td>windows</td>
+<td>8</td>
+<td>0</td>
+<td>5</td>
+</tr>
+<tr>
+<td>façade</td>
+<td>5</td>
+<td>5</td>
+<td>0</td>
+</tr>
+<tr>
+<td>garden</td>
+<td>5</td>
+<td>5</td>
+<td>9</td>
+</tr>
+<tr>
+<td>moving</td>
+<td>6</td>
+<td>0</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Workers-Names">Workers Names<a class="anchor-link" href="#Workers-Names">&#182;</a></h5>
 </div>
 </div>
 </div>
@@ -1379,47 +1312,10 @@ None
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">testDf</span><span class="p">,</span> <span class="n">cvDf</span><span class="p">,</span> <span class="n">trainDf</span> <span class="o">=</span> <span class="n">retailDf</span><span class="o">.</span><span class="n">randomSplit</span><span class="p">([</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span><span class="o">.</span><span class="mi">8</span><span class="p">],</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="s">&quot;trainDf count: &quot;</span><span class="p">,</span> <span class="n">trainDf</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span> <span class="s">&quot; example: &quot;</span>
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">trainDf</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="k">print</span> <span class="n">row</span>
-<span class="k">print</span>
-
-<span class="k">print</span> <span class="s">&quot;cvDf count: &quot;</span><span class="p">,</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span> <span class="s">&quot; example: &quot;</span>
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="k">print</span> <span class="n">row</span>
-<span class="k">print</span>
-
-<span class="k">print</span> <span class="s">&quot;testDf count: &quot;</span><span class="p">,</span> <span class="n">testDf</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span> <span class="s">&quot; example: &quot;</span>
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">testDf</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="k">print</span> <span class="n">row</span>
-<span class="k">print</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">WORKERS</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;Joe&quot;</span><span class="p">,</span> <span class="s">&quot;Jack&quot;</span><span class="p">,</span> <span class="s">&quot;Jim&quot;</span><span class="p">}</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>trainDf count:  208123  example: 
-Row(custId=12359, stockCode=23345, purch=1)
-Row(custId=12363, stockCode=20685, purch=1)
-
-cvDf count:  25876  example: 
-Row(custId=12349, stockCode=23545, purch=1)
-Row(custId=12388, stockCode=22960, purch=1)
-
-testDf count:  26113  example: 
-Row(custId=12362, stockCode=22372, purch=1)
-Row(custId=12391, stockCode=20985, purch=1)
-
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1429,15 +1325,7 @@ Row(custId=12391, stockCode=20985, purch=1)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="model"></a></p>
-<h2 id="4.-Build-recommendation-models">4. Build recommendation models<a class="anchor-link" href="#4.-Build-recommendation-models">&#182;</a></h2><p>Machine learning algorithms have standard parameters and hyperparameters. Standard parameters specify data and options. Hyperparameters control the performance of the algorithm.</p>
-<p>The ALS algorithm has these hyperparameters:</p>
-<ul>
-<li>The <code>rank</code> hyperparameter represents the number of features. The default value of <code>rank</code> is 10.</li>
-<li>The <code>maxIter</code> hyperparameter represents the number of iterations to run the least squares computation. The default value of <code>maxIter</code> is 10.</li>
-</ul>
-<p>Use the training DataFrame to train three models with the ALS algorithm with different values for the <code>rank</code> and <code>maxIter</code> hyperparameters. Assign the <code>userCol</code>, <code>itemCol</code>, and <code>ratingCol</code> parameters to the appropriate data columns. Set the <code>implicitPrefs</code> parameter to <code>true</code> so that the algorithm can predict latent factors.</p>
-
+<h5 id="Workers-Name-and-level-for-each-of-there-skill">Workers Name and level for each of there skill<a class="anchor-link" href="#Workers-Name-and-level-for-each-of-there-skill">&#182;</a></h5>
 </div>
 </div>
 </div>
@@ -1446,35 +1334,31 @@ Row(custId=12391, stockCode=20985, purch=1)
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.ml.recommendation</span> <span class="kn">import</span> <span class="n">ALS</span>
-
-<span class="n">als1</span> <span class="o">=</span> <span class="n">ALS</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span><span class="n">userCol</span><span class="o">=</span><span class="s">&quot;custId&quot;</span><span class="p">,</span><span class="n">itemCol</span><span class="o">=</span><span class="s">&quot;stockCode&quot;</span><span class="p">,</span><span class="n">ratingCol</span><span class="o">=</span><span class="s">&quot;purch&quot;</span><span class="p">,</span><span class="n">implicitPrefs</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">model1</span> <span class="o">=</span> <span class="n">als1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trainDf</span><span class="p">)</span>
-
-<span class="n">als2</span> <span class="o">=</span> <span class="n">ALS</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">userCol</span><span class="o">=</span><span class="s">&quot;custId&quot;</span><span class="p">,</span><span class="n">itemCol</span><span class="o">=</span><span class="s">&quot;stockCode&quot;</span><span class="p">,</span><span class="n">ratingCol</span><span class="o">=</span><span class="s">&quot;purch&quot;</span><span class="p">,</span><span class="n">implicitPrefs</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">model2</span> <span class="o">=</span> <span class="n">als2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trainDf</span><span class="p">)</span>
-
-<span class="n">als3</span> <span class="o">=</span> <span class="n">ALS</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span><span class="n">userCol</span><span class="o">=</span><span class="s">&quot;custId&quot;</span><span class="p">,</span><span class="n">itemCol</span><span class="o">=</span><span class="s">&quot;stockCode&quot;</span><span class="p">,</span><span class="n">ratingCol</span><span class="o">=</span><span class="s">&quot;purch&quot;</span><span class="p">,</span><span class="n">implicitPrefs</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">model3</span> <span class="o">=</span> <span class="n">als3</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trainDf</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="s">&quot;The models are trained&quot;</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">Skill</span> <span class="o">=</span> <span class="p">(</span><span class="n">namedtuple</span><span class="p">(</span><span class="s">&quot;Skill&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;worker&quot;</span><span class="p">,</span> <span class="s">&quot;task&quot;</span><span class="p">,</span> <span class="s">&quot;level&quot;</span><span class="p">]))</span>
+<span class="n">SKILLS</span> <span class="o">=</span> <span class="p">{</span><span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Joe&quot;</span><span class="p">,</span>  <span class="s">&quot;masonry&quot;</span><span class="p">,</span>   <span class="mi">9</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Joe&quot;</span><span class="p">,</span>  <span class="s">&quot;carpentry&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Joe&quot;</span><span class="p">,</span>  <span class="s">&quot;ceiling&quot;</span><span class="p">,</span>   <span class="mi">5</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Joe&quot;</span><span class="p">,</span>  <span class="s">&quot;roofing&quot;</span><span class="p">,</span>   <span class="mi">6</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Joe&quot;</span><span class="p">,</span>  <span class="s">&quot;windows&quot;</span><span class="p">,</span>   <span class="mi">8</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Joe&quot;</span><span class="p">,</span>  <span class="s">&quot;facade&quot;</span><span class="p">,</span>    <span class="mi">5</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Joe&quot;</span><span class="p">,</span>  <span class="s">&quot;garden&quot;</span><span class="p">,</span>    <span class="mi">5</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Joe&quot;</span><span class="p">,</span>  <span class="s">&quot;moving&quot;</span><span class="p">,</span>    <span class="mi">6</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Jack&quot;</span><span class="p">,</span> <span class="s">&quot;masonry&quot;</span><span class="p">,</span>   <span class="mi">5</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Jack&quot;</span><span class="p">,</span> <span class="s">&quot;plumbing&quot;</span><span class="p">,</span>  <span class="mi">7</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Jack&quot;</span><span class="p">,</span> <span class="s">&quot;ceiling&quot;</span><span class="p">,</span>   <span class="mi">8</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Jack&quot;</span><span class="p">,</span> <span class="s">&quot;roofing&quot;</span><span class="p">,</span>   <span class="mi">7</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Jack&quot;</span><span class="p">,</span> <span class="s">&quot;painting&quot;</span><span class="p">,</span>  <span class="mi">9</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Jack&quot;</span><span class="p">,</span> <span class="s">&quot;facade&quot;</span><span class="p">,</span>    <span class="mi">5</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Jack&quot;</span><span class="p">,</span> <span class="s">&quot;garden&quot;</span><span class="p">,</span>    <span class="mi">5</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Jim&quot;</span><span class="p">,</span>  <span class="s">&quot;carpentry&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Jim&quot;</span><span class="p">,</span>  <span class="s">&quot;painting&quot;</span><span class="p">,</span>  <span class="mi">6</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Jim&quot;</span><span class="p">,</span>  <span class="s">&quot;windows&quot;</span><span class="p">,</span>   <span class="mi">5</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Jim&quot;</span><span class="p">,</span>  <span class="s">&quot;garden&quot;</span><span class="p">,</span>    <span class="mi">9</span><span class="p">),</span>
+          <span class="n">Skill</span><span class="p">(</span><span class="s">&quot;Jim&quot;</span><span class="p">,</span>  <span class="s">&quot;moving&quot;</span><span class="p">,</span>    <span class="mi">8</span><span class="p">)</span>
+          <span class="p">}</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>The models are trained
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1484,11 +1368,16 @@ Row(custId=12391, stockCode=20985, purch=1)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="test"></a></p>
-<h2 id="5.-Test-the-models">5. Test the models<a class="anchor-link" href="#5.-Test-the-models">&#182;</a></h2><p>First, test the three models on the cross-validation data set, and then on the testing data set.</p>
-<p>You'll know the model is accurate when the prediction values for products that the customers have already bought are close to 1.</p>
-<p><a id="test1"></a></p>
-<h3 id="5.1-Clean-the-cross-validation-data-set">5.1 Clean the cross validation data set<a class="anchor-link" href="#5.1-Clean-the-cross-validation-data-set">&#182;</a></h3><p>Remove any of the customers or products in the cross-validation data set that are not in the training data set:</p>
+<h5 id="Utility-functions">Utility functions<a class="anchor-link" href="#Utility-functions">&#182;</a></h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>find_tasks: returns the task it refers to in the TASKS vector</p>
 
 </div>
 </div>
@@ -1498,33 +1387,11 @@ Row(custId=12391, stockCode=20985, purch=1)
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">UserDefinedFunction</span>
-<span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">BooleanType</span>
-<span class="n">customers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">trainDf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">custId</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
-<span class="n">stock</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">trainDf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
-
-<span class="k">print</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-<span class="n">cvDf</span> <span class="o">=</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span> <span class="ow">in</span> <span class="n">stock</span> <span class="ow">and</span>\
-                                           <span class="n">line</span><span class="o">.</span><span class="n">custId</span> <span class="ow">in</span> <span class="n">customers</span><span class="p">)</span><span class="o">.</span><span class="n">toDF</span><span class="p">()</span>
-<span class="k">print</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">find_tasks</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">TASKS</span> <span class="k">if</span> <span class="n">t</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>25876
-25846
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1534,8 +1401,7 @@ Row(custId=12391, stockCode=20985, purch=1)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="test2"></a></p>
-<h3 id="5.2-Run-the-models-on-the-cross-validation-data-set">5.2 Run the models on the cross-validation data set<a class="anchor-link" href="#5.2-Run-the-models-on-the-cross-validation-data-set">&#182;</a></h3><p>Run the model with the cross-validation DataFrame by using the <code>transform</code> function and print the first two rows of each set of predictions:</p>
+<p>find_skills: returns the skill it refers to in the SKILLS vector</p>
 
 </div>
 </div>
@@ -1545,32 +1411,11 @@ Row(custId=12391, stockCode=20985, purch=1)
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">predictions1</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">cvDf</span><span class="p">)</span>
-<span class="n">predictions2</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">cvDf</span><span class="p">)</span>
-<span class="n">predictions3</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">cvDf</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="n">predictions1</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">predictions2</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">predictions3</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">find_skills</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SKILLS</span> <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">worker</span> <span class="o">==</span> <span class="n">worker</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">task</span> <span class="o">==</span> <span class="n">task</span><span class="p">))</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[Row(custId=14606, stockCode=20735, purch=1, prediction=0.03523101285099983), Row(custId=16464, stockCode=20735, purch=1, prediction=0.009832920506596565)]
-[Row(custId=14606, stockCode=20735, purch=1, prediction=0.044680818915367126), Row(custId=16464, stockCode=20735, purch=1, prediction=0.010469556786119938)]
-[Row(custId=14606, stockCode=20735, purch=1, prediction=0.1028711274266243), Row(custId=16464, stockCode=20735, purch=1, prediction=0.004285106901079416)]
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1580,9 +1425,7 @@ Row(custId=12391, stockCode=20985, purch=1)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="test3"></a></p>
-<h3 id="5.3-Calculate-the-accuracy-for-each-model">5.3 Calculate the accuracy for each model<a class="anchor-link" href="#5.3-Calculate-the-accuracy-for-each-model">&#182;</a></h3><p>You'll use the mean squared error calculation to determine accuracy by comparing the prediction values for products to the actual purchase values. Remember that if a customer purchased a product, the value in the <code>purch</code> column is 1. The mean squared error calculation measures the average of the squares of the errors between what is estimated and the existing data. The lower the mean squared error value, the more accurate the model.</p>
-<p>For all predictions, subtract the prediction from the actual purchase value (1), square the result, and calculate the mean of all of the squared differences:</p>
+<p>find_max_level_skill: returns the tuple "skill" where the level is themaximum for a given task</p>
 
 </div>
 </div>
@@ -1592,32 +1435,12 @@ Row(custId=12391, stockCode=20985, purch=1)
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">meanSquaredError1</span> <span class="o">=</span> <span class="n">predictions1</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">purch</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">prediction</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">meanSquaredError2</span> <span class="o">=</span> <span class="n">predictions2</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">purch</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">prediction</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">meanSquaredError3</span> <span class="o">=</span> <span class="n">predictions3</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">purch</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">prediction</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    
-<span class="k">print</span> <span class="s">&#39;Mean squared error = </span><span class="si">%.4f</span><span class="s"> for our first model&#39;</span> <span class="o">%</span> <span class="n">meanSquaredError1</span>
-<span class="k">print</span> <span class="s">&#39;Mean squared error = </span><span class="si">%.4f</span><span class="s"> for our second model&#39;</span> <span class="o">%</span> <span class="n">meanSquaredError2</span>
-<span class="k">print</span> <span class="s">&#39;Mean squared error = </span><span class="si">%.4f</span><span class="s"> for our third model&#39;</span> <span class="o">%</span> <span class="n">meanSquaredError3</span>
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">find_max_level_skill</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SKILLS</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">task</span> <span class="o">==</span> <span class="n">task</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">sk</span> <span class="k">for</span> <span class="n">sk</span> <span class="ow">in</span> <span class="n">st</span> <span class="k">if</span> <span class="n">sk</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="nb">max</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">level</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">st</span><span class="p">]))</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Mean squared error = 0.7388 for our first model
-Mean squared error = 0.6990 for our second model
-Mean squared error = 0.6681 for our third model
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1627,11 +1450,18 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The third model (model3) has the lowest mean squared error value, so it's the most accurate.</p>
-<p>Notice that of the three models, model3 has the highest values for the hyperparameters. At this point you might be tempted to run the model with even higher values for <code>rank</code> and <code>maxIter</code>. However, you might not get better results. Increasing the values of the hyperparameters increases the time for the model to run. Also, you don't want to overfit the model so that it exactly fits the original data. In that case, you wouldn't get any recommendations! For best results, keep the values of the hyperparameters close to the defaults.</p>
-<p><a id="test4"></a></p>
-<h3 id="5.4-Confirm-the-best-model">5.4 Confirm the best model<a class="anchor-link" href="#5.4-Confirm-the-best-model">&#182;</a></h3><p>Now run model3 on the testing data set to confirm that it's the best model. You want to make sure that the model is not over-matched to the cross-validation data. It's possible for a model to match one subset of the data well but not another. If the values of the mean squared error for the testing data set and the cross-validation data set are close, then you've confirmed that the model works for all the data.</p>
-<p>Clean the testing data set, run model3 on the testing data set, and calculate the mean squared error:</p>
+<h3 id="Step-4:-Set-up-the-prescriptive-model">Step 4: Set up the prescriptive model<a class="anchor-link" href="#Step-4:-Set-up-the-prescriptive-model">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><h3>Create the model container</h3></p>
+<p><p>
+The model is represented by a Python object that is filled with the different model elements (variables, constraints, objective function, etc). The first thing to do is then to create such an object:</p>
 
 </div>
 </div>
@@ -1641,40 +1471,20 @@ Mean squared error = 0.6681 for our third model
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">filteredTestDf</span> <span class="o">=</span> <span class="n">testDf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span> <span class="ow">in</span> <span class="n">stock</span> <span class="ow">and</span>\
-                                              <span class="n">line</span><span class="o">.</span><span class="n">custId</span> <span class="ow">in</span> <span class="n">customers</span><span class="p">)</span><span class="o">.</span><span class="n">toDF</span><span class="p">()</span>
-<span class="n">predictions4</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">filteredTestDf</span><span class="p">)</span>
-<span class="n">meanSquaredError4</span> <span class="o">=</span> <span class="n">predictions4</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">purch</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">prediction</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    
-<span class="k">print</span> <span class="s">&#39;Mean squared error = </span><span class="si">%.4f</span><span class="s"> for our best model&#39;</span> <span class="o">%</span> <span class="n">meanSquaredError4</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">mdl</span> <span class="o">=</span> <span class="n">CpoModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;HouseBuilding&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Mean squared error = 0.6693 for our best model
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>That's pretty close. The model works for all the data.</p>
-
+<h4 id="Define-the-decision-variables">Define the decision variables<a class="anchor-link" href="#Define-the-decision-variables">&#182;</a></h4>
 </div>
 </div>
 </div>
@@ -1683,10 +1493,34 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="implement"></a></p>
-<h2 id="6.-Implement-the-model">6. Implement the model<a class="anchor-link" href="#6.-Implement-the-model">&#182;</a></h2><p>Use the best model to predict which products a specific customer might be interested in purchasing.</p>
-<p><a id="implement1"></a></p>
-<h3 id="6.1-Create-a-DataFrame-for-the-customer-and-all-products">6.1 Create a DataFrame for the customer and all products<a class="anchor-link" href="#6.1-Create-a-DataFrame-for-the-customer-and-all-products">&#182;</a></h3><p>Create a DataFrame in which each row has the customer ID (15544) and a product ID:</p>
+<p><h5><i><font color=blue>Concept: interval variable</font></i></h5></p>
+<p><p></p>
+<ul>
+<li> What for?<br>
+<blockquote> Modeling an interval of time during which a particular property holds <br>
+(an activity executes, a resource is idle, a tank must be non-empty, …)</blockquote> 
+<li> Example:<br>
+<blockquote><code><font color=green>interval_var(start=(0,1000), end=(0,1000), size=(10,20))</font></code>
+</blockquote> 
+<!-- <img src = "./house_building_utils/intervalVar.png" > -->
+<img src = "https://github.com/IBMDecisionOptimization/docplex-examples/blob/master/examples/cp/jupyter/house_building_utils/intervalVar.PNG?raw=true" >
+<li>Properties:
+<ul>
+<li>The **value** of an interval variable is an integer interval [start,end) 
+<li>**Domain**  of possible values: [0,10), [1,11), [2,12),...[990,1000), [0,11),[1,12),...
+<li>Domain of interval variables is represented **compactly** in CP Optimizer (a few bounds: smin, smax, emin, emax, szmin, szmax)
+</ul>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For each house, an interval variable is created for each task.<br>
+This interval must start and end inside the period_domain and its duration is set as the value stated in TASKS definition.</p>
 
 </div>
 </div>
@@ -1696,37 +1530,16 @@ Mean squared error = 0.6681 for our third model
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">lit</span>
-
-<span class="n">stock15544</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">trainDf</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">trainDf</span><span class="p">[</span><span class="s">&#39;custId&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">15544</span><span class="p">)</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
-
-<span class="n">userItems</span> <span class="o">=</span> <span class="n">trainDf</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&quot;stockCode&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span><span class="o">.</span>\
-            <span class="n">withColumn</span><span class="p">(</span><span class="s">&#39;custId&#39;</span><span class="p">,</span> <span class="n">lit</span><span class="p">(</span><span class="mi">15544</span><span class="p">))</span><span class="o">.</span>\
-            <span class="n">rdd</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stock15544</span><span class="p">)</span><span class="o">.</span><span class="n">toDF</span><span class="p">()</span>
-
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">userItems</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">print</span> <span class="n">row</span><span class="o">.</span><span class="n">stockCode</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">custId</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">tasks</span> <span class="o">=</span> <span class="p">{}</span>   <span class="c"># dict of interval variable for each house and task</span>
+<span class="k">for</span> <span class="n">house</span> <span class="ow">in</span> <span class="n">HOUSES</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">TASKS</span><span class="p">:</span>
+        <span class="n">tasks</span><span class="p">[(</span><span class="n">house</span><span class="p">,</span> <span class="n">task</span><span class="p">)]</span> <span class="o">=</span> <span class="n">interval_var</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">period_domain</span><span class="p">,</span>
+                                            <span class="n">end</span><span class="o">=</span><span class="n">period_domain</span><span class="p">,</span>
+                                            <span class="n">size</span><span class="o">=</span><span class="n">task</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span>
+                                            <span class="n">name</span><span class="o">=</span><span class="s">&quot;house {} task {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">house</span><span class="p">,</span> <span class="n">task</span><span class="p">))</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>21899 15544
-22429 15544
-21209 15544
-22201 15544
-23506 15544
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1736,8 +1549,33 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="implement2"></a></p>
-<h3 id="6.2-Rate-each-product">6.2 Rate each product<a class="anchor-link" href="#6.2-Rate-each-product">&#182;</a></h3><p>Run the <code>transform</code> function to create a prediction value for each product:</p>
+<p><h5><i><font color=blue>Concept: optional interval variable</font></i></h5></p>
+<p><p></p>
+<ul>
+<li>Interval variables can be defined as being **optional** that is, it is part of the decisions of the problem to decide whether the interval will be **present** or **absent** in the solution<br>
+<li> What for?<br>
+<blockquote> Modeling optional activities, alternative execution modes for activities, and … most of the discrete decisions in a schedule</blockquote> 
+<li> Example:<br>
+<blockquote><code><font color=green>interval_var(</font><font color=red>optional=True</font><font color=green>, start=(0,1000), end=(0,1000), size=(10,20))</font></code>
+</blockquote> 
+<li>Properties:
+<ul>
+<li>An optional interval variable has an additional possible value in its domain (absence value)
+<li>**Optionality** is a powerful property that you must learn to leverage in your models
+</ul>
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For each house, an <strong>optional</strong> interval variable is created for each skill.<br>
+Skill being a tuple (worker, task, level), this means that for each house, an <strong>optional</strong> interval variable is created for each couple worker-task such that the skill level of this worker for this task is &gt; 0.<p>
+The "<strong>set_optional()</strong>" specifier allows a choice between different variables, thus between different couples house-skill.
+This means that the engine decides if the interval will be present or absent in the solution.</p>
 
 </div>
 </div>
@@ -1747,10 +1585,261 @@ Mean squared error = 0.6681 for our third model
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">userItems</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">userItems</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">wtasks</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c"># dict of interval variable for each house and skill</span>
+<span class="k">for</span> <span class="n">house</span> <span class="ow">in</span> <span class="n">HOUSES</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">skill</span> <span class="ow">in</span> <span class="n">SKILLS</span><span class="p">:</span>
+        <span class="n">iv</span> <span class="o">=</span> <span class="n">interval_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;H&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">house</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;-&#39;</span> <span class="o">+</span> <span class="n">skill</span><span class="o">.</span><span class="n">task</span> <span class="o">+</span> <span class="s">&#39;(&#39;</span> <span class="o">+</span> <span class="n">skill</span><span class="o">.</span><span class="n">worker</span> <span class="o">+</span> <span class="s">&#39;)&#39;</span><span class="p">)</span>
+        <span class="n">iv</span><span class="o">.</span><span class="n">set_optional</span><span class="p">()</span>
+        <span class="n">wtasks</span><span class="p">[(</span><span class="n">house</span><span class="p">,</span> <span class="n">skill</span><span class="p">)]</span> <span class="o">=</span> <span class="n">iv</span>
+</pre></div>
 
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">userItems</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">print</span> <span class="n">row</span><span class="o">.</span><span class="n">stockCode</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">custId</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">prediction</span>
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Express-the-business-constraints">Express the business constraints<a class="anchor-link" href="#Express-the-business-constraints">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5>Temporal constraints</h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><h5><i><font color=blue>Concept: precedence constraint</font></i></h5></p>
+<p><p></p>
+<p><ul></p>
+<p><li> What for?<br></p>
+<p><ul></p>
+<p><li>Modeling temporal constraints between interval variables</p>
+<p><li>Modeling constant or variable minimal delays
+&lt;/ul&gt;</p>
+<p><li>Properties</p>
+<p><blockquote>Semantic of the constraints handles optionality (as for all constraints in CP Optimizer).<br>
+Example of endBeforeStart:<br>
+<code><font color=green>end_before_start(a,b,z)</font></code><br>
+present(a) <font color=red>AND</font> present(b)  &Implies;  end(a)+z &LessSlantEqual; start(b) 
+</blockquote></p>
+<ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The tasks in the model have precedence constraints that are added to the model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">HOUSES</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">TASK_PRECEDENCES</span><span class="p">:</span>
+        <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">end_before_start</span><span class="p">(</span><span class="n">tasks</span><span class="p">[(</span><span class="n">h</span><span class="p">,</span> <span class="n">find_tasks</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">beforeTask</span><span class="p">))],</span> <span class="n">tasks</span><span class="p">[(</span><span class="n">h</span><span class="p">,</span> <span class="n">find_tasks</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">afterTask</span><span class="p">))]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5>Alternative workers</h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><h5><i><font color=blue>Concept: alternative constraint</font></i></h5></p>
+<p><p></p>
+<ul>
+<li> What for?<br>
+<ul>
+<li>Modeling alternative resource/modes/recipes 
+<li>In general modeling a discrete selection in the schedule 
+</ul>
+<li> Example:<br>
+<blockquote><code><font color=green>alternative(a,[b1,...,bn])</font></code>
+</blockquote> 
+<!-- <img src = "./house_building_utils/alternative.png" > -->
+<img src = "https://github.com/IBMDecisionOptimization/docplex-examples/blob/master/examples/cp/jupyter/house_building_utils/alternative.PNG?raw=true" >
+<li>Remark: Master interval variable **a** can of course be optional
+</ul>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To constrain the solution so that exactly one of the interval variables wtasks associated with a given task of a given house is to be present in the solution, an "<strong>alternative</strong>" constraint is used.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">HOUSES</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">TASKS</span><span class="p">:</span>
+        <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">alternative</span><span class="p">(</span><span class="n">tasks</span><span class="p">[(</span><span class="n">h</span><span class="p">,</span> <span class="n">t</span><span class="p">)],</span> <span class="p">[</span><span class="n">wtasks</span><span class="p">[(</span><span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">)]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SKILLS</span> <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">task</span> <span class="o">==</span> <span class="n">t</span><span class="o">.</span><span class="n">name</span><span class="p">)],</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5>No overlap constraint</h5>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><h5><i><font color=blue>Concept: No-overlap constraint</font></i></h5></p>
+<p><p></p>
+<p><ul></p>
+<p><li> Constraint noOverlap schedules a group of interval variables in such a way that they do not overlap in time.</p>
+<p><li> Absent interval variables are ignored.</p>
+<p><li>It is possible to constrain minimum delays between intervals using transition matrix.</p>
+<p><li>It is possible to constraint the first, last in the sequence or next or preceding interval
+&lt;/ul&gt;
+<!-- <img src = "./house_building_utils/noOverlap.png" > -->
+<img src = "https://github.com/IBMDecisionOptimization/docplex-examples/blob/master/examples/cp/jupyter/house_building_utils/noOverlap.PNG?raw=true" ></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To add the constraints that a given worker can be assigned only one task at a given moment in time, a  <strong>noOverlap</strong> constraint is used.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">WORKERS</span><span class="p">:</span>
+    <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">no_overlap</span><span class="p">([</span><span class="n">wtasks</span><span class="p">[(</span><span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">)]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">HOUSES</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SKILLS</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">worker</span> <span class="o">==</span> <span class="n">w</span><span class="p">]))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Express-the-objective">Express the objective<a class="anchor-link" href="#Express-the-objective">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The presence of an interval variable in wtasks in the solution must be accounted for in the objective. Thus for each of these possible tasks, the cost is incremented by the product of the skill level and the expression representing the presence of the interval variable in the solution.<p>
+The objective of this problem is to maximize the skill level used for all the tasks.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">obj</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">level</span> <span class="o">*</span> <span class="n">presence_of</span><span class="p">(</span><span class="n">wtasks</span><span class="p">[(</span><span class="n">h</span><span class="p">,</span> <span class="n">s</span><span class="p">)])</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SKILLS</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">HOUSES</span><span class="p">])</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">maximize</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The model is now completely defined. It is time to solve it !</p>
+<p><p>
+To use the CP Optimizer solver available on the IBM Decision Optimization on Cloud service:</p>
+<p><ul></p>
+<p><li> Register for the DOcplexcloud free trial and use it free for 30 days by using <a href="https://developer.ibm.com/docloud/try-docloud-free">https://developer.ibm.com/docloud/try-docloud-free</a></p>
+<p><li> Get your access credentials (base URL and access key) by going this page: <a href="http://developer.ibm.com/docloud/docs/api-key/">http://developer.ibm.com/docloud/docs/api-key/</a>
+&lt;/ul&gt;</p>
+<p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Solve-with-Decision-Optimization-solve-service">Solve with Decision Optimization solve service<a class="anchor-link" href="#Solve-with-Decision-Optimization-solve-service">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="c"># Solve the model</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Solving model....&quot;</span><span class="p">)</span>
+<span class="n">msol</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">TimeLimit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1763,11 +1852,8 @@ Mean squared error = 0.6681 for our third model
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>20735 15544 0.00423703156412
-21220 15544 0.0538208372891
-21700 15544 0.069147542119
-22097 15544 -0.0548023916781
-22223 15544 0.020398337394
+<pre>
+Solving model....
 </pre>
 </div>
 </div>
@@ -1781,21 +1867,31 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="implement3"></a></p>
-<h3 id="6.3-Find-the-top-recommendations">6.3 Find the top recommendations<a class="anchor-link" href="#6.3-Find-the-top-recommendations">&#182;</a></h3><p>Print the top five product recommendations:</p>
-
+<h3 id="Step-5:-Investigate-the-solution-and-then-run-an-example-analysis">Step 5: Investigate the solution and then run an example analysis<a class="anchor-link" href="#Step-5:-Investigate-the-solution-and-then-run-an-example-analysis">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">userItems</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;predictions&quot;</span><span class="p">)</span>
-<span class="n">query</span> <span class="o">=</span> <span class="s">&quot;select * from predictions order by prediction desc limit 5&quot;</span>
-
-<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="k">print</span><span class="p">(</span><span class="s">&quot;Solve status: &quot;</span> <span class="o">+</span> <span class="n">msol</span><span class="o">.</span><span class="n">get_solve_status</span><span class="p">())</span>
+<span class="k">if</span> <span class="n">msol</span><span class="o">.</span><span class="n">is_solution</span><span class="p">():</span>
+    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;Solve time: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">msol</span><span class="o">.</span><span class="n">get_solve_time</span><span class="p">())</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="c"># Sort tasks in increasing begin order</span>
+    <span class="n">ltasks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">hs</span> <span class="ow">in</span> <span class="n">HOUSES</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">tsk</span> <span class="ow">in</span> <span class="n">TASKS</span><span class="p">:</span>
+            <span class="p">(</span><span class="n">beg</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">dur</span><span class="p">)</span> <span class="o">=</span> <span class="n">msol</span><span class="p">[</span><span class="n">tasks</span><span class="p">[(</span><span class="n">hs</span><span class="p">,</span> <span class="n">tsk</span><span class="p">)]]</span>
+            <span class="n">ltasks</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">hs</span><span class="p">,</span> <span class="n">tsk</span><span class="p">,</span> <span class="n">beg</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">dur</span><span class="p">))</span>
+    <span class="n">ltasks</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">ltasks</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="c"># Print solution</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">List of tasks in increasing start order:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">tsk</span> <span class="ow">in</span> <span class="n">ltasks</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;From &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">tsk</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot; to &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">tsk</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span> <span class="o">+</span> <span class="n">tsk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s">&quot; in house &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">tsk</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;No solution found</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1806,55 +1902,64 @@ Mean squared error = 0.6681 for our third model
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[17]:</div>
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Solve status: Feasible
+Solve time: 13.6514310837
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>stockCode</th>
-      <th>custId</th>
-      <th>prediction</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>22326</td>
-      <td>15544</td>
-      <td>0.529536</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>21242</td>
-      <td>15544</td>
-      <td>0.524287</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>21559</td>
-      <td>15544</td>
-      <td>0.501251</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>22090</td>
-      <td>15544</td>
-      <td>0.490788</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>22367</td>
-      <td>15544</td>
-      <td>0.482872</td>
-    </tr>
-  </tbody>
-</table>
+List of tasks in increasing start order:
+From 0 to 35, masonry in house 1
+From 0 to 35, masonry in house 2
+From 35 to 50, ceiling in house 2
+From 35 to 70, masonry in house 3
+From 50 to 90, plumbing in house 1
+From 50 to 60, painting in house 2
+From 70 to 85, carpentry in house 3
+From 70 to 105, masonry in house 4
+From 90 to 105, ceiling in house 3
+From 105 to 115, painting in house 3
+From 105 to 120, ceiling in house 4
+From 105 to 140, masonry in house 5
+From 120 to 160, plumbing in house 2
+From 120 to 130, painting in house 4
+From 140 to 155, carpentry in house 5
+From 155 to 170, carpentry in house 4
+From 160 to 200, plumbing in house 3
+From 170 to 185, ceiling in house 5
+From 185 to 200, ceiling in house 1
+From 200 to 210, painting in house 1
+From 200 to 215, carpentry in house 2
+From 200 to 240, plumbing in house 4
+From 215 to 230, carpentry in house 1
+From 230 to 235, roofing in house 1
+From 235 to 240, garden in house 1
+From 235 to 240, windows in house 1
+From 240 to 250, facade in house 1
+From 240 to 245, roofing in house 4
+From 245 to 250, roofing in house 2
+From 245 to 250, garden in house 4
+From 250 to 255, garden in house 2
+From 250 to 255, windows in house 2
+From 250 to 255, roofing in house 3
+From 255 to 260, garden in house 3
+From 255 to 260, windows in house 4
+From 255 to 260, roofing in house 5
+From 260 to 300, plumbing in house 5
+From 260 to 265, windows in house 5
+From 265 to 270, windows in house 3
+From 270 to 280, facade in house 2
+From 280 to 290, facade in house 3
+From 285 to 290, moving in house 2
+From 290 to 295, moving in house 3
+From 290 to 300, facade in house 4
+From 295 to 300, moving in house 1
+From 300 to 305, garden in house 5
+From 300 to 310, painting in house 5
+From 300 to 310, facade in house 5
+From 305 to 310, moving in house 4
+From 310 to 315, moving in house 5
+</pre>
 </div>
-</div>
-
 </div>
 
 </div>
@@ -1866,10 +1971,7 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="implement4"></a></p>
-<h3 id="6.4-Compare-purchased-and-recommended-products">6.4 Compare purchased and recommended products<a class="anchor-link" href="#6.4-Compare-purchased-and-recommended-products">&#182;</a></h3><p>Here's a view of the products that customer 15544 bought:</p>
-<p><img src='https://raw.githubusercontent.com/rosswlewis/RecommendationPoT/master/user.png' width="80%" height="80%"></img></p>
-
+<h4 id="Import-graphical-tools">Import graphical tools<a class="anchor-link" href="#Import-graphical-tools">&#182;</a></h4>
 </div>
 </div>
 </div>
@@ -1878,32 +1980,104 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This customer bought lots of children's gifts and some holiday items.</p>
-<p>Look at the descriptions of the recommended products to see if they are in the same categories.</p>
-<div class="alert alert-block alert-info">Note: The ALS algorithm uses some randomness, so the recommendations you get might be different from these.</div>
+<p><em>You can set <strong>POP_UP_GRAPHIC=True</strong> if you prefer a pop up graphic window instead of an inline one.</em></p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">stockItems</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;select distinct stockCode, description from retailPurchases&quot;</span><span class="p">)</span>
-<span class="n">stockItems</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;stockItems&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">POP_UP_GRAPHIC</span><span class="o">=</span><span class="bp">False</span>
+</pre></div>
 
-<span class="n">query</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
-<span class="s">select </span>
-<span class="s">    predictions.*,</span>
-<span class="s">    stockItems.description</span>
-<span class="s">from</span>
-<span class="s">    predictions</span>
-<span class="s">inner join stockItems on</span>
-<span class="s">    predictions.stockCode = stockItems.stockCode</span>
-<span class="s">order by predictions.prediction desc</span>
-<span class="s">limit 10</span>
-<span class="s">&quot;&quot;&quot;</span>
-<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">docplex.cp.utils_visu</span> <span class="kn">as</span> <span class="nn">visu</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">POP_UP_GRAPHIC</span><span class="p">:</span>
+    <span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="c">#Change the plot size</span>
+<span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="n">rcParams</span>
+<span class="n">rcParams</span><span class="p">[</span><span class="s">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">3</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Draw-solution">Draw solution<a class="anchor-link" href="#Draw-solution">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Useful-functions">Useful functions<a class="anchor-link" href="#Useful-functions">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With the aim to facilitate the display of tasks names, we keep only the n first characters.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">compact_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">n</span><span class="p">):</span> <span class="k">return</span> <span class="n">name</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">if</span> <span class="n">msol</span> <span class="ow">and</span> <span class="n">visu</span><span class="o">.</span><span class="n">is_visu_enabled</span><span class="p">():</span>
+    <span class="n">workers_colors</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">workers_colors</span><span class="p">[</span><span class="s">&quot;Joe&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;lightblue&#39;</span>
+    <span class="n">workers_colors</span><span class="p">[</span><span class="s">&quot;Jack&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;violet&#39;</span>
+    <span class="n">workers_colors</span><span class="p">[</span><span class="s">&quot;Jim&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;lightgreen&#39;</span>
+    <span class="n">visu</span><span class="o">.</span><span class="n">timeline</span><span class="p">(</span><span class="s">&#39;Solution per houses&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MAX_AMOUNT_OF_PERIODS</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">HOUSES</span><span class="p">:</span>
+        <span class="n">visu</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;house &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">h</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SKILLS</span><span class="p">:</span>
+            <span class="n">wt</span> <span class="o">=</span> <span class="n">msol</span><span class="o">.</span><span class="n">get_var_solution</span><span class="p">(</span><span class="n">wtasks</span><span class="p">[(</span><span class="n">h</span><span class="p">,</span><span class="n">s</span><span class="p">)])</span>
+            <span class="k">if</span> <span class="n">wt</span><span class="o">.</span><span class="n">is_present</span><span class="p">():</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">workers_colors</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">worker</span><span class="p">]</span>
+                <span class="n">wtname</span> <span class="o">=</span> <span class="n">compact_name</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">task</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">visu</span><span class="o">.</span><span class="n">interval</span><span class="p">(</span><span class="n">wt</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">wtname</span><span class="p">)</span>
+    <span class="n">visu</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -1914,94 +2088,357 @@ Mean squared error = 0.6681 for our third model
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[18]:</div>
+<div class="output_area"><div class="prompt"></div>
 
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>stockCode</th>
-      <th>custId</th>
-      <th>prediction</th>
-      <th>description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>22326</td>
-      <td>15544</td>
-      <td>0.529536</td>
-      <td>ROUND SNACK BOXES SET OF4 WOODLAND</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>21242</td>
-      <td>15544</td>
-      <td>0.524287</td>
-      <td>RED RETROSPOT PLATE</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>21559</td>
-      <td>15544</td>
-      <td>0.501251</td>
-      <td>STRAWBERRY LUNCH BOX WITH CUTLERY</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>22090</td>
-      <td>15544</td>
-      <td>0.490788</td>
-      <td>PAPER BUNTING RETROSPOT</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>22367</td>
-      <td>15544</td>
-      <td>0.482872</td>
-      <td>CHILDRENS APRON SPACEBOY DESIGN</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>21987</td>
-      <td>15544</td>
-      <td>0.476816</td>
-      <td>PACK OF 6 SKULL PAPER CUPS</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>21122</td>
-      <td>15544</td>
-      <td>0.467991</td>
-      <td>SET/10 PINK POLKADOT PARTY CANDLES</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>22417</td>
-      <td>15544</td>
-      <td>0.461298</td>
-      <td>PACK OF 60 SPACEBOY CAKE CASES</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>21124</td>
-      <td>15544</td>
-      <td>0.456542</td>
-      <td>SET/10 BLUE POLKADOT PARTY CANDLES</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>21156</td>
-      <td>15544</td>
-      <td>0.455864</td>
-      <td>RETROSPOT CHILDRENS APRON</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+1lqMKXRsvyJ7cuqsYqrG+y2eM4tRM+YSHlHT6VJEikVROjACjTHTgE5ACtDbWptpjGkOTAHKA5uB
+gdbaQ8aYpcAj1to1xpiqwCprbT1jTGNgBlCWnDs/brLWbjbG3AY8nPv+T8CQgj8lYq1dlG9yJRDl
+zocW9+zdmcJL9/anUfNW/P7fVTRo1oJLb7yFjyaO4/CB/Qx7dTJgeXf0s2RlZhIUHMyDoydQq259
+p0v3uDm/zGHy8skEmACa1GzCi1e/yPDPh7Pz0E4AXr7mZdrXae+RWg4kH2BK3ylEt4gmJSmFyLhI
++r/Zn6WTlrJ+8XqyjmVRr109+o3vV6T1paenl3DFZ9qzZ4/He6mVWboyS6vkg8n0ndWXFrVakLQ7
+ibgacbx545tOl1Xi1A6VrszikDD/P3w2YyoBAYaYRo3p2KMnH095g+ysLCqFVWHYuMmEhld1tEZ/
+2Z7FlZnXvrWOak3SriSG/m0ok5ZPAuCqRlfx7JXPnrHM/Olvsn7lj/y5YxvH0tPJzj5Bn3uGcGDf
+HhI+mcvR9DRa/O1SHnl9CkHlgt2qz5uPlamjRrIneQcv3Xc7Xa+/gZXfLHb52tyd9jZ1TyrT20+n
+bpu6bP15K3Va1qF9//YsHLOQtP1pDJg6gGr1qjF76Gz2b9tPUIUg+k3oR6P0Ri5nusqXjxV/UZQx
+MBoCE621TYFDwE25788CHrPWtgDWAc+dZfm8zoj7gdetta2ANkCKMSYWuAXolPv+SeC2sxVijAkE
+BgCLzjaPeMae5O30vmcIExclsnPLJhIXzOflDz/ljhHPED/1DWrXb8hLH8zn1XmLuWXoo3ww/hWn
+S/a4DXs3MOG7CXw+8HOWDVnG6GtG88TCJxjSaQhfD/6a9259j2GfDvNoTfs27aPLoC48seIJylUs
+x/J3l9Plvi4M/3o4jyc+zvGjx1m/ZL1HaxKR4rFp/yYGtR/EiqErqFSuEtNXTnf7r5QiviR50x/M
+mzaRF2Z9zLhPvmLgUy8Q16Y9Yz76glfnLabTtb2Y//Ykp8sUF2w5sIVB7QcRf2c8o78Zzed3f853
+D3zHmpQ1LNyw8Iz5Q6tU4/f//sz4T7+heu0oMo4c4aS1BAaW5bbhTxIeEUmtuvX55uPZDnwazxk8
+agzhETV5YdbHXP33uxy9Nt+/bT+XDb2Mp1Y+xd6Ne1kTv4ZhC4fR+4XefDX+KxaOWUjUJVGM+H4E
+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
+"
+>
 </div>
 
 </div>
@@ -2015,7 +2452,364 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The recommended products look pretty similar to the purchased products, and, in some cases, are actually the same. Your model works!</p>
+<p>The purpose of this function is to compact the names of the different tasks with the aim of making the graphical display readable. &lt;/p&gt;
+For example "H3-garden" becomes "G3"</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">compact_house_task</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="n">loc</span><span class="p">,</span> <span class="n">task</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">task</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="n">loc</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Green-like color when task is using the most skilled worker
+Red-like color when task does not use the most skilled worker</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">if</span> <span class="n">msol</span> <span class="ow">and</span> <span class="n">visu</span><span class="o">.</span><span class="n">is_visu_enabled</span><span class="p">():</span>
+    <span class="n">visu</span><span class="o">.</span><span class="n">timeline</span><span class="p">(</span><span class="s">&#39;Solution per workers&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">MAX_AMOUNT_OF_PERIODS</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">WORKERS</span><span class="p">:</span>
+        <span class="n">visu</span><span class="o">.</span><span class="n">sequence</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">HOUSES</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">SKILLS</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">worker</span> <span class="o">==</span> <span class="n">w</span><span class="p">:</span>
+                    <span class="n">wt</span> <span class="o">=</span> <span class="n">msol</span><span class="o">.</span><span class="n">get_var_solution</span><span class="p">(</span><span class="n">wtasks</span><span class="p">[(</span><span class="n">h</span><span class="p">,</span><span class="n">s</span><span class="p">)])</span>
+                    <span class="k">if</span> <span class="n">wt</span><span class="o">.</span><span class="n">is_present</span><span class="p">():</span>
+                        <span class="n">ml</span> <span class="o">=</span> <span class="n">find_max_level_skill</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">task</span><span class="p">)</span><span class="o">.</span><span class="n">level</span>
+                        <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="n">ml</span><span class="p">:</span>
+                            <span class="n">color</span> <span class="o">=</span> <span class="s">&#39;lightgreen&#39;</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">color</span> <span class="o">=</span> <span class="s">&#39;salmon&#39;</span>
+                        <span class="n">wtname</span> <span class="o">=</span> <span class="n">compact_house_task</span><span class="p">(</span><span class="n">wt</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+                        <span class="n">visu</span><span class="o">.</span><span class="n">interval</span><span class="p">(</span><span class="n">wt</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">wtname</span><span class="p">)</span>
+    <span class="n">visu</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABDAAAADRCAYAAAA6w0IiAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
+AAALEgAACxIB0t1+/AAAIABJREFUeJzt3Xl8VNXdx/HvycoawABhD/smiyibohAEFaUgLlirKFql
+1boVq7bWUsA+VR8Ra31aiwvUqrhURUGLu8bigigIoqAiSwDBIDsJ2ec+fySEADPJZCbJmXvv5/16
++ZJMcvL9nbln7kzO3HPGOI4jAAAAAACAWBZnuwAAAAAAAICqMIEBAAAAAABiHhMYAAAAAAAg5jGB
+AQAAAAAAYh4TGAAAAAAAIOYl2Aw3xvARKAAAAAAAoJzjOCbY7VYnMCTJrR/jOmPGDM2YMcN2GfAI
+xhNqEuMJNYnxhJrEeEJNYSyhJjGeYosxQecuJLGEBAAAAAAAuAATGAAAAAAAIOYxgRGhjIwM2yXA
+QxhPqEmMJ9QkxhNqEuMJNYWxhJrEeHIPY3MPCmOM49Y9MAAAAAAAQM0yxoTcxJMrMAAAAAAAQMxj
+AgMAAAAAAMQ8JjAAAAAAAEDMsz6Bcegzd2fMmKHMzEzb5YQtOzubXA9m2sqlr97M9VNfbeXSV2/m
+0ldy3Z5pK5e+kuv2TFu5fuprLMrMzDxiXqAyCXVTUmhVFQgAAAAAALwpIyPjiE+CmTlzZsif5VNI
+AAAAAABATOBTSAAAAAAAgKsxgREhv62TYi2a9zJt5dJXct2eaSuXvnoz1099tZVLX72Z66e+2sql
+r97NdTMmMAAAAAAAQMxjDwwAAAAAABAT2AMDAAAAAAC4GhMYEfLbOinWonkv01YufSXX7Zm2cumr
+N3P91FdbufTVm7l+6qutXPrq3Vw3YwIDAAAAAADEPPbAAAAAAAAAMYE9MAAAAAAAgKsxgREhv62T
+Yi2a9zJt5dJXct2eaSuXvnoz1099tZVLX72Z66e+2sqlr97NdTMmMAAAAAAAQMxjDwwAAAAAABAT
+2AMDAAAAAAC4GhMYEfLbOinWonkv01YufSXX7Zm2cumrN3P91FdbufTVm7l+6qutXPrq3Vw3YwID
+AAAAAADEPPbAAAAAAAAAMYE9MAAAAAAAgKsxgREhv62TYi2a9zJt5dJXct2eaSuXvnoz1099tZVL
+X72Z66e+2sqlr97NdTMmMAAAAAAAQMxjDwwAAAAAABAT2AMDAAAAAAC4GhMYEfLbOinWonkv01Yu
+fSXX7Zm2cumrN3P91FdbufTVm7l+6qutXPrq3Vw3YwIDAAAAAADEPPbAAAAAAAAAMYE9MAAAAAAA
+gKsxgREhv62TYi2a9zJt5dJXct2eaSuXvnoz1099tZVLX72Z66e+2sqlr97NdTMmMAAAAAAAQMxj
+DwwAAAAAABAT2AMDAAAAAAC4GhMYEfLbOinWonkv01YufSXX7Zm2cumrN3P91FdbufTVm7l+6qut
+XPrq3Vw3S7BdAAAp5+H7dZxTXOe528+9TGlpaXWaaauvx0kqirDttituVHp6ek2WE7PW3/lbdYjw
++ER6H0dz//rpsQN4gY3HLI/X8Nz/5f2KbxsfUdsR20dEfB9Hmlu4tlBJSUkRZRauKlRS/8jaRtNX
+P4lmPEV6bKM5rrbGUzS5E/ZP8M3r04q4AiNCtk5cfsr1U1+3mMQ6z5Sk/fv313mmrb5GIysrK6J2
+bhzDNo5PpPev5K/HjhvHk5sybeX6qa+Sncesjcer5L7xVLKtJOK20dzHkeaWbIy83mjaMp7CE814
+ivT42BoTttpG8/rJzZjAAAAAAAAAMY8JjAj5bZ0Ua9G8KTc313YJnsYY9i4bjx0/jSf66t1cG2w9
+1/lpPPnp9QTjCbAr4j0wjDEHJHWT9KDjOBfVXEkAQqk38y/ql9ZCRYES9WqRqnkTxmjnwTz9/KXX
+9UNOruLjjK46sa+uH3qi7VJrVXZOrn7zeqZWbMtWk3rJSmvYQL8ZNki3vvG+SpyAigMB/WrwAE0Z
+2M92qZ4UbBwaI53+z3+rsKRExYGAzu/dXdMyTrZdarlgNddLLH0KDAQcDX1kvtqmNNJLl0ywXCmA
+UI/XXyx8Q4u/3aiWDRtoxa8ut12mZx348YBevuNlZS3PUv2m9ZWQmKDTbzxdnU/urMeveFybP9+s
+wZcM1gX3XFDrmX3P6StJ2rN1j+455R6N+e0YjbxuZFhtkxok6dU7X1VJUYnik+I1fsZ4dTutW1ht
+m7RqouemPlf+c2fddpb6jeU1RXVNTZ2qgT8dqEsfulSSFCgJaFrPaeo4qKOmPD1Fy19Yrnf++o5k
+pOSGyZo4e6La9G4TVtsvX/tSi+9aLBNnFJ8Yrwn/M0Gt1brKdtnrsvXM9c9o6xdbNfYPY8MeT237
+ttXdQ+9WWrfSZTXpA9M18b6JYff1kM0rNuuBsx7Q5HmT1X9c/7Dafvfhd3rs0sfUvGNzSVK/n/TT
+mbecWbMHy0Wi2cTTcRznB0m+nLzw25pVt627c2NuOBomJmrZNZMkSZNfXKxHPvtCP+3bQ/eeNUIn
+tG6pnIJCDXlkvkZ36aieLY6r+vc1bFjbJdeKic8u0uQBx+upC8dKklZn/6h9+QVacvXFSoyP18HC
+Ip3w0L80rkcXtWpsr49eHcPBxuGNJ5+otyZPVIOkRJUEAhox91mN6dpRg9q1rtVawhWqZkn6v09W
+qFeL47S/oDD832fhsePV8RQrmbZy/dTXcIV6vE4+oY9+NXiAfv7S69X7fZae69w6nuZOmqshlwzR
+ZY9cJql08uDL179UYr1EnfP7c7R97XZt/3r7EW2ivY9DZR7y8h0vq9foXtVq23loZ015ZopS0lK0
+fe12zblwjmZ+NTOstj1P76nfvPcbxcXFaX/2ft07/F71ObuP4uLiGE/VkNQwSdvXbldxQbESkhP0
+zXvfqFnbZuXfT01P1Q3/uUH1U+pr7dtr9dxNz2nqW1PDatt9RHf1ObuPJGnbmm16/MrHNfX2qVW2
+a9isoS743wu0+j+rg9Ycaky07dtWzTs11y2Zt0TUV0kKBAJ65c5X1HNUz2q37XJKlyMmQvwsqiUk
+xph0Y8zqsn9PNsa8ZIx50xizwRhznTFmqjFmhTHmI2NM05opGYAknZreTut371Fao4Y6oXVLSVKj
+5CT1bH6cth3IsVxd7cncuFlJ8fG66qTD74T0TWuhU9PbKTG+dLfrvOJiOY6tCv3l0DiUpAZJpZvz
+FRSXqDjgyBhjs7SQKta8dd8Bvb5uo35+Yl/LVQEIpuLjdVh6WzWrX89yRd727X+/VUJygk6efPgK
+umbtmum0q09TUv0kdRrSSQnJNfshht+t/C5kpiStXrxaqZ1S1apnq2rV27ZPW6WkpUiSWvdqreLC
+YpUUlYTVNrFeouLiSv9MKsovKv83qq/X6F766s2vJEkrFqzQiecfvkq446COqp9SX5KUPihd+7bv
+C7ttUoPDn9xRkFNwxDGqrF2j5o3U/oT2iks49phWNiYkSVW8tqwsV5KWPLJE/cf3V6Pmjardtqps
+P4n20ejoyLvzeEkTJA2W9GdJOY7jnChpqSRPXevntzWrflp3F8vr/Zyyh1txSUCvr9uoPmktjvj+
+pj379MUPP2pw22Of5INx45rVr3bs0oltgr8jsHXfAZ30jyfU9S+P6ZZTB1m9+kLy7hgONQ4DAUeD
+5jyp9vc9rFFdOmhgmOOwLhxdc9+ymm95I1N3nzFc1Z1rYQ8M72XayvVTX8NV1XNddbFnQfh++PoH
+tevXrtrtormPs7OyQ2YWHizUuw++qzG3jQn6B1y49a5cuFLt+rZTfOLhj/Wsqm3W8izdc8o9uve0
+ezVx9sTyP5AZT9Vz4nknasWLK1RcUKxtX21T+sDgH/u59Imlx1xlU1XbL/7zhe4acpceu+QxXfx/
+F1c782hVjYndW3brvpH36W/j/6YNSzdUq697t+3V6sWrNezKYUHHclU1b/psk2aNmKVHfvqIfvj6
+h7D641U1O4Uqvec4zkFJB40xeyW9Wnb7aklB396aMWNG+b8zMjKUkZFRwyXVjtzcXGVnZ5dfWnXo
+AV7bXx9SV3mHvrbR34pPEHXd37r+Olx5RcUaPOcpSdKp6W115YA+5d/LKSjUxf9+VbPPzlCj5Op9
+nnSs9re62jVprOXXXq4fDuTqgmcX6vze3dSiYYOof2+k4/8Qtz1eqxJqHMbFGX16zWXan1+gC59d
+pDU7dql3y9Qqf19t13t0zaelt9UVA/po8bcblNawgU5o3VLvb9xSrTc3CgsPLzfh/M/5P5qv/fZ6
+IhyVPddFwsbj1a3j6Wgv3PaCNizdoISkBN389s1Bf6aiaMfj0ZldTumiEdeOOPxuexUn6mD1bl+7
+Xa/+6VVdu+DaarVNPyldv/vod8pel635185Xr9G9lJCUwHiqRntJat27tXZv2a3lLy5X7zN7ywly
+iey6Jeu07OlluvG1G4+4vaq2/cb2U7+x/bRh6QYt/vNiXTn5yrAzw1FxTNz02k2a/sV0NWjaQFtW
+bdHcSXN1+8e3K7lRclj1vnzHyxo3fdzhq1OPKqmytu37t9f0VdOV1CBJa95ao7mXzdUdn95R5fFx
+k8zMTGVmZob1szU9gVFQ4d9Oha8DobIqTmC4SefOnY/4+uiB4rWv/dTfYA/62s4PV4MK64IrKi4J
+6OJ/v6JL+/fS+J5dw/59h9Zx1vX9HY3eLVK1YM23lf5Mq8YN1btFqj7I+l7n9e5W6c+Go2HDhpWO
+kVj7OtrHa1VCjcNDUuola3jHdnrzu01hTWBEe/+GI1jNH23eple/2aDX121SXnGxDhQU6soFr+mf
+559d5e9r1uzw2lTbxzvWx5ObvrZx/vfT/Ruuqs4x1WXr8erG8dSqZyutemVV+dcX3nuhcnfn6v5R
+96sy0byeSEtP05eLDu93ceG9Fyp3T65mj5ytzSs264tXvtArM17Rwb0HFRcfp8T6iTr1qlPDqnfv
+93s1b/I8TfrHJKV2OPL5KNy+pnVLU3LDZG1fu13t+7dnPFXj60P6jOmjRdMX6fpF1yt395FXsGz7
+apuem/qcrnn+GjVoeuybTpW1La9zaGft2rRLB3MOVqvd0SobE/GJ8eX1te/fXs07NdeO9TvUvn/7
+sOrdsnKLnrj6CTmOo9zduVr7zlrFJ8ari7pU2bbiJEnvM3rrhVtfUO6e3CpfP7nJ0RcyzJw5M+TP
+RruExJT9B6AOOCHeepiy8A31apGqGzz+6SOSNLJzBxWWBPTPFYc3X1qd/aM+zPpe+UXFkqQ9efn6
+aMs2dW/eLNSvQRSCjcOduXnal186Z51XVKR3N2xWjxi6/4PV/D+jT9X6m6fom19fpacuPEcZndqH
+NXkBoHaFeq6TJMdxKv0+otN9eHcVFxTrw8c/LL+t8GCQDY5r8BB0PaHrsZm5hTLG6IZXb9C0z6dp
+2ufTNOKaERo9dXT55EVV9ebtz9MjP3tE4/44Th0HdTwmt7K2u7fsVqAkUP7vHd/t0HEdqt4cHcEN
+uXSIzrr1LLXudeTG3nu27imfYGreqXm12u7cuLP831tWbVFJUYkaNGpQZbsjHDWOKxsTubtzFQiU
+jomdm3Zq54adSu147Js0oXIPjeM/rvyj+o/rrwtnXVi+CWlVbQ/sOFD+76zlWXIcRw2buXMj/poQ
+0RUYxph4lV5dcfQeGBV5+tml4uU65Hon02ZuOEyQ+cKPNn+vZ1Z/rT4tm2vQnCdlZPSnUcN0VrdO
+Vf4+N+6BIUnP/3S8bn79Pd27ZJnqJSYovWkTnduzi25c/I7ijJHjSLcMG6jjWwZ/MqwrXh3Dwcbh
+9pwcXfXSGwo4jgKOo4l9eujs7p2DtLYjWM3RsLUHhhfHU6xk2sr1U1/DFerxetkL/9F/N23Vrrx8
+dbn/Uf1x5MmaHMbyEpt7FrhxPF391NVa8PsFevfBd9UotZGSGiZp3IxxkqQ7T7hTBTkFKi4s1urF
+q3Xti9cqrXta1PdxZZkRtZ0+TkseXaJdm3bpzfve1Buz3pAxRte8eI0apTaqsu2Gjzfo7QfeVkJS
+gkyc0cTZE8v/YGQ8VV/TNk01/BfDj7n9jVlv6OCeg3rh1hfkOI7iE+OPWaoUqu2qV1bp02c/VUJS
+ghLrJWryvMnStqrbHdhxQLNPn638nHzFxcXp/Yff1+0f317+/VBj4rsPv9Nrd7+m+MR4xcXH6aK/
+XKQGTY69YiRU7hFCvCQJ1XblopX6cN6Hik+ML+3r3MmV/36PM5GsCTLG9Jf0sOM4Q6MKN8aJdE2S
+bX57weHmk6YbcjP/9AcNC+TVaaYkvT14tM4+u27fcbbV12h8PPJcDR9exZNREG4cwzaOT6T3r+Sv
+x44bx5ObMm3l+qmvkp3HrI3Hq+S+8TTrzVlKGlS9PbQO6b60e8T3caS5eS/nqf6E+hFlRtM2mr5G
+w0/jKdLjY2tM2Go7YPWAiF8/xTpjjBzHCTrVU+0lJMaYX0qaL+mOaAtzM1vvWvgp1099tcXWZ5n7
+BWPYu2w8dvw0nuird3NtsPVc56fx5KfXE4wnwK5qLyFxHOdhSQ/XQi0AAAAAAABBRbuJp28F+9gn
+ct2faTPXBrfugeEWjGHvsrUHhg2c/72XaTPXBpt7FvghU/LX6wnGE2BXTX+MKoAINB13oRJPOKHO
+c1uvXFnnmbb6Gs06zvSsrBquJnZ1unyKEtPTI2ob6X0czf3rp8cO4AU2HrM8XsNzUY+LlN4ssvP/
+ytaR38eR5r7T4R2NajYqosxlxy/T4GaDI2obTV/9JJrxFOmxjea42hpP0eRmpfvn9WlFEW3iWWPh
+Lt7EEwAAAAAA1Kwa3cQTAAAAAACgrjGBESG/rVn107o7+uq9TFu5fuqrrVz66s1c+kqu2zNt5dJX
+ct2eaSvXT311OyYwAAAAAABAzGMPDAAAAAAAEBPYAwMAAAAAALgaExgR8ts6KdaieS/TVi59Jdft
+mbZy6as3c/3UV1u59NWbuX7qq61c+urdXDdjAgMAAAAAAMQ89sAAAAAAAAAxgT0wAAAAAACAqzGB
+ESG/rZNiLZr3Mm3l0ldy3Z5pK5e+ejPXT321lUtfvZnrp77ayqWv3s11MyYwAAAAAABAzGMPDAAA
+AAAAEBPYAwMAAAAAALgaExgR8ts6KdaieS/TVi59JdftmbZy6as3c/3UV1u59NWbuX7qq61c+urd
+XDdjAgMAAAAAAMQ89sAAAAAAAAAxgT0wAAAAAACAqzGBESG/rZNiLZr3Mm3l0ldy3Z5pK5e+ejPX
+T321lUtfvZnrp77ayqWv3s11MyYwAAAAAABAzGMPDAAAAAAAEBPYAwMAAAAAALgaExgR8ts6Kdai
+eS/TVi59JdftmbZy6as3c/3UV1u59NWbuX7qq61c+urdXDdjAgMAAAAAAMS8BNsFuFXOw/frOKe4
+znOPk1RU56l2cqPJfGBEKyX1T4qscZKkPREGR6hwbaGSkiKsNxoW+mol01KuG49r4apCHjvh4LFT
+qziu3s21cmz9dB+78LhG+rxjIzPa3Kj4aDz56XlnQv6EOs90O67AiNAWk2i7BFSiZGOJ7RKqxW31
+IjxuPK5uq9lt9SI8HFfv4th6UzTHNdK2NjKjbYvYZeu4ZmVlWcl1MyYwAAAAAACoY7m5ubZLcB0m
+MAAAAAAAQMwLaw8MY8wBx3EaV+cXG2P+KekVx3EWRFQZakXyjPt1af/emnfeGElSSSCg9vc9rCHt
+WuulSybom527NeXlN/T59h3606hT9etTTrJcsT0HdhzQgt8v0JaVW1S/SX01btFYY24bowW3L1D+
+gXzFJcTpjKlnaMB5A2yXGrOmNp+qtn3aqqSoRGk90nTpQ5cqsV6inrnhGX315ldq3KKxfvvBb22X
+GfOCjcVRN47Sy394WYGSgALFAZ065VQNu2KY7VIlBa/3vLvOU4vOLZR/IF93D71b/cb10wX3XGC7
+1JgV7LGTuytX8381X/uz9ysuPk5DLx+qEb8cYbtUVEOw42qM0YNjH1RJUYkCxQH1H99fY347xnap
+qKZQz3eSFAgEdP/p96tJmyaa8vQUy5XWror3Q2rHVE36xyTVS6lX/v1QzwGh2n3/5fd6/jfPqyCn
+QCbeBH3dFartnq17NO/yeXICjkqKSoI+T1ZW76HvOY6jZu2b6eqnrq7Fe86+UGN4Zv+Zqp9SXybO
+KD4xXje/fbPtUq2q6fupYcOGtVyx94S7iadTq1WgzjRMStRXO3aqoLhYyQkJent9ltqlHJ6bOq5+
+PT1wzula+PV3FquMDXMvm6shlwzR5McmS5K2rdmmvH15mjRnkpp3aq59P+zT7NNnq9eoXkc8OeOw
+pAZJuiXzFknSk798Uh/+80NlXJuhIZcO0Wm/OE3zr51vuUJ3CDUWf/3GrxWfGK/Cg4W655R71Pfs
+vkpJS7FcbfB6D+w4oBadW2jxXYvV9dSuliuMfcEeOyddcJLO/Z9z1a5vOxXkFOi+0+9Tz5E9ldY9
+zXK1CFeoc+L1i65XUoMkBUoC+uuYv6rX6F5KPyndcrWojlDHVpL+O+e/SuuRpvwD+RYrrBsV74f5
+183XkrlLdMbUM8q/H+o5IFS7pPpJVb7uCtU2pVVKlc+TldVb8Xt+EGoMx8XF6fpXrleDpg0sVxgb
+uJ/sC3sJiTGmgTHmbWPMZ8aYVcaY8RW+d3nZbZ8bY/4VpO2fjDHzaqpoROesrp20+NuNkqTnvvxG
+P+3bo/x7LRo20Ilt0pQQ5+/VReuWrFN8UrxOnnxy+W1terdRl5O7qHmn5pKkJq2aqFHzRsrZlWOr
+TFfpfHJn7dy4s/TfQztzgg9TZWMxPjFeklSUXyTHiY155lD1dh7aWVtWblHOzhz1GNmjkt+Aox16
+7DRu2Vjt+raTJCU3SlZa9zTt277PcnWIVMVzYlKD0p3viwuKFSgJyBhjszREqeKx3fv9Xq15a42G
+XjbUclV1r+Ogjkeco8J9DqjYrkWXFtV63VWxbXxCfLWeJ4+u188qjmHHceQEYuM1RqypifuJPTCq
+rzp/peZLmuA4zkBJp0uaLUnGmOMl3S4pw3GcAZJuqtDGGGP+V1Jzx3F+XkM1IwpGRhf16aHnvvxa
+BcXFWp39owa3bW27rJizfe12te/fvtKfyVqepUBRoPyJFaGVFJdo7dtr1bo3Y626KhuLe7/fq3tP
+u1cz+8/UqJtGxcTVF6HqdRxHC/+4UONnjueavmoI9djZtXmXvl/9Pe/Su9TRxzUQCGjWiFma1nOa
+umd0V4cTO1iuEJE6dGzb9G4jSXrpjpc0/s7xvpuUCpQEtO79deozpo+k8J8Djm5XUVWvu4K1Dfd5
+Mljb4oJi3T/6fj1w1gNavXh1ON32hKPHsDFGcy6co9mjZuvjf31subrYwf1kT7hLSCTJSLrHGHOa
+pICkNsaYlpJGSnrBcZw9kuQ4zt4KbaZJWuo4zjWhfumMGTPK/52RkaGMjIxqlIRI9Elrrqy9+/Xc
+6m90drfOcvhrotr2/bBP8381X5P+Mcl2KTGtKK9I92XcJ6n0qouhk/z3DlRtatq2qW5bcpv2Z+/X
+Y5c+phPGn6BGzRvZLiuoD+Z+oN5n9FbTNk1Lb+C0U6nKHjsFOQV6/IrHdf7d5yu5UbKtEhGBUMc1
+Li5Ot75/q/L352vuZXP1w9c/qFXPVjZLRTUdcWxP7qwhk4aU7vVUduXUug/W+eK8d+h+2Lttr9J6
+pJVfbVHVc0CododU9rqrsrZVPU9W1nb6F9OVkpaiXVm79Pdz/642x7dRanpqtHdRzDr6/DRk0hBJ
+0k2v36SUtBTl7MzRQ+c/pLQeaeo8tLPNUq2qzfspOztbkpSWllYjX7tJZmamMjMzw/rZcCcwjKRJ
+klIlDXAcJ2CM2SipXtn3Qlkm6SRjTLNDExxHqziBgbrzkx5d9Lu3/qu3rpioXQfzbJcTc1r1bKVV
+i1YF/V7+gXw9+rNHNfYPY3mXrAqJ9RN9tX60NlQ2Fg9JSUtRq56ttP7j9eo/rn8dVRZcqHo3fbpJ
+G5Zu0IfzPlR+Tr5KikqU3ChZP5n2EwtVxr5Qj52S4hL984p/auBFA9X3nL4WKkM0qjon1kuppy7D
+umjtO2uZwHCZYMd24ycb9eVrX2rtW2tVlF+k/Jx8PXXtU55+8+PQ/VCUX6Q5F87RB499oNOmnFbl
+c8DR7ZY8ukTDfzFcUtWvuypre0io58nK2h66WiM1PVVdh3XV1i+2enoCI9T56dD90Kh5I/Ub209Z
+y7N8PYFR0/dTxU08j554iPZrNzn6QoaZM2eG/NnqLCFJkbSjbPJipKRD162+I2miMeY4STLGNKvQ
+5nVJ90j6jzEmNt8W9JlDV1tcMeB43TFiqI5vGXr5g5+vzOg+vLuKC4u19Mml5bdtW7NN6z9ar3mX
+z9OgiwdZ/0PR7RzH8cW7UdEKNRY3LN2govwiSdLBvQe1cdlGteza0laZ5ULVO+zKYZq+arqmfT5N
+5955rgZdPIjJiwg8c8MzSuuRphHX8OkjXpGzK0d5+0vfSCjMK9S373/Lxqwe8ZNpP9GM1TM07fNp
+uvyxy9XttG6enryoKLFeos67+zy9+3/vKlAS0GUPXxbWc8Chdu/97T0FSgIqKSrR3MvmhvW66+i2
+e7ftDft58ui2B/cdVHFhsaTSx+jGTzeqVQ//TSoWHixUQU6BJKkgt0DfvPeNWvdiOfDRormf2AOj
++qq8AsMYE6/S/S/mS3rVGLNK0meS1kqS4zhrjDF/lvS+MaZY0ueSfq6yP00cx3nRGJMiaaEx5hzH
+cQpqpysIhym7YKZtSmNdN+TYj//MzsnVyY/M14GCIsUZ6W9LP9eq6yarUXJSXZdq3VVPXqUFty/Q
+2w+8rcR6iTquw3FKPyld6z9er4N7DmrZ08tkjNElf79EbY5vY7tcV3liyhP67sPvlLs7VzP6ztDZ
+vztbQy4dYrusmBVsLPY9p69euPUFmTgjx3E06oZRMfOiIli95911nu2yXG/D0g1a/vxyte7dWrNG
+zJIxRmP/MFa9RveyXRqisD97v57+1dMKBAJyAo4GnDdAvc/obbssIGrt+rZT275ttWLBCg2cODCi
+dlLpuS/jXt/dAAAcXElEQVRvb15Yr7sqtm3corEWTlsY9vNkxbap6an6983/Vlx8nJyAo9G/Hu3L
+icUDPx7Q3MvmyhijQHFAJ008ST1P72m7rJjD/VS3TFU78hpj+kt62HGcGl+8boxxYmXn/OrK/NMf
+NCzA0otYNbtDC9WfUN92GWHLeznPVfUiPG48rm6r2W31IjwcV+/i2HpTNMc10rY2MqNti9hl67gO
+WD1Aw4cPr/oHfcYYI8dxgm5VUekSEmPML1V65cUdtVEYAAAAAABAOCpdQuI4zsOSHq6jWgAAAAAA
+8AX2wKi+6mziCQAAAAAAYEW4H6OKo3S6fIoS09Or/kFYcfqyZRrcbLDtMsK27Hh31YvwuPG4uq1m
+t9WL8HBcvYtj603RHNdI29rIjLYtYpet45rVO6vOM92uyk08azXcxZt4AgAAAACAmhXxJp4ILTs7
+m1wPZtrKpa/ezPVTX23l0ldv5tJXct2eaSuXvpLr9kxbuX7qq9sxgQEAAAAAAGIeS0gAAAAAAEBM
+YAkJAAAAAABwNSYwIuS3dVKsRfNepq1c+kqu2zNt5dJXb+b6qa+2cumrN3P91FdbufTVu7luxgQG
+AAAAAACIeeyBAQAAAAAAYgJ7YAAAAAAAAFdjAiNCflsnxVo072XayqWv5Lo901YuffVmrp/6aiuX
+vnoz1099tZVLX72b62ZMYAAAAAAAgJjHHhgAAAAAACAmsAcGAAAAAABwNSYwIuS3dVKsRfNepq1c
++kqu2zNt5dJXb+b6qa+2cumrN3P91FdbufTVu7luxgQGAAAAAACIeeyBAQAAAAAAYgJ7YAAAAAAA
+AFdjAiNCflsnxVo072XayqWv5Lo901YuffVmrp/6aiuXvnoz1099tZVLX72b62ZMYAAAAAAAgJjH
+HhgAAAAAACAmsAcGAAAAAABwNSYwIuS3dVKsRfNepq1c+kqu2zNt5dJXb+b6qa+2cumrN3P91Fdb
+ufTVu7luxgQGAAAAAACIeeyBAQAAAAAAYkJle2Ak1HUxXnH/l/crvm287TIQQuGqQiX1T7JdBoLg
+2MQ2jk/scuOxcVvNg/+WrYGBAttlhO2zuGRX1StJD4xo5aox4acxHM2xsXE/RZPpt7aRsjX+/dTX
+CfsnKD09vc5z3YwlJBEq2VZiuwRUomQjxydWcWxiG8cndrnx2Lit5nUm2XYJ1eK2eiX3jQm31RvN
+mIimrzbuJ1v1urGtmzJt5drq65o1a6zkuhkTGAAAAAAAIOYxgQEAAAAAQB1r2LCh7RJcJ+I9MIwx
+BxzHaVyTxaD2TU2dqoE/HahLH7pUkhQoCWhaz2nqOKijpjw9RctfWK53/vqOZKTkhsmaOHui2vRu
+Y7lqf6jq2Hz52pdafNdimTij+MR4TfifCeo8tLPlqv2jquNzyOYVm/XAWQ9o8rzJ6j+uv61yfaWq
+Y/Pdh9/psUsfU/OOzSVJ/X7ST2fecqbNkq05sOOAFvx+gbas3KL6TeqrcYvGOu/P5+muIXepbZ+2
+chxHzdo309VPXW271HJBa77rPLXo3EL5B/J199C71W9cP11wzwW2S5UkZefk6jevZ2rFtmw1qZes
+tIYNNGtMhvr+7XH1S2shR446NEnRiz8713apkkLXe/Nr7+mTrds1rENbvXTJBNtlHiHYmBhz2xgt
+uH2B8g/kKy4hTmdMPUMDzhtgu1RJoR93L/7uRWV9lqXOJ3c+4nmkJtSb+Rf1S2uhokCJOjVrqsfP
+G6OUeqXLS8Y9tSDosX312VfVMrulRvxyhCRpzoVz1KxdM/30gZ9KkhZOW6gmrZvo6/e+jrjuqc2n
+lp9rjDG66qmrlNQwSY9f8bg2f75Zgy8ZHPZjOdx6Vy5cecy4CKttmybKuDbjmPNMuLmLpi9Sm+Pb
+lJ9XU9NT1XhvY42eMDpku+TGyfrq9a8UKAkoUBzQqVNO1bArhkV1/+74bodevfNVlRSVKD4pXuNn
+jFe307qF/TsjzT2w44Cem/pc+c+cddtZ6je2X61mNmvXTJK0Z+se3XPKPRrz2zEaed3IGssMles4
+ju4eerfSuqVJktIHpmvifRNrNBeHRbOJJx8f4kJJDZO0fe12FRcUKyE5Qd+8942atW1W/v3U9FTd
+8J8bVD+lvta+vVbP3fScpr411WLF/lHVsek+orv6nN1HkrRtzTY9fuXj+v0nv7dVru9UdXwkKRAI
+6JU7X1HPUT0tVelP4RybLqd0qfE/ENxo7mVzNeSSIZr82GRJpeeSAz8eUFKDJN2SeYvl6oILWvOO
+A2rRuYUW37VYXU/tarnCI018dpEmDzheT104VpK0OvtH7cg5qIaJiVp2zSTL1R0rWL0/5h7Ub4YN
+1MGiYj362ReWKzxWsDGRty9Pk+ZMUvNOzbXvh32affps9RrVS/VS6lmuNvTjbtSNo1SYV6iPHv+o
+xjMrjrerXnpd//h0lX572mBJCnls07uma+2ytRrxyxFyHEe5u3NVkHN4Q9CNyzbq/LvPV9u+bSOu
+O9i5pvBgoc75/Tnavna7tn+9PezfFW69fc7uc8y4CLetpGPOM+G2TayfeERfVy5cqRX/WCFJlbY7
+Y+oZik+MV+HBQt1zyj3qe3ZfpaSlhHWfBLt/D+49qCnPTFFKWoq2r92uORfO0cyvZob1+8IVLLdR
+80b6zXu/UVxcnPZn79e9w+9Vn7P7KC6uZhYAVPa89fIdL6vX6F41khNO7u4tu9W8U/OInkdzc3Nr
+qjTfiHoEGWNmGWNWG2NWGWMuqnD7LcaYZcaYlcaY6dHmoOb0Gt1LX735lSRpxYIVOvH8E8u/13FQ
+R9VPqS9JSh+Urn3b91mp0a8qOzZJDQ7vjFyQU1BjTwAIX2XHR5KWPLJE/cf3V6PmjWyU52tVHRum
+3KV1S9YpPileJ08+ufy2Nr3bxPSVXJXVvGXlFuXszFGPkT0sVnikzI2blRQfr6tOOvwuY9+0FhqW
+3lZODA7CUPWe0qGtMjp1UKOkRIvVBRdqTHQ5uYuadyq9yqpJqyZq1LyRcnbl2CqzXGVjuNtp3ZTc
+sPY3Yh3avo227T9Q/nWoY5veNV0bP9koSfph7Q9q1auVkhslK29/nooLi7Vj3Q617de2xutOapCk
+TkM6KSG5eu+rhltvsHERbttg55lw2x6t05BOylqXVWW7+MTSTzksyi+S40R/3mjbp235BEjrXq1V
+XFiskqLa37AysV5i+WvVovyiOnvdunrxaqV2SlWrnq3qJK9c7J3iPSuaKzCMMeZ8Sf0cx+lrjGkp
+6VNjzPuS+knq5jjOYGOMkbTIGHOq4zgf1ETRiM6J552o1+99Xcefeby2fbVNQycN1fql64/5uaVP
+LK212UsEV9Wx+eI/X+jVO19V7q5cTXmWd5PrWmXHZ++2vVq9eLWuW3idNi/fbLlS/6nqsbPps02a
+NWKWmrRqovEzx9f9C5sYsH3tdrXv3z7o94oLinX/6PsVFx+nUTeNUt9z+tZxdcGFqtlxHC3840JN
+mjNJ377/rYXKgvtqxy6d2CYt6PcKikt0yiPzlRAXp1tOHaTxPe1fOVJZvbGqsnF8SNbyLAWKAuV/
+uNoUTr214dCEWUkgoHc3bNbPT+xTZZuUpimKT4zX3u/3auOyjeo0qJP2bd+nTcs2qV7jemp9fGvF
+J8RHVVdRXpHuy7hPjuMoNT1VP3/i5xH/rurWW3Fc5K3Kq7JtXHxc0PNMuLlF+UXHnFfj4uOqbLf3
++7165OJHtHPTTo2fOT7sqy/CuX9XLlypdn3blU+S1JRQuVnLs/TMDc9oz9Y9mjRnUo1OYgTLLMgt
+0LsPvqtrF1yrd//v3RrLqipXKr0K476R96le43o65/fnhP3mAHtgVF80ExiSNEzSM5LkOM4OY0ym
+pEGSRkg6wxizQpKR1FBSN0nHTGDMmDGj/N8ZGRnKyMiIsiRUpXXv1tq9ZbeWv7hcvc/sHXR2d92S
+dVr29DLd+NqNFir0r6qOTb+x/dRvbD9tWLpBi/+8WL966VeWKvWnyo7Py3e8rHHTx6l0zlbMxNex
+yo5N+/7tNX3VdCU1SNKat9Zo7mVzdcend1isNvZM/2K6UtJStCtrl/5+7t/V5vg2Sk1PtV1WSB/M
+/UC9z+itpm2alt7ggsfb+qlT1KpxQ23cs09n/et59U1roU7Nmtguy3P2/bBP8381X5P+EXvLdepS
+XlGxBs95St/vP6BeLVI1ukt6WO06DemkDZ9s0MZPN2rkdSNL/9j+ZKPqpdRTp8Gdoq7r6GUV0Qq3
+3mDjoqq2lZ1nwsmdsXrGMefV9G7pVbZr2rapbltym/Zn79djlz6mE8afEPaVnZXdv9vXbterf3pV
+1y64tjp3cVS56Sel63cf/U7Z67I1/9r56jW6lxKSov3zM3Tm6//7ukZcO+LwVcu18NwQLLdJqyaa
+/sV0NWjaQFtWbdHcSXN1+8e3K7lR1VcqVVxCkp2dLUlKS0urka/dJDMzU5mZmWH9bLQjyIT42ki6
+23GcR6v6BRUnMFB3+ozpo0XTF+n6Rdcrd/eRa6+2fbVNz019Ttc8f40aNG1gqUL/quzYHNJ5aGft
+2rRLuXty1bAZM7d1KdTx2bJyi564+onyda1r31mr+MT48n1LUPtCHZuKLyB6n9FbL9z6gi8fO616
+ttKqRauCfu/QO3yp6anqOqyrtn6xNSYmMELVvOnTTdqwdIM+nPeh8nPyVVJUouRGyfrJtJ9YqPKw
+3i1StWBN8CtCWjUuHW+dmjXR8I7ttXL7DusTGJXVG6sqG8f5B/L16M8e1dg/jFWHEzvUcWXBVVZv
+bWpQtgdGflGxxj71oh5atlLXDal6U9OOgzpq07JN+mHtD2rdq7WatmmqzIcyVa9xPQ2ZNKQOKq+e
+cOrN3x98XFTVdsWLK4KeZ0b1HRVWbrDzaocuHcK+f1PSUtSqZyut/3h91JuC7/1+r+ZNnqdJ/5ik
+1A51f25P65am5IbJtX5FUtbyLH3xyhd6ZcYrOrj3oOLi45RYP1GnXnVqrWVKUnxifPnfTO37t1fz
+Ts21Y/2Oavf16ImHaL92k6MvZJg5M/Q+LdFex/NfSRcbY+KMMS0knSZpmaQ3JP3cGNNQkowxbcq+
+jxgx5NIhOuvWs9S6V+sjbt+zdU/5CS4WLr30o1DHZufGneX/3rJqi0qKSnz3B1gsCHV8pn0+TdM+
+n6Y/rvyj+o/rrwtnXcjkRR0LdWwO7Di89jtreZYcx/HlY6f78O4qLizW0ieXlt+2bc02bVi6QcWF
+xZKknF052vjpRrXqERtLbELVPOzKYZq+arqmfT5N5955rgZdPMj65IUkjezcQYUlAf1zxery21Zn
+/6gPs75XYXHpmvOduXn6eMs29Wphf4IoVL0fbf5ekuQ4sXdxS6gxsf6j9Zp3+TwNunhQTH0CVGWP
+O6l0OVRt3MmHlpDUS0zQ7DEj9ZePPlNJIHD4+yFiOw3ppK/e/EoNmjaQMUYNmjZQ3r48bfpskzoO
+6lihfS0Njmr+zqrqLSkq0dzL5wYdF1W1vezhy0KeZ6pqe3DfwaDn1Y5dO1babu+2vSrKL5JUuvnm
+xmUb1bJry6ju0rz9eXrkZ49o3B/HHXEMa9uuzbsUKCkdc7u37NaO73bouA7H1Wrmjf+5sfz12Ihr
+Rmj01NG1PnkhlR7jQNnja+emndq5YadSO9o/x3tVRFdgGGPiJeU7jvOyMeYUSaskBSTd6jjODklv
+GWN6Svq47HLqA5ImSfqxZspGtJq2aarhvxh+zO1vzHpDB/cc1Au3viDHcRSfGK+b377ZQoX+FerY
+rHpllT599lMlJCUosV6iJs+bbKE6hDo+Rzj62jTUiVDHZuWilfpw3oeKT4wvfezM9e9j56onr9KC
+2xfo7QfeVmK9RB3X4TidfuPpmn36bMXFx8kJOBr969FK6x477+IEq/m8u86zXVZIz/90vG5+/T3d
+u2SZ6iUmKL1pE90ybKCGPjJf8XFGAcfRb08drJ4taveFfLiC1Tt7TIZOn/ecvt21RzmFhepy/6N6
++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
+4+9cSf8q+/e/JE2o04rgGo7jfCBpz1E3Hz1+zq1w+xNl7T6R1MQYk1YXdSL2hRhLUuk56mjnSnrW
+cZxix3E2SVqn0udEQJLkOM4PjuOsLPt3jqS1ktqJ8xMiEGI8tS37NucoVJvjOAfL/pksKUGSI2mk
+pBfLbq/4+rvieesFSaPqqExUgQmM6msraUuFr7fq8MkUCJcj6Q1jzKfGmKvLbktzHCdbKn3SltTC
+WnVwo5ZHjZ+WZbcffc76XpyzULXryi7pf6zC5f6MJYTNGNNRpe9yLtWxz2+cn1AtFcbTJ2U3cY5C
+tRlj4owxn0v6QdJbktZL2us4TqDsRyr+XVc+nhzHKZG01xhzXB2XjCCYwKi+YDO+Tp1XAbc7xXGc
+gZLOUemT8GliHKF2cM5CdT2k0sv6T1Dpi7zZZbczlhAWY0wjlb5jeVPZO+ehxgljClUKMp44RyEi
+juMEypaQtFPp1Tm9gv1Y2f+PHk9GjKeYwARG9W2VVHETl3aStlmqBS5V9g6UHMf5UdLLKj2JZh+6
+dNYY00rSDnsVwoVCjZ+tktpX+DnOWaiU4zg/Oo5z6EXaozp8CTZjCVUq2wDvBUlPOo6zsOxmzk+I
+SLDxxDkK0XIcZ7+k9yUNldS0bI9D6cgxUz6ejDHxklIcxwm25BJ1jAmM6vtUUldjTLoxJknSxZIW
+Wa4JLmKMaVD2boKMMQ0lnSlptUrH0RVlPzZZ0sKgvwAoZXTkuwMVx88VOjx+Fkm6XJKMMUNVeqlk
+dt2UCJc4YiyV/YF5yPmSviz79yJJF5ftzN5JUldJy+qsSrjFPElrHMf5a4XbOD8hUseMJ85RiIQx
+pvmh5UbGmPqSRktaI+k9SRPLfqzi6+9FZV+r7Pvv1l21qIw5PIGJcJV9XNNfVToBNNdxnHsslwQX
+KXtSfUmll6ElSJrvOM49Zevq/q3S2d7NkiY6jrPXXqWIVcaYpyVlSEqVlC1pukqv5HleQcaPMeZv
+ksZIypV0peM4KyyUjRgUYiyNVOla84CkTZJ+eeiPSmPM7Srdmb1IpZdzv1n3VSNWGWOGSfqvSifl
+nbL/fq/SPyKDPr9xfkIolYynS8Q5CtVkjOmr0k0548r+e85xnD+XvS5/VlIzSZ9LmuQ4TpExJlnS
+k5IGSNol6eKyzWFhGRMYAAAAAAAg5rGEBAAAAAAAxDwmMAAAAAAAQMxjAgMAAAAAAMQ8JjAAAAAA
+AEDMYwIDAAAAAADEPCYwAAAAAABAzGMCAwAAAAAAxLz/B4WFz6FRwEb1AAAAAElFTkSuQmCC
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4>Going further with Constraint Programming</h4><p>The last available installable package is available on Pypi here: <a href="https://pypi.python.org/pypi/docplex">https://pypi.python.org/pypi/docplex</a></p>
+<p>A complete set of modeling examples can be downloaded here: <a href="https://github.com/IBMDecisionOptimization/docplex-examples">https://github.com/IBMDecisionOptimization/docplex-examples</a></p>
 
 </div>
 </div>
@@ -2025,20 +2819,32 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="summary"></a></p>
-<h2 id="7.-Summary-and-next-steps">7. Summary and next steps<a class="anchor-link" href="#7.-Summary-and-next-steps">&#182;</a></h2><p>You created a predictive model that makes product recommendations for customers and verified that it works.</p>
-<p>Dig deeper:</p>
-<ul>
-<li><a href="http://spark.apache.org/docs/latest/mllib-collaborative-filtering.html">Collaborative Filtering</a></li>
-<li><a href="http://spark.apache.org/docs/latest/ml-guide.html">Spark Machine Learning Library (MLlib) Guide</a></li>
-<li><a href="http://spark.apache.org/docs/latest/api/python/index.html">Spark Python API Docs</a></li>
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You learned how to set up and use the IBM Decision Optimization CPLEX Modeling for Python to formulate a Constraint Programming model and solve it with IBM Decision Optimization on the cloud.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Author">Author<a class="anchor-link" href="#Author">&#182;</a></h2><p><b>Christiane BRACCHI</b> joined IBM (formerly ILOG) Optimization development team in 1998 and has worked in Constraint Programming since 1989, contributed to the development of the first commercialized constraint programming product. She works on the IBM CP Optimizer engine and its various modeling tools, especially OPL, Concert and Python interface.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="References">References<a class="anchor-link" href="#References">&#182;</a></h2><ul>
+<li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html">CPLEX Modeling for Python documentation</a></li>
+<li><a href="https://developer.ibm.com/docloud/">Decision Optimization on Cloud</a></li>
+<li>Need help with DOcplex or to report a bug? Please go <a href="https://developer.ibm.com/answers/smartspace/docloud">here</a></li>
+<li>Contact us at dofeedback@wwpdl.vnet.ibm.com</li>
 </ul>
-<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p>Carlo Appugliese is a Spark and Hadoop evangelist at IBM.<br>
-Braden Callahan is a Big Data Technical Specialist for IBM.<br>
-Ross Lewis is a Big Data Technical Sales Specialist for IBM.<br>
-Mokhtar Kandil is a World Wide Big Data Technical Specialist for IBM.</p>
-<h2 id="Data-citation">Data citation<a class="anchor-link" href="#Data-citation">&#182;</a></h2><p>Daqing Chen, Sai Liang Sain, and Kun Guo, Data mining for the online retail industry: A case study of RFM model-based customer segmentation using data mining, Journal of Database Marketing and Customer Strategy Management, Vol. 19, No. 3, pp. 197-208, 2012 (Published online before print: 27 August 2012. doi: 10.1057/dbm.2012.17).</p>
-<p>Chen, D. (2012). UCI Machine Learning Repository [<a href="http://archive.ics.uci.edu/ml">http://archive.ics.uci.edu/ml</a>]. Irvine, CA: University of California, School of Information and Computer Science.</p>
 
 </div>
 </div>
@@ -2048,8 +2854,7 @@ Mokhtar Kandil is a World Wide Big Data Technical Specialist for IBM.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><hr>
-Copyright &copy; IBM Corp. 2017. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright © 2017 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>

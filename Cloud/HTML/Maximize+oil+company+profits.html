@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Spark+POT+Lab+</title>
+<title>Maximize oil company profit</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -791,24 +791,48 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Introduction-to-Apache-Spark-lab,-part-3:-machine-learning">Introduction to Apache Spark lab, part 3: machine learning<a class="anchor-link" href="#Introduction-to-Apache-Spark-lab,-part-3:-machine-learning">&#182;</a></h1><p>In this notebook you'll learn how to create a model for purchase recommendations using the alternating least squares algorithm of the Apache Spark machine learning library. Machine learning is based on algorithms that can learn from data without relying on rules-based programming.</p>
-<p>"A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P if its performance at tasks in T, as measured by P, improves with experience E"
--Tom M. Mitchell</p>
-<p>This notebook uses pySpark, the Python API for Spark. Some knowledge of Python is recommended. This notebook runs on Python 2 with Spark 2.0.</p>
-<p>If you are new to Apache Spark, see the first two parts of this lab:</p>
-<ul>
-<li><a href="https://apsportal.ibm.com/exchange/public/entry/view/95811fca38af4ccbea8acf8658bedcfc">Introduction to Apache Spark lab, part 1: Basic Concepts</a></li>
-<li><a href="https://apsportal.ibm.com/exchange/public/entry/view/5ad1c820f57809ddec9a040e37b2bd55">Introduction to Apache Spark lab, part 2: Querying data</a>  </li>
+<h1 id="Maximize-oil-company-profits-by-using-decision-optimization">Maximize oil company profits by using decision optimization<a class="anchor-link" href="#Maximize-oil-company-profits-by-using-decision-optimization">&#182;</a></h1><p>This notebook includes everything you need to set up decision optimization engines.  You will learn to build mathematical programming models to determine the best methods of maintaining a high quality product for oil company customers while maximizing profits.</p>
+<p>When you compete this notebook, you'll have a foundational knowledge of Prescriptive Analytics, and some working examples of decision optimization.</p>
+<p>You should have some familiarity with Python. This notebook runs on Python 2 with Spark 2.0.</p>
+<p>You will use publicly available data about oil production and delivery.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><ul>
+<li>Explore data by using pandas DataFrame methods</li>
+<li>Plot data by using the matplotlib package</li>
+<li>Make informed decisions from mathematical models to maximize profits.</li>
 </ul>
-<h2 id="Spark-machine-learning-library">Spark machine learning library<a class="anchor-link" href="#Spark-machine-learning-library">&#182;</a></h2><p><a href="http://spark.apache.org/docs/latest/mllib-guide.html">Apache Spark’s machine learning library</a> makes practical machine learning scalable and easy. The library consists of common machine learning algorithms and utilities, including classification, regression, clustering, collaborative filtering (this notebook!), dimensionality reduction, lower-level optimization primitives, and higher-level pipeline APIs.</p>
-<p>The library has two packages:</p>
-<ul>
-<li>spark.mllib contains the original API that handles data in RDDs. It's in maintenance mode, but fully supported.</li>
-<li>spark.ml contains a newer API for constructing ML pipelines. It handles data in DataFrames. It's being actively enhanced.</li>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><ul>
+<li><a href="#How--decision-optimization-can-help">How decision optimization can help</a></li>
+<li><a href="#The-problem:--Balance-production-to-profit">The problem</a><ul>
+<li><a href="#The-parameters-of-the-problem">Parameters of the problem</a></li>
 </ul>
-<h2 id="Alternating-least-squares-algorithm">Alternating least squares algorithm<a class="anchor-link" href="#Alternating-least-squares-algorithm">&#182;</a></h2><p>The alternating least squares (ALS) algorithm provides collaborative filtering between customers and products to find products that the customers might like, based on their previous purchases or ratings.</p>
-<p>The ALS algorithm creates a matrix of all customers versus all products. Most cells in the matrix are empty, which means the customer hasn't bought that product. The ALS algorithm then fills in the probability of customers buying products that they haven't bought yet, based on similarities between customer purchases and similarities between products. The algorithm uses the least squares computation to minimize the estimation errors, and alternates between fixing the customer factors and solving for product factors and fixing the product factors and solving for customer factors.</p>
-<p>You don't, however, need to understand how the ALS algorithm works to use it! Spark machine learning algorithms have default values that work well in most cases.</p>
+</li>
+<li><a href="#Setup">Setup</a><ul>
+<li><a href="#Step-1:---Model-the-data">Step 1: Model the data</a></li>
+<li><a href="#Step-2:-Install-the-packages">Step 2: Install the packages</a></li>
+<li><a href="#Step-3:-Display-the-prepared-data">Step 3: Display the prepared data</a>  </li>
+</ul>
+</li>
+<li><a href="#Set-up-the-prescriptive-model-and-run-the-analysis">Set up the prescriptive model and run the analysis</a>    </li>
+<li><a href="#Summary">Summary</a></li>
+</ul>
 
 </div>
 </div>
@@ -818,27 +842,18 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><ol>
-<li><a href="#getdata">Get the data</a><br></li>
-<li><a href="#prepare">Prepare and shape the data</a><br>
- 2.1 <a href="#prepare1">Format the data</a><br>
- 2.2 <a href="#prepare2">Clean the data</a><br>
- 2.3 <a href="#prepare3">Create a DataFrame</a><br>
- 2.4 <a href="#prepare4">Remove unneeded columns</a><br></li>
-<li><a href="#split">Split the data into three sets</a><br></li>
-<li><a href="#model">Build recommendation models</a><br></li>
-<li><a href="#test">Test the models</a><br>
- 5.1 <a href="#test1">Clean the cross validation data set</a><br>
- 5.2 <a href="#test2">Run the models on the cross validation data set</a><br>
- 5.3 <a href="#test3">Calculate the accuracy for each model</a><br>
- 5.4 <a href="#test4">Confirm the best model</a><br></li>
-<li><a href="#implement">Implement the mode</a><br>
- 6.1 <a href="#implement1">Create a DataFrame for the customer and all products</a><br>
- 6.2 <a href="#implement2">Rate each product</a><br>
- 6.3 <a href="#implement3">Find the top recommendations</a><br>
- 6.4 <a href="#implement4">Compare purchased and recommended products</a><br></li>
-<li><a href="#summary">Summary and next steps</a></li>
-</ol>
+<h2 id="How--decision-optimization-can-help">How  decision optimization can help<a class="anchor-link" href="#How--decision-optimization-can-help">&#182;</a></h2><p>Prescriptive analytics technology, which includes decision optimization,  recommends actions that are based on desired outcomes.  It takes into account specific scenarios, resources, and knowledge of past and current events. With this insight, your organization can make better decisions and have greater control of business outcomes.</p>
+<p>Prescriptive analytics can lead you to insight-based actions. It creates value through synergy with predictive analytics, which analyzes data to predict future outcomes.</p>
+<p>Prescriptive analytics then takes the insight that you've gained to the next level by suggesting the optimal way to handle that future situation. Organizations that can act fast in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.<br>
+<br/></p>
+<p>With prescriptive analytics, you can achieve the following goals:</p>
+<ul>
+<li>Automate the complex decisions and trade-offs to better manage your limited resources</li>
+<li>Take advantage of a future opportunity or mitigate a future risk</li>
+<li>Proactively update recommendations based on changing events</li>
+<li>Meet operational goals, increase customer loyalty, prevent threats and fraud, and optimize business processes</li>
+</ul>
+<hr>
 
 </div>
 </div>
@@ -848,11 +863,18 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="getdata"></a></p>
-<h2 id="1.-Get-the-data">1. Get the data<a class="anchor-link" href="#1.-Get-the-data">&#182;</a></h2><p>The data set contains the transactions of an online retailer of gift items for the period from 01/12/2010 to 09/12/2011. Many of the customers are wholesalers.</p>
-<p>You'll be using a slightly modified version of this data set: <a href="http://archive.ics.uci.edu/ml/datasets/Online+Retail">http://archive.ics.uci.edu/ml/datasets/Online+Retail</a>.</p>
-<p>Here's a glimpse of the data:</p>
-<p><img src='https://raw.githubusercontent.com/rosswlewis/RecommendationPoT/master/FullFile.png' width="80%" height="80%"></img></p>
+<p><a id='section1'></a></p>
+<h2 id="The-problem:--Balance-production-to-profit">The problem:  Balance production to profit<a class="anchor-link" href="#The-problem:--Balance-production-to-profit">&#182;</a></h2><ul>
+<li><p>An oil company manufactures different types of gasoline and diesel. Each type of gasoline is produced by blending different types of crude oils that must be purchased. The company must decide how much crude oil to buy to maximize its profits.  It must also respect processing capacities and quality levels.  And, finally, it must satisfy customer demand.</p>
+</li>
+<li><p>Blending problems are typical industry applications of Linear Programming (LP).</p>
+<ul>
+<li>LP can represent real life problems mathematically.  It uses an <em>objective function</em> to represent the goal that is to be minimized or maximized, and a set of <em>linear constraints</em> that define the conditions to be satisfied and the limitations of the real-life problem.  </li>
+<li>The <em>function</em> and <em>constraints</em> are expressed in terms of <em>decision variables</em>. </li>
+<li>The solution, which can be obtained from optimization engines such as IBM® ILOG® CPLEX®, provides the best values for these variables so that the objective function is optimized.</li>
+</ul>
+</li>
+</ul>
 
 </div>
 </div>
@@ -862,7 +884,94 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Download the CSV version of the data set, from which commas in the product descriptions are removed:</p>
+<h3 id="The-parameters-of-the-problem">The parameters of the problem<a class="anchor-link" href="#The-parameters-of-the-problem">&#182;</a></h3><ul>
+<li><p>The oil-blending problem consists of calculating different blends of gasoline according to specific quality criteria.</p>
+</li>
+<li><p>There are three types of gasoline manufactured:</p>
+<ul>
+<li>super </li>
+<li>regular </li>
+<li>diesel </li>
+</ul>
+</li>
+<li>The company produces each type of gasoline by blending three types of crude oil: <ul>
+<li>crude1</li>
+<li>crude2 </li>
+<li>crude3 </li>
+</ul>
+</li>
+<li>The potential blendings are constrained because the gasoline must satisfy some quality criteria with respect to their lead content and their octane ratings.</li>
+<li>The company must satisfy its customer demand, which is: <ul>
+<li>3,000 barrels a day of super</li>
+<li>2,000 barrels a day of regular</li>
+<li>1,000 barrels a day of diesel</li>
+</ul>
+</li>
+<li>The company can purchase 5,000 barrels of each type of crude oil per day, and can process at most 14,000 barrels a day.</li>
+<li>The company has the option of advertising a gasoline, which increases the demand for this type of gasoline by ten barrels for every dollar spent. </li>
+<li>It costs four dollars to transform a barrel of oil into a barrel of gasoline.</li>
+</ul>
+<p>The goal is to maximize profit, which comes from the sales of the final products minus total costs. The costs consist of the purchase cost of the crude oils, production costs, and inventory costs.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Setup">Setup<a class="anchor-link" href="#Setup">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id='section2'></a></p>
+<h3 id="Step-1:---Model-the-data">Step 1:   Model the data<a class="anchor-link" href="#Step-1:---Model-the-data">&#182;</a></h3><p>To model the data, you must consider the following factors:</p>
+<ul>
+<li><p>For each type of crude oil:</p>
+<ul>
+<li>What are the capacities that can be bought?</li>
+<li>What is the buying price?</li>
+<li>What are the octane and lead levels?</li>
+</ul>
+</li>
+<li><p>For each type of gasoline or diesel:</p>
+<ul>
+<li>What is the customer demand?</li>
+<li>What are the selling prices?</li>
+<li>What are the octane and lead levels?</li>
+</ul>
+</li>
+<li><p>What is the maximum level of production that is imposed by the factory's limit and a fixed production cost?</p>
+</li>
+<li><p>What are the inventory costs for each final product and the blending proportions?</p>
+</li>
+</ul>
+<p>Assume that the marginal production cost and maximum production are identical for all oil types.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Step-2:-Install-the-packages">Step 2: Install the packages<a class="anchor-link" href="#Step-2:-Install-the-packages">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="2.1:-Download-the-modeling-library">2.1: Download the modeling library<a class="anchor-link" href="#2.1:-Download-the-modeling-library">&#182;</a></h3><p>Run the following code to install the Python package, Decision Optimization CPLEX Modeling library (DOcplex). The DOcplex library contains the two modeling packages, Mathematical Programming and Constraint Programming.  You will use this package to formulate the optimization model.</p>
 
 </div>
 </div>
@@ -872,35 +981,10 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">!</span>rm <span class="s1">&#39;OnlineRetail.csv.gz&#39;</span> -f
-<span class="o">!</span>wget https://raw.githubusercontent.com/rosswlewis/RecommendationPoT/master/OnlineRetail.csv.gz
+<div class=" highlight hl-ipython2"><pre><span class="o">!</span>pip install --user docplex -q
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>--2017-06-08 10:10:31--  https://raw.githubusercontent.com/rosswlewis/RecommendationPoT/master/OnlineRetail.csv.gz
-Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.48.133
-Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.48.133|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 7483128 (7.1M) [application/octet-stream]
-Saving to: ‘OnlineRetail.csv.gz’
-
-100%[======================================&gt;] 7,483,128   7.66MB/s   in 0.9s   
-
-2017-06-08 10:10:35 (7.66 MB/s) - ‘OnlineRetail.csv.gz’ saved [7483128/7483128]
-
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -910,8 +994,14 @@ Saving to: ‘OnlineRetail.csv.gz’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Put the data into an RDD and print the first 5 rows:</p>
-
+<h3 id="2.2:-Set-up-the-prescriptive-engine">2.2: Set up the prescriptive engine<a class="anchor-link" href="#2.2:-Set-up-the-prescriptive-engine">&#182;</a></h3><p>To solve the model, you will use a <em>solve service</em> on the cloud, which requires credentials.</p>
+<p>Access the service by doing the following actions:</p>
+<ol>
+<li>Subscribe to the <a href="https://developer.ibm.com/docloud">Decision Optimization on Cloud solve service</a>.</li>
+<li>Get the service URL and your personal API key.</li>
+<li>Use the URL and key to initialize the DOcplex context as shown here:</li>
+</ol>
+<div class="alert alert-block alert-info">NOTE: Before you run the following code, make sure that you replace the value for **key** (*ENTER YOUR KEY HERE*) with the one you just received.</div>
 </div>
 </div>
 </div>
@@ -920,41 +1010,28 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">loadRetailData</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s">&quot;OnlineRetail.csv.gz&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">docplex.mp.context</span> <span class="kn">import</span> <span class="o">*</span>
 
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">print</span> <span class="n">row</span>
+<span class="n">url</span><span class="o">=</span> <span class="s">&quot;&quot;</span>
+<span class="n">key</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+
+<span class="n">ctx</span> <span class="o">=</span> <span class="n">Context</span><span class="o">.</span><span class="n">make_default_context</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>InvoiceNo,StockCode,Description,Quantity,InvoiceDate,UnitPrice,CustomerID,Country
-536365,85123A,WHITE HANGING HEART T-LIGHT HOLDER,6,12/1/10 8:26,2.55,17850,United Kingdom
-536365,71053,WHITE METAL LANTERN,6,12/1/10 8:26,3.39,17850,United Kingdom
-536365,84406B,CREAM CUPID HEARTS COAT HANGER,8,12/1/10 8:26,2.75,17850,United Kingdom
-536365,84029G,KNITTED UNION FLAG HOT WATER BOTTLE,6,12/1/10 8:26,3.39,17850,United Kingdom
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Each row in the RDD is a string that correlates to a line in the CSV file.</p>
+<p>Here is an example of what you should enter when you are subscribed:</p>
+<p><code>from docplex.cp.model import *
+url= "https://api-oaas.docloud.ibmcloud.com/job_manager/rest/v1/"
+key = "api_5bf69af0-ba5f-4326-b8eb-4c9a2f909436"</code></p>
 
 </div>
 </div>
@@ -964,26 +1041,7 @@ Saving to: ‘OnlineRetail.csv.gz’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare"></a></p>
-<h2 id="2.-Prepare-and-shape-the-data">2. Prepare and shape the data<a class="anchor-link" href="#2.-Prepare-and-shape-the-data">&#182;</a></h2><p>It's been said that preparing and shaping data is 80% of a data scientist's job. Having the right data in the right format is critical for getting accurate results.</p>
-<p>To get the data ready, complete these tasks:</p>
-<ol>
-<li><a href="#prepare1">Format the data</a></li>
-<li><a href="#prepare2">Clean the data</a></li>
-<li><a href="#prepare3">Create a DataFrame</a></li>
-<li><a href="#prepare4">Remove unneeded columns</a></li>
-</ol>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare1"></a></p>
-<h3 id="2.1-Format-the-data">2.1 Format the data<a class="anchor-link" href="#2.1-Format-the-data">&#182;</a></h3><p>Remove the header from the RDD and split the string in each row with a comma:</p>
+<h3 id="2.3:-Install-the-NumPy-package">2.3: Install the NumPy package<a class="anchor-link" href="#2.3:-Install-the-NumPy-package">&#182;</a></h3><p>Input data comes as NumPy arrays with two dimensions. <a href="http://www.numpy.org/">NumPy</a> is the fundamental package for scientific computing with Python. So, first ensure that the NumPy package is installed:</p>
 
 </div>
 </div>
@@ -993,33 +1051,10 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">header</span> <span class="o">=</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
-<span class="n">loadRetailData</span> <span class="o">=</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span> <span class="o">!=</span> <span class="n">header</span><span class="p">)</span><span class="o">.</span>\
-                            <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">))</span>
-
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">print</span> <span class="n">row</span>
+<div class=" highlight hl-ipython2"><pre><span class="o">!</span>pip install numpy -q
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[u&apos;536365&apos;, u&apos;85123A&apos;, u&apos;WHITE HANGING HEART T-LIGHT HOLDER&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;2.55&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-[u&apos;536365&apos;, u&apos;71053&apos;, u&apos;WHITE METAL LANTERN&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;3.39&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-[u&apos;536365&apos;, u&apos;84406B&apos;, u&apos;CREAM CUPID HEARTS COAT HANGER&apos;, u&apos;8&apos;, u&apos;12/1/10 8:26&apos;, u&apos;2.75&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-[u&apos;536365&apos;, u&apos;84029G&apos;, u&apos;KNITTED UNION FLAG HOT WATER BOTTLE&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;3.39&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-[u&apos;536365&apos;, u&apos;84029E&apos;, u&apos;RED WOOLLY HOTTIE WHITE HEART.&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;3.39&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1029,13 +1064,22 @@ Saving to: ‘OnlineRetail.csv.gz’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare2"></a></p>
-<h3 id="2.2-Clean-the-data">2.2 Clean the data<a class="anchor-link" href="#2.2-Clean-the-data">&#182;</a></h3><p>Remove the rows that have incomplete data. Keep only the rows that meet the following criteria:</p>
+<h3 id="2.4:-Set-up-a-multidimensional-array">2.4: Set up a multidimensional array<a class="anchor-link" href="#2.4:-Set-up-a-multidimensional-array">&#182;</a></h3><p>You create the arrays with the <a href="#The-parameters-of-the-problem">known information</a> so that you can begin to solve for the potential unknown scenarios.</p>
+<p>The first dimension of the <strong>NumPy array</strong> is the number of gasoline types.  For each gasoline type,  a NumPy array exists that contains the following attributes:</p>
 <ul>
-<li>The purchase quantity is greater than 0 </li>
-<li>The customer ID not equal to 0 </li>
-<li>The stock code is not blank after you remove non-numeric characters</li>
+<li>capacity </li>
+<li>price </li>
+<li>octane</li>
+<li>lead level</li>
 </ul>
+<p>You set up the same kind of array where each oil type contains the following attributes:</p>
+<ul>
+<li>demand </li>
+<li>price </li>
+<li>octane</li>
+<li>lead level</li>
+</ul>
+<p>When you run the following set of code you define a string array of gas_names and oil_names, and then an array of gas_data and oil_data each with the integer attribute values.  The result is a display of the number of gasoline types and the number of crude types:</p>
 
 </div>
 </div>
@@ -1045,13 +1089,28 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">re</span>
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
-<span class="n">loadRetailData</span> <span class="o">=</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>\
-                                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;\D&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">!=</span> <span class="mi">0</span> \
-                                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">gas_names</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;super&quot;</span><span class="p">,</span> <span class="s">&quot;regular&quot;</span><span class="p">,</span> <span class="s">&quot;diesel&quot;</span><span class="p">]</span>
 
-<span class="k">print</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">gas_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">3000</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+
+<span class="n">oil_names</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;crude1&quot;</span><span class="p">,</span> <span class="s">&quot;crude2&quot;</span><span class="p">,</span> <span class="s">&quot;crude3&quot;</span><span class="p">]</span>
+
+<span class="n">oil_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span> <span class="p">[</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+
+<span class="n">nb_gas</span>  <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gas_names</span><span class="p">)</span>
+<span class="n">nb_oils</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">oil_names</span><span class="p">)</span>
+<span class="n">range_gas</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_gas</span><span class="p">)</span>
+<span class="n">range_oil</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_oils</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Number of gasoline types = {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_gas</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Number of crude types = {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_oils</span><span class="p">))</span>
+
+<span class="c"># global data</span>
+<span class="n">production_cost</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">production_max</span> <span class="o">=</span> <span class="mi">14000</span>
+<span class="c"># each $1 spent on advertising increases demand by 10.</span>
+<span class="n">advert_return</span> <span class="o">=</span> <span class="mi">10</span>
 </pre></div>
 
 </div>
@@ -1064,7 +1123,8 @@ Saving to: ‘OnlineRetail.csv.gz’
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[[u&apos;536365&apos;, u&apos;85123A&apos;, u&apos;WHITE HANGING HEART T-LIGHT HOLDER&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;2.55&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;], [u&apos;536365&apos;, u&apos;71053&apos;, u&apos;WHITE METAL LANTERN&apos;, u&apos;6&apos;, u&apos;12/1/10 8:26&apos;, u&apos;3.39&apos;, u&apos;17850&apos;, u&apos;United Kingdom&apos;]]
+<pre>Number of gasoline types = 3
+Number of crude types = 3
 </pre>
 </div>
 </div>
@@ -1078,8 +1138,7 @@ Saving to: ‘OnlineRetail.csv.gz’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare3"></a></p>
-<h3 id="2.3-Create-a-DataFrame">2.3 Create a DataFrame<a class="anchor-link" href="#2.3-Create-a-DataFrame">&#182;</a></h3><p>First, create an SQLContext and map each line to a row:</p>
+<h3 id="2.5:-Install-the-pandas-library">2.5: Install the pandas library<a class="anchor-link" href="#2.5:-Install-the-pandas-library">&#182;</a></h3><p>Install and import the <a href="http://pandas.pydata.org/">pandas</a> library.  Pandas is an open source Python library for data analysis that you will use to store data. It contains data structures and data analysis tools for the Python programming language.  The pandas structures are built on top of NumPy.</p>
 
 </div>
 </div>
@@ -1089,69 +1148,29 @@ Saving to: ‘OnlineRetail.csv.gz’
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SQLContext</span><span class="p">,</span> <span class="n">Row</span>
-<span class="n">sqlContext</span> <span class="o">=</span> <span class="n">SQLContext</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
-
-<span class="c">#Convert each line to a Row.</span>
-<span class="n">loadRetailData</span> <span class="o">=</span> <span class="n">loadRetailData</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="n">Row</span><span class="p">(</span><span class="n">inv</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>\
-                                    <span class="n">stockCode</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;\D&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>\
-                                    <span class="n">description</span><span class="o">=</span><span class="n">l</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>\
-                                    <span class="n">quant</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>\
-                                    <span class="n">invDate</span><span class="o">=</span><span class="n">l</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>\
-                                    <span class="n">price</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span>\
-                                    <span class="n">custId</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">6</span><span class="p">]),</span>\
-                                    <span class="n">country</span><span class="o">=</span><span class="n">l</span><span class="p">[</span><span class="mi">7</span><span class="p">]))</span>
+<div class=" highlight hl-ipython2"><pre><span class="o">!</span>pip install pandas -q
 </pre></div>
 
 </div>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a DataFrame and show the inferred schema:</p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">retailDf</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">loadRetailData</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">retailDf</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="n">gaspd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([(</span><span class="n">gas_names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="nb">int</span><span class="p">(</span><span class="n">gas_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">gas_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">gas_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">gas_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">3</span><span class="p">]))</span> 
+                      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">range_gas</span><span class="p">])</span>
+<span class="n">oilpd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([(</span><span class="n">oil_names</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="nb">int</span><span class="p">(</span><span class="n">oil_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">oil_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">oil_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]),</span><span class="n">oil_data</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span> 
+                      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">range_oil</span><span class="p">])</span>
+<span class="n">gaspd</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="s">&#39;demand&#39;</span><span class="p">,</span><span class="s">&#39;price&#39;</span><span class="p">,</span><span class="s">&#39;octane&#39;</span><span class="p">,</span><span class="s">&#39;lead&#39;</span><span class="p">]</span>
+<span class="n">oilpd</span><span class="o">.</span><span class="n">columns</span><span class="o">=</span> <span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="s">&#39;capacity&#39;</span><span class="p">,</span><span class="s">&#39;price&#39;</span><span class="p">,</span><span class="s">&#39;octane&#39;</span><span class="p">,</span><span class="s">&#39;lead&#39;</span><span class="p">]</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>root
- |-- country: string (nullable = true)
- |-- custId: long (nullable = true)
- |-- description: string (nullable = true)
- |-- inv: long (nullable = true)
- |-- invDate: string (nullable = true)
- |-- price: double (nullable = true)
- |-- quant: long (nullable = true)
- |-- stockCode: long (nullable = true)
-
-None
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1161,7 +1180,7 @@ None
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Register the DataFrame as a table so that you can run SQL queries on it and show the first two rows:</p>
+<p>Now use basic HTML and a stylesheet to format the data:</p>
 
 </div>
 </div>
@@ -1171,8 +1190,47 @@ None
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">retailDf</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;retailPurchases&quot;</span><span class="p">)</span>
-<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;SELECT * FROM retailPurchases limit 2&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">CSS</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">body {</span>
+<span class="s">    margin: 0;</span>
+<span class="s">    font-family: Helvetica;</span>
+<span class="s">}</span>
+<span class="s">table.dataframe {</span>
+<span class="s">    border-collapse: collapse;</span>
+<span class="s">    border: none;</span>
+<span class="s">}</span>
+<span class="s">table.dataframe tr {</span>
+<span class="s">    border: none;</span>
+<span class="s">}</span>
+<span class="s">table.dataframe td, table.dataframe th {</span>
+<span class="s">    margin: 0;</span>
+<span class="s">    border: 1px solid white;</span>
+<span class="s">    padding-left: 0.25em;us</span>
+<span class="s">    padding-right: 0.25em;</span>
+<span class="s">}</span>
+<span class="s">table.dataframe th:not(:empty) {</span>
+<span class="s">    background-color: #fec;</span>
+<span class="s">    text-align: left;</span>
+<span class="s">    font-weight: normal;</span>
+<span class="s">}</span>
+<span class="s">table.dataframe tr:nth-child(2) th:empty {</span>
+<span class="s">    border-left: none;</span>
+<span class="s">    border-right: 1px dashed #888;</span>
+<span class="s">}</span>
+<span class="s">table.dataframe td {</span>
+<span class="s">    border: 2px solid #ccf;</span>
+<span class="s">    background-color: #f4f4ff;</span>
+<span class="s">}</span>
+<span class="s">    table.dataframe thead th:first-child {</span>
+<span class="s">        display: none;</span>
+<span class="s">    }</span>
+<span class="s">    table.dataframe tbody th {</span>
+<span class="s">        display: none;</span>
+<span class="s">    }</span>
+<span class="s">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+<span class="n">HTML</span><span class="p">(</span><span class="s">&#39;&lt;style&gt;{}&lt;/style&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CSS</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -1186,47 +1244,44 @@ None
 <div class="output_area"><div class="prompt output_prompt">Out[7]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>country</th>
-      <th>custId</th>
-      <th>description</th>
-      <th>inv</th>
-      <th>invDate</th>
-      <th>price</th>
-      <th>quant</th>
-      <th>stockCode</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>United Kingdom</td>
-      <td>17850</td>
-      <td>WHITE HANGING HEART T-LIGHT HOLDER</td>
-      <td>536365</td>
-      <td>12/1/10 8:26</td>
-      <td>2.55</td>
-      <td>6</td>
-      <td>85123</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>United Kingdom</td>
-      <td>17850</td>
-      <td>WHITE METAL LANTERN</td>
-      <td>536365</td>
-      <td>12/1/10 8:26</td>
-      <td>3.39</td>
-      <td>6</td>
-      <td>71053</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+<style>
+body {
+    margin: 0;
+    font-family: Helvetica;
+}
+table.dataframe {
+    border-collapse: collapse;
+    border: none;
+}
+table.dataframe tr {
+    border: none;
+}
+table.dataframe td, table.dataframe th {
+    margin: 0;
+    border: 1px solid white;
+    padding-left: 0.25em;us
+    padding-right: 0.25em;
+}
+table.dataframe th:not(:empty) {
+    background-color: #fec;
+    text-align: left;
+    font-weight: normal;
+}
+table.dataframe tr:nth-child(2) th:empty {
+    border-left: none;
+    border-right: 1px dashed #888;
+}
+table.dataframe td {
+    border: 2px solid #ccf;
+    background-color: #f4f4ff;
+}
+    table.dataframe thead th:first-child {
+        display: none;
+    }
+    table.dataframe tbody th {
+        display: none;
+    }
+</style>
 </div>
 
 </div>
@@ -1240,8 +1295,7 @@ None
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="prepare4"></a></p>
-<h3 id="2.4-Remove-unneeded-columns">2.4 Remove unneeded columns<a class="anchor-link" href="#2.4-Remove-unneeded-columns">&#182;</a></h3><p>The only columns you need are <code>custId</code>, <code>stockCode</code>, and a new column, <code>purch</code>, which has a value of 1 to indicate that the customer purchased the product:</p>
+<h3 id="Step-3:-Display-the-prepared-data">Step 3: Display the prepared data<a class="anchor-link" href="#Step-3:-Display-the-prepared-data">&#182;</a></h3><p>Now, display the data that you just prepared.</p>
 
 </div>
 </div>
@@ -1251,17 +1305,11 @@ None
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">query</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
-<span class="s">SELECT </span>
-<span class="s">    custId, stockCode, 1 as purch</span>
-<span class="s">FROM </span>
-<span class="s">    retailPurchases </span>
-<span class="s">group </span>
-<span class="s">    by custId, stockCode&quot;&quot;&quot;</span>
-<span class="n">retailDf</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-<span class="n">retailDf</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;retailDf&quot;</span><span class="p">)</span>
-
-<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;select * from retailDf limit 10&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Gas data:&quot;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">gaspd</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;Oil data:&quot;</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">oilpd</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1272,79 +1320,106 @@ None
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Gas data:
+</pre>
+</div>
+</div>
 
-<div class="output_html rendered_html output_subarea output_execute_result">
+<div class="output_area"><div class="prompt"></div>
+
+<div class="output_html rendered_html output_subarea ">
 <div>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>custId</th>
-      <th>stockCode</th>
-      <th>purch</th>
+      <th>name</th>
+      <th>demand</th>
+      <th>price</th>
+      <th>octane</th>
+      <th>lead</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
-      <td>18074</td>
-      <td>22224</td>
+      <td>super</td>
+      <td>3000</td>
+      <td>70</td>
+      <td>10</td>
       <td>1</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>13705</td>
-      <td>21889</td>
-      <td>1</td>
+      <td>regular</td>
+      <td>2000</td>
+      <td>60</td>
+      <td>8</td>
+      <td>2</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>15862</td>
-      <td>22441</td>
+      <td>diesel</td>
+      <td>1000</td>
+      <td>50</td>
+      <td>6</td>
       <td>1</td>
     </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Oil data:
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+
+<div class="output_html rendered_html output_subarea ">
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>capacity</th>
+      <th>price</th>
+      <th>octane</th>
+      <th>lead</th>
+    </tr>
+  </thead>
+  <tbody>
     <tr>
-      <th>3</th>
-      <td>15862</td>
-      <td>21592</td>
-      <td>1</td>
+      <th>0</th>
+      <td>crude1</td>
+      <td>5000</td>
+      <td>45</td>
+      <td>12</td>
+      <td>0.5</td>
     </tr>
     <tr>
-      <th>4</th>
-      <td>12838</td>
-      <td>22739</td>
-      <td>1</td>
+      <th>1</th>
+      <td>crude2</td>
+      <td>5000</td>
+      <td>35</td>
+      <td>6</td>
+      <td>2.0</td>
     </tr>
     <tr>
-      <th>5</th>
-      <td>12838</td>
-      <td>22149</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>14078</td>
-      <td>22548</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>14078</td>
-      <td>22423</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>12433</td>
-      <td>21977</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>14696</td>
-      <td>84360</td>
-      <td>1</td>
+      <th>2</th>
+      <td>crude3</td>
+      <td>5000</td>
+      <td>25</td>
+      <td>8</td>
+      <td>3.0</td>
     </tr>
   </tbody>
 </table>
@@ -1362,14 +1437,36 @@ None
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="split"></a></p>
-<h2 id="3.-Split-the-data-into-three-sets">3. Split the data into three sets<a class="anchor-link" href="#3.-Split-the-data-into-three-sets">&#182;</a></h2><p>You'll split the data into three sets:</p>
-<ul>
-<li>a testing data set (10% of the data)</li>
-<li>a cross-validation data set (10% of the data)</li>
-<li>a training data set (80% of the data)</li>
-</ul>
-<p>Split the data randomly and create a DataFrame for each data set:</p>
+<p>Your output should show you two tables:  one for gas data and one for oil data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Set-up-the-prescriptive-model-and-run-the-analysis">Set up the prescriptive model and run the analysis<a class="anchor-link" href="#Set-up-the-prescriptive-model-and-run-the-analysis">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When you have enough data, you can start to see patterns.  From the patterns, you can build a model of how the data works.  And then, with a model in hand, you can make optimized decisions.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Create-DOcplex-model">Create DOcplex model<a class="anchor-link" href="#Create-DOcplex-model">&#182;</a></h3><p>You need a model to store all the variables and constraints that are needed to formulate the business problem.  Then you submit the problem to the solve service.</p>
 
 </div>
 </div>
@@ -1379,47 +1476,12 @@ None
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">testDf</span><span class="p">,</span> <span class="n">cvDf</span><span class="p">,</span> <span class="n">trainDf</span> <span class="o">=</span> <span class="n">retailDf</span><span class="o">.</span><span class="n">randomSplit</span><span class="p">([</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span><span class="o">.</span><span class="mi">8</span><span class="p">],</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="kn">import</span> <span class="n">Model</span>
 
-<span class="k">print</span> <span class="s">&quot;trainDf count: &quot;</span><span class="p">,</span> <span class="n">trainDf</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span> <span class="s">&quot; example: &quot;</span>
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">trainDf</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="k">print</span> <span class="n">row</span>
-<span class="k">print</span>
-
-<span class="k">print</span> <span class="s">&quot;cvDf count: &quot;</span><span class="p">,</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span> <span class="s">&quot; example: &quot;</span>
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="k">print</span> <span class="n">row</span>
-<span class="k">print</span>
-
-<span class="k">print</span> <span class="s">&quot;testDf count: &quot;</span><span class="p">,</span> <span class="n">testDf</span><span class="o">.</span><span class="n">count</span><span class="p">(),</span> <span class="s">&quot; example: &quot;</span>
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">testDf</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span> <span class="k">print</span> <span class="n">row</span>
-<span class="k">print</span>
+<span class="n">mdl</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;oil_blending&quot;</span><span class="p">,</span><span class="n">context</span><span class="o">=</span><span class="n">ctx</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>trainDf count:  208123  example: 
-Row(custId=12359, stockCode=23345, purch=1)
-Row(custId=12363, stockCode=20685, purch=1)
-
-cvDf count:  25876  example: 
-Row(custId=12349, stockCode=23545, purch=1)
-Row(custId=12388, stockCode=22960, purch=1)
-
-testDf count:  26113  example: 
-Row(custId=12362, stockCode=22372, purch=1)
-Row(custId=12391, stockCode=20985, purch=1)
-
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1429,14 +1491,19 @@ Row(custId=12391, stockCode=20985, purch=1)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="model"></a></p>
-<h2 id="4.-Build-recommendation-models">4. Build recommendation models<a class="anchor-link" href="#4.-Build-recommendation-models">&#182;</a></h2><p>Machine learning algorithms have standard parameters and hyperparameters. Standard parameters specify data and options. Hyperparameters control the performance of the algorithm.</p>
-<p>The ALS algorithm has these hyperparameters:</p>
-<ul>
-<li>The <code>rank</code> hyperparameter represents the number of features. The default value of <code>rank</code> is 10.</li>
-<li>The <code>maxIter</code> hyperparameter represents the number of iterations to run the least squares computation. The default value of <code>maxIter</code> is 10.</li>
-</ul>
-<p>Use the training DataFrame to train three models with the ALS algorithm with different values for the <code>rank</code> and <code>maxIter</code> hyperparameters. Assign the <code>userCol</code>, <code>itemCol</code>, and <code>ratingCol</code> parameters to the appropriate data columns. Set the <code>implicitPrefs</code> parameter to <code>true</code> so that the algorithm can predict latent factors.</p>
+<div class="alert alert-block alert-warning">NOTE: You might see a warning message.  This is expected because DOcplex tries to solve by using a local engine.  When the local engine is not found, then the solve is submitted to a service that runs on the cloud (DOcplexCloud) by using the URL/key that you received. 
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Create-the-decision-variables">Create the decision variables<a class="anchor-link" href="#Create-the-decision-variables">&#182;</a></h3><p>A <em>decision variable</em> is a controllable input variable that represents some key decisions that you must make to achieve your goal.</p>
+<p>For each combination of oil and gasoline, you must decide the quantity of oil to use to produce a gasoline. You use a decision variable to represent that amount.</p>
+<p>You must create a matrix of continuous variables, indexed by the set of oils and the set of gasolines:</p>
 
 </div>
 </div>
@@ -1446,35 +1513,10 @@ Row(custId=12391, stockCode=20985, purch=1)
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.ml.recommendation</span> <span class="kn">import</span> <span class="n">ALS</span>
-
-<span class="n">als1</span> <span class="o">=</span> <span class="n">ALS</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span><span class="n">userCol</span><span class="o">=</span><span class="s">&quot;custId&quot;</span><span class="p">,</span><span class="n">itemCol</span><span class="o">=</span><span class="s">&quot;stockCode&quot;</span><span class="p">,</span><span class="n">ratingCol</span><span class="o">=</span><span class="s">&quot;purch&quot;</span><span class="p">,</span><span class="n">implicitPrefs</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">model1</span> <span class="o">=</span> <span class="n">als1</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trainDf</span><span class="p">)</span>
-
-<span class="n">als2</span> <span class="o">=</span> <span class="n">ALS</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="n">userCol</span><span class="o">=</span><span class="s">&quot;custId&quot;</span><span class="p">,</span><span class="n">itemCol</span><span class="o">=</span><span class="s">&quot;stockCode&quot;</span><span class="p">,</span><span class="n">ratingCol</span><span class="o">=</span><span class="s">&quot;purch&quot;</span><span class="p">,</span><span class="n">implicitPrefs</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">model2</span> <span class="o">=</span> <span class="n">als2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trainDf</span><span class="p">)</span>
-
-<span class="n">als3</span> <span class="o">=</span> <span class="n">ALS</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">maxIter</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span><span class="n">userCol</span><span class="o">=</span><span class="s">&quot;custId&quot;</span><span class="p">,</span><span class="n">itemCol</span><span class="o">=</span><span class="s">&quot;stockCode&quot;</span><span class="p">,</span><span class="n">ratingCol</span><span class="o">=</span><span class="s">&quot;purch&quot;</span><span class="p">,</span><span class="n">implicitPrefs</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">model3</span> <span class="o">=</span> <span class="n">als3</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trainDf</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="s">&quot;The models are trained&quot;</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">blends</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">continuous_var_matrix</span><span class="p">(</span><span class="n">keys1</span><span class="o">=</span><span class="n">nb_oils</span><span class="p">,</span> <span class="n">keys2</span><span class="o">=</span><span class="n">nb_gas</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>The models are trained
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1484,11 +1526,7 @@ Row(custId=12391, stockCode=20985, purch=1)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="test"></a></p>
-<h2 id="5.-Test-the-models">5. Test the models<a class="anchor-link" href="#5.-Test-the-models">&#182;</a></h2><p>First, test the three models on the cross-validation data set, and then on the testing data set.</p>
-<p>You'll know the model is accurate when the prediction values for products that the customers have already bought are close to 1.</p>
-<p><a id="test1"></a></p>
-<h3 id="5.1-Clean-the-cross-validation-data-set">5.1 Clean the cross validation data set<a class="anchor-link" href="#5.1-Clean-the-cross-validation-data-set">&#182;</a></h3><p>Remove any of the customers or products in the cross-validation data set that are not in the training data set:</p>
+<p>You must also decide how much money should be spent in advertising for each type of gasoline. Create a list of continuous variables, indexed by the gasolines:</p>
 
 </div>
 </div>
@@ -1498,33 +1536,10 @@ Row(custId=12391, stockCode=20985, purch=1)
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">UserDefinedFunction</span>
-<span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="kn">import</span> <span class="n">BooleanType</span>
-<span class="n">customers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">trainDf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">custId</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
-<span class="n">stock</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">trainDf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
-
-<span class="k">print</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-<span class="n">cvDf</span> <span class="o">=</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span> <span class="ow">in</span> <span class="n">stock</span> <span class="ow">and</span>\
-                                           <span class="n">line</span><span class="o">.</span><span class="n">custId</span> <span class="ow">in</span> <span class="n">customers</span><span class="p">)</span><span class="o">.</span><span class="n">toDF</span><span class="p">()</span>
-<span class="k">print</span> <span class="n">cvDf</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">adverts</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">continuous_var_list</span><span class="p">(</span><span class="n">nb_gas</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>25876
-25846
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1534,8 +1549,13 @@ Row(custId=12391, stockCode=20985, purch=1)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="test2"></a></p>
-<h3 id="5.2-Run-the-models-on-the-cross-validation-data-set">5.2 Run the models on the cross-validation data set<a class="anchor-link" href="#5.2-Run-the-models-on-the-cross-validation-data-set">&#182;</a></h3><p>Run the model with the cross-validation DataFrame by using the <code>transform</code> function and print the first two rows of each set of predictions:</p>
+<h3 id="Express-the-business-constraints">Express the business constraints<a class="anchor-link" href="#Express-the-business-constraints">&#182;</a></h3><p>The business constraints are the following requirements:</p>
+<ul>
+<li>The <strong>demand</strong> for each gasoline type must be satisfied. The total demand includes the initial demand as stored in the data, plus a variable demand caused by the advertising. The increase in demand is assumed to be proportional to the advertising cost. 
+<pre><code>  For each gasoline type, the total quantity produced must equal the raw demand plus 
+  the demand increase created by the advertising:</code></pre>
+</li>
+</ul>
 
 </div>
 </div>
@@ -1545,32 +1565,13 @@ Row(custId=12391, stockCode=20985, purch=1)
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">predictions1</span> <span class="o">=</span> <span class="n">model1</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">cvDf</span><span class="p">)</span>
-<span class="n">predictions2</span> <span class="o">=</span> <span class="n">model2</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">cvDf</span><span class="p">)</span>
-<span class="n">predictions3</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">cvDf</span><span class="p">)</span>
-
-<span class="k">print</span> <span class="n">predictions1</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">predictions2</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">print</span> <span class="n">predictions3</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_gas</span><span class="p">):</span>
+    <span class="c"># gasoline demand is numpy array field #0</span>
+    <span class="n">gas_demand</span> <span class="o">=</span> <span class="n">gas_data</span><span class="p">[</span><span class="n">g</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">blends</span><span class="p">[</span><span class="n">o</span><span class="p">,</span> <span class="n">g</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_oils</span><span class="p">))</span> <span class="o">==</span> <span class="n">gas_demand</span> <span class="o">+</span> <span class="n">advert_return</span> <span class="o">*</span> <span class="n">adverts</span><span class="p">[</span><span class="n">g</span><span class="p">])</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[Row(custId=14606, stockCode=20735, purch=1, prediction=0.03523101285099983), Row(custId=16464, stockCode=20735, purch=1, prediction=0.009832920506596565)]
-[Row(custId=14606, stockCode=20735, purch=1, prediction=0.044680818915367126), Row(custId=16464, stockCode=20735, purch=1, prediction=0.010469556786119938)]
-[Row(custId=14606, stockCode=20735, purch=1, prediction=0.1028711274266243), Row(custId=16464, stockCode=20735, purch=1, prediction=0.004285106901079416)]
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1580,9 +1581,12 @@ Row(custId=12391, stockCode=20985, purch=1)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="test3"></a></p>
-<h3 id="5.3-Calculate-the-accuracy-for-each-model">5.3 Calculate the accuracy for each model<a class="anchor-link" href="#5.3-Calculate-the-accuracy-for-each-model">&#182;</a></h3><p>You'll use the mean squared error calculation to determine accuracy by comparing the prediction values for products to the actual purchase values. Remember that if a customer purchased a product, the value in the <code>purch</code> column is 1. The mean squared error calculation measures the average of the squares of the errors between what is estimated and the existing data. The lower the mean squared error value, the more accurate the model.</p>
-<p>For all predictions, subtract the prediction from the actual purchase value (1), square the result, and calculate the mean of all of the squared differences:</p>
+<ul>
+<li>The <strong>capacity</strong> constraint on each oil type must also be satisfied.
+<pre><code>  For each type of oil, the total quantity used in all types of gasolines must 
+  not exceed the maximum capacity for this oil:</code></pre>
+</li>
+</ul>
 
 </div>
 </div>
@@ -1592,32 +1596,11 @@ Row(custId=12391, stockCode=20985, purch=1)
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">meanSquaredError1</span> <span class="o">=</span> <span class="n">predictions1</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">purch</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">prediction</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">meanSquaredError2</span> <span class="o">=</span> <span class="n">predictions2</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">purch</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">prediction</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="n">meanSquaredError3</span> <span class="o">=</span> <span class="n">predictions3</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">purch</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">prediction</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    
-<span class="k">print</span> <span class="s">&#39;Mean squared error = </span><span class="si">%.4f</span><span class="s"> for our first model&#39;</span> <span class="o">%</span> <span class="n">meanSquaredError1</span>
-<span class="k">print</span> <span class="s">&#39;Mean squared error = </span><span class="si">%.4f</span><span class="s"> for our second model&#39;</span> <span class="o">%</span> <span class="n">meanSquaredError2</span>
-<span class="k">print</span> <span class="s">&#39;Mean squared error = </span><span class="si">%.4f</span><span class="s"> for our third model&#39;</span> <span class="o">%</span> <span class="n">meanSquaredError3</span>
+<div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">range_oil</span><span class="p">:</span>
+    <span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">blends</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">g</span><span class="p">]</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">range_gas</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">oil_data</span><span class="p">[</span><span class="n">o</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Mean squared error = 0.7388 for our first model
-Mean squared error = 0.6990 for our second model
-Mean squared error = 0.6681 for our third model
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1627,11 +1610,9 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The third model (model3) has the lowest mean squared error value, so it's the most accurate.</p>
-<p>Notice that of the three models, model3 has the highest values for the hyperparameters. At this point you might be tempted to run the model with even higher values for <code>rank</code> and <code>maxIter</code>. However, you might not get better results. Increasing the values of the hyperparameters increases the time for the model to run. Also, you don't want to overfit the model so that it exactly fits the original data. In that case, you wouldn't get any recommendations! For best results, keep the values of the hyperparameters close to the defaults.</p>
-<p><a id="test4"></a></p>
-<h3 id="5.4-Confirm-the-best-model">5.4 Confirm the best model<a class="anchor-link" href="#5.4-Confirm-the-best-model">&#182;</a></h3><p>Now run model3 on the testing data set to confirm that it's the best model. You want to make sure that the model is not over-matched to the cross-validation data. It's possible for a model to match one subset of the data well but not another. If the values of the mean squared error for the testing data set and the cross-validation data set are close, then you've confirmed that the model works for all the data.</p>
-<p>Clean the testing data set, run model3 on the testing data set, and calculate the mean squared error:</p>
+<ul>
+<li>For each gasoline type, the <strong>octane level</strong> must be above a minimum level, and the <strong>lead level</strong> must be below a maximum level:</li>
+</ul>
 
 </div>
 </div>
@@ -1641,52 +1622,30 @@ Mean squared error = 0.6681 for our third model
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">filteredTestDf</span> <span class="o">=</span> <span class="n">testDf</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span> <span class="ow">in</span> <span class="n">stock</span> <span class="ow">and</span>\
-                                              <span class="n">line</span><span class="o">.</span><span class="n">custId</span> <span class="ow">in</span> <span class="n">customers</span><span class="p">)</span><span class="o">.</span><span class="n">toDF</span><span class="p">()</span>
-<span class="n">predictions4</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">filteredTestDf</span><span class="p">)</span>
-<span class="n">meanSquaredError4</span> <span class="o">=</span> <span class="n">predictions4</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">purch</span> <span class="o">-</span> <span class="n">line</span><span class="o">.</span><span class="n">prediction</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="c"># minimum octane level</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">range_gas</span><span class="p">:</span>
+    <span class="n">gas_octane</span> <span class="o">=</span> <span class="n">gas_data</span><span class="p">[</span><span class="n">g</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">blends</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">g</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">oil_data</span><span class="p">[</span><span class="n">o</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">gas_octane</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">range_oil</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
     
-<span class="k">print</span> <span class="s">&#39;Mean squared error = </span><span class="si">%.4f</span><span class="s"> for our best model&#39;</span> <span class="o">%</span> <span class="n">meanSquaredError4</span>
+<span class="c"># maximum lead  level</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">range_gas</span><span class="p">:</span>
+    <span class="n">gas_lead</span> <span class="o">=</span> <span class="n">gas_data</span><span class="p">[</span><span class="n">g</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">blends</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">g</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">oil_data</span><span class="p">[</span><span class="n">o</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">gas_lead</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">range_oil</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Mean squared error = 0.6693 for our best model
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>That's pretty close. The model works for all the data.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="implement"></a></p>
-<h2 id="6.-Implement-the-model">6. Implement the model<a class="anchor-link" href="#6.-Implement-the-model">&#182;</a></h2><p>Use the best model to predict which products a specific customer might be interested in purchasing.</p>
-<p><a id="implement1"></a></p>
-<h3 id="6.1-Create-a-DataFrame-for-the-customer-and-all-products">6.1 Create a DataFrame for the customer and all products<a class="anchor-link" href="#6.1-Create-a-DataFrame-for-the-customer-and-all-products">&#182;</a></h3><p>Create a DataFrame in which each row has the customer ID (15544) and a product ID:</p>
+<ul>
+<li>The total production must not exceed the maximum (which is defined as 14000 barrels per day):</li>
+</ul>
 
 </div>
 </div>
@@ -1696,16 +1655,10 @@ Mean squared error = 0.6681 for our third model
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">lit</span>
+<div class=" highlight hl-ipython2"><pre><span class="c"># -- maximum global production</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">blends</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">production_max</span><span class="p">)</span>
 
-<span class="n">stock15544</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">trainDf</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">trainDf</span><span class="p">[</span><span class="s">&#39;custId&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">15544</span><span class="p">)</span><span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
-
-<span class="n">userItems</span> <span class="o">=</span> <span class="n">trainDf</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&quot;stockCode&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span><span class="o">.</span>\
-            <span class="n">withColumn</span><span class="p">(</span><span class="s">&#39;custId&#39;</span><span class="p">,</span> <span class="n">lit</span><span class="p">(</span><span class="mi">15544</span><span class="p">))</span><span class="o">.</span>\
-            <span class="n">rdd</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">stockCode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stock15544</span><span class="p">)</span><span class="o">.</span><span class="n">toDF</span><span class="p">()</span>
-
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">userItems</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">print</span> <span class="n">row</span><span class="o">.</span><span class="n">stockCode</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">custId</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">print_information</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -1718,11 +1671,12 @@ Mean squared error = 0.6681 for our third model
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>21899 15544
-22429 15544
-21209 15544
-22201 15544
-23506 15544
+<pre>Model: oil_blending
+ - number of variables: 12
+   - binary=0, integer=0, continuous=12
+ - number of constraints: 13
+   - linear=13
+ - parameters: defaults
 </pre>
 </div>
 </div>
@@ -1736,8 +1690,25 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="implement2"></a></p>
-<h3 id="6.2-Rate-each-product">6.2 Rate each product<a class="anchor-link" href="#6.2-Rate-each-product">&#182;</a></h3><p>Run the <code>transform</code> function to create a prediction value for each product:</p>
+<h2 id="Define-key-performance-indicators-(KPI)">Define key performance indicators (KPI)<a class="anchor-link" href="#Define-key-performance-indicators-(KPI)">&#182;</a></h2><p>The objective or goal of the model is to maximize profit.</p>
+
+<pre><code>* Profit is made from the sales of the final products minus total costs. 
+* The costs consist of the purchase cost of the crude oils, production costs, and inventory costs.
+
+</code></pre>
+<p>The model maximizes the net revenue.</p>
+
+<pre><code>* Net revenue is revenue minus oil cost and production cost.  
+* Then, subtract the total advertising cost.
+
+</code></pre>
+<p>Therefore, to define the business objective,  define a few <em>key performance indicators</em> (KPIs):</p>
+<ul>
+<li>Total advertising cost</li>
+<li>Total oil cost</li>
+<li>Total production cost</li>
+<li>Total revenue</li>
+</ul>
 
 </div>
 </div>
@@ -1747,10 +1718,44 @@ Mean squared error = 0.6681 for our third model
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">userItems</span> <span class="o">=</span> <span class="n">model3</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">userItems</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="c"># KPIs</span>
+<span class="n">total_advert_cost</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">adverts</span><span class="p">)</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_kpi</span><span class="p">(</span><span class="n">total_advert_cost</span><span class="p">,</span> <span class="s">&quot;Total advertising cost&quot;</span><span class="p">)</span>
+<span class="n">total_oil_cost</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">blends</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">g</span><span class="p">]</span> <span class="o">*</span> <span class="n">oil_data</span><span class="p">[</span><span class="n">o</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">range_oil</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">range_gas</span><span class="p">)</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_kpi</span><span class="p">(</span><span class="n">total_oil_cost</span><span class="p">,</span> <span class="s">&quot;Total Oil cost&quot;</span><span class="p">)</span>
+<span class="n">total_production_cost</span> <span class="o">=</span> <span class="n">production_cost</span> <span class="o">*</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">blends</span><span class="p">)</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_kpi</span><span class="p">(</span><span class="n">total_production_cost</span><span class="p">,</span> <span class="s">&quot;Total production cost&quot;</span><span class="p">)</span>
+<span class="n">total_revenue</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">blends</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">g</span><span class="p">]</span> <span class="o">*</span> <span class="n">gas_data</span><span class="p">[</span><span class="n">g</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_gas</span><span class="p">)</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_oils</span><span class="p">))</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_kpi</span><span class="p">(</span><span class="n">total_revenue</span><span class="p">,</span> <span class="s">&quot;Total revenue&quot;</span><span class="p">)</span>
 
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">userItems</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-    <span class="k">print</span> <span class="n">row</span><span class="o">.</span><span class="n">stockCode</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">custId</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">prediction</span>
+<span class="c"># finally the objective</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">maximize</span><span class="p">(</span><span class="n">total_revenue</span> <span class="o">-</span> <span class="n">total_oil_cost</span> <span class="o">-</span> <span class="n">total_production_cost</span> <span class="o">-</span> <span class="n">total_advert_cost</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Call-the-CPLEX-solve-service">Call the CPLEX solve service<a class="anchor-link" href="#Call-the-CPLEX-solve-service">&#182;</a></h3><p>Solve the model on the cloud by running a solve method of the CPLEX solve service that solves the current model.</p>
+<p>The  model was created with a context that contained the CPLEX subscription with the URL and key of the solve service.  So, you do not need to specify the context, the URL,  or the API key again when you call the solve() method.</p>
+<p>Display the objective and the KPI values after the solve by calling the method report() on the model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">mdl</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">report</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -1763,11 +1768,11 @@ Mean squared error = 0.6681 for our third model
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>20735 15544 0.00423703156412
-21220 15544 0.0538208372891
-21700 15544 0.069147542119
-22097 15544 -0.0548023916781
-22223 15544 0.020398337394
+<pre>* model oil_blending solved with objective = 287750.000
+*  KPI: Total advertising cost = 750.000
+*  KPI: Total Oil cost         = 487500.000
+*  KPI: Total production cost  = 54000.000
+*  KPI: Total revenue          = 830000.000
 </pre>
 </div>
 </div>
@@ -1781,106 +1786,9 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="implement3"></a></p>
-<h3 id="6.3-Find-the-top-recommendations">6.3 Find the top recommendations<a class="anchor-link" href="#6.3-Find-the-top-recommendations">&#182;</a></h3><p>Print the top five product recommendations:</p>
+<p><a id='section4'></a></p>
+<h3 id="Analyze-and-display-the-solution">Analyze and display the solution<a class="anchor-link" href="#Analyze-and-display-the-solution">&#182;</a></h3><p>First, get the KPI values and store them in a Pandas DataFrame:</p>
 
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">userItems</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;predictions&quot;</span><span class="p">)</span>
-<span class="n">query</span> <span class="o">=</span> <span class="s">&quot;select * from predictions order by prediction desc limit 5&quot;</span>
-
-<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area"><div class="prompt output_prompt">Out[17]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>stockCode</th>
-      <th>custId</th>
-      <th>prediction</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>22326</td>
-      <td>15544</td>
-      <td>0.529536</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>21242</td>
-      <td>15544</td>
-      <td>0.524287</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>21559</td>
-      <td>15544</td>
-      <td>0.501251</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>22090</td>
-      <td>15544</td>
-      <td>0.490788</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>22367</td>
-      <td>15544</td>
-      <td>0.482872</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="implement4"></a></p>
-<h3 id="6.4-Compare-purchased-and-recommended-products">6.4 Compare purchased and recommended products<a class="anchor-link" href="#6.4-Compare-purchased-and-recommended-products">&#182;</a></h3><p>Here's a view of the products that customer 15544 bought:</p>
-<p><img src='https://raw.githubusercontent.com/rosswlewis/RecommendationPoT/master/user.png' width="80%" height="80%"></img></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This customer bought lots of children's gifts and some holiday items.</p>
-<p>Look at the descriptions of the recommended products to see if they are in the same categories.</p>
-<div class="alert alert-block alert-info">Note: The ALS algorithm uses some randomness, so the recommendations you get might be different from these.</div>
 </div>
 </div>
 </div>
@@ -1889,21 +1797,70 @@ Mean squared error = 0.6681 for our third model
 <div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">stockItems</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;select distinct stockCode, description from retailPurchases&quot;</span><span class="p">)</span>
-<span class="n">stockItems</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;stockItems&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">all_kpis</span> <span class="o">=</span> <span class="p">[(</span><span class="n">kp</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">kp</span><span class="o">.</span><span class="n">compute</span><span class="p">())</span> <span class="k">for</span> <span class="n">kp</span> <span class="ow">in</span> <span class="n">mdl</span><span class="o">.</span><span class="n">iter_kpis</span><span class="p">()]</span>
+<span class="n">kpis_bd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">all_kpis</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;kpi&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">])</span>
+</pre></div>
 
-<span class="n">query</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
-<span class="s">select </span>
-<span class="s">    predictions.*,</span>
-<span class="s">    stockItems.description</span>
-<span class="s">from</span>
-<span class="s">    predictions</span>
-<span class="s">inner join stockItems on</span>
-<span class="s">    predictions.stockCode = stockItems.stockCode</span>
-<span class="s">order by predictions.prediction desc</span>
-<span class="s">limit 10</span>
-<span class="s">&quot;&quot;&quot;</span>
-<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">blend_values</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[</span> <span class="n">blends</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">g</span><span class="p">]</span><span class="o">.</span><span class="n">solution_value</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">range_gas</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">range_oil</span><span class="p">]</span>
+<span class="n">total_gas_prods</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">blend_values</span><span class="p">[</span><span class="n">o</span><span class="p">][</span><span class="n">g</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">range_oil</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">range_gas</span><span class="p">]</span>
+
+<span class="n">prods</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">gas_names</span><span class="p">,</span> <span class="n">total_gas_prods</span><span class="p">)</span>
+<span class="n">prods_bd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">prods</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Then,  display some KPIs in pie charts by using the <a href="http://matplotlib.org/">matplotlib</a> Python package.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="o">!</span>pip install matplotlib -q
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="k">def</span> <span class="nf">display_pie</span><span class="p">(</span><span class="n">pie_values</span><span class="p">,</span> <span class="n">pie_labels</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&quot;equal&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">pie_values</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">pie_labels</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">autopct</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%1.1f%%</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;KPIs: Revenue - Oil Cost - Production Cost&quot;</span><span class="p">)</span>
+                                                       
+<span class="n">display_pie</span><span class="p">(</span> <span class="p">[</span><span class="n">kpnv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">kpnv</span> <span class="ow">in</span> <span class="n">all_kpis</span><span class="p">],</span> <span class="p">[</span><span class="n">kpnv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">kpnv</span> <span class="ow">in</span> <span class="n">all_kpis</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -1914,94 +1871,249 @@ Mean squared error = 0.6681 for our third model
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[18]:</div>
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>stockCode</th>
-      <th>custId</th>
-      <th>prediction</th>
-      <th>description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>22326</td>
-      <td>15544</td>
-      <td>0.529536</td>
-      <td>ROUND SNACK BOXES SET OF4 WOODLAND</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>21242</td>
-      <td>15544</td>
-      <td>0.524287</td>
-      <td>RED RETROSPOT PLATE</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>21559</td>
-      <td>15544</td>
-      <td>0.501251</td>
-      <td>STRAWBERRY LUNCH BOX WITH CUTLERY</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>22090</td>
-      <td>15544</td>
-      <td>0.490788</td>
-      <td>PAPER BUNTING RETROSPOT</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>22367</td>
-      <td>15544</td>
-      <td>0.482872</td>
-      <td>CHILDRENS APRON SPACEBOY DESIGN</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>21987</td>
-      <td>15544</td>
-      <td>0.476816</td>
-      <td>PACK OF 6 SKULL PAPER CUPS</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>21122</td>
-      <td>15544</td>
-      <td>0.467991</td>
-      <td>SET/10 PINK POLKADOT PARTY CANDLES</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>22417</td>
-      <td>15544</td>
-      <td>0.461298</td>
-      <td>PACK OF 60 SPACEBOY CAKE CASES</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>21124</td>
-      <td>15544</td>
-      <td>0.456542</td>
-      <td>SET/10 BLUE POLKADOT PARTY CANDLES</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>21156</td>
-      <td>15544</td>
-      <td>0.455864</td>
-      <td>RETROSPOT CHILDRENS APRON</td>
-    </tr>
-  </tbody>
-</table>
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>KPIs: Revenue - Oil Cost - Production Cost
+</pre>
 </div>
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+gg==
+"
+>
 </div>
 
 </div>
@@ -2015,7 +2127,583 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The recommended products look pretty similar to the purchased products, and, in some cases, are actually the same. Your model works!</p>
+<h5 id="Production-output">Production output<a class="anchor-link" href="#Production-output">&#182;</a></h5><p>You see from the result of the following code that the most produced gasoline type is by far <strong>regular</strong>:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">display_pie</span><span class="p">(</span><span class="n">total_gas_prods</span><span class="p">,</span> <span class="n">gas_names</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;green&quot;</span><span class="p">,</span> <span class="s">&quot;goldenrod&quot;</span><span class="p">,</span> <span class="s">&quot;lightGreen&quot;</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+rkJggg==
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now,  plot the breakdown of oil blend quantities per gasoline type.
+You will use a multiple bar chart diagram that displays all blend values for each pairing of oil with a gasoline type.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">sblends</span> <span class="o">=</span> <span class="p">[(</span><span class="n">gas_names</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">oil_names</span><span class="p">[</span><span class="n">o</span><span class="p">],</span> <span class="nb">round</span><span class="p">(</span><span class="n">blends</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">solution_value</span><span class="p">))</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">range_gas</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">range_oil</span><span class="p">]</span>
+
+<span class="n">blends_bd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">sblends</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">print</span><span class="p">(</span><span class="s">&quot;*** Blend Repartition ***&quot;</span><span class="p">)</span>
+<span class="n">f</span><span class="p">,</span> <span class="n">barplot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+
+<span class="n">bar_width</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">offset</span> <span class="o">=</span> <span class="mf">0.12</span>
+<span class="n">rho</span> <span class="o">=</span> <span class="mf">0.7</span>
+
+<span class="c"># position ofg left-bar boundaries</span>
+<span class="n">bar_l</span> <span class="o">=</span> <span class="p">[</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">range_oil</span><span class="p">]</span>
+
+<span class="n">mbar_w</span> <span class="o">=</span> <span class="mi">3</span><span class="o">*</span><span class="n">bar_width</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">offset</span><span class="o">-</span><span class="n">bar_width</span><span class="p">)</span>
+
+<span class="n">tick_pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">*</span><span class="n">rho</span> <span class="o">+</span> <span class="n">mbar_w</span><span class="o">/</span><span class="mf">2.0</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bar_l</span><span class="p">]</span>
+
+<span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;olive&#39;</span><span class="p">,</span> <span class="s">&#39;lightgreen&#39;</span><span class="p">,</span> <span class="s">&#39;cadetblue&#39;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">range_oil</span><span class="p">:</span>
+    <span class="n">barplot</span><span class="o">.</span><span class="n">bar</span><span class="p">([</span><span class="n">b</span><span class="o">*</span><span class="n">rho</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span><span class="o">*</span><span class="n">offset</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bar_l</span><span class="p">],</span> 
+                <span class="n">blend_values</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">width</span><span class="o">=</span><span class="n">bar_width</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">oil_names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">tick_pos</span><span class="p">,</span> <span class="n">gas_names</span><span class="p">)</span>
+<span class="n">barplot</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;gasolines&quot;</span><span class="p">)</span>
+<span class="n">barplot</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s">&quot;blend&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s">&quot;upper right&quot;</span><span class="p">)</span>
+                                                                          
+
+<span class="c"># Set a buffer around the edge</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">tick_pos</span><span class="p">)</span><span class="o">+</span><span class="n">mbar_w</span> <span class="o">+</span><span class="mf">0.5</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>*** Blend Repartition ***
+</pre>
+</div>
+</div>
+
+<div class="output_area"><div class="prompt"></div>
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+MeQNAAAAAElFTkSuQmCC
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p class="alert alert-block alert-info"> Notice the missing bar for (crude2, diesel); this result is expected since blend[crude2, diesel] is zero in the solution.</p><p>Check the solution value of blends for <strong>crude2</strong> and <strong>diesel</strong>; remember that <strong>crude2</strong> has offset 1 and <strong>diesel</strong> has offset 2.</p>
+<p class="alert alert-block alert-info"> You can see  how the decision variable is automatically converted to a floating point data type.  If you had run the report method before you submitted the solve method, this report would raise an exception since no solution value would be present.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="k">print</span><span class="p">(</span><span class="s">&quot;* value of blend[crude2, diesel] is </span><span class="si">%g</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">blends</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>* value of blend[crude2, diesel] is 0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>From the current model, you can see how much of each gasoline type,  with a particular quantity of each crude, that you can produce to get a maximized revenue of 830000 dollars.  You can change some of the constraints or the known variables to see different outcomes.  For example, increase the number of oil types, or change the initial cost of the fuel, then rerun the methods to present a different picture.</p>
 
 </div>
 </div>
@@ -2025,20 +2713,22 @@ Mean squared error = 0.6681 for our third model
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="summary"></a></p>
-<h2 id="7.-Summary-and-next-steps">7. Summary and next steps<a class="anchor-link" href="#7.-Summary-and-next-steps">&#182;</a></h2><p>You created a predictive model that makes product recommendations for customers and verified that it works.</p>
-<p>Dig deeper:</p>
+<hr>
+<h1 id="Thanks-for-completing-this-notebook!">Thanks for completing this notebook!<a class="anchor-link" href="#Thanks-for-completing-this-notebook!">&#182;</a></h1><hr>
+<p>You learned how to:</p>
 <ul>
-<li><a href="http://spark.apache.org/docs/latest/mllib-collaborative-filtering.html">Collaborative Filtering</a></li>
-<li><a href="http://spark.apache.org/docs/latest/ml-guide.html">Spark Machine Learning Library (MLlib) Guide</a></li>
-<li><a href="http://spark.apache.org/docs/latest/api/python/index.html">Spark Python API Docs</a></li>
+<li>Set up and use the IBM Decision Optimization CPLEX Modeling for Python to help in a predictive analysis of maximizing oil profits.</li>
+<li>Explore data by using pandas DataFrame methods</li>
+<li>Plot data by using the matplotlib package</li>
+<li>Use the tools to make informed decisions from mathematical models.</li>
 </ul>
-<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p>Carlo Appugliese is a Spark and Hadoop evangelist at IBM.<br>
-Braden Callahan is a Big Data Technical Specialist for IBM.<br>
-Ross Lewis is a Big Data Technical Sales Specialist for IBM.<br>
-Mokhtar Kandil is a World Wide Big Data Technical Specialist for IBM.</p>
-<h2 id="Data-citation">Data citation<a class="anchor-link" href="#Data-citation">&#182;</a></h2><p>Daqing Chen, Sai Liang Sain, and Kun Guo, Data mining for the online retail industry: A case study of RFM model-based customer segmentation using data mining, Journal of Database Marketing and Customer Strategy Management, Vol. 19, No. 3, pp. 197-208, 2012 (Published online before print: 27 August 2012. doi: 10.1057/dbm.2012.17).</p>
-<p>Chen, D. (2012). UCI Machine Learning Repository [<a href="http://archive.ics.uci.edu/ml">http://archive.ics.uci.edu/ml</a>]. Irvine, CA: University of California, School of Information and Computer Science.</p>
+<p>Useful links:</p>
+<ul>
+<li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html">CPLEX Modeling for Python documentation</a></li>
+<li><a href="https://developer.ibm.com/docloud/">Decision Optimization on Cloud</a></li>
+<li><a href="discovering_optimization.ipynb">Prescriptive Analytics Cookbook</a></li>
+</ul>
+<hr>
 
 </div>
 </div>
@@ -2048,8 +2738,7 @@ Mokhtar Kandil is a World Wide Big Data Technical Specialist for IBM.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><hr>
-Copyright &copy; IBM Corp. 2017. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright © IBM 2017. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>

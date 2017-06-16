@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Sports Schedulin</title>
+<title>Sports+Schedulin</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -115,8 +115,8 @@
 # Licensed Materials - Property of IBM
 # 5725-Y50
 # (C) Copyright IBM Corp. 2015    All Rights Reserved.
-# US Government Users Restricted Rights - Use, duplication or disclosure 
-# restricted by GSA ADP Schedule Contract with IBM Corp. 
+# US Government Users Restricted Rights - Use, duplication or disclosure
+# restricted by GSA ADP Schedule Contract with IBM Corp.
 */
 
 /*.notebook_app only adresses stuff on the notebook ui not the tree*/
@@ -412,6 +412,320 @@ html {
   color: #6ab200;
   border: 0px;
 }
+/*
+*
+*     Spark Monitoring Style
+*
+*/
+.flex_container {
+  display: flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+}
+
+.vstack_container {
+  flex-direction: column;
+  -webkit-box-flex-direction: column;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+}
+
+.hstack_container {
+  flex-direction: row;
+  -webkit-box-flex-direction: row;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+}
+
+.right_justify_content {
+  justify-content: flex-start;
+  -webkit-justify-content: flex-start;
+  -ms-flex-pack: start;
+}
+
+.left_justify_content {
+  justify-content: flex-end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+}
+
+.centric-aligned-items {
+  align-items: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+}
+
+.cell_state {
+  display: flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+
+  flex-direction: row;
+  -webkit-box-flex-direction: row;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+
+  width: 70%;
+  color: black;
+}
+
+.spark_table {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  background-color: #ffffff;
+  border: 2px solid #d8d8d8;
+}
+
+.spark_table_thead {
+  display: table-header-group;
+  vertical-align: middle;
+}
+
+.spark_table_tr {
+  display: table-row;
+  vertical-align: inherit;
+  border-color: inherit;
+}
+
+.spark_table_tr.spark_table_header {
+  border-bottom: 2px solid #d8d8d8;
+  background-color: #eaeaea;
+}
+
+.spark_table_tr.spark_table_job_tr.black_side {
+  border-bottom: 1px solid #d8d8d8;
+}
+
+.spark_table_tr.spark_table_job_tr {
+  border-bottom: 2px solid #d8d8d8;
+  border-top: 2px solid #d8d8d8;
+}
+
+.spark_table_tr.stage_row {
+  border-bottom: 1px solid #d8d8d8;
+}
+
+.st_header_cell {
+  border: none;
+  text-transform: uppercase;
+}
+
+.st_job_cell {
+  width: 15%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.st_progress_cell {
+  width: 45%;
+}
+
+.st_status_cell {
+  width: 15%;
+}
+
+.st_duration_cell {
+  width: 15%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.st_icon_cell {
+  width: 10%;
+}
+
+.st_icon_cell.st_content_icon_cell {
+  text-align: right;
+  padding-right: 1rem;
+}
+
+.spark_table_tbody {
+  display: table-row-group;
+  vertical-align: middle;
+}
+
+.st_cell {
+  display: table-cell;
+  padding-left: 3%;
+  height: 1.8rem;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.job_row {
+  cursor:pointer;
+  font-weight: bold;
+}
+
+.st_cell.stage_id_cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 5%;
+}
+
+.progress_bar_wrapper {
+  text-align: center;
+  vertical-align: middle;
+  height: 1.2em;
+  width: 97%;
+}
+
+.progress_bar_container {
+  height: 1.2em;
+  position: relative;
+  width: 100%;
+}
+
+.progress_bar_border {
+  border: 1px solid #1d3649;
+}
+
+.progress_bar_border_shape {
+  border-radius: 8px;
+}
+
+.progress_bar {
+  background-color: #aeaeae;
+  height: 100%;
+  line-height: inherit;
+}
+
+.progress_bar_mark_wrapper {
+  height: 100%;
+  position: absolute;
+  font-weight: normal;
+}
+
+.stage_progress_bar_container.progress_bar_mark_wrapper {
+  left: 50%;
+}
+
+.job_progress_bar_container.progress_bar_mark_wrapper {
+  left: 17%;
+}
+
+.progress_bar_mark {
+  height: 100%;
+  position: relative;;
+  left: -50%;
+  margin-top: -0.2em;
+}
+
+.progress_bar_mark_stage {
+  height: 100%;
+  position: relative;;
+  left: -50%;
+  margin-top: -0.27em;
+}
+
+.progress_bar_icon_wrapper {
+  height: 0.6rem;
+  vertical-align: middle;
+  width: 1.25rem;
+  fill: #a6a5a6;
+}
+
+.state_label_wrapper {
+  flex: 1 1 auto;
+  padding-left: 5%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.state_label_wrapper.error_label {
+  color: #e62325;
+}
+
+.icon_style {
+  height: 1.7rem;
+  vertical-align: middle;
+  width: 1.25rem;
+}
+
+.black_side {
+  border-left: 2px solid black;
+}
+
+.state_right {
+  flex: 1 1 0;
+  -webkit-box-flex: 1 1 0;
+  -webkit-flex: 1 1 0;
+  -ms-flex: 1 1 0;
+
+  font-family: Helvetica, sans-serif;
+  font-size: 13px;
+  padding: 1rem 2rem 2rem 2rem;
+  min-width: 35rem;
+}
+
+.error_icon {
+  fill: #e62325;
+}
+
+.upper_header {
+  width: 100%;
+  padding-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.upper_header:hover .upper_header_hide_text_wrapper {
+  text-decoration: underline;
+}
+
+.upper_header_title {
+  width: 70%;
+  font-size: 12px;
+  font-weight: bold;
+  padding-left: 1rem;
+}
+
+.upper_title_control {
+  width: 30%;
+  margin-right: 1rem;
+}
+
+.icon_style.upper_header_icon {
+  height: 0.25rem;
+  vertical-align: middle;
+  width: 0.6rem;
+}
+
+.upper_header_hide_text_wrapper {
+  padding-right: 0.3rem;
+  font-size: 10px;
+  font-weight: bold;
+  padding-right: 0.3rem;
+}
+
+.header_underline {
+  border-top: 2px solid #d8d8d8;
+}
+
+.upper_header_icon_up {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.spark_monitor_button {
+  stroke: #626d72;
+}
+
+.spark_monitor_button:hover {
+  stroke: #2e404b;
+}
+/*
+*
+*     End Spark Monitoring Style
+*
+*/
+
     </style>
 
 
@@ -578,7 +892,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">sys</span>
@@ -612,7 +926,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">docplex.cp.model</span> <span class="kn">import</span> <span class="o">*</span>
@@ -639,7 +953,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># Teams in 1st division</span>
@@ -662,7 +976,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
@@ -699,7 +1013,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">CSS</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
@@ -753,7 +1067,7 @@ div#notebook {
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[19]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[5]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <style>
@@ -817,7 +1131,7 @@ table.dataframe td {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
@@ -847,7 +1161,7 @@ table.dataframe td {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
@@ -980,7 +1294,7 @@ table.dataframe td {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -1019,7 +1333,7 @@ table.dataframe td {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">mdl</span> <span class="o">=</span> <span class="n">CpoModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;SportsScheduling&quot;</span><span class="p">)</span>
@@ -1055,7 +1369,7 @@ table.dataframe td {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># Constraints of the model</span>
@@ -1087,7 +1401,7 @@ table.dataframe td {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">t1</span> <span class="ow">in</span> <span class="n">TEAMS</span><span class="p">:</span>
@@ -1118,7 +1432,7 @@ table.dataframe td {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># Function that returns 1 if the two teams are in same division, 0 if not</span>
@@ -1151,7 +1465,7 @@ table.dataframe td {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># Objective of the model is to schedule intradivisional games to be played late in the schedule</span>
@@ -1182,7 +1496,7 @@ table.dataframe td {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">n</span> <span class="o">=</span> <span class="mi">25</span>
@@ -1205,7 +1519,7 @@ table.dataframe td {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="k">if</span> <span class="n">msol</span><span class="p">:</span>
@@ -1347,7 +1661,7 @@ table.dataframe td {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="k">if</span> <span class="n">msol</span><span class="p">:</span>
