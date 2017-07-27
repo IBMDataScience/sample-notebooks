@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Access MySQL with Pytho</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Use Spark for Scala to load data and run SQL querie</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -12517,24 +12517,49 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Access-MySQL-with-Python">Access MySQL with Python<a class="anchor-link" href="#Access-MySQL-with-Python">&#182;</a></h1><p>This notebook shows how to access a MySQL database when using Python.</p>
-<p>This notebook runs on Python with Spark 2.0.</p>
-<h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><ol>
-<li><a href="#Setup">Setup</a> </li>
-<li><a href="#Import-the-MySQLdb-Python-library">Import the <em>MySQLdb</em> Python library</a></li>
-<li><a href="#Confirm-that-MySQL-is-running">Confirm that MySQL is running</a></li>
-<li><a href="#Identify-and-enter-the-database-connection-credentials">Identify and enter the database connection credentials</a></li>
-<li><a href="#Create-the-database-connection">Create the database connection</a></li>
-<li><a href="#Create-a-table">Create a table</a></li>
-<li><a href="#Insert-data-into-a-table">Insert data into a table</a></li>
-<li><a href="#Query-data">Query data</a></li>
-<li><a href="#Close-the-database-connection">Close the database connection</a></li>
-<li><a href="#Summary">Summary</a></li>
+<h1 id="Use-Spark-for-Scala-to-load-data-and-run-SQL-queries">Use Spark for Scala to load data and run SQL queries<a class="anchor-link" href="#Use-Spark-for-Scala-to-load-data-and-run-SQL-queries">&#182;</a></h1><p>This notebook introduces basic Spark concepts and helps you to start using Spark for Scala.</p>
+<p>Some familiarity with Scala is recommended. This notebook runs on Scala 2.11 with Spark 2.0</p>
+<p>In this notebook, you'll use the publicly available <strong>mtcars</strong> data set from <em>Motor Trend</em> magazine to learn some basic Scala. You'll learn how to load data, create a Spark DataFrame, aggregate data, run mathematical formulas, and run SQL queries against the data.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><p>This notebook contains these main sections:</p>
+<ol>
+<li><a href="#Load_a_DataFrame">Load a DataFrame</a></li>
+<li><a href="#Initialize_an_SQLContext">Initialize an SQLContext</a></li>
+<li><a href="#Create_a_Spark_DataFrame">Create a Spark DataFrame</a></li>
+<li><a href="#Aggregate_data_after_grouping_by_columns">Aggregate data after grouping by columns</a></li>
+<li><a href="#Operate_on_columns">Operate on columns</a></li>
+<li><a href="#Run_SQL_queries_from_the_Spark_DataFrame">Run SQL queries from the Spark DataFrame</a></li>
 </ol>
-<h2 id="Setup">Setup<a class="anchor-link" href="#Setup">&#182;</a></h2><p>Before beginning you will need access to a <em>MySQL</em> database. MySQL is an open-source relational database management system (RDBMS) that is widely used as a client–server model RDBMS. To learn more, see the <a href="https://www.mysql.com/">MySQL website</a>.</p>
-<p>You should have a MySQL instance installed and running in the cloud. You can use <a href="http://aws.amazon.com/rds/mysql/">Amazon RDS (Relational Database Service)</a> to set up, operate, and scale a MySQL instance.<br>
-<strong>Note:</strong> if you are using an Amazon RDS service, make sure it accept connections from every IP.</p>
-<h2 id="Import-the-MySQLdb-Python-library">Import the <em>MySQLdb</em> Python library<a class="anchor-link" href="#Import-the-MySQLdb-Python-library">&#182;</a></h2><p><strong>MySQLdb</strong> is an thread-compatible interface to the popular MySQL database server that provides the Python database API. Run the commands below to install and import the MySQLdb library:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id='Load_a_DataFrame'></a></p>
+<h2 id="1.-Load-a-DataFrame">1. Load a DataFrame<a class="anchor-link" href="#1.-Load-a-DataFrame">&#182;</a></h2><p>A DataFrame is a distributed collection of data that is organized into named columns. The local Scala DataFrame called <strong>mtcars</strong> includes observations on the following 11 variables:</p>
+<p><code>[, 1]    mpg     Miles / (US) gallon</code><br>
+<code>[, 2]    cyl     Number of cylinders</code><br>
+<code>[, 3]    disp    Displacement (cu. in.)</code><br>
+<code>[, 4]    hp      Gross horsepower</code><br>
+<code>[, 5]    drat    Rear axle ratio</code><br>
+<code>[, 6]    wt      Weight (1000 lbs)</code><br>
+<code>[, 7]    qsec    1/4 mile time (seconds)</code><br>
+<code>[, 8]    vs      0 = V-engine, 1 = straight engine</code><br>
+<code>[, 9]    am      Transmission (0 = automatic, 1 = manual)</code><br>
+<code>[,10]    gear    Number of forward gears</code><br>
+<code>[,11]    carb    Number of carburetors</code></p>
 
 </div>
 </div>
@@ -12544,7 +12569,103 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">!</span>pip install MySQL-python --user
+<div class=" highlight hl-scala"><pre><span class="k">import</span> <span class="nn">sys.process._</span>
+<span class="k">import</span> <span class="nn">java.net.URL</span>
+<span class="k">import</span> <span class="nn">java.io.File</span>
+
+<span class="k">def</span> <span class="n">fileDownloader</span><span class="o">(</span><span class="n">url</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">filename</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">new</span> <span class="nc">URL</span><span class="o">(</span><span class="n">url</span><span class="o">)</span> <span class="o">#&gt;</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="n">filename</span><span class="o">)</span> <span class="o">!!</span>
+<span class="o">}</span>
+
+<span class="n">fileDownloader</span><span class="o">(</span><span class="s">&quot;https://ibm.box.com/shared/static/f1dhhjnzjwxmy2c1ys2whvrgz05d1pui.csv&quot;</span><span class="o">,</span> <span class="s">&quot;mtcars.csv&quot;</span><span class="o">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#34;&#34;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id='Initialize_an_SQLContext'></a></p>
+<h2 id="2.-Initialize-an-SQLContext">2. Initialize an SQLContext<a class="anchor-link" href="#2.-Initialize-an-SQLContext">&#182;</a></h2><p>To work with a DataFrame, you need an SQLContext. You create this SQLContext by using <code>SQLContext(sc)</code>. A SparkContext named sc, which has been created for you, is used to initialize the SQLContext:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span class="k">import</span> <span class="nn">au.com.bytecode.opencsv.CSVParser</span>
+<span class="k">val</span> <span class="n">sqlContext</span> <span class="k">=</span> <span class="k">new</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="nc">SQLContext</span><span class="o">(</span><span class="n">sc</span><span class="o">)</span>
+<span class="k">import</span> <span class="nn">sqlContext.implicits._</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id='Create_a_Spark_DataFrame'></a></p>
+<h2 id="3.-Create-a-Spark-DataFrame">3. Create a Spark DataFrame<a class="anchor-link" href="#3.-Create-a-Spark-DataFrame">&#182;</a></h2><p>Using the SQLContext and the loaded local DataFrame, create a Spark DataFrame and print the schema, or structure, of the DataFrame:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span class="c1">// Define the schema using a case class.</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Cars</span><span class="o">(</span><span class="n">car</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">mpg</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">cyl</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">disp</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">hp</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">drat</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span>
+ <span class="n">wt</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">qsec</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">vs</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">am</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">gear</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">carb</span><span class="k">:</span> <span class="kt">String</span><span class="o">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">csv</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;mtcars.csv&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">headerAndRows</span> <span class="k">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">line</span> <span class="k">=&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;,&quot;</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">trim</span><span class="o">))</span>
+<span class="k">val</span> <span class="n">header</span> <span class="k">=</span> <span class="n">headerAndRows</span><span class="o">.</span><span class="n">first</span>
+<span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="n">headerAndRows</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="k">_</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">!=</span> <span class="n">header</span><span class="o">(</span><span class="mi">0</span><span class="o">))</span>
+<span class="k">val</span> <span class="n">mtcars</span> <span class="k">=</span> <span class="n">data</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">p</span> <span class="k">=&gt;</span> <span class="nc">Cars</span><span class="o">(</span><span class="n">p</span><span class="o">(</span><span class="mi">0</span><span class="o">),</span> <span class="n">p</span><span class="o">(</span><span class="mi">1</span><span class="o">),</span> <span class="n">p</span><span class="o">(</span><span class="mi">2</span><span class="o">),</span> <span class="n">p</span><span class="o">(</span><span class="mi">3</span><span class="o">),</span> <span class="n">p</span><span class="o">(</span><span class="mi">4</span><span class="o">),</span> <span class="n">p</span><span class="o">(</span><span class="mi">5</span><span class="o">),</span> <span class="n">p</span><span class="o">(</span><span class="mi">6</span><span class="o">),</span> <span class="n">p</span><span class="o">(</span><span class="mi">7</span><span class="o">),</span> <span class="n">p</span><span class="o">(</span><span class="mi">8</span><span class="o">),</span> <span class="n">p</span><span class="o">(</span><span class="mi">9</span><span class="o">),</span> <span class="n">p</span><span class="o">(</span><span class="mi">10</span><span class="o">),</span> <span class="n">p</span><span class="o">(</span><span class="mi">11</span><span class="o">))).</span><span class="n">toDF</span><span class="o">()</span>
+<span class="n">mtcars</span><span class="o">.</span><span class="n">printSchema</span>
 </pre></div>
 
 </div>
@@ -12559,7 +12680,20 @@ div#notebook {
 <div class="prompt"></div>
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Requirement already satisfied: MySQL-python in /usr/local/src/bluemix_jupyter_bundle.v52/notebook/lib/python2.7/site-packages
+<pre>root
+ |-- car: string (nullable = true)
+ |-- mpg: string (nullable = true)
+ |-- cyl: string (nullable = true)
+ |-- disp: string (nullable = true)
+ |-- hp: string (nullable = true)
+ |-- drat: string (nullable = true)
+ |-- wt: string (nullable = true)
+ |-- qsec: string (nullable = true)
+ |-- vs: string (nullable = true)
+ |-- am: string (nullable = true)
+ |-- gear: string (nullable = true)
+ |-- carb: string (nullable = true)
+
 </pre>
 </div>
 </div>
@@ -12568,67 +12702,77 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">MySQLdb</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Confirm-that-MySQL-is-running">Confirm that MySQL is running<a class="anchor-link" href="#Confirm-that-MySQL-is-running">&#182;</a></h2><p>You can test to see if MySQL is installed by opening your terminal and typing “mysql”. If you receive an error that MySQL cannot connect, it means that MySQL is installed, but not running.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Identify-and-enter-the-database-connection-credentials">Identify and enter the database connection credentials<a class="anchor-link" href="#Identify-and-enter-the-database-connection-credentials">&#182;</a></h2><p>Connecting to MySQL database requires the following information:</p>
-<ul>
-<li>Host name or IP address </li>
-<li>Host port</li>
-<li>default database name</li>
-<li>User ID</li>
-<li>User password</li>
-</ul>
-<p>All of this information must be captured in a connection string in a subsequent step. Provide the MySQL connection information as shown:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Create-the-database-connection">Create the database connection<a class="anchor-link" href="#Create-the-database-connection">&#182;</a></h2><p>Set up a connection as follows. If a connect cannot be made an exception will be raised. 
-<em>conn.cursor</em> will return a cursor object and you can use this cursor to perform queries:</p>
+<p>Display the content of the Spark DataFrame:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">conn</span> <span class="o">=</span> <span class="n">MySQLdb</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">dsn_hostname</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">dsn_port</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">dsn_uid</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="n">dsn_pwd</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">dsn_database</span><span class="p">)</span>
+<div class=" highlight hl-scala"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">32</span><span class="o">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------------------+----+---+-----+---+----+-----+-----+---+---+----+----+
+|                car| mpg|cyl| disp| hp|drat|   wt| qsec| vs| am|gear|carb|
++-------------------+----+---+-----+---+----+-----+-----+---+---+----+----+
+|          Mazda RX4|  21|  6|  160|110| 3.9| 2.62|16.46|  0|  1|   4|   4|
+|      Mazda RX4 Wag|  21|  6|  160|110| 3.9|2.875|17.02|  0|  1|   4|   4|
+|         Datsun 710|22.8|  4|  108| 93|3.85| 2.32|18.61|  1|  1|   4|   1|
+|     Hornet 4 Drive|21.4|  6|  258|110|3.08|3.215|19.44|  1|  0|   3|   1|
+|  Hornet Sportabout|18.7|  8|  360|175|3.15| 3.44|17.02|  0|  0|   3|   2|
+|            Valiant|18.1|  6|  225|105|2.76| 3.46|20.22|  1|  0|   3|   1|
+|         Duster 360|14.3|  8|  360|245|3.21| 3.57|15.84|  0|  0|   3|   4|
+|          Merc 240D|24.4|  4|146.7| 62|3.69| 3.19|   20|  1|  0|   4|   2|
+|           Merc 230|22.8|  4|140.8| 95|3.92| 3.15| 22.9|  1|  0|   4|   2|
+|           Merc 280|19.2|  6|167.6|123|3.92| 3.44| 18.3|  1|  0|   4|   4|
+|          Merc 280C|17.8|  6|167.6|123|3.92| 3.44| 18.9|  1|  0|   4|   4|
+|         Merc 450SE|16.4|  8|275.8|180|3.07| 4.07| 17.4|  0|  0|   3|   3|
+|         Merc 450SL|17.3|  8|275.8|180|3.07| 3.73| 17.6|  0|  0|   3|   3|
+|        Merc 450SLC|15.2|  8|275.8|180|3.07| 3.78|   18|  0|  0|   3|   3|
+| Cadillac Fleetwood|10.4|  8|  472|205|2.93| 5.25|17.98|  0|  0|   3|   4|
+|Lincoln Continental|10.4|  8|  460|215|   3|5.424|17.82|  0|  0|   3|   4|
+|  Chrysler Imperial|14.7|  8|  440|230|3.23|5.345|17.42|  0|  0|   3|   4|
+|           Fiat 128|32.4|  4| 78.7| 66|4.08|  2.2|19.47|  1|  1|   4|   1|
+|        Honda Civic|30.4|  4| 75.7| 52|4.93|1.615|18.52|  1|  1|   4|   2|
+|     Toyota Corolla|33.9|  4| 71.1| 65|4.22|1.835| 19.9|  1|  1|   4|   1|
+|      Toyota Corona|21.5|  4|120.1| 97| 3.7|2.465|20.01|  1|  0|   3|   1|
+|   Dodge Challenger|15.5|  8|  318|150|2.76| 3.52|16.87|  0|  0|   3|   2|
+|        AMC Javelin|15.2|  8|  304|150|3.15|3.435| 17.3|  0|  0|   3|   2|
+|         Camaro Z28|13.3|  8|  350|245|3.73| 3.84|15.41|  0|  0|   3|   4|
+|   Pontiac Firebird|19.2|  8|  400|175|3.08|3.845|17.05|  0|  0|   3|   2|
+|          Fiat X1-9|27.3|  4|   79| 66|4.08|1.935| 18.9|  1|  1|   4|   1|
+|      Porsche 914-2|  26|  4|120.3| 91|4.43| 2.14| 16.7|  0|  1|   5|   2|
+|       Lotus Europa|30.4|  4| 95.1|113|3.77|1.513| 16.9|  1|  1|   5|   2|
+|     Ford Pantera L|15.8|  8|  351|264|4.22| 3.17| 14.5|  0|  1|   5|   4|
+|       Ferrari Dino|19.7|  6|  145|175|3.62| 2.77| 15.5|  0|  1|   5|   6|
+|      Maserati Bora|  15|  8|  301|335|3.54| 3.57| 14.6|  0|  1|   5|   8|
+|         Volvo 142E|21.4|  4|  121|109|4.11| 2.78| 18.6|  1|  1|   4|   2|
++-------------------+----+---+-----+---+----+-----+-----+---+---+----+----+
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -12638,21 +12782,46 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Create-a-table">Create a table<a class="anchor-link" href="#Create-a-table">&#182;</a></h2><p>Create a test table named Cars. The code below drops the Cars table if it already exists, and then creates the new table:</p>
+<p>Try different ways of retrieving subsets of the data. For example, get the first 5 values in the <strong>mpg</strong> column:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;&quot;&quot;DROP TABLE IF EXISTS Cars&quot;&quot;&quot;</span><span class="p">)</span>
-<span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;&quot;&quot;CREATE TABLE Cars(Id INTEGER PRIMARY KEY, Name VARCHAR(20), Price INT)&quot;&quot;&quot;</span><span class="p">)</span>
+<div class=" highlight hl-scala"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;mpg&quot;</span><span class="o">).</span><span class="n">show</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----+
+| mpg|
++----+
+|  21|
+|  21|
+|22.8|
+|21.4|
+|18.7|
++----+
+only showing top 5 rows
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -12662,27 +12831,53 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Insert-data-into-a-table">Insert data into a table<a class="anchor-link" href="#Insert-data-into-a-table">&#182;</a></h2><p>Run the following commands to create records in the new Cars table:</p>
+<p>Filter the DataFrame to retain only rows with <strong>mpg</strong> values that are less than 18:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;&quot;&quot;INSERT INTO Cars VALUES(1,&#39;Audi&#39;,52642)&quot;&quot;&quot;</span><span class="p">)</span>
-<span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;&quot;&quot;INSERT INTO Cars VALUES(2,&#39;Mercedes&#39;,57127)&quot;&quot;&quot;</span><span class="p">)</span>
-<span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;&quot;&quot;INSERT INTO Cars VALUES(3,&#39;Skoda&#39;,9000)&quot;&quot;&quot;</span><span class="p">)</span>
-<span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;&quot;&quot;INSERT INTO Cars VALUES(4,&#39;Volvo&#39;,29000)&quot;&quot;&quot;</span><span class="p">)</span>
-<span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;&quot;&quot;INSERT INTO Cars VALUES(5,&#39;Bentley&#39;,350000)&quot;&quot;&quot;</span><span class="p">)</span>
-<span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;&quot;&quot;INSERT INTO Cars VALUES(6,&#39;Citroen&#39;,21000)&quot;&quot;&quot;</span><span class="p">)</span>
-<span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;&quot;&quot;INSERT INTO Cars VALUES(7,&#39;Hummer&#39;,41400)&quot;&quot;&quot;</span><span class="p">)</span>
-<span class="n">conn</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s">&quot;&quot;&quot;INSERT INTO Cars VALUES(8,&#39;Volkswagen&#39;,21600)&quot;&quot;&quot;</span><span class="p">)</span>
+<div class=" highlight hl-scala"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">mtcars</span><span class="o">(</span><span class="s">&quot;mpg&quot;</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="o">).</span><span class="n">show</span><span class="o">()</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------------------+----+---+-----+---+----+-----+-----+---+---+----+----+
+|                car| mpg|cyl| disp| hp|drat|   wt| qsec| vs| am|gear|carb|
++-------------------+----+---+-----+---+----+-----+-----+---+---+----+----+
+|         Duster 360|14.3|  8|  360|245|3.21| 3.57|15.84|  0|  0|   3|   4|
+|          Merc 280C|17.8|  6|167.6|123|3.92| 3.44| 18.9|  1|  0|   4|   4|
+|         Merc 450SE|16.4|  8|275.8|180|3.07| 4.07| 17.4|  0|  0|   3|   3|
+|         Merc 450SL|17.3|  8|275.8|180|3.07| 3.73| 17.6|  0|  0|   3|   3|
+|        Merc 450SLC|15.2|  8|275.8|180|3.07| 3.78|   18|  0|  0|   3|   3|
+| Cadillac Fleetwood|10.4|  8|  472|205|2.93| 5.25|17.98|  0|  0|   3|   4|
+|Lincoln Continental|10.4|  8|  460|215|   3|5.424|17.82|  0|  0|   3|   4|
+|  Chrysler Imperial|14.7|  8|  440|230|3.23|5.345|17.42|  0|  0|   3|   4|
+|   Dodge Challenger|15.5|  8|  318|150|2.76| 3.52|16.87|  0|  0|   3|   2|
+|        AMC Javelin|15.2|  8|  304|150|3.15|3.435| 17.3|  0|  0|   3|   2|
+|         Camaro Z28|13.3|  8|  350|245|3.73| 3.84|15.41|  0|  0|   3|   4|
+|     Ford Pantera L|15.8|  8|  351|264|4.22| 3.17| 14.5|  0|  1|   5|   4|
+|      Maserati Bora|  15|  8|  301|335|3.54| 3.57| 14.6|  0|  1|   5|   8|
++-------------------+----+---+-----+---+----+-----+-----+---+---+----+----+
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -12692,22 +12887,45 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Query-data">Query data<a class="anchor-link" href="#Query-data">&#182;</a></h2><p>To fetch and display records from the Cars table, create a cursor and execute queries on it:</p>
+<p><a id='Aggregate_data_after_grouping_by_columns'></a></p>
+<h2 id="4.-Aggregate-data-after-grouping-by-columns">4. Aggregate data after grouping by columns<a class="anchor-link" href="#4.-Aggregate-data-after-grouping-by-columns">&#182;</a></h2><p>Spark DataFrames support a number of common functions to aggregate data after grouping. For example, you can compute the average weight of cars as a function of the number of cylinders:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">cursor</span><span class="o">=</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
-<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;&quot;&quot;SELECT * FROM Cars&quot;&quot;&quot;</span><span class="p">)</span>
-<span class="n">cursor</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+<div class=" highlight hl-scala"><pre><span class="k">import</span> <span class="nn">org.apache.spark.sql.functions._</span>
+<span class="n">mtcars</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="s">&quot;cyl&quot;</span><span class="o">).</span><span class="n">agg</span><span class="o">(</span><span class="n">avg</span><span class="o">(</span><span class="s">&quot;wt&quot;</span><span class="o">)).</span><span class="n">show</span><span class="o">()</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---+-----------------+
+|cyl|          avg(wt)|
++---+-----------------+
+|  8|3.999214285714286|
+|  6|3.117142857142857|
+|  4|2.285727272727273|
++---+-----------------+
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -12717,23 +12935,93 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can display the records neatly using pretty print:</p>
+<p>You can also sort the output from the aggregation to determine the most popular cylinder configuration in the DataFrame:</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="s">&quot;cyl&quot;</span><span class="o">).</span><span class="n">agg</span><span class="o">(</span><span class="n">count</span><span class="o">(</span><span class="s">&quot;wt&quot;</span><span class="o">)).</span><span class="n">sort</span><span class="o">(</span><span class="n">$</span><span class="s">&quot;count(wt)&quot;</span><span class="o">.</span><span class="n">desc</span><span class="o">).</span><span class="n">show</span><span class="o">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---+---------+
+|cyl|count(wt)|
++---+---------+
+|  8|       14|
+|  4|       11|
+|  6|        7|
++---+---------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id='Operate_on_columns'></a></p>
+<h2 id="5.-Operate-on-columns">5. Operate on columns<a class="anchor-link" href="#5.-Operate-on-columns">&#182;</a></h2><p>Scala provides a number of functions that you can apply directly to columns for data processing. In the following example, a basic arithmetic function converts lbs to metric tons:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">print</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">Show me the databases:</span><span class="se">\n</span><span class="s">&quot;</span>
-<span class="n">rows</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-<span class="kn">import</span> <span class="nn">pprint</span>
-<span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+<div class=" highlight hl-scala"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">withColumn</span><span class="o">(</span><span class="s">&quot;wtTon&quot;</span><span class="o">,</span> <span class="n">mtcars</span><span class="o">(</span><span class="s">&quot;wt&quot;</span><span class="o">)</span> <span class="o">*</span> <span class="mf">0.45</span><span class="o">).</span><span class="n">select</span><span class="o">((</span><span class="s">&quot;car&quot;</span><span class="o">),(</span><span class="s">&quot;wt&quot;</span><span class="o">),(</span><span class="s">&quot;wtTon&quot;</span><span class="o">)).</span><span class="n">show</span><span class="o">(</span><span class="mi">6</span><span class="o">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----------------+-----+-------+
+|              car|   wt|  wtTon|
++-----------------+-----+-------+
+|        Mazda RX4| 2.62|  1.179|
+|    Mazda RX4 Wag|2.875|1.29375|
+|       Datsun 710| 2.32|  1.044|
+|   Hornet 4 Drive|3.215|1.44675|
+|Hornet Sportabout| 3.44|  1.548|
+|          Valiant| 3.46|  1.557|
++-----------------+-----+-------+
+only showing top 6 rows
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -12743,20 +13031,49 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Close-the-database-connection">Close the database connection<a class="anchor-link" href="#Close-the-database-connection">&#182;</a></h2><p>It is good practice to close your database connection after work is done:</p>
+<p><a id='Run_SQL_queries_from_the_Spark_DataFrame'></a></p>
+<h2 id="6.-Run-SQL-queries-from-the-Spark-DataFrame">6. Run SQL queries from the Spark DataFrame<a class="anchor-link" href="#6.-Run-SQL-queries-from-the-Spark-DataFrame">&#182;</a></h2><p>You can register a Spark DataFrame as a temporary table and then run SQL queries over the data. The <code>sql</code> function enables an application to run SQL queries programmatically and returns the result as a DataFrame:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<div class=" highlight hl-scala"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">registerTempTable</span><span class="o">(</span><span class="s">&quot;cars&quot;</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">highgearcars</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="o">(</span><span class="s">&quot;SELECT car, gear FROM cars WHERE gear &gt;= 5&quot;</span><span class="o">)</span>
+<span class="n">highgearcars</span><span class="o">.</span><span class="n">show</span><span class="o">()</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+--------------+----+
+|           car|gear|
++--------------+----+
+| Porsche 914-2|   5|
+|  Lotus Europa|   5|
+|Ford Pantera L|   5|
+|  Ferrari Dino|   5|
+| Maserati Bora|   5|
++--------------+----+
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -12766,7 +13083,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>This notebook demonstrated how to establish a connection to a MySQL database from Python using the MySQLdb library. For more information on the MySQLdb package see the official <a href="http://mysql-python.sourceforge.net/MySQLdb.html">MySQLdb User's Guide</a>.</p>
+<h2 id="That's-it!">That's it!<a class="anchor-link" href="#That's-it!">&#182;</a></h2><p>You successfully completed this notebook! You learned how to load a DataFrame, view and filter the data, aggregate the data, perform operations on the data in specific columns, and run SQL queries against the data. For more information about Spark, see the <a href="http://spark.apache.org/docs/latest/quick-start.html">Spark Quick Start Guide</a>.</p>
 
 </div>
 </div>
