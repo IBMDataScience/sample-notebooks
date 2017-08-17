@@ -12534,29 +12534,29 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This notebook contains steps and code to retrieve data from the IBM Data Science Experience Community, create a predictive model, and start scoring new data. This notebook introduces commands for retrieving, cleaning, and exploring data as well as pipeline creation, model training, model persistance to the Watson Machine Learning repository, model deployment, and scoring.</p>
+<p>This notebook contains steps and code to get data from the IBM Data Science Experience Community, create a predictive model, and start scoring new data. This notebook introduces commands for getting data and for basic data cleaning and exploration, pipeline creation, model training, model persistance to Watson Machine Learning repository, model deployment, and scoring.</p>
 <p>Some familiarity with Python is helpful. This notebook uses Python 3.5 and scikit-learn 0.17 package.</p>
-<p>You will use a toy dataset available from the <a href="http://scikit-learn.org/stable/index.html">scikit-learn</a> Web site, <strong>sklearn.datasets.load_digits</strong>, which contains hand-written digits images. Use the toy dataset to recognize hand-written digits. Refer to the <a href="#citations">Citations</a> for information about use of these images and scikit-learn modules.</p>
+<p>You will use a toy dataset available in scikit-learn, <strong>sklearn.datasets.load_digits</strong>, which contains hand-written digits images. Use the toy dataset to recognize hand-written digits.</p>
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>The learning goals of this notebook are:</p>
 <ul>
 <li>Load a toy dataset from scikit-learn.</li>
 <li>Explore data.</li>
 <li>Prepare data for training and evaluation.</li>
-<li>Create a scikit-learn machine learning pipeline.</li>
+<li>Create Scikit-learn machine learning pipeline.</li>
 <li>Train and evaluate a model.</li>
-<li>Persist a pipeline and model in the Watson Machine Learning repository.</li>
-<li>Deploy a model for online scoring using the Wastson Machine Learning API.</li>
+<li>Persist a pipeline and model in Watson Machine Learning repository.</li>
+<li>Deploy a model for online scoring using Wastson Machine Learning API.</li>
 <li>Score sample scoring data using the Watson Machine Learning API.</li>
-<li>Explore and visualize prediction result using the matplotlib package.</li>
+<li>Explore and visualize prediction result using matplotlib package.</li>
 </ul>
 <h2 id="Contents">Contents<a class="anchor-link" href="#Contents">&#182;</a></h2><p>This notebook contains the following parts:</p>
 <ol>
 <li><a href="#setup">Setup</a></li>
 <li><a href="#load">Load and explore data</a></li>
-<li><a href="#model">Create a scikit-learn model</a></li>
-<li><a href="#persistence">Persist the model</a></li>
+<li><a href="#model">Create scikit-learn model</a></li>
+<li><a href="#persistence">Persist model</a></li>
 <li><a href="#visualization">Predict locally and visualize</a></li>
-<li><a href="#scoring">Deploy and score in the cloud</a></li>
+<li><a href="#scoring">Deploy and score in a Cloud</a></li>
 <li><a href="#summary">Summary and next steps</a></li>
 </ol>
 
@@ -12610,7 +12610,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">datasets</span>
@@ -12628,14 +12628,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The data set consists of 8x8 pixel images of hand-written digits. In the following step you will plot the first 5 images using the <strong>matplotlib</strong> library.</p>
+<p>Loaded toy dataset consists of 8x8 pixels images of hand-written digits. In next step you will plot first 5 images using <strong>matplotlib</strong> library.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="o">%</span><span class="k">matplotlib</span> inline
@@ -12655,20 +12655,76 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+SUVORK5CYII=
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's display the first-digit data and label it using the <code>data</code> and <code>target</code> methods.</p>
+<p>Let's display first digit data and label using <strong>data</strong> and <strong>target</strong>.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="nb">print</span><span class="p">(</span><span class="n">digits</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -12678,10 +12734,30 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[  0.   0.   5.  13.   9.   1.   0.   0.   0.   0.  13.  15.  10.  15.   5.
+   0.   0.   3.  15.   2.   0.  11.   8.   0.   0.   4.  12.   0.   0.   8.
+   8.   0.   0.   5.   8.   0.   0.   9.   8.   0.   0.   4.  11.   0.   1.
+  12.   7.   0.   0.   2.  14.   5.  10.  12.   0.   0.   0.   0.   6.  13.
+  10.   0.   0.   0.]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">digits</span><span class="o">.</span><span class="n">target</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -12691,20 +12767,38 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In next step you will count all the samples.</p>
+<p>In next step you will count all samples.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">samples_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">)</span>
@@ -12715,6 +12809,22 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Number of samples: 1797
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -12722,7 +12832,7 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="model"></a></p>
-<h2 id="3.-Create-a-scikit-learn-machine-learning-model">3. Create a scikit-learn machine learning model<a class="anchor-link" href="#3.-Create-a-scikit-learn-machine-learning-model">&#182;</a></h2><p>In this section you will learn how to prepare data, create a scikit-learn machine learning pipeline, and train a model.</p>
+<h2 id="3.-Create-a-Scikit-learn-machine-learning-model">3. Create a Scikit-learn machine learning model<a class="anchor-link" href="#3.-Create-a-Scikit-learn-machine-learning-model">&#182;</a></h2><p>In this section you will learn how to prepare data, create a Scikit-learn machine learning pipeline, and train a model.</p>
 
 </div>
 </div>
@@ -12732,14 +12842,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.1:-Prepare-data">3.1: Prepare data<a class="anchor-link" href="#3.1:-Prepare-data">&#182;</a></h3><p>In this subsection you will split your data into train, test, and score data sets.</p>
+<h3 id="3.1:-Prepare-data">3.1: Prepare data<a class="anchor-link" href="#3.1:-Prepare-data">&#182;</a></h3><p>In this subsection you will split your data into: train, test datasets.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">train_data</span> <span class="o">=</span> <span class="n">digits</span><span class="o">.</span><span class="n">data</span><span class="p">[:</span> <span class="nb">int</span><span class="p">(</span><span class="mf">0.7</span><span class="o">*</span><span class="n">samples_count</span><span class="p">)]</span>
@@ -12760,17 +12870,35 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Number of training records: 1257
+Number of testing records : 360
+Number of scoring records : 180
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As you can see our data has been successfully split into the following data sets:</p>
+<p>As you can see our data has been successfully split into two datasets:</p>
 <ul>
 <li>The train data set, which is the largest group, is used for training.</li>
 <li>The test data set will be used for model evaluation and is used to test the assumptions of the model.</li>
-<li>The score data set will be used for scoring in the cloud.</li>
+<li>The score data set will be used for scoring in Cloud.</li>
 </ul>
 
 </div>
@@ -12781,7 +12909,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.2:-Create-a-pipeline-and-train-a-model">3.2: Create a pipeline and train a model<a class="anchor-link" href="#3.2:-Create-a-pipeline-and-train-a-model">&#182;</a></h3>
+<h3 id="3.2:-Create-pipeline-and-train-a-model">3.2: Create pipeline and train a model<a class="anchor-link" href="#3.2:-Create-pipeline-and-train-a-model">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -12807,7 +12935,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="k">import</span> <span class="n">Pipeline</span>
@@ -12832,7 +12960,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">scaler</span> <span class="o">=</span> <span class="n">preprocessing</span><span class="o">.</span><span class="n">StandardScaler</span><span class="p">()</span>
@@ -12855,7 +12983,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">clf</span> <span class="o">=</span> <span class="n">svm</span><span class="o">.</span><span class="n">SVC</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s">&#39;rbf&#39;</span><span class="p">)</span>
@@ -12878,7 +13006,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([(</span><span class="s">&#39;scaler&#39;</span><span class="p">,</span> <span class="n">scaler</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;svc&#39;</span><span class="p">,</span> <span class="n">clf</span><span class="p">)])</span>
@@ -12901,7 +13029,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">model</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">train_labels</span><span class="p">)</span>
@@ -12917,14 +13045,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can check your <strong>model quality</strong> now. To evaluate the model, use the <strong>test data</strong>.</p>
+<p>You can check your <strong>model quality</strong> now. To evaluate the model, use <strong>test data</strong>.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">predicted</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
@@ -12936,13 +13064,45 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Evaluation report: 
+
+             precision    recall  f1-score   support
+
+          0       1.00      0.97      0.99        37
+          1       0.97      0.97      0.97        34
+          2       1.00      0.97      0.99        36
+          3       1.00      0.94      0.97        35
+          4       0.78      0.97      0.87        37
+          5       0.97      0.97      0.97        38
+          6       0.97      0.86      0.91        36
+          7       0.92      0.97      0.94        35
+          8       0.91      0.89      0.90        35
+          9       0.97      0.92      0.94        37
+
+avg / total       0.95      0.94      0.95       360
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can tune your model now to achieve better accuracy. For the sake of simplicity, in this example the tuning section is omitted.</p>
+<p>You can tune your model now to achieve better accuracy. For simplicity of this example tuning section is omitted.</p>
 
 </div>
 </div>
@@ -12953,7 +13113,7 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="persistence"></a></p>
-<h2 id="4.-Persist-the-model">4. Persist the model<a class="anchor-link" href="#4.-Persist-the-model">&#182;</a></h2>
+<h2 id="4.-Persist-model">4. Persist model<a class="anchor-link" href="#4.-Persist-model">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12962,7 +13122,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section you will learn how to store your pipeline and model in the Watson Machine Learning repository by using python client libraries.</p>
+<p>In this section you will learn how to store your pipeline and model in Watson Machine Learning repository by using python client libraries.</p>
 
 </div>
 </div>
@@ -12979,7 +13139,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="kn">from</span> <span class="nn">repository.mlrepositoryclient</span> <span class="k">import</span> <span class="n">MLRepositoryClient</span>
@@ -13014,7 +13174,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">service_path</span> <span class="o">=</span> <span class="s">&#39;https://ibm-watson-ml.mybluemix.net&#39;</span>
@@ -13033,14 +13193,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Tip</strong>: The <code>service_path</code>, <code>username</code>, and <code>password</code> values can be found on the <strong>Service Credentials</strong> tab of the service instance that you created in Bluemix.</p>
+<p><strong>Tip</strong>: service_path, user and password can be found on <strong>Service Credentials</strong> tab of service instance created in Bluemix.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">ml_repository_client</span> <span class="o">=</span> <span class="n">MLRepositoryClient</span><span class="p">(</span><span class="n">service_path</span><span class="p">)</span>
@@ -13057,14 +13217,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create the model artifact (abstraction layer).</p>
+<p>Create model artifact (abstraction layer).</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">props</span> <span class="o">=</span> <span class="n">MetaProps</span><span class="p">({</span><span class="n">MetaNames</span><span class="o">.</span><span class="n">AUTHOR_NAME</span><span class="p">:</span><span class="s">&quot;IBM&quot;</span><span class="p">,</span> <span class="n">MetaNames</span><span class="o">.</span><span class="n">AUTHOR_EMAIL</span><span class="p">:</span><span class="s">&quot;ibm@ibm.com&quot;</span><span class="p">})</span>
@@ -13077,7 +13237,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">model_artifact</span> <span class="o">=</span> <span class="n">MLRepositoryArtifact</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Hand-written digits recognition&quot;</span><span class="p">,</span> <span class="n">meta_props</span><span class="o">=</span><span class="n">props</span><span class="p">)</span>
@@ -13093,7 +13253,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Tip</strong>: The <code>MLRepositoryArtifact</code> method expects a trained model object, training data, and a model name. (It is this model name that is displayed by the Watson Machine Learning service).</p>
+<p><strong>Tip</strong>: The MLRepositoryArtifact method expects a trained model object, training data, and a model name. (It is this model name that is displayed by the Watson Machine Learning service).</p>
 
 </div>
 </div>
@@ -13103,7 +13263,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.1:-Save-the-pipeline-and-model">4.1: Save the pipeline and model<a class="anchor-link" href="#4.1:-Save-the-pipeline-and-model">&#182;</a></h3>
+<h3 id="4.1:-Save-pipeline-and-model">4.1: Save pipeline and model<a class="anchor-link" href="#4.1:-Save-pipeline-and-model">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13112,14 +13272,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this subsection you will learn how to save the pipeline and model artifacts to your Watson Machine Learning instance.</p>
+<p>In this subsection you will learn how to save pipeline and model artifacts to your Watson Machine Learning instance.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">saved_model</span> <span class="o">=</span> <span class="n">ml_repository_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model_artifact</span><span class="p">)</span>
@@ -13135,7 +13295,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Retrieve the saved model metadata from Watson Machine Learning.</p>
+<p>Get saved model metadata from Watson Machine Learning.</p>
 
 </div>
 </div>
@@ -13145,14 +13305,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Tip</strong>: Use the <code>meta.available_props()</code> method to get the list of available props.</p>
+<p><strong>Tip</strong>: Use <em>meta.available_props()</em> to get the list of available props.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">saved_model</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">available_props</span><span class="p">()</span>
@@ -13162,10 +13322,28 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt output_prompt">Out[19]:</div>
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>dict_keys([&#39;lastUpdated&#39;, &#39;version&#39;, &#39;authorEmail&#39;, &#39;trainingDataRef&#39;, &#39;runtime&#39;, &#39;pipelineVersionHref&#39;, &#39;modelVersionHref&#39;, &#39;creationTime&#39;, &#39;modelType&#39;, &#39;authorName&#39;])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="nb">print</span><span class="p">(</span><span class="s">&quot;modelType: &quot;</span> <span class="o">+</span> <span class="n">saved_model</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="p">(</span><span class="s">&quot;modelType&quot;</span><span class="p">))</span>
@@ -13178,13 +13356,32 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>modelType: scikit-model-0.17.1
+runtime: python-3.5
+creationTime: 2017-07-21 10:10:08.496000+00:00
+modelVersionHref: https://ibm-watson-ml.mybluemix.net/v2/artifacts/models/2761f6e3-b15e-45a5-ac16-9ca64495e876/versions/0c920445-96fb-45b1-bcf7-df9d7a3209f7
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Tip</strong>: The <strong>modelVersionHref</strong> variable is our model unique indentifier in the Watson Machine Learning repository.</p>
+<p><strong>Tip</strong>: <strong>modelVersionHref</strong> is our model unique indentifier in the Watson Machine Learning repository.</p>
 
 </div>
 </div>
@@ -13194,7 +13391,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.2:-Load-the-model">4.2: Load the model<a class="anchor-link" href="#4.2:-Load-the-model">&#182;</a></h3>
+<h3 id="4.2:-Load-model">4.2: Load model<a class="anchor-link" href="#4.2:-Load-model">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13203,14 +13400,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this subsection you will learn how to load back the saved model from a specified instance of Watson Machine Learning.</p>
+<p>In this subsection you will learn how to load back saved model from specified instance of Watson Machine Learning.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">loadedModelArtifact</span> <span class="o">=</span> <span class="n">ml_repository_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">saved_model</span><span class="o">.</span><span class="n">uid</span><span class="p">)</span>
@@ -13226,14 +13423,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can print the model name to make sure that model has been loaded correctly.</p>
+<p>You can print for example model name to make sure that model has been loaded correctly.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="nb">print</span><span class="p">(</span><span class="n">loadedModelArtifact</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -13244,13 +13441,30 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Hand-written digits recognition
+2761f6e3-b15e-45a5-ac16-9ca64495e876
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As you can see the name is correct. You have already learned how to save and load the model from the Watson Machine Learning repository.</p>
+<p>As you can see the name is correct. You have already learned how save and load the model from Watson Machine Learning repository.</p>
 
 </div>
 </div>
@@ -13270,7 +13484,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section you will learn how to score test data by using the loaded model and visualize the prediction results by using the <code>plotly</code> package.</p>
+<p>In this section you will learn how to score test data using loaded model and visualize the prediction results with plotly package.</p>
 
 </div>
 </div>
@@ -13289,14 +13503,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this subsection you will score the <code>predict_data</code> data set.</p>
+<p>In this subsection you will score <em>predict_data</em> data set.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">predictions</span> <span class="o">=</span> <span class="n">loadedModelArtifact</span><span class="o">.</span><span class="n">model_instance</span><span class="p">()</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">score_data</span><span class="p">)</span>
@@ -13312,14 +13526,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To print the prediction results, run the following code:</p>
+<p>Print prediction results.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="nb">print</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
@@ -13329,19 +13543,39 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[5 2 8 0 1 7 6 3 2 1 7 8 6 3 1 3 9 1 7 6 8 4 3 1 4 0 5 3 6 9 6 1 7 5 4 4 7
+ 2 2 5 4 3 5 8 4 5 0 8 9 8 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 5
+ 4 5 6 7 8 9 0 9 5 5 6 5 0 9 8 9 8 4 1 7 7 3 5 1 0 0 2 2 7 8 2 0 1 2 6 8 8
+ 7 5 3 4 6 6 6 4 9 1 5 0 9 5 2 8 2 0 0 1 7 6 3 2 1 7 4 6 3 1 3 9 1 7 6 8 4
+ 5 1 4 0 5 3 6 9 6 1 7 5 4 4 7 2 8 2 2 5 7 9 5 4 8 8 4 9 0 8 9 8]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="5.2:-Sample-visualization-of-data-with-the-matplotlib-package">5.2: Sample visualization of data with the <code>matplotlib</code> package<a class="anchor-link" href="#5.2:-Sample-visualization-of-data-with-the-matplotlib-package">&#182;</a></h3>
+<h3 id="5.2:-Sample-visualization-of-data-with-matplotlib-package">5.2: Sample visualization of data with matplotlib package<a class="anchor-link" href="#5.2:-Sample-visualization-of-data-with-matplotlib-package">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">images_and_predictions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">digits</span><span class="o">.</span><span class="n">images</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.9</span><span class="o">*</span><span class="n">samples_count</span><span class="p">):</span> <span class="p">],</span> <span class="n">predictions</span><span class="p">))</span>
@@ -13356,6 +13590,70 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+rkJggg==
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -13363,7 +13661,7 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="scoring"></a></p>
-<h2 id="6.-Deploy-and-score-in-the-cloud">6. Deploy and score in the cloud<a class="anchor-link" href="#6.-Deploy-and-score-in-the-cloud">&#182;</a></h2>
+<h2 id="6.-Deploy-and-score-in-a-Cloud">6. Deploy and score in a Cloud<a class="anchor-link" href="#6.-Deploy-and-score-in-a-Cloud">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13390,7 +13688,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="kn">import</span> <span class="nn">urllib3</span><span class="o">,</span> <span class="nn">requests</span><span class="o">,</span> <span class="nn">json</span>
@@ -13411,7 +13709,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="6.1:-Create-the-model-deployment">6.1: Create the model deployment<a class="anchor-link" href="#6.1:-Create-the-model-deployment">&#182;</a></h3>
+<h3 id="6.1:-Create-model-deployment">6.1: Create model deployment<a class="anchor-link" href="#6.1:-Create-model-deployment">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13420,7 +13718,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Retrieve the <code>published_models</code> URL from the instance details.</p>
+<p>Get published_models url from instance details.</p>
 
 </div>
 </div>
@@ -13436,11 +13734,11 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">endpoint_instance</span> <span class="o">=</span> <span class="n">service_path</span> <span class="o">+</span> <span class="s">&quot;/v3/wml_instances/&quot;</span> <span class="o">+</span> <span class="n">instance_id</span>
-<span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">mltoken</span><span class="p">}</span>
+<span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">mltoken</span><span class="p">}</span> 
 
 <span class="n">response_get_instance</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint_instance</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">response_get_instance</span><span class="p">)</span>
@@ -13451,10 +13749,27 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;Response [200]&gt;
+{&#34;metadata&#34;:{&#34;guid&#34;:&#34;81eb122f-a170-4efd-86b6-4a8afa16d30b&#34;,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/81eb122f-a170-4efd-86b6-4a8afa16d30b&#34;,&#34;created_at&#34;:&#34;2017-07-17T11:30:15.027Z&#34;,&#34;modified_at&#34;:&#34;2017-07-21T10:10:08.574Z&#34;},&#34;entity&#34;:{&#34;source&#34;:&#34;Bluemix&#34;,&#34;published_models&#34;:{&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/81eb122f-a170-4efd-86b6-4a8afa16d30b/published_models&#34;},&#34;usage&#34;:{&#34;expiration_date&#34;:&#34;2017-08-01T00:00:00.000Z&#34;,&#34;computation_time&#34;:{&#34;current&#34;:0},&#34;model_count&#34;:{&#34;current&#34;:2},&#34;prediction_count&#34;:{&#34;current&#34;:0},&#34;deployment_count&#34;:{&#34;current&#34;:0}},&#34;plan_id&#34;:&#34;0f2a3c2c-456b-40f3-9b19-726d2740b11c&#34;,&#34;account_id&#34;:&#34;500838470&#34;,&#34;status&#34;:&#34;Active&#34;,&#34;organization_guid&#34;:&#34;5a46f2ad-87af-451a-a6ea-684c0bb92ce9&#34;,&#34;region&#34;:&#34;us-south&#34;,&#34;deployments&#34;:{&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/81eb122f-a170-4efd-86b6-4a8afa16d30b/deployments&#34;},&#34;space_guid&#34;:&#34;e6d9f948-d4d4-411b-9ce4-3fbaf243aed6&#34;,&#34;plan&#34;:&#34;standard&#34;}}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">endpoint_published_models</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response_get_instance</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;entity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;published_models&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;url&#39;</span><span class="p">)</span>
@@ -13466,13 +13781,29 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>https://ibm-watson-ml.mybluemix.net/v3/wml_instances/81eb122f-a170-4efd-86b6-4a8afa16d30b/published_models
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Execute the following sample code that uses the <code>published_models</code> endpoint to get the deployments URL.</p>
+<p>Execute the following sample code that uses the published_models endpoint to get deployments url.</p>
 
 </div>
 </div>
@@ -13488,10 +13819,10 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">mltoken</span><span class="p">}</span>
+<div class=" highlight hl-ipython3"><pre><span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">mltoken</span><span class="p">}</span>
 <span class="n">response_get</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint_published_models</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">response_get</span><span class="p">)</span>
@@ -13502,19 +13833,36 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;Response [200]&gt;
+{&#34;count&#34;:1,&#34;resources&#34;:[{&#34;metadata&#34;:{&#34;guid&#34;:&#34;2761f6e3-b15e-45a5-ac16-9ca64495e876&#34;,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/81eb122f-a170-4efd-86b6-4a8afa16d30b/published_models/2761f6e3-b15e-45a5-ac16-9ca64495e876&#34;,&#34;created_at&#34;:&#34;2017-07-21T10:10:08.496Z&#34;,&#34;modified_at&#34;:&#34;2017-07-21T10:10:08.572Z&#34;},&#34;entity&#34;:{&#34;runtime_environment&#34;:&#34;python-3.5&#34;,&#34;author&#34;:{&#34;name&#34;:&#34;IBM&#34;,&#34;email&#34;:&#34;ibm@ibm.com&#34;},&#34;name&#34;:&#34;Hand-written digits recognition&#34;,&#34;latest_version&#34;:{&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v2/artifacts/models/2761f6e3-b15e-45a5-ac16-9ca64495e876/versions/0c920445-96fb-45b1-bcf7-df9d7a3209f7&#34;,&#34;guid&#34;:&#34;0c920445-96fb-45b1-bcf7-df9d7a3209f7&#34;,&#34;created_at&#34;:&#34;2017-07-21T10:10:08.572Z&#34;},&#34;model_type&#34;:&#34;scikit-model-0.17.1&#34;,&#34;deployments&#34;:{&#34;count&#34;:0,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/81eb122f-a170-4efd-86b6-4a8afa16d30b/published_models/2761f6e3-b15e-45a5-ac16-9ca64495e876/deployments&#34;}}}]}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Get-the-published-model-deployment-URL">Get the published model deployment URL<a class="anchor-link" href="#Get-the-published-model-deployment-URL">&#182;</a></h4>
+<h4 id="Get-published-model-deployment-url">Get published model deployment url<a class="anchor-link" href="#Get-published-model-deployment-url">&#182;</a></h4>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="p">[</span><span class="n">endpoint_deployments</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;entity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;deployments&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;url&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response_get</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;resources&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;metadata&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;guid&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">saved_model</span><span class="o">.</span><span class="n">uid</span><span class="p">]</span>
@@ -13526,19 +13874,35 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>https://ibm-watson-ml.mybluemix.net/v3/wml_instances/81eb122f-a170-4efd-86b6-4a8afa16d30b/published_models/2761f6e3-b15e-45a5-ac16-9ca64495e876/deployments
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Create-an-online-deployment-for-the-published-model">Create an online deployment for the published model<a class="anchor-link" href="#Create-an-online-deployment-for-the-published-model">&#182;</a></h4>
+<h4 id="Create-online-deployment-for-published-model">Create online deployment for published model<a class="anchor-link" href="#Create-online-deployment-for-published-model">&#182;</a></h4>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">payload_online</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Hand written digits recognition&quot;</span><span class="p">,</span> <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="s">&quot;Hand Written Digits Deployment&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;online&quot;</span><span class="p">}</span>
@@ -13552,10 +13916,27 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;Response [201]&gt;
+{&#34;metadata&#34;:{&#34;guid&#34;:&#34;0de6709d-ee04-4b49-804c-e3fd7573f6db&#34;,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/81eb122f-a170-4efd-86b6-4a8afa16d30b/published_models/2761f6e3-b15e-45a5-ac16-9ca64495e876/deployments/0de6709d-ee04-4b49-804c-e3fd7573f6db&#34;,&#34;created_at&#34;:&#34;2017-07-21T10:10:58.965Z&#34;,&#34;modified_at&#34;:&#34;2017-07-21T10:11:00.030Z&#34;},&#34;entity&#34;:{&#34;runtime_environment&#34;:&#34;python-3.5&#34;,&#34;name&#34;:&#34;Hand written digits recognition&#34;,&#34;scoring_url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/81eb122f-a170-4efd-86b6-4a8afa16d30b/published_models/2761f6e3-b15e-45a5-ac16-9ca64495e876/deployments/0de6709d-ee04-4b49-804c-e3fd7573f6db/online&#34;,&#34;description&#34;:&#34;Hand Written Digits Deployment&#34;,&#34;published_model&#34;:{&#34;author&#34;:{&#34;name&#34;:&#34;IBM&#34;,&#34;email&#34;:&#34;ibm@ibm.com&#34;},&#34;name&#34;:&#34;Hand-written digits recognition&#34;,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/81eb122f-a170-4efd-86b6-4a8afa16d30b/published_models/2761f6e3-b15e-45a5-ac16-9ca64495e876&#34;,&#34;guid&#34;:&#34;2761f6e3-b15e-45a5-ac16-9ca64495e876&#34;,&#34;created_at&#34;:&#34;2017-07-21T10:10:58.935Z&#34;},&#34;model_type&#34;:&#34;scikit-model-0.17.1&#34;,&#34;status&#34;:&#34;INITIALIZING&#34;,&#34;type&#34;:&#34;online&#34;,&#34;deployed_version&#34;:{&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v2/artifacts/models/2761f6e3-b15e-45a5-ac16-9ca64495e876/versions/0c920445-96fb-45b1-bcf7-df9d7a3209f7&#34;,&#34;guid&#34;:&#34;0c920445-96fb-45b1-bcf7-df9d7a3209f7&#34;,&#34;created_at&#34;:&#34;2017-07-21T10:10:08.572Z&#34;}}}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">scoring_url</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response_online</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;entity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;scoring_url&#39;</span><span class="p">)</span>
@@ -13564,6 +13945,22 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>https://ibm-watson-ml.mybluemix.net/v3/wml_instances/81eb122f-a170-4efd-86b6-4a8afa16d30b/published_models/2761f6e3-b15e-45a5-ac16-9ca64495e876/deployments/0de6709d-ee04-4b49-804c-e3fd7573f6db/online
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13580,7 +13977,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">digit</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">digits</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -13594,7 +13991,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">payload_scoring</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">digit</span><span class="p">,</span> <span class="n">digit2</span><span class="p">]}</span>
@@ -13605,10 +14002,26 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{&#39;values&#39;: [[0.0, 0.0, 0.0, 12.0, 13.0, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 11.0, 16.0, 9.0, 0.0, 0.0, 0.0, 0.0, 3.0, 15.0, 16.0, 6.0, 0.0, 0.0, 0.0, 7.0, 15.0, 16.0, 16.0, 2.0, 0.0, 0.0, 0.0, 0.0, 1.0, 16.0, 16.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 16.0, 16.0, 6.0, 0.0, 0.0, 0.0, 0.0, 1.0, 16.0, 16.0, 6.0, 0.0, 0.0, 0.0, 0.0, 0.0, 11.0, 16.0, 10.0, 0.0, 0.0], [0.0, 0.0, 0.0, 4.0, 15.0, 12.0, 0.0, 0.0, 0.0, 0.0, 3.0, 16.0, 15.0, 14.0, 0.0, 0.0, 0.0, 0.0, 8.0, 13.0, 8.0, 16.0, 0.0, 0.0, 0.0, 0.0, 1.0, 6.0, 15.0, 11.0, 0.0, 0.0, 0.0, 1.0, 8.0, 13.0, 15.0, 1.0, 0.0, 0.0, 0.0, 9.0, 16.0, 16.0, 5.0, 0.0, 0.0, 0.0, 0.0, 3.0, 13.0, 16.0, 16.0, 11.0, 5.0, 0.0, 0.0, 0.0, 0.0, 3.0, 11.0, 16.0, 9.0, 0.0]]}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">response_scoring</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">scoring_url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload_scoring</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
@@ -13617,6 +14030,25 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{
+  &#34;values&#34;: [[1], [2]],
+  &#34;fields&#34;: [&#34;prediction&#34;]
+}
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13646,7 +14078,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You successfully completed this notebook! You learned how to use scikit-learn machine learning as well as Watson Machine Learning for model creation and deployment. Check out our <a href="https://console.ng.bluemix.net/docs/services/PredictiveModeling/index.html?pos=2">Online Documentation</a> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
+<p>You successfully completed this notebook! You learned how to use scikit-learn machine learning as well as Watson Machine Learning for model creation and deployment. Check out our <em><a href="https://console.ng.bluemix.net/docs/services/PredictiveModeling/index.html?pos=2">Online Documentation</a></em> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
 
 </div>
 </div>
@@ -13656,9 +14088,6 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="citations"></a></p>
-<h3 id="Citations">Citations<a class="anchor-link" href="#Citations">&#182;</a></h3><p><a href="http://jmlr.csail.mit.edu/papers/v12/pedregosa11a.html">Scikit-learn: Machine Learning in Python</a>, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011</p>
-<p><a href="https://arxiv.org/abs/1309.0238">API design for machine learning software: experiences from the scikit-learn project</a>, Buitinck et al., 2013.</p>
 <h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Lukasz Cmielowski</strong>, PhD, is a Automation Architect and Data Scientist in IBM with a track record of developing enterprise-level applications that substantially increases clients' ability to turn data into actionable knowledge.</p>
 
 </div>

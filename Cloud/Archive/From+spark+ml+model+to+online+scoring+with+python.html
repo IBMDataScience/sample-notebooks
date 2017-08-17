@@ -12519,7 +12519,7 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <table style="border: none" align="left">
    <tr style="border: none">
-      <th style="border: none"><font face="verdana" size="5" color="black"><b>Predict outdoor equipment purchase with IBM Watson Machine Learning</b></th>
+      <th style="border: none"><font face="verdana" size="5" color="black"><b>Predict outdoor equipment purchases with IBM Watson Machine Learning</b></th>
       <th style="border: none"><img src="https://github.com/pmservice/customer-satisfaction-prediction/blob/master/app/static/images/ml_icon_gray.png?raw=true" alt="Watson Machine Learning icon" height="40" width="40"></th>
    </tr>
    <tr style="border: none">
@@ -12534,7 +12534,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This notebook contains steps and code to get data from the IBM Data Science Experience Community, create a predictive model, and start scoring new data. This notebook introduces commands for getting data and for basic data cleaning and exploration, pipeline creation, model training, model persistance to Watson Machine Learning repository, model deployment, and scoring.</p>
+<p>This notebook contains steps and code to retrieve data from the IBM Data Science Experience Community, create a predictive model, and start scoring new data. This notebook introduces commands for retrieving, cleaning and exploring data as well as pipeline creation, model training, model persistance to the Watson Machine Learning repository, model deployment, and scoring.</p>
 <p>Some familiarity with Python is helpful. This notebook uses Python 2.0 and Apache® Spark 2.0.</p>
 <p>You will use a publicly available data set, <strong>GoSales Transactions for Naive Bayes Model</strong>, which details anonymous outdoor equipment purchases. Use the details of this data set to predict clients' interests in terms of product line, such as golf accessories, camping equipment, and others.</p>
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>The learning goals of this notebook are:</p>
@@ -12556,7 +12556,7 @@ div#notebook {
 <li><a href="#model">Create spark ml model</a></li>
 <li><a href="#persistence">Persist model</a></li>
 <li><a href="#visualization">Predict locally and visualize</a></li>
-<li><a href="#scoring">Deploy and score in a Cloud</a></li>
+<li><a href="#scoring">Deploy and score in the cloud</a></li>
 <li><a href="#summary">Summary and next steps</a></li>
 </ol>
 
@@ -12602,7 +12602,7 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In this section you will load the data as an Apache® Spark DataFrame and perform a basic exploration.</p>
-<p>Load the data to the Spark DataFrame by using <em>wget</em> to upload the data to gpfs and then <em>read</em> method.</p>
+<p>Load the data to the Spark DataFrame by using the <em>wget</em> command to upload the data to the general parallel file system now (GPFS) and then the <em>read</em> method.</p>
 
 </div>
 </div>
@@ -12620,7 +12620,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">wget</span>
@@ -12635,36 +12635,20 @@ div#notebook {
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>GoSales_Tx_NaiveBayes.csv
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The csv file GoSales_Tx_NaiveBayes.csv is availble on gpfs now. Load the file to Apache® Spark DataFrame using code below.</p>
+<p>The GoSales_Tx_NaiveBayes.csv file is availble on GPFS. Load the file to the Apache® Spark DataFrame by using the code below.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
@@ -12678,26 +12662,6 @@ div#notebook {
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[4]:</div>
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[Row(PRODUCT_LINE=u&#39;Personal Accessories&#39;, GENDER=u&#39;M&#39;, AGE=27, MARITAL_STATUS=u&#39;Single&#39;, PROFESSION=u&#39;Professional&#39;),
- Row(PRODUCT_LINE=u&#39;Personal Accessories&#39;, GENDER=u&#39;F&#39;, AGE=39, MARITAL_STATUS=u&#39;Married&#39;, PROFESSION=u&#39;Other&#39;),
- Row(PRODUCT_LINE=u&#39;Mountaineering Equipment&#39;, GENDER=u&#39;F&#39;, AGE=39, MARITAL_STATUS=u&#39;Married&#39;, PROFESSION=u&#39;Other&#39;)]</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -12719,35 +12683,13 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">df_data</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>root
- |-- PRODUCT_LINE: string (nullable = true)
- |-- GENDER: string (nullable = true)
- |-- AGE: integer (nullable = true)
- |-- MARITAL_STATUS: string (nullable = true)
- |-- PROFESSION: string (nullable = true)
-
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -12764,7 +12706,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">df_data</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -12774,75 +12716,16 @@ div#notebook {
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>+--------------------+------+---+--------------+------------+
-|        PRODUCT_LINE|GENDER|AGE|MARITAL_STATUS|  PROFESSION|
-+--------------------+------+---+--------------+------------+
-|Personal Accessories|     M| 27|        Single|Professional|
-|Personal Accessories|     F| 39|       Married|       Other|
-|Mountaineering Eq...|     F| 39|       Married|       Other|
-|Personal Accessories|     F| 56|   Unspecified| Hospitality|
-|      Golf Equipment|     M| 45|       Married|     Retired|
-|      Golf Equipment|     M| 45|       Married|     Retired|
-|   Camping Equipment|     F| 39|       Married|       Other|
-|   Camping Equipment|     F| 49|       Married|       Other|
-|  Outdoor Protection|     F| 49|       Married|       Other|
-|      Golf Equipment|     M| 47|       Married|     Retired|
-|      Golf Equipment|     M| 47|       Married|     Retired|
-|Mountaineering Eq...|     M| 21|        Single|      Retail|
-|Personal Accessories|     F| 66|       Married|       Other|
-|   Camping Equipment|     F| 35|       Married|Professional|
-|Mountaineering Eq...|     M| 20|        Single|       Sales|
-|Mountaineering Eq...|     M| 20|        Single|       Sales|
-|Mountaineering Eq...|     M| 20|        Single|       Sales|
-|Personal Accessories|     F| 37|        Single|       Other|
-|   Camping Equipment|     M| 42|       Married|       Other|
-|   Camping Equipment|     F| 24|       Married|      Retail|
-+--------------------+------+---+--------------+------------+
-only showing top 20 rows
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">df_data</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[7]:</div>
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>60252</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -12880,7 +12763,7 @@ only showing top 20 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">splitted_data</span> <span class="o">=</span> <span class="n">df_data</span><span class="o">.</span><span class="n">randomSplit</span><span class="p">([</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">],</span> <span class="mi">24</span><span class="p">)</span>
@@ -12894,24 +12777,6 @@ only showing top 20 rows
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Number of training records: 48176
-Number of testing records : 10860
-Number of prediction records : 1216
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -12962,7 +12827,7 @@ Number of prediction records : 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">OneHotEncoder</span><span class="p">,</span> <span class="n">StringIndexer</span><span class="p">,</span> <span class="n">IndexToString</span><span class="p">,</span> <span class="n">VectorAssembler</span>
@@ -12988,7 +12853,7 @@ Number of prediction records : 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">stringIndexer_label</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s">&quot;PRODUCT_LINE&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s">&quot;label&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df_data</span><span class="p">)</span>
@@ -13014,7 +12879,7 @@ Number of prediction records : 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">vectorAssembler_features</span> <span class="o">=</span> <span class="n">VectorAssembler</span><span class="p">(</span><span class="n">inputCols</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;GENDER_IX&quot;</span><span class="p">,</span> <span class="s">&quot;AGE&quot;</span><span class="p">,</span> <span class="s">&quot;MARITAL_STATUS_IX&quot;</span><span class="p">,</span> <span class="s">&quot;PROFESSION_IX&quot;</span><span class="p">],</span> <span class="n">outputCol</span><span class="o">=</span><span class="s">&quot;features&quot;</span><span class="p">)</span>
@@ -13037,7 +12902,7 @@ Number of prediction records : 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">labelCol</span><span class="o">=</span><span class="s">&quot;label&quot;</span><span class="p">,</span> <span class="n">featuresCol</span><span class="o">=</span><span class="s">&quot;features&quot;</span><span class="p">)</span>
@@ -13060,7 +12925,7 @@ Number of prediction records : 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">labelConverter</span> <span class="o">=</span> <span class="n">IndexToString</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s">&quot;prediction&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s">&quot;predictedLabel&quot;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">stringIndexer_label</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
@@ -13083,7 +12948,7 @@ Number of prediction records : 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">pipeline_rf</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">stages</span><span class="o">=</span><span class="p">[</span><span class="n">stringIndexer_label</span><span class="p">,</span> <span class="n">stringIndexer_prof</span><span class="p">,</span> <span class="n">stringIndexer_gend</span><span class="p">,</span> <span class="n">stringIndexer_mar</span><span class="p">,</span> <span class="n">vectorAssembler_features</span><span class="p">,</span> <span class="n">rf</span><span class="p">,</span> <span class="n">labelConverter</span><span class="p">])</span>
@@ -13106,7 +12971,7 @@ Number of prediction records : 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">train_data</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
@@ -13116,32 +12981,10 @@ Number of prediction records : 1216
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>root
- |-- PRODUCT_LINE: string (nullable = true)
- |-- GENDER: string (nullable = true)
- |-- AGE: integer (nullable = true)
- |-- MARITAL_STATUS: string (nullable = true)
- |-- PROFESSION: string (nullable = true)
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">model_rf</span> <span class="o">=</span> <span class="n">pipeline_rf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
@@ -13164,7 +13007,7 @@ Number of prediction records : 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">predictions</span> <span class="o">=</span> <span class="n">model_rf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
@@ -13178,30 +13021,13 @@ Number of prediction records : 1216
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Accuracy = 0.589319
-Test Error = 0.410681
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can tune your model now to achieve better accuracy. For simplicity of this example tuning section is omitted.</p>
+<p>You can tune your model now to achieve better accuracy. For the sake of simplicity, the tuning section is omitted.</p>
 
 </div>
 </div>
@@ -13212,7 +13038,7 @@ Test Error = 0.410681
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="persistence"></a></p>
-<h2 id="4.-Persist-model">4. Persist model<a class="anchor-link" href="#4.-Persist-model">&#182;</a></h2>
+<h2 id="4.-Persist-the-model">4. Persist the model<a class="anchor-link" href="#4.-Persist-the-model">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13221,7 +13047,7 @@ Test Error = 0.410681
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section you will learn how to store your pipeline and model in Watson Machine Learning repository by using python client libraries.</p>
+<p>In this section you will learn how to store your pipeline and model in the Watson Machine Learning repository by using python client libraries.</p>
 
 </div>
 </div>
@@ -13239,7 +13065,7 @@ Test Error = 0.410681
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">repository.mlrepositoryclient</span> <span class="kn">import</span> <span class="n">MLRepositoryClient</span>
@@ -13256,7 +13082,7 @@ Test Error = 0.410681
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Authenticate to Watson Machine Learning service on Bluemix.</p>
+<p>Authenticate to the Watson Machine Learning service on Bluemix.</p>
 
 </div>
 </div>
@@ -13266,14 +13092,14 @@ Test Error = 0.410681
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Action</strong>: Put authentication information from your instance of Watson Machine Learning service here.&lt;/div&gt;</p>
+<p><strong>Action</strong>: Put authentication information from your instance of the Watson Machine Learning service here.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">service_path</span> <span class="o">=</span> <span class="s">&#39;https://ibm-watson-ml.mybluemix.net&#39;</span>
@@ -13299,7 +13125,7 @@ Test Error = 0.410681
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">ml_repository_client</span> <span class="o">=</span> <span class="n">MLRepositoryClient</span><span class="p">(</span><span class="n">service_path</span><span class="p">)</span>
@@ -13323,7 +13149,7 @@ Test Error = 0.410681
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">model_artifact</span> <span class="o">=</span> <span class="n">MLRepositoryArtifact</span><span class="p">(</span><span class="n">model_rf</span><span class="p">,</span> <span class="n">training_data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Product Line Prediction&quot;</span><span class="p">)</span>
@@ -13365,7 +13191,7 @@ Test Error = 0.410681
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">saved_model</span> <span class="o">=</span> <span class="n">ml_repository_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model_artifact</span><span class="p">)</span>
@@ -13381,7 +13207,7 @@ Test Error = 0.410681
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Get saved model metadata from Watson Machine Learning.</p>
+<p>Get the saved model metadata from Watson Machine Learning.</p>
 
 </div>
 </div>
@@ -13391,14 +13217,14 @@ Test Error = 0.410681
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Tip</strong>: Use <em>meta.available_props()</em> to get the list of available props.</p>
+<p><strong>Tip</strong>: Use the <em>meta.available_props()</em> method to get the list of available props.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">saved_model</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">available_props</span><span class="p">()</span>
@@ -13408,43 +13234,10 @@ Test Error = 0.410681
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt output_prompt">Out[24]:</div>
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;inputDataSchema&#39;,
- &#39;evaluationMetrics&#39;,
- &#39;pipelineVersionHref&#39;,
- &#39;modelVersionHref&#39;,
- &#39;trainingDataRef&#39;,
- &#39;pipelineType&#39;,
- &#39;creationTime&#39;,
- &#39;lastUpdated&#39;,
- &#39;label&#39;,
- &#39;authorEmail&#39;,
- &#39;trainingDataSchema&#39;,
- &#39;authorName&#39;,
- &#39;version&#39;,
- &#39;modelType&#39;,
- &#39;runtime&#39;,
- &#39;evaluationMethod&#39;]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="k">print</span> <span class="s">&quot;modelType: &quot;</span> <span class="o">+</span> <span class="n">saved_model</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="p">(</span><span class="s">&quot;modelType&quot;</span><span class="p">)</span>
@@ -13455,26 +13248,6 @@ Test Error = 0.410681
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>modelType: sparkml-model-2.0
-trainingDataSchema: {u&#39;fields&#39;: [{u&#39;nullable&#39;: True, u&#39;type&#39;: u&#39;string&#39;, u&#39;name&#39;: u&#39;PRODUCT_LINE&#39;, u&#39;metadata&#39;: {}}, {u&#39;nullable&#39;: True, u&#39;type&#39;: u&#39;string&#39;, u&#39;name&#39;: u&#39;GENDER&#39;, u&#39;metadata&#39;: {}}, {u&#39;nullable&#39;: True, u&#39;type&#39;: u&#39;integer&#39;, u&#39;name&#39;: u&#39;AGE&#39;, u&#39;metadata&#39;: {}}, {u&#39;nullable&#39;: True, u&#39;type&#39;: u&#39;string&#39;, u&#39;name&#39;: u&#39;MARITAL_STATUS&#39;, u&#39;metadata&#39;: {}}, {u&#39;nullable&#39;: True, u&#39;type&#39;: u&#39;string&#39;, u&#39;name&#39;: u&#39;PROFESSION&#39;, u&#39;metadata&#39;: {}}], u&#39;type&#39;: u&#39;struct&#39;}
-creationTime: 2017-07-19 14:07:27.781000+00:00
-modelVersionHref: https://ibm-watson-ml.mybluemix.net/v2/artifacts/models/e86a4a62-5714-483e-b6f9-1addd18420d3/versions/31ed75f5-f147-46eb-bd9b-8da816a337cb
-label: PRODUCT_LINE
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -13503,14 +13276,14 @@ label: PRODUCT_LINE
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this subsection you will learn how to load back saved model from specified instance of Watson Machine Learning.</p>
+<p>In this subsection you will learn how to load back the saved model from a specified instance of Watson Machine Learning.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">loadedModelArtifact</span> <span class="o">=</span> <span class="n">ml_repository_client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">saved_model</span><span class="o">.</span><span class="n">uid</span><span class="p">)</span>
@@ -13533,7 +13306,7 @@ label: PRODUCT_LINE
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="k">print</span> <span class="nb">str</span><span class="p">(</span><span class="n">loadedModelArtifact</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -13543,29 +13316,13 @@ label: PRODUCT_LINE
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Product Line Prediction
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As you can see the name is correct. You have already learned how save and load the model from Watson Machine Learning repository.</p>
+<p>As you can see, the name is correct. You have already learned how to save and load the model from the Watson Machine Learning repository.</p>
 
 </div>
 </div>
@@ -13585,7 +13342,7 @@ label: PRODUCT_LINE
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section you will learn how to score test data using loaded model and visualize the prediction results with plotly package.</p>
+<p>In this section you will learn how to score test data by using the loaded model and how to visualize the prediction results by using the plotly package.</p>
 
 </div>
 </div>
@@ -13595,7 +13352,7 @@ label: PRODUCT_LINE
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="5.1:-Make-local-prediction-using-previously-loaded-model-and-test-data">5.1: Make local prediction using previously loaded model and test data<a class="anchor-link" href="#5.1:-Make-local-prediction-using-previously-loaded-model-and-test-data">&#182;</a></h3>
+<h3 id="5.1:-Make-a-local-prediction-by-using-previously-loaded-model-and-test-data">5.1: Make a local prediction by using previously loaded model and test data<a class="anchor-link" href="#5.1:-Make-a-local-prediction-by-using-previously-loaded-model-and-test-data">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13604,14 +13361,14 @@ label: PRODUCT_LINE
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this subsection you will score <em>predict_data</em> data set.</p>
+<p>In this subsection you will score the <em>predict_data</em> data set.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">predictions</span> <span class="o">=</span> <span class="n">loadedModelArtifact</span><span class="o">.</span><span class="n">model_instance</span><span class="p">()</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">predict_data</span><span class="p">)</span>
@@ -13634,39 +13391,13 @@ label: PRODUCT_LINE
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">predictions</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>+-----------------+------+---+--------------+----------+-----+-------------+---------+-----------------+------------------+--------------------+--------------------+----------+--------------------+
-|     PRODUCT_LINE|GENDER|AGE|MARITAL_STATUS|PROFESSION|label|PROFESSION_IX|GENDER_IX|MARITAL_STATUS_IX|          features|       rawPrediction|         probability|prediction|      predictedLabel|
-+-----------------+------+---+--------------+----------+-----+-------------+---------+-----------------+------------------+--------------------+--------------------+----------+--------------------+
-|Camping Equipment|     F| 20|        Single|     Other|  0.0|          0.0|      1.0|              1.0|[1.0,20.0,1.0,0.0]|[5.54119162527029...|[0.27705958126351...|       1.0|Personal Accessories|
-|Camping Equipment|     F| 20|        Single|     Other|  0.0|          0.0|      1.0|              1.0|[1.0,20.0,1.0,0.0]|[5.54119162527029...|[0.27705958126351...|       1.0|Personal Accessories|
-|Camping Equipment|     F| 20|        Single|     Other|  0.0|          0.0|      1.0|              1.0|[1.0,20.0,1.0,0.0]|[5.54119162527029...|[0.27705958126351...|       1.0|Personal Accessories|
-|Camping Equipment|     F| 20|        Single|     Other|  0.0|          0.0|      1.0|              1.0|[1.0,20.0,1.0,0.0]|[5.54119162527029...|[0.27705958126351...|       1.0|Personal Accessories|
-|Camping Equipment|     F| 21|       Married|     Other|  0.0|          0.0|      1.0|              0.0|[1.0,21.0,0.0,0.0]|[8.54473640086929...|[0.42723682004346...|       0.0|   Camping Equipment|
-+-----------------+------+---+--------------+----------+-----+-------------+---------+-----------------+------------------+--------------------+--------------------+----------+--------------------+
-only showing top 5 rows
-
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -13683,37 +13414,13 @@ only showing top 5 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">predictions</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&quot;predictedLabel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s">&quot;predictedLabel&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>+--------------------+-----+
-|      predictedLabel|count|
-+--------------------+-----+
-|   Camping Equipment|  717|
-|      Golf Equipment|   61|
-|Mountaineering Eq...|   75|
-|Personal Accessories|  363|
-+--------------------+-----+
-
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -13761,7 +13468,7 @@ only showing top 5 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">sys</span>
@@ -13778,37 +13485,20 @@ only showing top 5 rows
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-
-<div class="output_html rendered_html output_subarea ">
-<script>requirejs.config({paths: { 'plotly': ['https://cdn.plot.ly/plotly-latest.min']},});if(!window.Plotly) {{require(['plotly'],function(plotly) {window.Plotly=plotly;});}}</script>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Convert the Apache Spark DataFrame to a Pandas DataFrame.</p>
+<p>Convert the Apache Spark data frame to a Pandas data frame.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">predictions_pdf</span> <span class="o">=</span> <span class="n">predictions</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&quot;prediction&quot;</span><span class="p">,</span> <span class="s">&quot;predictedLabel&quot;</span><span class="p">,</span> <span class="s">&quot;GENDER&quot;</span><span class="p">,</span> <span class="s">&quot;AGE&quot;</span><span class="p">,</span> <span class="s">&quot;PROFESSION&quot;</span><span class="p">,</span> <span class="s">&quot;MARITAL_STATUS&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
@@ -13831,7 +13521,7 @@ only showing top 5 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">cumulative_stats</span> <span class="o">=</span> <span class="n">predictions_pdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">&#39;predictedLabel&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
@@ -13853,23 +13543,6 @@ only showing top 5 rows
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-
-<div class="output_html rendered_html output_subarea ">
-<div id="6b5c13e1-1612-405e-b5c8-f6c1d011a928" style="height: 525px; width: 100%;" class="plotly-graph-div"></div><script type="text/javascript">require(["plotly"], function(Plotly) { window.PLOTLYENV=window.PLOTLYENV || {};window.PLOTLYENV.BASE_URL="https://plot.ly";Plotly.newPlot("6b5c13e1-1612-405e-b5c8-f6c1d011a928", [{"type": "pie", "labels": ["Camping Equipment", "Golf Equipment", "Mountaineering Equipment", "Personal Accessories"], "values": [717, 61, 75, 363]}], {"title": "Predicted product line client interest distribution"}, {"linkText": "Export to plot.ly", "showLink": true})});</script>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -13883,7 +13556,7 @@ only showing top 5 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">age_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">go</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span>
@@ -13910,23 +13583,6 @@ only showing top 5 rows
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-
-<div class="output_html rendered_html output_subarea ">
-<div id="eea910fd-1809-44ae-a0a4-2efa815b4620" style="height: 525px; width: 100%;" class="plotly-graph-div"></div><script type="text/javascript">require(["plotly"], function(Plotly) { window.PLOTLYENV=window.PLOTLYENV || {};window.PLOTLYENV.BASE_URL="https://plot.ly";Plotly.newPlot("eea910fd-1809-44ae-a0a4-2efa815b4620", [{"y": [32.94002789400279, 49.83606557377049, 36.053333333333335, 32.8099173553719], "x": ["Camping Equipment", "Golf Equipment", "Mountaineering Equipment", "Personal Accessories"], "type": "bar"}], {"title": "Mean AGE per predicted product line", "xaxis": {"showline": false, "title": "Product Line"}, "yaxis": {"title": "Mean AGE"}}, {"linkText": "Export to plot.ly", "showLink": true})});</script>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
@@ -13944,7 +13600,7 @@ only showing top 5 rows
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="scoring"></a></p>
-<h2 id="6.-Deploy-and-score-in-a-Cloud">6. Deploy and score in a Cloud<a class="anchor-link" href="#6.-Deploy-and-score-in-a-Cloud">&#182;</a></h2>
+<h2 id="6.-Deploy-and-score-records-in-the-cloud">6. Deploy and score records in the cloud<a class="anchor-link" href="#6.-Deploy-and-score-records-in-the-cloud">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13971,7 +13627,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">urllib3</span><span class="o">,</span> <span class="nn">requests</span><span class="o">,</span> <span class="nn">json</span>
@@ -14011,17 +13667,17 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Get-published_models-url-from-instance-details">Get published_models url from instance details<a class="anchor-link" href="#Get-published_models-url-from-instance-details">&#182;</a></h4>
+<h4 id="Get-the-published_models-URL-from-instance-details">Get the published_models URL from instance details<a class="anchor-link" href="#Get-the-published_models-URL-from-instance-details">&#182;</a></h4>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">endpoint_instance</span> <span class="o">=</span> <span class="n">service_path</span> <span class="o">+</span> <span class="s">&quot;/v3/wml_instances/&quot;</span> <span class="o">+</span> <span class="n">instance_id</span>
-<span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">mltoken</span><span class="p">}</span>
+<span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">mltoken</span><span class="p">}</span>
 
 <span class="n">response_get_instance</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint_instance</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
 <span class="k">print</span> <span class="n">response_get_instance</span>
@@ -14032,27 +13688,10 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;Response [200]&gt;
-{&#34;metadata&#34;:{&#34;guid&#34;:&#34;43ce7e73-b16f-4f7e-99fe-8ac31d587f6e&#34;,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e&#34;,&#34;created_at&#34;:&#34;2017-07-05T08:01:19.180Z&#34;,&#34;modified_at&#34;:&#34;2017-07-05T08:01:19.180Z&#34;},&#34;entity&#34;:{&#34;source&#34;:&#34;Bluemix&#34;,&#34;published_models&#34;:{&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models&#34;},&#34;usage&#34;:{&#34;expiration_date&#34;:&#34;2017-08-01T00:00:00.000Z&#34;,&#34;computation_time&#34;:{&#34;limit&#34;:9223372036854775,&#34;current&#34;:0},&#34;model_count&#34;:{&#34;limit&#34;:9223372036854775807,&#34;current&#34;:-2},&#34;prediction_count&#34;:{&#34;limit&#34;:9223372036854775807,&#34;current&#34;:0},&#34;deployment_count&#34;:{&#34;limit&#34;:9223372036854775807,&#34;current&#34;:0}},&#34;plan_id&#34;:&#34;0f2a3c2c-456b-40f3-9b19-726d2740b11c&#34;,&#34;account_id&#34;:&#34;f52968f3dbbe7b0b53e15743d45e5e90&#34;,&#34;status&#34;:&#34;Active&#34;,&#34;organization_guid&#34;:&#34;b0e61605-a82e-4f03-9e9f-2767973c084d&#34;,&#34;region&#34;:&#34;us-south&#34;,&#34;deployments&#34;:{&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/deployments&#34;},&#34;space_guid&#34;:&#34;4c55eb1c-d6fe-4f0a-9390-35c9a7ecf27a&#34;,&#34;plan&#34;:&#34;standard&#34;}}
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">endpoint_published_models</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response_get_instance</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;entity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;published_models&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;url&#39;</span><span class="p">)</span>
@@ -14063,29 +13702,13 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Execute the following sample code that uses the published_models endpoint to get deployments url.</p>
+<p>Execute the following sample code that uses the published_models endpoint to get deployments URL.</p>
 
 </div>
 </div>
@@ -14101,10 +13724,10 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">mltoken</span><span class="p">}</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">mltoken</span><span class="p">}</span>
 
 <span class="n">response_get</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint_published_models</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
 <span class="k">print</span> <span class="n">response_get</span>
@@ -14115,36 +13738,19 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;Response [200]&gt;
-{&#34;count&#34;:3,&#34;resources&#34;:[{&#34;metadata&#34;:{&#34;guid&#34;:&#34;2f8dd2a1-bd44-46e8-bb52-b7527a955866&#34;,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models/2f8dd2a1-bd44-46e8-bb52-b7527a955866&#34;,&#34;created_at&#34;:&#34;2017-07-17T11:05:54.388Z&#34;,&#34;modified_at&#34;:&#34;2017-07-17T11:07:58.642Z&#34;},&#34;entity&#34;:{&#34;runtime_environment&#34;:&#34;spark-2.1&#34;,&#34;author&#34;:{},&#34;name&#34;:&#34;Product Line Prediction Model&#34;,&#34;label_col&#34;:&#34;PRODUCT_LINE&#34;,&#34;training_data_schema&#34;:{&#34;fields&#34;:[{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;PRODUCT_LINE&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;GENDER&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;integer&#34;,&#34;name&#34;:&#34;AGE&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;MARITAL_STATUS&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;PROFESSION&#34;,&#34;nullable&#34;:true}],&#34;type&#34;:&#34;struct&#34;},&#34;latest_version&#34;:{&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v2/artifacts/models/2f8dd2a1-bd44-46e8-bb52-b7527a955866/versions/6bc40426-ed72-47ac-9e39-ab73bf672146&#34;,&#34;guid&#34;:&#34;6bc40426-ed72-47ac-9e39-ab73bf672146&#34;,&#34;created_at&#34;:&#34;2017-07-17T11:05:54.464Z&#34;},&#34;model_type&#34;:&#34;sparkml-model-2.1&#34;,&#34;deployments&#34;:{&#34;count&#34;:0,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models/2f8dd2a1-bd44-46e8-bb52-b7527a955866/deployments&#34;},&#34;input_data_schema&#34;:{&#34;fields&#34;:[{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;GENDER&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;integer&#34;,&#34;name&#34;:&#34;AGE&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;MARITAL_STATUS&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;PROFESSION&#34;,&#34;nullable&#34;:true}],&#34;type&#34;:&#34;struct&#34;}}},{&#34;metadata&#34;:{&#34;guid&#34;:&#34;c3b34278-8b3b-4481-81c7-79d230b7bb93&#34;,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models/c3b34278-8b3b-4481-81c7-79d230b7bb93&#34;,&#34;created_at&#34;:&#34;2017-07-19T14:07:22.188Z&#34;,&#34;modified_at&#34;:&#34;2017-07-19T14:07:22.279Z&#34;},&#34;entity&#34;:{&#34;runtime_environment&#34;:&#34;spark-2.0&#34;,&#34;author&#34;:{},&#34;name&#34;:&#34;Product Line Prediction&#34;,&#34;label_col&#34;:&#34;PRODUCT_LINE&#34;,&#34;training_data_schema&#34;:{&#34;fields&#34;:[{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;PRODUCT_LINE&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;GENDER&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;integer&#34;,&#34;name&#34;:&#34;AGE&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;MARITAL_STATUS&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;PROFESSION&#34;,&#34;nullable&#34;:true}],&#34;type&#34;:&#34;struct&#34;},&#34;latest_version&#34;:{&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v2/artifacts/models/c3b34278-8b3b-4481-81c7-79d230b7bb93/versions/432c0900-0f6a-4457-b666-5f38ef474732&#34;,&#34;guid&#34;:&#34;432c0900-0f6a-4457-b666-5f38ef474732&#34;,&#34;created_at&#34;:&#34;2017-07-19T14:07:22.279Z&#34;},&#34;model_type&#34;:&#34;sparkml-model-2.0&#34;,&#34;deployments&#34;:{&#34;count&#34;:0,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models/c3b34278-8b3b-4481-81c7-79d230b7bb93/deployments&#34;},&#34;input_data_schema&#34;:{&#34;fields&#34;:[{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;GENDER&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;integer&#34;,&#34;name&#34;:&#34;AGE&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;MARITAL_STATUS&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;PROFESSION&#34;,&#34;nullable&#34;:true}],&#34;type&#34;:&#34;struct&#34;}}},{&#34;metadata&#34;:{&#34;guid&#34;:&#34;e86a4a62-5714-483e-b6f9-1addd18420d3&#34;,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models/e86a4a62-5714-483e-b6f9-1addd18420d3&#34;,&#34;created_at&#34;:&#34;2017-07-19T14:07:27.781Z&#34;,&#34;modified_at&#34;:&#34;2017-07-19T14:07:27.906Z&#34;},&#34;entity&#34;:{&#34;runtime_environment&#34;:&#34;spark-2.0&#34;,&#34;author&#34;:{},&#34;name&#34;:&#34;Product Line Prediction&#34;,&#34;label_col&#34;:&#34;PRODUCT_LINE&#34;,&#34;training_data_schema&#34;:{&#34;fields&#34;:[{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;PRODUCT_LINE&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;GENDER&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;integer&#34;,&#34;name&#34;:&#34;AGE&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;MARITAL_STATUS&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;PROFESSION&#34;,&#34;nullable&#34;:true}],&#34;type&#34;:&#34;struct&#34;},&#34;latest_version&#34;:{&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v2/artifacts/models/e86a4a62-5714-483e-b6f9-1addd18420d3/versions/31ed75f5-f147-46eb-bd9b-8da816a337cb&#34;,&#34;guid&#34;:&#34;31ed75f5-f147-46eb-bd9b-8da816a337cb&#34;,&#34;created_at&#34;:&#34;2017-07-19T14:07:27.906Z&#34;},&#34;model_type&#34;:&#34;sparkml-model-2.0&#34;,&#34;deployments&#34;:{&#34;count&#34;:0,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models/e86a4a62-5714-483e-b6f9-1addd18420d3/deployments&#34;},&#34;input_data_schema&#34;:{&#34;fields&#34;:[{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;GENDER&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;integer&#34;,&#34;name&#34;:&#34;AGE&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;MARITAL_STATUS&#34;,&#34;nullable&#34;:true},{&#34;metadata&#34;:{},&#34;type&#34;:&#34;string&#34;,&#34;name&#34;:&#34;PROFESSION&#34;,&#34;nullable&#34;:true}],&#34;type&#34;:&#34;struct&#34;}}}]}
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Get-published-model-deployment-url">Get published model deployment url<a class="anchor-link" href="#Get-published-model-deployment-url">&#182;</a></h4>
+<h4 id="Get-the-published-model-deployment-URL">Get the published model deployment URL<a class="anchor-link" href="#Get-the-published-model-deployment-URL">&#182;</a></h4>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[53]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="p">[</span><span class="n">endpoint_deployments</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;entity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;deployments&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;url&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response_get</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;resources&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;metadata&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;guid&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">saved_model</span><span class="o">.</span><span class="n">uid</span><span class="p">]</span>
@@ -14153,22 +13759,6 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models/e86a4a62-5714-483e-b6f9-1addd18420d3/deployments
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -14184,7 +13774,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[50]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">payload_online</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Product Line Prediction&quot;</span><span class="p">,</span> <span class="s">&quot;description&quot;</span><span class="p">:</span> <span class="s">&quot;My Cool Deployment&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;online&quot;</span><span class="p">}</span>
@@ -14198,27 +13788,10 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;Response [201]&gt;
-{&#34;metadata&#34;:{&#34;guid&#34;:&#34;3c17d7cb-eab1-4269-a491-196a2f965d50&#34;,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models/e86a4a62-5714-483e-b6f9-1addd18420d3/deployments/3c17d7cb-eab1-4269-a491-196a2f965d50&#34;,&#34;created_at&#34;:&#34;2017-07-19T14:28:32.668Z&#34;,&#34;modified_at&#34;:&#34;2017-07-19T14:28:35.771Z&#34;},&#34;entity&#34;:{&#34;runtime_environment&#34;:&#34;spark-2.0&#34;,&#34;name&#34;:&#34;Product Line Prediction&#34;,&#34;scoring_url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models/e86a4a62-5714-483e-b6f9-1addd18420d3/deployments/3c17d7cb-eab1-4269-a491-196a2f965d50/online&#34;,&#34;description&#34;:&#34;My Cool Deployment&#34;,&#34;published_model&#34;:{&#34;author&#34;:{},&#34;name&#34;:&#34;Product Line Prediction&#34;,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models/e86a4a62-5714-483e-b6f9-1addd18420d3&#34;,&#34;guid&#34;:&#34;e86a4a62-5714-483e-b6f9-1addd18420d3&#34;,&#34;created_at&#34;:&#34;2017-07-19T14:28:32.647Z&#34;},&#34;model_type&#34;:&#34;sparkml-model-2.0&#34;,&#34;status&#34;:&#34;INITIALIZING&#34;,&#34;type&#34;:&#34;online&#34;,&#34;deployed_version&#34;:{&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v2/artifacts/models/e86a4a62-5714-483e-b6f9-1addd18420d3/versions/31ed75f5-f147-46eb-bd9b-8da816a337cb&#34;,&#34;guid&#34;:&#34;31ed75f5-f147-46eb-bd9b-8da816a337cb&#34;,&#34;created_at&#34;:&#34;2017-07-19T14:07:27.906Z&#34;}}}
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[51]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">scoring_url</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response_online</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;entity&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;scoring_url&#39;</span><span class="p">)</span>
@@ -14226,22 +13799,6 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>https://ibm-watson-ml.mybluemix.net/v3/wml_instances/43ce7e73-b16f-4f7e-99fe-8ac31d587f6e/published_models/e86a4a62-5714-483e-b6f9-1addd18420d3/deployments/3c17d7cb-eab1-4269-a491-196a2f965d50/online
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -14258,7 +13815,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[52]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">payload_scoring</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;GENDER&quot;</span><span class="p">,</span><span class="s">&quot;AGE&quot;</span><span class="p">,</span><span class="s">&quot;MARITAL_STATUS&quot;</span><span class="p">,</span><span class="s">&quot;PROFESSION&quot;</span><span class="p">],</span><span class="s">&quot;values&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="s">&quot;M&quot;</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="s">&quot;Single&quot;</span><span class="p">,</span><span class="s">&quot;Student&quot;</span><span class="p">],[</span><span class="s">&quot;M&quot;</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="s">&quot;Single&quot;</span><span class="p">,</span><span class="s">&quot;Executive&quot;</span><span class="p">]]}</span>
@@ -14268,25 +13825,6 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{
-  &#34;fields&#34;: [&#34;GENDER&#34;, &#34;AGE&#34;, &#34;MARITAL_STATUS&#34;, &#34;PROFESSION&#34;, &#34;PROFESSION_IX&#34;, &#34;GENDER_IX&#34;, &#34;MARITAL_STATUS_IX&#34;, &#34;features&#34;, &#34;rawPrediction&#34;, &#34;probability&#34;, &#34;prediction&#34;, &#34;predictedLabel&#34;],
-  &#34;values&#34;: [[&#34;M&#34;, 23, &#34;Single&#34;, &#34;Student&#34;, 6.0, 0.0, 1.0, [0.0, 23.0, 1.0, 6.0], [5.600716147152702, 6.482458372136143, 6.048004170730676, 0.20929155492307386, 1.6595297550574055], [0.2800358073576351, 0.32412291860680714, 0.3024002085365338, 0.010464577746153694, 0.08297648775287028], 1.0, &#34;Personal Accessories&#34;], [&#34;M&#34;, 55, &#34;Single&#34;, &#34;Executive&#34;, 3.0, 0.0, 1.0, [0.0, 55.0, 1.0, 3.0], [6.227653744886563, 4.325198862164969, 8.031953760146816, 1.2319759269281225, 0.1832177058735289], [0.3113826872443282, 0.2162599431082485, 0.40159768800734086, 0.06159879634640614, 0.009160885293676447], 2.0, &#34;Mountaineering Equipment&#34;]]
-}
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
