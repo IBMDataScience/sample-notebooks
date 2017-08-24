@@ -13012,27 +13012,22 @@ only showing top 10 rows
 <div class=" highlight hl-ipython2"><pre><span class="n">df_NPL</span> <span class="o">=</span> <span class="n">pixiedust</span><span class="o">.</span><span class="n">sampleData</span><span class="p">(</span><span class="s">&#39;DATA ACCESS LINK FOR POVERTY&#39;</span><span class="p">)</span>
 <span class="n">sqlContext</span><span class="o">.</span><span class="n">registerDataFrameAsTable</span><span class="p">(</span><span class="n">df_NPL</span><span class="p">,</span> <span class="s">&quot;NPLTable&quot;</span><span class="p">)</span>
 <span class="n">df_NPL</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;SELECT `Country or Area` as Country, Year, Value as Poverty FROM NPLTable&quot;</span><span class="p">)</span>
-<span class="c">#df_NPL.createOrReplaceTempView(&#39;NPL&#39;)</span>
 
 <span class="n">df_school</span> <span class="o">=</span> <span class="n">pixiedust</span><span class="o">.</span><span class="n">sampleData</span><span class="p">(</span><span class="s">&#39;DATA ACCESS LINK FOR SCHOOLS&#39;</span><span class="p">)</span>
 <span class="n">sqlContext</span><span class="o">.</span><span class="n">registerDataFrameAsTable</span><span class="p">(</span><span class="n">df_school</span><span class="p">,</span> <span class="s">&quot;SchoolTable&quot;</span><span class="p">)</span>
 <span class="n">df_school</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;SELECT `Country or Area` as Country, Year, Value as School FROM SchoolTable&quot;</span><span class="p">)</span>
-<span class="c">#df_school.createOrReplaceTempView(&#39;school&#39;)</span>
 
 <span class="n">df_econ</span> <span class="o">=</span> <span class="n">pixiedust</span><span class="o">.</span><span class="n">sampleData</span><span class="p">(</span><span class="s">&#39;DATA ACCESS LINK FOR EMPLOYMENT&#39;</span><span class="p">)</span>
 <span class="n">sqlContext</span><span class="o">.</span><span class="n">registerDataFrameAsTable</span><span class="p">(</span><span class="n">df_econ</span><span class="p">,</span> <span class="s">&quot;EconTable&quot;</span><span class="p">)</span>
 <span class="n">df_econ</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;SELECT `Country or Area` as Country, Year, Value as Employment FROM EconTable WHERE Subclassification=&#39;Total.&#39;&quot;</span><span class="p">)</span>
-<span class="c">#df_econ.createOrReplaceTempView(&#39;econ&#39;)</span>
 
 <span class="n">df_birth</span> <span class="o">=</span> <span class="n">pixiedust</span><span class="o">.</span><span class="n">sampleData</span><span class="p">(</span><span class="s">&#39;DATA ACCESS LINK FOR BIRTHS&#39;</span><span class="p">)</span>
 <span class="n">sqlContext</span><span class="o">.</span><span class="n">registerDataFrameAsTable</span><span class="p">(</span><span class="n">df_birth</span><span class="p">,</span> <span class="s">&quot;BirthTable&quot;</span><span class="p">)</span>
 <span class="n">df_birth</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;SELECT `Country or Area` as Country, Year, Value as Birth FROM BirthTable&quot;</span><span class="p">)</span>
-<span class="c">#df_birth.createOrReplaceTempView(&#39;birth&#39;)</span>
 
 <span class="n">df_measles</span> <span class="o">=</span> <span class="n">pixiedust</span><span class="o">.</span><span class="n">sampleData</span><span class="p">(</span><span class="s">&#39;DATA ACCESS LINK FOR MEASLES&#39;</span><span class="p">)</span>
 <span class="n">sqlContext</span><span class="o">.</span><span class="n">registerDataFrameAsTable</span><span class="p">(</span><span class="n">df_measles</span><span class="p">,</span> <span class="s">&quot;MeaslesTable&quot;</span><span class="p">)</span>
 <span class="n">df_measles</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;SELECT `Country or Area` as Country, Year, Value as Measles FROM MeaslesTable&quot;</span><span class="p">)</span>
-<span class="c">#df_measles.createOrReplaceTempView(&#39;measles&#39;)</span>
 
 <span class="n">df_total</span> <span class="o">=</span> <span class="n">df_life</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df_pop</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;Country&#39;</span><span class="p">,</span> <span class="s">&#39;Year&#39;</span><span class="p">],</span> <span class="s">&#39;outer&#39;</span><span class="p">)</span>\
     <span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df_NPL</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;Country&#39;</span><span class="p">,</span> <span class="s">&#39;Year&#39;</span><span class="p">],</span> <span class="s">&#39;outer&#39;</span><span class="p">)</span>\
