@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Bluemix App NB </title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Bluemix app NB </title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -12519,9 +12519,9 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Putting-a-human-face-on-machine-learning">Putting a human face on machine learning<a class="anchor-link" href="#Putting-a-human-face-on-machine-learning">&#182;</a></h1><p>IBM Data Science Experience (DSX) is an interactive, collaborative, cloud-based environment where data scientists can use multiple tools to achieve insights. Data scientists can use the best of open source, tap into IBM's unique features, grow their skills, and collaborate with teams. 
 One of the many features of DSX provides the capability to create and train a machine learning model in DSX with little to no coding. This model can subsequently be saved and deployed to Watson Machine Learning on IBM Bluemix and called for scoring in real-time. 
-This tutorial is a continuation of the following logistic regression analysis: 
+This tutorial is a continuation of the logistic regression analysis tutorial at: 
 <a href="https://datascience.ibm.com/docs/content/analyze-data/ml-example-log-regress.html">https://datascience.ibm.com/docs/content/analyze-data/ml-example-log-regress.html</a> 
-which creates, trains, saves and deploys a logistic regression model that predicts the possibility for a tent purchase based on age, sex, marital status and job profession for an individual. However, in this tutorial, a very simple Python Flask Web application front end will be created to call this deployed model in real time.</p>
+which creates, trains, saves and deploys a logistic regression model that predicts the possibility for a tent purchase based on age, sex, marital status and job profession for an individual. In this tutorial, a very simple Python Flask web application front end will be created to call this deployed model in real time.</p>
 <h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><ol>
 <li><a href="#test">Test model access by using a notebook</a>.<ul>
 <li><a href="#test1">1.1 Prerequisites</a>.</li>
@@ -12534,44 +12534,45 @@ which creates, trains, saves and deploys a logistic regression model that predic
 <li><a href="#summary">Summary and next steps</a>.</li>
 </ol>
 <p><a id="test"></a></p>
-<h2 id="1.-Test-model-access-by-using-a-notebook.">1. Test model access by using a notebook.<a class="anchor-link" href="#1.-Test-model-access-by-using-a-notebook.">&#182;</a></h2><p>In this step, use this notebook to confirm that the deployed model can be accessed via an external API. Please note that the credentials and endpoint used in this tutorial are only examples. You must substitute your own credentials and endpoint values.</p>
+<h2 id="1.-Test-model-access-by-using-a-notebook.">1. Test model access by using a notebook.<a class="anchor-link" href="#1.-Test-model-access-by-using-a-notebook.">&#182;</a></h2><p>The first part of this notebook will confirm that the deployed model can be accessed via an external API. Please note that the credentials and endpoint used in this tutorial are only examples. You must substitute your own credentials and endpoint values.</p>
 <p><a id="test1"></a></p>
-<h3 id="1.1-Prerequisites.">1.1 Prerequisites.<a class="anchor-link" href="#1.1-Prerequisites.">&#182;</a></h3><p>This notebook and the corresponding tutorial sections require several IBM Bluemix services. You must have the following resources:</p>
+<h3 id="1.1-Prerequisites.">1.1 Prerequisites.<a class="anchor-link" href="#1.1-Prerequisites.">&#182;</a></h3><p>This notebook and the corresponding tutorial sections require several IBM Bluemix services.</p>
 <ul>
-<li>An Apache Spark instance</li>
-<li>An IBM Watson Machine Learning instance</li>
-<li>A Python Flask instance</li>
-<li>An Object storage instance</li>
+<li>An Apache Spark instance which was created with your Data Science Experience account</li>
+<li>An Object Storage instance which was also created with your Data Science Experience account</li>
+<li>An IBM Watson Machine Learning instance which will need to be created</li>
+<li>A Python Flask instance which will be created later as part of this tutorial</li>
 </ul>
-<p>If you do not have these services initiated, you can add them by using your Bluemix dashboard or by opening a project that has them. For more information about setting up these services, see <a href="https://datascience.ibm.com/docs/content/analyze-data/ml-setup.html">Setting up your machine learning environment</a>.</p>
+<p>For more information about setting up your machine learning service, see <a href="https://datascience.ibm.com/docs/content/analyze-data/ml-setup.html">Setting up your machine learning environment</a>.</p>
 <p><a id="test2"></a></p>
 <h3 id="1.2-Retrieve-your-credentials.">1.2 Retrieve your credentials.<a class="anchor-link" href="#1.2-Retrieve-your-credentials.">&#182;</a></h3><p>To run the code samples in this notebook, you must supply information, such as the URL, username, password, and scoring endpoint variables from your environment. The details on how to do this are described in the following steps:</p>
 <ol>
-<li>Log into your Bluemix account and, from the dashboard, select the <strong>IBM Watson Machine Learning</strong> service that you created.</li>
+<li>Log in to your <strong>Bluemix</strong> account and, from the dashboard, select the <strong>IBM Watson Machine Learning</strong> service that you created.</li>
 <li>Click <strong>Service credentials</strong>.</li>
-<li>Click <strong>View credentials</strong> and then copy the values from the URL, username, and password fields to the corresponding lines of code in the code cells in this notebook. </li>
-<li>To find the scoring endpoint, from the navigation pane, click <strong>Manage</strong> &gt; <strong>Launch Dashboard</strong>.</li>
-<li>On the <strong>Deployments</strong> tab, from <strong>Actions</strong>, click <strong>View Details</strong>.</li>
-<li>Copy the scoring endpoint and paste it into the corresponding variable in this notebook.</li>
+<li>Click <strong>View credentials</strong> and then copy the values from the <strong>URL</strong>, <strong>username</strong>, and <strong>password</strong> fields to the corresponding <code>URL</code>, <code>username</code>, and <code>password</code> variables in the code cells in this notebook. </li>
+<li>To find the scoring endpoint, log in to <strong>Data Science Experience</strong>.</li>
+<li>Click <strong>Projects</strong> and from the list, click your project.</li>
+<li>On the <strong>Analytics Assets</strong> tab, in the <strong>Models</strong> section, click the model.</li>
+<li>In the <strong>Deployments</strong> section, click the model deployment and then, on the <strong>Details</strong> tab, copy the  <strong>Scoring End Point</strong> and paste it into the <code>scoring_endpoint</code> variable in this notebook.</li>
 </ol>
 <p><a id="test3"></a></p>
-<h3 id="1.3-Authenticate-and-import-libraries.">1.3 Authenticate and import libraries.<a class="anchor-link" href="#1.3-Authenticate-and-import-libraries.">&#182;</a></h3><p>After you have updated the following code cells with your specific information, you are ready to run the cells. Run the following cell to authenticate yourself to the Watson Machine Learning service and to import necessary libraries.</p>
+<h3 id="1.3-Authenticate-and-import-libraries.">1.3 Authenticate and import libraries.<a class="anchor-link" href="#1.3-Authenticate-and-import-libraries.">&#182;</a></h3><p>After you update the following code cells with your specific information, you are ready to run the cells. Run the following cell to define your credentials to the Watson Machine Learning service and to import necessary libraries.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># @hidden_cell</span>
 <span class="c"># Copy and paste url, username and password from Watson Machine Learning service credentials.</span>
-<span class="c"># Copy scoring_endpoint from Watson Machine Learning deployed model API details.</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s">&#39;copy_url_here&#39;</span>
-<span class="n">username</span> <span class="o">=</span> <span class="s">&#39;copy_username_here&#39;</span>
-<span class="n">password</span> <span class="o">=</span> <span class="s">&#39;copy_password_here&#39;</span>
-<span class="n">scoring_endpoint</span> <span class="o">=</span> <span class="s">&#39;copy_scoring_endpoint_here&#39;</span>
+<span class="c"># Copy scoring_endpoint from Data Science Experience deployed model API details.</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s">&#39;enter_your_wml_instance_url&#39;</span>
+<span class="n">username</span> <span class="o">=</span> <span class="s">&#39;enter_your_username&#39;</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s">&#39;enter_your_password&#39;</span>
+<span class="n">scoring_endpoint</span> <span class="o">=</span> <span class="s">&#39;enter_your_online_scoring_end_point&#39;</span>
 <span class="kn">import</span> <span class="nn">urllib3</span><span class="o">,</span> <span class="nn">requests</span><span class="o">,</span> <span class="nn">json</span>
 </pre></div>
 
@@ -12592,12 +12593,12 @@ which creates, trains, saves and deploys a logistic regression model that predic
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># Retrieves token to be used to call scoring API</span>
 <span class="n">headers</span> <span class="o">=</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">make_headers</span><span class="p">(</span><span class="n">basic_auth</span><span class="o">=</span><span class="s">&#39;{}:{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">))</span>
-<span class="n">path</span> <span class="o">=</span> <span class="s">&#39;{}/v2/identity/token&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="n">path</span> <span class="o">=</span> <span class="s">&#39;{}/v3/identity/token&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
 <span class="n">mltoken</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;token&#39;</span><span class="p">)</span>
 </pre></div>
@@ -12619,17 +12620,36 @@ which creates, trains, saves and deploys a logistic regression model that predic
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="c"># Call scoring endpoint with data payload</span>
 <span class="n">scoring_header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">mltoken</span><span class="p">}</span>
-<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;record&quot;</span><span class="p">:[</span><span class="s">&quot;M&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s">&quot;Single&quot;</span><span class="p">,</span> <span class="s">&quot;Student&quot;</span><span class="p">]}</span>
-<span class="n">scoring</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">scoring_endpoint</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">scoring_header</span><span class="p">)</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;GENDER&quot;</span><span class="p">,</span><span class="s">&quot;AGE&quot;</span><span class="p">,</span><span class="s">&quot;MARITAL_STATUS&quot;</span><span class="p">,</span><span class="s">&quot;PROFESSION&quot;</span><span class="p">],</span><span class="s">&quot;values&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="s">&quot;M&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s">&quot;Single&quot;</span><span class="p">,</span> <span class="s">&quot;Student&quot;</span><span class="p">]]}</span>
+<span class="n">scoring</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">scoring_endpoint</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">scoring_header</span><span class="p">)</span>
 <span class="k">print</span> <span class="n">scoring</span><span class="o">.</span><span class="n">text</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+<div class="prompt"></div>
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{
+  &#34;fields&#34;: [&#34;GENDER&#34;, &#34;AGE&#34;, &#34;MARITAL_STATUS&#34;, &#34;PROFESSION&#34;, &#34;features&#34;, &#34;rawPrediction&#34;, &#34;probability&#34;, &#34;prediction&#34;, &#34;nodeADP_class&#34;, &#34;nodeADP_classes&#34;],
+  &#34;values&#34;: [[&#34;M&#34;, 20, &#34;Single&#34;, &#34;Student&#34;, [0.0, 1.9795602967407233, 1.5679400843677074, 2.60755509295228], [1.4163195860557454, -1.4163195860557454], [0.8047607951511817, 0.19523920484881827], 0.0, 0.0, [0.0, 1.0]]]
+}
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -12639,16 +12659,16 @@ which creates, trains, saves and deploys a logistic regression model that predic
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The result predicts a probability for a tent purchase at 20.23% given the sample data record of a male, 20 years old, single and a student. This confirms that the deployed machine learning model can be called by using an API.</p>
+<p>The result predicts a probability for a tent purchase at 19.52% (your result may vary slightly) given the input sample data record of a male, 20 years old, single and a student. This confirms that the deployed machine learning model can be called by using an API.</p>
 <p><a id="create"></a></p>
-<h2 id="2.-Create-a-user-interface">2. Create a user interface<a class="anchor-link" href="#2.-Create-a-user-interface">&#182;</a></h2><p>After you confirm access to the API by running the code cells, it's time to start work on a basic Web application. For this example, you will create a user interface by using Python Flask. The following techniques can be applied to many different solutions. For this tutorial, you need to create several files. You can also download them from the following <a href="https://github.com/IBMDataScience/WML-app-tutorial">GitHub repository</a>.</p>
+<h2 id="2.-Create-a-user-interface">2. Create a user interface<a class="anchor-link" href="#2.-Create-a-user-interface">&#182;</a></h2><p>After you confirm access to the API by running the code cells, it's time to start work on a basic Web application. For this example, you will create a user interface by using Python Flask. The following techniques can also be applied to other web app frameworks. For this tutorial, a boilerplate Python Flask web app will be created on Bluemix and the supporting files will be downloaded.  These files will be updated to integrate with your model and then pushed back up.</p>
 <ol>
-<li>Start by deploying a Python Flask boilerplate. Sign on to Bluemix and click <strong>Catalog</strong> &gt; <strong>Apps</strong> &gt; <strong>Boilerplates</strong> &gt; <strong>Python Flask</strong>. </li>
-<li>In the <strong>App name</strong> field, enter a unique name for your application. This name identifies your application and appears in the URL that users need to access the app.  For this example, type the following name: <strong>MLTutorial</strong></li>
-<li>Click <strong>Create</strong>. This results in the following URL to access this Web application: <a href="http://mltutorial.mybluemix.net">http://mltutorial.mybluemix.net</a> </li>
-<li>Download the command line interface and the starter code.  Unpack the starter code file. Spend some time on this page and become familiar with Cloud Foundry and Python Flask. </li>
-<li>Now this sample Python Flask Web application will be updated to call the deployed logistic regression model above. </li>
-<li>In the folder where the unpacked starter code is located, create a file called <code>MLTutorial.py</code> and copy the following Python code into that file. As before, update the <code>url</code>, <code>username</code>, <code>password</code>, and <code>scoring_endpoint</code> fields to match with your deployed model. You may need to set pasting options to preserve the indentations which are critical for Python code. When completed, save this file. Note: For detailed information on coding in Flask, please refer to the following Web site: <a href="http://flask.pocoo.org">http://flask.pocoo.org</a> </li>
+<li>Start by deploying a Python Flask boilerplate. Sign on to your <strong>Bluemix</strong> account and click <strong>Catalog</strong> &gt; <strong>Apps</strong> &gt; <strong>Boilerplates</strong> &gt; <strong>Python Flask</strong>. </li>
+<li>In the <strong>App name</strong> field, enter a unique name for your application. This name identifies your application and will appear in the URL that users need to access the app.</li>
+<li>Click <strong>Create</strong>. Please give this some time to start.  The web app is running when there is a green dot next to the top title and it says <strong>Running</strong>.  To access this web app, click on the <strong>Visit App URL</strong> link.  The URL to access this Web application will be: <code>http://&lt;your_app_name&gt;.mybluemix.net</code> </li>
+<li>Download and unpack the command line interface and the starter code shown on this web page.  Please spend some time on this page and become familiar with Cloud Foundry and Python Flask. </li>
+<li>Now this boilerplate Python Flask Web application will be updated to call the deployed logistic regression model above. </li>
+<li>In the folder where the unpacked starter code is located, create a file called <code>MLTutorial.py</code> and copy the following Python code into that file. As before, update the <code>url</code>, <code>username</code>, <code>password</code>, and <code>scoring_endpoint</code> fields to match with your deployed model. You may need to set pasting options to preserve the indentations which are critical for the following Python code. When completed, save this file. Note: For detailed information on coding in Flask, please refer to the following Web site: <a href="http://flask.pocoo.org">http://flask.pocoo.org</a> </li>
 </ol>
 <div class="highlight"><pre><span class="kn">import</span> <span class="nn">urllib3</span><span class="o">,</span> <span class="nn">requests</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">request</span>
@@ -12656,55 +12676,55 @@ which creates, trains, saves and deploys a logistic regression model that predic
 <span class="kn">from</span> <span class="nn">flask_wtf</span> <span class="kn">import</span> <span class="n">FlaskForm</span>
 <span class="kn">from</span> <span class="nn">wtforms</span> <span class="kn">import</span> <span class="n">StringField</span><span class="p">,</span> <span class="n">SubmitField</span><span class="p">,</span> <span class="n">RadioField</span><span class="p">,</span> <span class="n">FloatField</span><span class="p">,</span> <span class="n">IntegerField</span>
 <span class="kn">from</span> <span class="nn">wtforms.validators</span> <span class="kn">import</span> <span class="n">Required</span><span class="p">,</span> <span class="n">Length</span><span class="p">,</span> <span class="n">NumberRange</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s">&#39;copy_url_here&#39;</span>
-<span class="n">username</span> <span class="o">=</span> <span class="s">&#39;copy_username_here&#39;</span>
-<span class="n">password</span> <span class="o">=</span> <span class="s">&#39;copy_password_here&#39;</span>
-<span class="n">scoring_endpoint</span> <span class="o">=</span> <span class="s">&#39;copy_scoring_endpoint_here&#39;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s">&#39;enter_your_wml_instance_url&#39;</span>
+<span class="n">username</span> <span class="o">=</span> <span class="s">&#39;enter_your_username&#39;</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s">&#39;enter_your_password&#39;</span>
+<span class="n">scoring_endpoint</span> <span class="o">=</span> <span class="s">&#39;enter_your_online_scoring_end_point&#39;</span>
 <span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;SECRET_KEY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;secretpassw0rd&#39;</span>
 <span class="n">bootstrap</span> <span class="o">=</span> <span class="n">Bootstrap</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">TentForm</span><span class="p">(</span><span class="n">FlaskForm</span><span class="p">):</span>
-<span class="n">Sex</span> <span class="o">=</span> <span class="n">RadioField</span><span class="p">(</span><span class="s">&#39;Your Gender&#39;</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;M&#39;</span><span class="p">,</span><span class="s">&#39;Male&#39;</span><span class="p">),(</span><span class="s">&#39;F&#39;</span><span class="p">,</span><span class="s">&#39;Female&#39;</span><span class="p">)])</span>
-<span class="n">Age</span> <span class="o">=</span> <span class="n">FloatField</span><span class="p">(</span><span class="s">&#39;Your Age&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">NumberRange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)])</span>
-<span class="n">Married</span> <span class="o">=</span> <span class="n">RadioField</span><span class="p">(</span><span class="s">&#39;Your Marital Status&#39;</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;Married&#39;</span><span class="p">,</span><span class="s">&#39;Married&#39;</span><span class="p">),</span> \
-<span class="p">(</span><span class="s">&#39;Single&#39;</span><span class="p">,</span><span class="s">&#39;Single&#39;</span><span class="p">),(</span><span class="s">&#39;Unspecified&#39;</span><span class="p">,</span><span class="s">&#39;Unspecified&#39;</span><span class="p">)])</span>
-<span class="n">Job</span> <span class="o">=</span> <span class="n">RadioField</span><span class="p">(</span><span class="s">&#39;Your Job&#39;</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;Executive&#39;</span><span class="p">,</span> <span class="s">&#39;Executive&#39;</span><span class="p">),</span> \
-<span class="p">(</span><span class="s">&#39;Hospitality&#39;</span> <span class="p">,</span><span class="s">&#39;Hospitality&#39;</span><span class="p">),(</span><span class="s">&#39;Other&#39;</span><span class="p">,</span><span class="s">&#39;Other&#39;</span><span class="p">),(</span><span class="s">&#39;Professional&#39;</span><span class="p">,</span><span class="s">&#39;Professional&#39;</span><span class="p">),</span> \
-<span class="p">(</span><span class="s">&#39;Retail&#39;</span><span class="p">,</span><span class="s">&#39;Retail&#39;</span><span class="p">),(</span><span class="s">&#39;Retired&#39;</span><span class="p">,</span><span class="s">&#39;Retired&#39;</span><span class="p">),(</span><span class="s">&#39;Sales&#39;</span><span class="p">,</span><span class="s">&#39;Sales&#39;</span><span class="p">),(</span><span class="s">&#39;Student&#39;</span><span class="p">,</span><span class="s">&#39;Student&#39;</span><span class="p">),</span> \
-<span class="p">(</span><span class="s">&#39;Trades&#39;</span><span class="p">,</span><span class="s">&#39;Trades&#39;</span><span class="p">)])</span>
-<span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s">&#39;Submit&#39;</span><span class="p">)</span>
+  <span class="n">Sex</span> <span class="o">=</span> <span class="n">RadioField</span><span class="p">(</span><span class="s">&#39;Your Gender&#39;</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;M&#39;</span><span class="p">,</span><span class="s">&#39;Male&#39;</span><span class="p">),(</span><span class="s">&#39;F&#39;</span><span class="p">,</span><span class="s">&#39;Female&#39;</span><span class="p">)])</span>
+  <span class="n">Age</span> <span class="o">=</span> <span class="n">FloatField</span><span class="p">(</span><span class="s">&#39;Your Age&#39;</span><span class="p">,</span> <span class="n">validators</span><span class="o">=</span><span class="p">[</span><span class="n">NumberRange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">100</span><span class="p">)])</span>
+  <span class="n">Married</span> <span class="o">=</span> <span class="n">RadioField</span><span class="p">(</span><span class="s">&#39;Your Marital Status&#39;</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;Married&#39;</span><span class="p">,</span><span class="s">&#39;Married&#39;</span><span class="p">),</span> \
+    <span class="p">(</span><span class="s">&#39;Single&#39;</span><span class="p">,</span><span class="s">&#39;Single&#39;</span><span class="p">),(</span><span class="s">&#39;Unspecified&#39;</span><span class="p">,</span><span class="s">&#39;Unspecified&#39;</span><span class="p">)])</span>
+  <span class="n">Job</span> <span class="o">=</span> <span class="n">RadioField</span><span class="p">(</span><span class="s">&#39;Your Job&#39;</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;Executive&#39;</span><span class="p">,</span> <span class="s">&#39;Executive&#39;</span><span class="p">),</span> \
+    <span class="p">(</span><span class="s">&#39;Hospitality&#39;</span> <span class="p">,</span><span class="s">&#39;Hospitality&#39;</span><span class="p">),(</span><span class="s">&#39;Other&#39;</span><span class="p">,</span><span class="s">&#39;Other&#39;</span><span class="p">),(</span><span class="s">&#39;Professional&#39;</span><span class="p">,</span><span class="s">&#39;Professional&#39;</span><span class="p">),</span> \
+    <span class="p">(</span><span class="s">&#39;Retail&#39;</span><span class="p">,</span><span class="s">&#39;Retail&#39;</span><span class="p">),(</span><span class="s">&#39;Retired&#39;</span><span class="p">,</span><span class="s">&#39;Retired&#39;</span><span class="p">),(</span><span class="s">&#39;Sales&#39;</span><span class="p">,</span><span class="s">&#39;Sales&#39;</span><span class="p">),(</span><span class="s">&#39;Student&#39;</span><span class="p">,</span><span class="s">&#39;Student&#39;</span><span class="p">),</span> \
+    <span class="p">(</span><span class="s">&#39;Trades&#39;</span><span class="p">,</span><span class="s">&#39;Trades&#39;</span><span class="p">)])</span>
+  <span class="n">submit</span> <span class="o">=</span> <span class="n">SubmitField</span><span class="p">(</span><span class="s">&#39;Submit&#39;</span><span class="p">)</span>
 <span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;POST&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
-<span class="n">form</span> <span class="o">=</span> <span class="n">TentForm</span><span class="p">()</span>
-<span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
-<span class="n">Sex</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">Sex</span><span class="o">.</span><span class="n">data</span>
-<span class="n">form</span><span class="o">.</span><span class="n">Sex</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
-<span class="n">Age</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">Age</span><span class="o">.</span><span class="n">data</span>
-<span class="n">form</span><span class="o">.</span><span class="n">Age</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
-<span class="n">Married</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">Married</span><span class="o">.</span><span class="n">data</span>
-<span class="n">form</span><span class="o">.</span><span class="n">Married</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
-<span class="n">Job</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">Job</span><span class="o">.</span><span class="n">data</span>
-<span class="n">form</span><span class="o">.</span><span class="n">Job</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
-<span class="n">headers</span> <span class="o">=</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">make_headers</span><span class="p">(</span><span class="n">basic_auth</span><span class="o">=</span><span class="s">&#39;{}:{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">))</span>
-<span class="n">path</span> <span class="o">=</span> <span class="s">&#39;{}/v2/identity/token&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
-<span class="n">mltoken</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;token&#39;</span><span class="p">)</span>
-<span class="n">scoring_header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">mltoken</span><span class="p">}</span>
-<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;record&quot;</span><span class="p">:[</span><span class="n">Sex</span><span class="p">,</span> <span class="n">Age</span><span class="p">,</span> <span class="n">Married</span><span class="p">,</span> <span class="n">Job</span><span class="p">]}</span>
-<span class="n">scoring</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">scoring_endpoint</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">scoring_header</span><span class="p">)</span>
-<span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&#39;score.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
-<span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
+  <span class="n">form</span> <span class="o">=</span> <span class="n">TentForm</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">validate_on_submit</span><span class="p">():</span>
+    <span class="n">Sex</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">Sex</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">Sex</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">Age</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">Age</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">Age</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">Married</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">Married</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">Married</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">Job</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">Job</span><span class="o">.</span><span class="n">data</span>
+    <span class="n">form</span><span class="o">.</span><span class="n">Job</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="n">urllib3</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">make_headers</span><span class="p">(</span><span class="n">basic_auth</span><span class="o">=</span><span class="s">&#39;{}:{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">))</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="s">&#39;{}/v3/identity/token&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="n">mltoken</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;token&#39;</span><span class="p">)</span>
+    <span class="n">scoring_header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">mltoken</span><span class="p">}</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;GENDER&quot;</span><span class="p">,</span><span class="s">&quot;AGE&quot;</span><span class="p">,</span><span class="s">&quot;MARITAL_STATUS&quot;</span><span class="p">,</span><span class="s">&quot;PROFESSION&quot;</span><span class="p">],</span> <span class="s">&quot;values&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="s">&quot;M&quot;</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="s">&quot;Single&quot;</span><span class="p">,</span><span class="s">&quot;Student&quot;</span><span class="p">]]}</span>
+    <span class="n">scoring</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">scoring_endpoint</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">scoring_header</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&#39;score.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">)</span>
 <span class="n">port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s">&#39;PORT&#39;</span><span class="p">,</span> <span class="s">&#39;5000&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
-<span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">))</span>
+  <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">port</span><span class="p">))</span>
 </pre></div>
 <h3 id="Setting-up-files">Setting up files<a class="anchor-link" href="#Setting-up-files">&#182;</a></h3><ol>
-<li><p>Edit the <code>Procfile</code> file and replace the contents with the following line of code:</p>
+<li><p>Edit the <code>Procfile</code> file and replace the contents with the following line of code.</p>
 <div class="highlight"><pre><span class="n">web</span><span class="p">:</span> <span class="n">python</span> <span class="n">MLTutorial</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 <p>This points to the Python code to be executed that was created in the previous step. Save this file.</p>
 </li>
-<li><p>Add the following line of code to the <code>requirements.txt</code> file. Flask should already be there. Save this file.</p>
+<li><p>Add the following lines of code to the <code>requirements.txt</code> file. Flask should already be there. Save this file.</p>
 <div class="highlight"><pre><span class="n">Flask</span><span class="o">==</span><span class="mf">0.10</span><span class="o">.</span><span class="mi">1</span>
 <span class="n">urllib3</span>
 <span class="n">requests</span>
@@ -12712,7 +12732,7 @@ which creates, trains, saves and deploys a logistic regression model that predic
 <span class="n">flask_wtf</span>
 </pre></div>
 </li>
-<li><p>Two template web pages need to be added. Create a sub-folder called <code>templates</code>.  In the <code>templates</code> folder, create a file called <code>index.html</code> and copy the following code into the file. Indentation is not important.</p>
+<li><p>Two template web pages need to be added. Create a sub-folder called <code>templates</code>.  In the <code>templates</code> folder, create a file called <code>index.html</code> and copy the following code into the file.</p>
 <div class="highlight"><pre><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s">&#39;bootstrap/base.html&#39;</span> <span class="o">%</span><span class="p">}</span>
 <span class="p">{</span><span class="o">%</span> <span class="kn">import</span> <span class="s">&quot;bootstrap/wtf.html&quot;</span> <span class="k">as</span> <span class="n">wtf</span> <span class="o">%</span><span class="p">}</span>
 <span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">title</span> <span class="o">%</span><span class="p">}</span><span class="n">Tent</span> <span class="n">Prediction</span><span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
@@ -12751,7 +12771,7 @@ which creates, trains, saves and deploys a logistic regression model that predic
 </li>
 <li><p>Save this file.</p>
 </li>
-<li><p>In the <code>templates</code> folder, create a file called <code>score.html</code> and copy the following lines of code into the file you create. Indentation is not important.</p>
+<li><p>In the <code>templates</code> folder, create a file called <code>score.html</code> and copy the following lines of code into the file you create.</p>
 <div class="highlight"><pre><span class="p">{</span><span class="o">%</span> <span class="n">extends</span> <span class="s">&#39;bootstrap/base.html&#39;</span> <span class="o">%</span><span class="p">}</span>
 <span class="p">{</span><span class="o">%</span> <span class="kn">import</span> <span class="s">&quot;bootstrap/wtf.html&quot;</span> <span class="k">as</span> <span class="n">wtf</span> <span class="o">%</span><span class="p">}</span>
 <span class="p">{</span><span class="o">%</span> <span class="n">block</span> <span class="n">title</span> <span class="o">%</span><span class="p">}</span><span class="n">Tent</span> <span class="n">Prediction</span><span class="p">{</span><span class="o">%</span> <span class="n">endblock</span> <span class="o">%</span><span class="p">}</span>
@@ -12766,7 +12786,7 @@ which creates, trains, saves and deploys a logistic regression model that predic
     <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;container&quot;</span><span class="o">&gt;</span>
         <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;row&quot;</span><span class="o">&gt;</span>
             <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;col-md-12&quot;</span><span class="o">&gt;</span>
-                <span class="p">{{</span> <span class="n">scoring</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s">&quot;result&quot;</span><span class="p">][</span><span class="s">&quot;probability&quot;</span><span class="p">]</span> <span class="p">}}</span>
+                <span class="p">{{</span> <span class="n">scoring</span><span class="o">.</span><span class="n">json</span><span class="p">()</span> <span class="p">}}</span>
             <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
         <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
         <span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s">&quot;row&quot;</span><span class="o">&gt;</span>
@@ -12782,22 +12802,21 @@ which creates, trains, saves and deploys a logistic regression model that predic
 </li>
 </ol>
 <p><a id="publish"></a></p>
-<h2 id="Step-3:-Publish">Step 3: Publish<a class="anchor-link" href="#Step-3:-Publish">&#182;</a></h2><p>You must now publish this Web application to Bluemix.</p>
+<h2 id="Step-3:-Publish">Step 3: Publish<a class="anchor-link" href="#Step-3:-Publish">&#182;</a></h2><p>You can now publish this updated web application to Bluemix.</p>
 <ol>
-<li>Log on to Bluemix by using the command line. </li>
-<li>Go to the root folder where the starter code is located. <strong>Hint</strong>: If you’re in the <code>templates</code> folder, it is the enclosing folder. </li>
-<li>Type <code>cf login</code> and press <strong>Enter</strong>.  You are prompted for your password and organization. </li>
+<li>Go to the folder where the starter code is located. <strong>Hint</strong>: If you’re in the <code>templates</code> folder, move up one folder. </li>
+<li>Type <code>cf login</code> and press <strong>Enter</strong>.  You are prompted for your email id.  Type it in and press <strong>Enter</strong>. </li>
 <li>Type your password and press <strong>Enter</strong>. </li>
-<li>Type the number that corresponds to your organization and press <strong>Enter</strong>.</li>
-<li>Type <code>cf push</code> and press <strong>Enter</strong>. If successful, the responses should display the <strong>App started</strong> message and the <strong>OK</strong> status as well as information about the instances and usage.</li>
-<li>Point your browser to the Web application URL. If you named the app <code>MLTutorial</code>, use the following URL: <a href="http://mltutorial.mybluemix.net">http://mltutorial.mybluemix.net</a>  </li>
+<li>If prompted, type the number that corresponds to your organization and press <strong>Enter</strong>.</li>
+<li>Type <code>cf push</code> and press <strong>Enter</strong>. If successful, the responses will display the <strong>App started</strong> message and the <strong>OK</strong> status as well as information about the instances and usage.  Please give this some time to complete.</li>
+<li>Once started, point your browser to the web application URL. The URL consists of the name that you used for the app <code>your_app_name</code>, inserted into the following URL: <a href="http://your_app_name.mybluemix.net">http://your_app_name.mybluemix.net</a>  </li>
 <li>When the page renders, make the following selections: For gender, select <strong>Male</strong>; for the age, type <strong>20</strong>; for marital status, select <strong>Single</strong>; and for the profession, select <strong>Student</strong>. </li>
 <li>Click <strong>Submit</strong>. If you see the boilerplate Web page, you must refresh the browser page. </li>
 </ol>
-<p>The Web page response displays a prediction that is the same as previous predictions. The probability for a tent purchase is 20.23% for a single, 20 year old male that is a student. To determine probabilities for other variations, click <strong>Try Again!</strong></p>
+<p>The web page displays the raw JSON response from the deployed model.  In the JSON are two sets of data, a list of fields and a list of corresponding values.  If you find the value for <strong>probability</strong>, you will see that there is a 19.52% (your result may vary slightly) probability for a tent purchase given a single, 20 year old male that is a student. Note that this is the same value previously observed in the beginning part of this notebook.  To observe probabilities for other variations, click <strong>Try Again!</strong>.  It should be noted that a skilled web developer can take this raw data and present it elegantly.</p>
 <p><a id="summary"></a></p>
-<h2 id="4.-Summary-and-next-steps">4. Summary and next steps<a class="anchor-link" href="#4.-Summary-and-next-steps">&#182;</a></h2><p>Congratulations! You have completed this tutorial that demonstrates how a deployed model in IBM Watson Machine Learning can be called in real time for scoring. By using more advanced Web application development skills, the initial interface can be significantly enhanced and other technologies leveraged.</p>
-<h2 id="Author">Author<a class="anchor-link" href="#Author">&#182;</a></h2><p><strong>Daniel Kikuchi</strong> is an Executive IT Specialist and a North America Big Data Technical Sales Specialist in the IBM Software Sales organization. He is passionate about developing integrated solutions that address client business needs. Kikuchi has often been tapped by IBM upper management to lead critical, complex and challenging client engagements. In his free time, Dan enjoys archery and is a Certified Level Two Archery Instructor with the US Archery &amp; National Field Archery Association.</p>
+<h2 id="4.-Summary-and-next-steps">4. Summary and next steps<a class="anchor-link" href="#4.-Summary-and-next-steps">&#182;</a></h2><p>Congratulations! You have completed this tutorial that demonstrates how a deployed model in IBM Watson Machine Learning can be called in real time for scoring. By using  advanced web application development skills, the user interface can be significantly enhanced and other web app technologies leveraged.</p>
+<h2 id="Author">Author<a class="anchor-link" href="#Author">&#182;</a></h2><p><strong>Daniel Kikuchi</strong> is an Executive IT Specialist and a North America Big Data Technical Sales Specialist in the IBM Analytics organization. He is passionate about developing integrated solutions that address client business needs. Dan has often been tapped by IBM upper management to lead critical, complex and challenging client engagements. In his free time, Dan enjoys archery and is a Certified Level Two Archery Instructor with the US Archery &amp; National Field Archery Association.</p>
 
 </div>
 </div>
@@ -12811,6 +12830,19 @@ which creates, trains, saves and deploys a logistic regression model that predic
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre> 
+</pre></div>
+
+</div>
+</div>
+</div>
+
 </div>
     </div>
   </div>

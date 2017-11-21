@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Bluemix app NB </title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Putting a human face on machine learnin</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -12136,6 +12136,7 @@ html {
   font-size: 0.875rem;
   color: #a6266e;
   border: none;
+  padding-bottom: 0.2rem;
 }
 
 /*
@@ -12709,7 +12710,7 @@ which creates, trains, saves and deploys a logistic regression model that predic
     <span class="n">path</span> <span class="o">=</span> <span class="s">&#39;{}/v3/identity/token&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
     <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
     <span class="n">mltoken</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;token&#39;</span><span class="p">)</span>
-    <span class="n">scoring_header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="n">mltoken</span><span class="p">}</span>
+    <span class="n">scoring_header</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">,</span> <span class="s">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">mltoken</span><span class="p">}</span>
     <span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;GENDER&quot;</span><span class="p">,</span><span class="s">&quot;AGE&quot;</span><span class="p">,</span><span class="s">&quot;MARITAL_STATUS&quot;</span><span class="p">,</span><span class="s">&quot;PROFESSION&quot;</span><span class="p">],</span> <span class="s">&quot;values&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="s">&quot;M&quot;</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="s">&quot;Single&quot;</span><span class="p">,</span><span class="s">&quot;Student&quot;</span><span class="p">]]}</span>
     <span class="n">scoring</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">scoring_endpoint</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">scoring_header</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s">&#39;score.html&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="n">scoring</span><span class="p">)</span>
@@ -12830,19 +12831,6 @@ which creates, trains, saves and deploys a logistic regression model that predic
 
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
 </div>
     </div>
   </div>
