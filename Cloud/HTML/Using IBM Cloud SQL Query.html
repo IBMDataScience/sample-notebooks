@@ -12642,8 +12642,8 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><div class="pull-left"><left><img style="float: right;" src="http://developer.ibm.com/clouddataservices/wp-content/uploads/sites/85/2018/01/ibm-cloud-object-storage-logo-small.png" width="100" margin=50></left></div></p>
 <p><div style="text-align:center">
-<b>IBM Cloud SQL Query</b> is IBM's <b>serverless SQL</b> service on data in <b>Cloud Object Storage</b>. It allows to run ANSI SQL on Parquet, CSV and JSON data sets. It is based on Apache Spark SQL as the query engine in the background. This means you do NOT have to provision any Apache Spark instance or service. A simple Python client (like the IBM Watson Studio Notebook) is sufficient.<br><br></div>
-This notebook is a starter to use the SQL Query API in order to run SQL statements in a programmatic way. It uses the <a href="https://github.com/IBM-Cloud/sql-query-clients/tree/master/Python" target="_blank" rel="noopener noreferrer">ibmcloudsql</a> Python library for this purpose. The notebook also demonstrates how you can combine SQL Query with visualization libraries such as <strong>PixieDust</strong>. The notebook has been verified to work with Python 3.5. As mentioned above it does not require a Spark service bound to the notebook.</p>
+<b>IBM Cloud SQL Query</b> is IBM's <b>serverless SQL</b> service on data in <b>Cloud Object Storage</b>. It allows to run ANSI SQL on Parquet, CSV and JSON data sets. It is based on Apache Spark SQL as the query engine in the background. This means you do **not** have to provision any Apache Spark instance or service. A simple Python client (like the IBM Watson Studio Notebook) is sufficient.<br><br></div>
+This notebook is meant to be a generic starter to use the SQL Query API in order to run SQL statements in a programmatic way. It uses the <a href="https://github.com/IBM-Cloud/sql-query-clients/tree/master/Python" target="_blank" rel="noopener noreferrer">ibmcloudsql</a> Python library for this purpose. The notebook also demonstrates how you can combine SQL Query with visualization libraries such as <strong>PixieDust</strong>. The notebook has been verified to work with Python 3.5. As mentioned above it does not require a Spark service bound to the notebook.</p>
 
 </div>
 </div>
@@ -12661,6 +12661,7 @@ This notebook is a starter to use the SQL Query API in order to run SQL statemen
 <li><a href="#run">Run the SQL</a><br>
  4.1 <a href="#lowlevel">Low level SQL job submission</a><br></li>
 <li><a href="#joblist">List recent SQL submissions</a><br></li>
+<li><a href="#other">Useful things</a><br></li>
 <li><a href="#next">Next steps</a><br></li>
 </ol>
 
@@ -12770,11 +12771,11 @@ Table service_connections created successfully
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="-2.-Configure-SQL-Query"><a id="configure" /> 2. Configure SQL Query<a class="anchor-link" href="#-2.-Configure-SQL-Query">&#182;</a></h3><ol>
-<li>You need an <strong>API key</strong> for an IBM cloud identity that has access to your Cloud Object Storage bucket for writing SQL results and to your Cloud SQL Query instance. To create API keys log on to the IBM Cloud console and go to <a href="https://console.bluemix.net/iam/#/apikeys" target="_blank">Manage->Security->Platform API Keys</a>, press the <code>Create</code> button, give the key a custom name and press <code>Create</code>. In the next dialog click <code>Show</code> and copy the key to your clipboard and paste it below in this notebook.</li>
-<li>You need the <strong>instance CRN</strong> for the Cloud SQL Query instance. You can find it in the <a href="https://console.bluemix.net/dashboard/apps" target="_blank">IBM Cloud console dashboard</a>. Make sure you have <code>All Resources</code> selected as resource group. In the section <code>Services</code> you can see your instances of SQL Query and Cloud Object Storage. Select the instance of SQL Query that you want to use. In the SQL Query dashboard page that opens up you find a section titled <strong>REST API</strong> with a button labelled <strong>Instance CRN</strong>. Click the button to copy the CRN into your clipboard and paste it here in the notebook. If you do not have a SQL Query instance created yet, please <a href="https://console.bluemix.net/catalog/services/sql-query" target="_blank">create one</a> first.</li>
-<li>You need to specify the location on Cloud Object Storage where your <strong>query results</strong> should be written. This comprises three parts of information that you can find in the Cloud Object Storage UI for your instance in IBM Cloud console. You need to provide it as a <strong>URL</strong> using the format <code>cos://&lt;endpoint&gt;/&lt;bucket&gt;/[&lt;prefix&gt;]</code>. You have the option to use the cloud object storage <strong>bucket that is associated with your project</strong>. In this case please execute the following section before you proceed.<br>
+<li>You need an <strong>API key</strong> for an IBM cloud identity that has access to your Cloud Object Storage bucket for writing SQL results and to your SQL Query instance. To create API keys log on to the IBM Cloud console and go to <a href="https://console.bluemix.net/iam/#/apikeys" target="_blank">Manage->Security->Platform API Keys</a>, click the <code>Create</code> button, give the key a custom name and click <code>Create</code>. In the next dialog click <code>Show</code> and copy the key to your clipboard and paste it below in this notebook.</li>
+<li>You need the <strong>instance CRN</strong> for the SQL Query instance. You can find it in the <a href="https://console.bluemix.net/dashboard/apps" target="_blank">IBM Cloud console dashboard</a>. Make sure you have <code>All Resources</code> selected as resource group. In the section <code>Services</code> you can see your instances of SQL Query and Cloud Object Storage. Select the instance of SQL Query that you want to use. In the SQL Query dashboard page that opens up you find a section titled <strong>REST API</strong> with a button labelled <strong>Instance CRN</strong>. Click the button to copy the CRN into your clipboard and paste it here into the notebook. If you don't have an SQL Query instance created yet, <a href="https://console.bluemix.net/catalog/services/sql-query" target="_blank">create one</a> first.</li>
+<li>You need to specify the location on Cloud Object Storage where your <strong>query results</strong> should be written. This comprises three parts of information that you can find in the Cloud Object Storage UI for your instance in the IBM Cloud console. You need to provide it as a <strong>URL</strong> using the format <code>cos://&lt;endpoint&gt;/&lt;bucket&gt;/[&lt;prefix&gt;]</code>. You have the option to use the cloud object storage <strong>bucket that is associated with your project</strong>. In this case, execute the following section before you proceed.<br>
 <br/>
-You can find further background in the SQL Query <a href="https://console.bluemix.net/docs/services/sql-query/getting-started.html#getting-started-tutorial" target="_blank">documentation</a>.</li>
+For more background information, check out the SQL Query <a href="https://console.bluemix.net/docs/services/sql-query/getting-started.html#getting-started-tutorial" target="_blank">documentation</a>.</li>
 </ol>
 
 </div>
@@ -12784,12 +12785,12 @@ You can find further background in the SQL Query <a href="https://console.bluemi
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="-2.1-Using-the-project-bucket"><a id="projectbucket" /> 2.1 Using the project bucket<a class="anchor-link" href="#-2.1-Using-the-project-bucket">&#182;</a></h4><p>You need to follow the instructions in this section <strong>only</strong> when you want to write your SQL query results to the bucket that has been created for the project where you have created this notebook. In any other case proceed directly with section <strong>2.2</strong>.
+<h4 id="-2.1-Using-the-project-bucket"><a id="projectbucket" /> 2.1 Using the project bucket<a class="anchor-link" href="#-2.1-Using-the-project-bucket">&#182;</a></h4><p><strong>Only</strong> follow the instructions in this section when you want to write your SQL query results to the bucket that has been created for the project for which you have created this notebook. In any other case proceed directly with section <strong>2.2</strong>.
 <br><br>
-<strong>Insert project token</strong>:<br>
+<strong>Inserting the project token</strong>:<br>
 Click the <code>More</code> option in the toolbar above (the three stacked dots) and select <code>Insert project token</code>.</p>
 <ul>
-<li>If you haven't created an access token for this project before you will see a dialog that asks you to create one first. Follow the link to open your project settings, scroll down to <code>Access tokens</code> and click <code>New token</code>. Give the token a custom name and make sure you select <code>Editor</code> as <code>Access role for project</code>. After you created your access token you can come back to this notebook, select the empty cell below and again select <code>Insert project token</code> from the toolbar at the top.</li>
+<li>If you haven't created an access token for this project before, you will see a dialog that asks you to create one first. Follow the link to open your project settings, scroll down to <code>Access tokens</code> and click <code>New token</code>. Give the token a custom name and make sure you select <code>Editor</code> as <code>Access role for project</code>. After you created your access token you can come back to this notebook, select the empty cell below and again select <code>Insert project token</code> from the toolbar at the top.</li>
 </ul>
 <p>This will add a new cell at the top of your notebook with content that looks like this:</p>
 
@@ -12821,7 +12822,7 @@ pc = project.project_context</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="-2.2-Setting-SQL-Query-parameter"><a id="parameters" /> 2.2 Setting SQL Query parameter<a class="anchor-link" href="#-2.2-Setting-SQL-Query-parameter">&#182;</a></h4>
+<h4 id="-2.2-Setting-the-SQL-Query-parameters"><a id="parameters" /> 2.2 Setting the SQL Query parameters<a class="anchor-link" href="#-2.2-Setting-the-SQL-Query-parameters">&#182;</a></h4>
 </div>
 </div>
 </div>
@@ -12876,7 +12877,7 @@ https://sql.ng.bluemix.net/sqlquery/?instance_crn=crn:v1:bluemix:public:sql-quer
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="-3.-Your-SQL"><a id="sql" /> 3. Your SQL<a class="anchor-link" href="#-3.-Your-SQL">&#182;</a></h3><p>If you want to author your own SQL query we recommend you to do this in the interactive SQL Query web console (<strong>link above</strong>) of you SQL Query service instance.</p>
+<h3 id="-3.-Your-SQL"><a id="sql" /> 3. Your SQL<a class="anchor-link" href="#-3.-Your-SQL">&#182;</a></h3><p>To author your own SQL query, use the interactive SQL Query web console (<strong>link above</strong>) of your SQL Query service instance.</p>
 
 </div>
 </div>
@@ -12946,7 +12947,7 @@ Your SQL statement is:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="-4.-Run-the-SQL"><a id="run" /> 4. Run the SQL<a class="anchor-link" href="#-4.-Run-the-SQL">&#182;</a></h3><p>The following cell submits the SQL statement and waits for it to finish before printing a sample of the result set.</p>
+<h3 id="-4.-Running-the-SQL"><a id="run" /> 4. Running the SQL<a class="anchor-link" href="#-4.-Running-the-SQL">&#182;</a></h3><p>The following cell submits the SQL statement and waits for it to finish before printing a sample of the result set.</p>
 
 </div>
 </div>
@@ -13482,7 +13483,7 @@ v.build(table1);
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="-4.1-Low-level-SQL-job-submission"><a id="lowlevel" /> 4.1 Low level SQL job submission<a class="anchor-link" href="#-4.1-Low-level-SQL-job-submission">&#182;</a></h4><p>In the following we run the same SQL again. But this time we use asynchronous submission mechanism and the status check method.</p>
+<h4 id="-4.1-Low-level-SQL-job-submission"><a id="lowlevel" /> 4.1 Low level SQL job submission<a class="anchor-link" href="#-4.1-Low-level-SQL-job-submission">&#182;</a></h4><p>Let's run the same SQL again, but this time using the asynchronous submission mechanism and the status check method.</p>
 
 </div>
 </div>
@@ -13555,7 +13556,7 @@ v.build(table1);
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You canuse the <code>wait_for_job()</code> method to block until your job has finished:</p>
+<p>Use the <code>wait_for_job()</code> method as a blocking call until your job has finished:</p>
 
 </div>
 </div>
@@ -13640,7 +13641,7 @@ v.build(table1);
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>When not needed anymore you can purge the result set from Cloud Object Storage using the <code>delete_result()</code> method:</p>
+<p>You can delete the result set from Cloud Object Storage using the <code>delete_result()</code> method:</p>
 
 </div>
 </div>
@@ -13717,7 +13718,7 @@ v.build(table1);
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="-5.-List-recent-SQL-submissions"><a id="joblist" /> 5. List recent SQL submissions<a class="anchor-link" href="#-5.-List-recent-SQL-submissions">&#182;</a></h3><p>The method <code>get_jobs()</code> provides you a dataframe with all recent SQL submissions with all details. You can change the value <code>-1</code>for <code>display.max_colwidth</code> to a positive integer if you want to truncate the cell content to shrink the overall table display size.</p>
+<h3 id="-5.-Listing-recent-SQL-submissions"><a id="joblist" /> 5. Listing recent SQL submissions<a class="anchor-link" href="#-5.-Listing-recent-SQL-submissions">&#182;</a></h3><p>The method <code>get_jobs()</code> provides you a dataframe with all recent SQL submissions with all details. You can change the value <code>-1</code>for <code>display.max_colwidth</code> to a positive integer if you want to truncate the cell content to shrink the overall table display size.</p>
 
 </div>
 </div>
@@ -14151,7 +14152,55 @@ v.build(table1);
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="-6.-Next-steps"><a id="next" /> 6. Next steps<a class="anchor-link" href="#-6.-Next-steps">&#182;</a></h3><p>You have learned in this notebook how you can use the <code>ibmcloudsql</code> library in a Python notebook to submit SQL queries on data in IBM Cloud Object Storage and how you can interact with the query results. You may want to desire now to automate such SQL query execution as part of your cloud solution. One way to achieve this is by using the <a href="https://console.bluemix.net/openwhisk/" target="_blank">IBM Cloud Functions</a> framework. There is also a SQL function available that lets you set up a cloud function to run SQL statements with IBM Cloud SQL Query. You can find the documentation for doing this <a href="https://hub.docker.com/r/ibmfunctions/sqlquery/" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<h3 id="-6.-Useful-things"><a id="other" /> 6. Useful things<a class="anchor-link" href="#-6.-Useful-things">&#182;</a></h3><p><code>ibmcloudsql</code> provides some other methods that can be quite handy when working with data on IBM Cloud Object Storage. One is <code>get_cos_summary()</code> that provides statistics for a given <strong>URL</strong> to object storage. So you can for instance check the amount of objects and data volume that will be processed by your SQL query when you use the URL in it. For demonstration purposes we will now simply get statistics for the <code>targeturl</code> that we used above as target for our query results.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sqlClient</span><span class="o">.</span><span class="n">get_cos_summary</span><span class="p">(</span><span class="n">targeturl</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;largest_object_size&#39;: 649628511,
+ &#39;newest_object_timestamp&#39;: &#39;March 13, 2018, 21H:15M:09S&#39;,
+ &#39;oldest_object_timestamp&#39;: &#39;November 24, 2017, 09H:58M:25S&#39;,
+ &#39;smallest_object_size&#39;: 6556,
+ &#39;total_objects&#39;: 1010,
+ &#39;total_volume&#39;: 649628511,
+ &#39;url&#39;: &#39;cos://us-south/sqltempregional/&#39;}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="-7.-Next-steps"><a id="next" /> 7. Next steps<a class="anchor-link" href="#-7.-Next-steps">&#182;</a></h3><p>In this notebook you learned how you can use the <code>ibmcloudsql</code> library in a Python notebook to submit SQL queries on data in IBM Cloud Object Storage and how you can interact with the query results. If you want to automate such an SQL query execution as part of your cloud solution, you can use the <a href="https://console.bluemix.net/openwhisk/" target="_blank">IBM Cloud Functions</a> framework. There is a dedicated SQL function available that lets you set up a cloud function to run SQL statements with IBM Cloud SQL Query. You can find the documentation for doing this <a href="https://hub.docker.com/r/ibmfunctions/sqlquery/" target="_blank" rel="noopener noreferrer">here</a>.</p>
 
 </div>
 </div>
