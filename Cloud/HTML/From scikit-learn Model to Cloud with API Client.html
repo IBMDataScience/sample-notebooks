@@ -12624,23 +12624,23 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This notebook contains steps and code to work with <a href="https://pypi.python.org/pypi/watson-machine-learning-client" target="_blank" rel="noopener noreferrer">watson-machine-learning-client</a> library available in PyPI repository. This notebook introduces commands for getting data and for basic data exploration, pipeline creation, model training and evaluation, model persistance to Watson Machine Learning repository, model deployment, and scoring.</p>
-<p>Some familiarity with Python is helpful. This notebook uses Python 3.5, Spark 2.1, scikit-learn, watson-machine-learning-client package.</p>
-<p>You will use a toy dataset available in scikit-learn, <strong>sklearn.datasets.load_digits</strong>, which contains hand-written digits images. Use the toy dataset to recognize hand-written digits.</p>
+<p>This notebook contains the steps and code to work with <a href="https://pypi.python.org/pypi/watson-machine-learning-client" target="_blank" rel="noopener noreferrer">watson-machine-learning-client</a> library available in the PyPI repository. This notebook introduces commands for getting data and for basic data exploration, pipeline creation, model training and evaluation, model persistance to the Watson Machine Learning repository, model deployment, and scoring.</p>
+<p>Some familiarity with Python is helpful. This notebook uses Python 3.5, Spark 2.1, scikit-learn, and the watson-machine-learning-client package.</p>
+<p>You will use the sample data set <strong>sklearn.datasets.load_digits</strong>, which is available in scikit-learn and which contains hand-written images of digits. You will use the sample data set to recognize hand-written digits.</p>
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>The learning goals of this notebook are:</p>
 <ul>
-<li>Load a sample dataset from scikit-learn.</li>
-<li>Explore data.</li>
-<li>Prepare data for training and evaluation.</li>
-<li>Create Scikit-learn machine learning pipeline.</li>
-<li>Train and evaluate a model.</li>
-<li>Persist a model in Watson Machine Learning repository.</li>
-<li>Deploy model for online scoring using client library.</li>
-<li>Score sample records using client library.</li>
+<li>Load a sample data set from scikit-learn</li>
+<li>Explore data</li>
+<li>Prepare data for training and evaluation</li>
+<li>Create an Scikit-learn machine learning pipeline</li>
+<li>Train and evaluate a model</li>
+<li>Persist a model in the Watson Machine Learning repository</li>
+<li>Deploy a model for online scoring using the client library</li>
+<li>Score sample records using the client library</li>
 </ul>
 <h2 id="Contents">Contents<a class="anchor-link" href="#Contents">&#182;</a></h2><p>This notebook contains the following parts:</p>
 <ol>
-<li><a href="#setup">Setup</a></li>
+<li><a href="#setup">Set up the environment</a></li>
 <li><a href="#load">Load and explore data</a></li>
 <li><a href="#model">Create scikit-learn model</a></li>
 <li><a href="#persistence">Persist model</a></li>
@@ -12656,11 +12656,11 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="setup"></a></p>
-<h2 id="1.-Setup">1. Setup<a class="anchor-link" href="#1.-Setup">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup task:</p>
+<h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before you can use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
 <li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener noreferrer">Watson Machine Learning Service</a> instance (a free plan is offered). </li>
-<li>Configure local python environment<ul>
-<li>python 3.5</li>
+<li>Configure the local Python environment as follows:<ul>
+<li>Python 3.5</li>
 <li>scikit-learn 0.17.1</li>
 <li>watson-machine-learning-client</li>
 </ul>
@@ -12674,7 +12674,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Tip</strong>: You can install libraries from <a href="https://pypi.python.org/pypi">PyPI</a> running cell below.</p>
+<p><strong>Tip</strong>: Run the cell below to install libraries from <a href="https://pypi.python.org/pypi/" target="_blank" rel="noopener noreferrer">PyPI</a>.</p>
 
 </div>
 </div>
@@ -12705,7 +12705,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section you will load the data from scikit-learn sample datasets and perform a basic exploration.</p>
+<p>In this section you load and explore the data from scikit-learn sample data sets.</p>
 
 </div>
 </div>
@@ -12730,7 +12730,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Loaded toy dataset consists of 8x8 pixels images of hand-written digits.</p>
+<p>The sample data set is loaded and it consists of 8x8 pixel images of hand-written digits.</p>
 
 </div>
 </div>
@@ -12739,7 +12739,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's display first digit data and label using <strong>data</strong> and <strong>target</strong>.</p>
+<p>Let's display the first digit data and label using <code>data</code> and <code>target</code>.</p>
 
 </div>
 </div>
@@ -12819,7 +12819,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In next step you will count data examples.</p>
+<p>Now, count the number of data samples.</p>
 
 </div>
 </div>
@@ -12862,7 +12862,12 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="model"></a></p>
-<h2 id="3.-Create-a-Scikit-learn-model">3. Create a Scikit-learn model<a class="anchor-link" href="#3.-Create-a-Scikit-learn-model">&#182;</a></h2><p>In this section you will learn how to prepare data, create a Scikit-learn machine learning pipeline, and train a model.</p>
+<h2 id="3.-Create-a-scikit-learn-model">3. Create a scikit-learn model<a class="anchor-link" href="#3.-Create-a-scikit-learn-model">&#182;</a></h2><p>In this section you will learn how to:</p>
+<ul>
+<li><a href="#prepdata">Prepare the data</a></li>
+<li><a href="#createpipe">Create a Scikit-learn machine learning pipeline</a></li>
+<li><a href="#trainmodel">Train a model</a></li>
+</ul>
 
 </div>
 </div>
@@ -12871,7 +12876,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.1:-Prepare-data">3.1: Prepare data<a class="anchor-link" href="#3.1:-Prepare-data">&#182;</a></h3><p>In this subsection you will split your data into: train, test, and score datasets.</p>
+<h3 id="3.1:-Prepare-the-data">3.1: Prepare the data<a id="prepdata" /><a class="anchor-link" href="#3.1:-Prepare-the-data">&#182;</a></h3><p>In this subsection you split your data into train, test, and score data sets.</p>
 
 </div>
 </div>
@@ -12923,11 +12928,11 @@ Number of scoring records : 180
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As you can see our data has been successfully split into three datasets:</p>
+<p>As you can see, the data has been split into three data sets:</p>
 <ul>
-<li>The train data set, which is the largest group, is used for training.</li>
-<li>The test data set will be used for model evaluation and is used to test the assumptions of the model.</li>
-<li>The score data set will be used for scoring in Cloud.</li>
+<li>The train data set: The largest group, used for training.</li>
+<li>The test data set: Used for model evaluation and to test the assumptions of the model.</li>
+<li>The score data set: Used for scoring in the Cloud.</li>
 </ul>
 
 </div>
@@ -12937,7 +12942,7 @@ Number of scoring records : 180
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.2:-Create-pipeline-and-train-a-model">3.2: Create pipeline and train a model<a class="anchor-link" href="#3.2:-Create-pipeline-and-train-a-model">&#182;</a></h3>
+<h3 id="3.2:-Create-a-pipeline-">3.2: Create a pipeline <a id="createpipe" /><a class="anchor-link" href="#3.2:-Create-a-pipeline-">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -12954,7 +12959,7 @@ Number of scoring records : 180
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In the first step you need to import the scikit-learn machine learning packages that will be needed in the subsequent steps.</p>
+<p>The first step is to import the scikit-learn machine learning packages that you need in the subsequent steps.</p>
 
 </div>
 </div>
@@ -12978,7 +12983,7 @@ Number of scoring records : 180
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Standardize features by removing the mean and scaling to unit variance.</p>
+<p>Remove the mean and scale to unit variance to standardize the features..</p>
 
 </div>
 </div>
@@ -13000,7 +13005,7 @@ Number of scoring records : 180
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Next, define estimators you want to use for classification. Support Vector Machines (SVM) with radial basis function as kernel is used in the following example.</p>
+<p>Next, define the estimators you want to use for classification. Support Vector Machines (SVM) with a radial basis function as kernel is used in the following example.</p>
 
 </div>
 </div>
@@ -13022,7 +13027,7 @@ Number of scoring records : 180
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's build the pipeline now. A pipeline consists of transformer and an estimator.</p>
+<p>Now, build the pipeline. A pipeline consists of a transformer and an estimator.</p>
 
 </div>
 </div>
@@ -13044,7 +13049,15 @@ Number of scoring records : 180
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now, you can train your SVM model by using the previously defined <strong>pipeline</strong> and <strong>train data</strong>.</p>
+<h3 id="3.3:-Train-the-model">3.3: Train the model<a id="trainmodel" /><a class="anchor-link" href="#3.3:-Train-the-model">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, you can use <code>train_data</code>(<a href="#prepdata">step 3.1</a>) and <code>pipeline</code>(<a href="#createpipe">step 3.2</a>) to train your SVM model.</p>
 
 </div>
 </div>
@@ -13066,7 +13079,8 @@ Number of scoring records : 180
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can check your <strong>model quality</strong> now. To evaluate the model, use <strong>test data</strong>.</p>
+<p>Check the quality of your model. 
+To evaluate the model, use <strong>test data</strong>.</p>
 
 </div>
 </div>
@@ -13124,7 +13138,7 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can tune your model now to achieve better accuracy. For simplicity of this example tuning section is omitted.</p>
+<p>You can now tune your model to achieve better accuracy. For simplicity, the tuning section is omitted in this example.</p>
 
 </div>
 </div>
@@ -13142,7 +13156,14 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section you will learn how to store your model in Watson Machine Learning repository by using commont python client.</p>
+<p>In this section you will learn how to use the common Python client to store your model in the Watson Machine Learning repository.</p>
+<ul>
+<li><a href="#workwithinstance">Work with your instance</a></li>
+<li><a href="#pubmodel">Publish the model</a></li>
+<li><a href="#getmodel">Get model details</a></li>
+<li><a href="#loadmodel">Load the model</a></li>
+<li><a href="#deletemodel">Delete the model</a></li>
+</ul>
 
 </div>
 </div>
@@ -13151,7 +13172,7 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Tip</strong>: You can check documentation for watson-machine-learning-client by visiting the <a href="https://wml-api-pyclient.mybluemix.net" target="_blank" rel="noopener noreferrer">documentation webpage</a>.</p>
+<p><strong>Tip</strong>: You can find documentation about the watson-machine-learning-client package <a href="https://wml-api-pyclient.mybluemix.net" target="_blank" rel="noopener noreferrer">here</a>.</p>
 
 </div>
 </div>
@@ -13160,7 +13181,7 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.1:-Work-with-your-instance">4.1: Work with your instance<a class="anchor-link" href="#4.1:-Work-with-your-instance">&#182;</a></h3>
+<h3 id="4.1:-Work-with-your-instance">4.1: Work with your instance<a id="workwithinstance" /><a class="anchor-link" href="#4.1:-Work-with-your-instance">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13168,7 +13189,7 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>First, you must import client libraries.</p>
+<p>First, import the client libraries.</p>
 
 </div>
 </div>
@@ -13190,7 +13211,7 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Authenticate to Watson Machine Learning service on IBM Cloud.</p>
+<p>Authenticate to your Watson Machine Learning service instance on IBM Cloud.</p>
 
 </div>
 </div>
@@ -13199,7 +13220,16 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Action</strong>: Put authentication information from your instance of Watson Machine Learning service here.&lt;/div&gt;</p>
+<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://console.bluemix.net/docs/services/service_credentials.html#service_credentials">Service Credentials</a> tab of the service instance that you created on IBM Cloud. <BR>If you cannot see the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Action</strong>: Enter your Watson Machine Learning service instance credentials here.</p>
 
 </div>
 </div>
@@ -13227,16 +13257,8 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Tip</strong>: Authentication information can be found on <strong>Service Credentials</strong> tab of service instance created on IBM  Cloud. <BR>If you cannot see <strong>instance_id</strong> field in <strong>Serice Credentials</strong> generate new credentials by pressing <strong>New credential (+)</strong> button.</p>
+<p>Run the cell below to create the API client.</p>
 
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Create-API-client-by-running-below-code.">Create API client by running below code.<a class="anchor-link" href="#Create-API-client-by-running-below-code.">&#182;</a></h4>
 </div>
 </div>
 </div>
@@ -13257,16 +13279,19 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Get-instance-details.">Get instance details.<a class="anchor-link" href="#Get-instance-details.">&#182;</a></h4>
+<p>Get the instance details.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="kn">import</span> <span class="nn">json</span>
+<div class=" highlight hl-ipython3"><pre><span class="c">#Output has been removed for this cell for Watson Studio sharing.</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
 
 <span class="n">instance_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">service_instance</span><span class="o">.</span><span class="n">get_details</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">instance_details</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
@@ -13276,91 +13301,12 @@ avg / total       0.95      0.94      0.95       360
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{
-  &#34;metadata&#34;: {
-    &#34;created_at&#34;: &#34;2018-02-19T14:57:53.275Z&#34;,
-    &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491&#34;,
-    &#34;modified_at&#34;: &#34;2018-02-19T14:57:53.275Z&#34;,
-    &#34;guid&#34;: &#34;8f11cfac-57ca-4a0c-9815-7abbd7a72491&#34;
-  },
-  &#34;entity&#34;: {
-    &#34;region&#34;: &#34;us-south&#34;,
-    &#34;account&#34;: {
-      &#34;id&#34;: &#34;e2cb778ce7da6d8945e99e5f02b48a43&#34;,
-      &#34;type&#34;: &#34;TRIAL&#34;,
-      &#34;name&#34;: &#34;Melanie Manley&#39;s Account&#34;
-    },
-    &#34;deployments&#34;: {
-      &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/deployments&#34;
-    },
-    &#34;source&#34;: &#34;Bluemix&#34;,
-    &#34;status&#34;: &#34;Active&#34;,
-    &#34;plan_id&#34;: &#34;3f6acf43-ede8-413a-ac69-f8af3bb0cbfe&#34;,
-    &#34;published_models&#34;: {
-      &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/published_models&#34;
-    },
-    &#34;organization_guid&#34;: &#34;411fda6f-bb89-452d-98f2-fb852198f154&#34;,
-    &#34;plan&#34;: &#34;lite&#34;,
-    &#34;space_guid&#34;: &#34;f6ef3ba5-8f4e-4614-a10f-9bb95b1f072f&#34;,
-    &#34;usage&#34;: {
-      &#34;capacity_units&#34;: {
-        &#34;current&#34;: 1,
-        &#34;limit&#34;: 180000000
-      },
-      &#34;expiration_date&#34;: &#34;2018-04-01T00:00:00.000Z&#34;,
-      &#34;model_count&#34;: {
-        &#34;current&#34;: 4,
-        &#34;limit&#34;: 200
-      },
-      &#34;deployment_count&#34;: {
-        &#34;current&#34;: 1,
-        &#34;limit&#34;: 5
-      },
-      &#34;computation_time&#34;: {
-        &#34;current&#34;: 0,
-        &#34;limit&#34;: 180000
-      },
-      &#34;prediction_count&#34;: {
-        &#34;current&#34;: 2,
-        &#34;limit&#34;: 5000
-      },
-      &#34;gpu_count&#34;: {
-        &#34;current&#34;: 0,
-        &#34;limit&#34;: 8
-      }
-    },
-    &#34;owner&#34;: {
-      &#34;country_code&#34;: &#34;DEU&#34;,
-      &#34;ibm_id&#34;: &#34;31000098BV&#34;,
-      &#34;beta_user&#34;: true,
-      &#34;user_id&#34;: &#34;8abd03a9-3b11-40c0-9a94-e87b48c79e07&#34;,
-      &#34;email&#34;: &#34;mjma@de.ibm.com&#34;
-    }
-  }
-}
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.2:-Publish-model">4.2: Publish model<a class="anchor-link" href="#4.2:-Publish-model">&#182;</a></h3>
+<h3 id="4.2:-Publish-the-model">4.2: Publish the model<a id="pubmodel" /><a class="anchor-link" href="#4.2:-Publish-the-model">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13368,7 +13314,8 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Publish-model-in-Watson-Machine-Learning-repository-on-Cloud.">Publish model in Watson Machine Learning repository on Cloud.<a class="anchor-link" href="#Publish-model-in-Watson-Machine-Learning-repository-on-Cloud.">&#182;</a></h4>
+<p>Publish the model in the Watson Machine Learning repository in the IBM Cloud.</p>
+
 </div>
 </div>
 </div>
@@ -13376,7 +13323,7 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Define model name, autor name and email.</p>
+<p>Define the model name, the author name and author email.</p>
 
 </div>
 </div>
@@ -13414,7 +13361,8 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.3:-Get-model-details">4.3: Get model details<a class="anchor-link" href="#4.3:-Get-model-details">&#182;</a></h3>
+<h3 id="4.3:-Get-model-details">4.3: Get model details<a id="getmodel" /><a class="anchor-link" href="#4.3:-Get-model-details">&#182;</a></h3><p>Run the code in the cell below to view information about your published model.</p>
+
 </div>
 </div>
 </div>
@@ -14030,7 +13978,8 @@ avg / total       0.95      0.94      0.95       360
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Get-all-models">Get all models<a class="anchor-link" href="#Get-all-models">&#182;</a></h4>
+<p>List all the models. Your model should be displayed in the list.</p>
+
 </div>
 </div>
 </div>
@@ -14076,7 +14025,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.3:-Load-model">4.3: Load model<a class="anchor-link" href="#4.3:-Load-model">&#182;</a></h3>
+<h3 id="4.4:-Load-a-model">4.4: Load a model<a id="loadmodel" /><a class="anchor-link" href="#4.4:-Load-a-model">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -14084,7 +14033,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this subsection you will learn how to load back saved model from specified instance of Watson Machine Learning.</p>
+<p>Run the code in the cell below to reload a saved model from a specified instance of Watson Machine Learning.</p>
 
 </div>
 </div>
@@ -14106,7 +14055,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can make predictions to check that model has been loaded correctly.</p>
+<p>You can run a test prediction to verify that that model has been loaded correctly.</p>
 
 </div>
 </div>
@@ -14159,7 +14108,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As you can see you are able to make predictions, so model is loaded back correctly. You have already learned how save to and load the model from Watson Machine Learning repository.</p>
+<p>As you can see you are able to make predictions, which means the model reloaded successfully. You now know how to save the model to, and load the model from, the Watson Machine Learning repository.</p>
 
 </div>
 </div>
@@ -14168,7 +14117,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.4:-Delete-model">4.4: Delete model<a class="anchor-link" href="#4.4:-Delete-model">&#182;</a></h3>
+<h3 id="4.5:-Delete-the-model">4.5: Delete the model<a id="deletemodel" /><a class="anchor-link" href="#4.5:-Delete-the-model">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -14176,7 +14125,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can delete published model from Watson Machine Learning repository using below code. The code is commented out at this stage since the model will be needed later for deployment.</p>
+<p>The code in the cell below deletes the published model from the Watson Machine Learning repository. The code is commented out at this stage because you need the model later for deployment.</p>
 
 </div>
 </div>
@@ -14207,7 +14156,14 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section you will learn how to create online scoring and to score a new data record by using the Watson Machine Learning Client.</p>
+<p>In this section you will learn how to use the watson-machine-learning-client to create online scoring and to score a new data record.</p>
+<ul>
+<li><a href="#modeldeploy">Create model deployment</a></li>
+<li><a href="#getdeploy">Get deployments</a></li>
+<li><a href="#score">Run a scoring request</a></li>
+<li><a href="#deletedeploy">Delete the deployment</a></li>
+<li><a href="#deletemodel">Delete the model</a></li>
+</ul>
 
 </div>
 </div>
@@ -14216,7 +14172,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="5.1:-Create-model-deployment">5.1: Create model deployment<a class="anchor-link" href="#5.1:-Create-model-deployment">&#182;</a></h3>
+<h3 id="5.1:-Create-the-model-deployment">5.1: Create the model deployment<a id="modeldeploy" /><a class="anchor-link" href="#5.1:-Create-the-model-deployment">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -14224,7 +14180,8 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Create-online-deployment-for-published-model">Create online deployment for published model<a class="anchor-link" href="#Create-online-deployment-for-published-model">&#182;</a></h4>
+<p>Create an online deployment for the published model.</p>
+
 </div>
 </div>
 </div>
@@ -14245,7 +14202,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Note</strong>: Here we use deployment url saved in published_model object. In next section we show how to retrive deployment url from Watson Mchine Learning instance.</p>
+<p><strong>Note</strong>: Here you use the deployment url saved in published_model object. In next section you will retrieve the deployment url from the Watson Mchine Learning instance.</p>
 
 </div>
 </div>
@@ -14254,7 +14211,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now you can print an online scoring endpoint.</p>
+<p>Now, print an online scoring endpoint.</p>
 
 </div>
 </div>
@@ -14296,16 +14253,18 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="5.2:-Get-deployments">5.2: Get deployments<a class="anchor-link" href="#5.2:-Get-deployments">&#182;</a></h3>
+<h3 id="5.2:-Get-deployments">5.2: Get deployments<a id="getdeploy" /><a class="anchor-link" href="#5.2:-Get-deployments">&#182;</a></h3><p>Print information about your deployments.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="n">deployments</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_details</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span class="c">#Output is hidden for Watson Studio Sharing</span>
+<span class="n">deployments</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_details</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">deployments</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
@@ -14314,143 +14273,12 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{
-  &#34;resources&#34;: [
-    {
-      &#34;metadata&#34;: {
-        &#34;created_at&#34;: &#34;2018-03-06T12:28:08.343Z&#34;,
-        &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/published_models/6ebd93c7-b902-4e04-9827-618b3b21eccc/deployments/2d8e45a3-a1e3-4395-b40e-0323e943bab4&#34;,
-        &#34;modified_at&#34;: &#34;2018-03-06T12:28:12.012Z&#34;,
-        &#34;guid&#34;: &#34;2d8e45a3-a1e3-4395-b40e-0323e943bab4&#34;
-      },
-      &#34;entity&#34;: {
-        &#34;scoring_url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/published_models/6ebd93c7-b902-4e04-9827-618b3b21eccc/deployments/2d8e45a3-a1e3-4395-b40e-0323e943bab4/online&#34;,
-        &#34;runtime_environment&#34;: &#34;python-3.5&#34;,
-        &#34;published_model&#34;: {
-          &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/published_models/6ebd93c7-b902-4e04-9827-618b3b21eccc&#34;,
-          &#34;name&#34;: &#34;LOCALLY created Digits prediction model&#34;,
-          &#34;author&#34;: {
-            &#34;email&#34;: &#34;ibm@ibm.com&#34;,
-            &#34;name&#34;: &#34;IBM&#34;
-          },
-          &#34;guid&#34;: &#34;6ebd93c7-b902-4e04-9827-618b3b21eccc&#34;,
-          &#34;created_at&#34;: &#34;2018-03-06T12:28:08.315Z&#34;
-        },
-        &#34;name&#34;: &#34;Deployment of locally created scikit model&#34;,
-        &#34;description&#34;: &#34;Model deployment&#34;,
-        &#34;status_details&#34;: {
-          &#34;status&#34;: &#34;DEPLOY_SUCCESS&#34;
-        },
-        &#34;type&#34;: &#34;online&#34;,
-        &#34;model_type&#34;: &#34;scikit-learn-0.19&#34;,
-        &#34;status&#34;: &#34;DEPLOY_SUCCESS&#34;,
-        &#34;deployed_version&#34;: {
-          &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/ml_assets/models/6ebd93c7-b902-4e04-9827-618b3b21eccc/versions/6fcede0b-4c32-4fa3-9bb7-4d740ee7b685&#34;,
-          &#34;guid&#34;: &#34;6fcede0b-4c32-4fa3-9bb7-4d740ee7b685&#34;
-        }
-      }
-    },
-    {
-      &#34;metadata&#34;: {
-        &#34;created_at&#34;: &#34;2018-02-19T15:11:40.938Z&#34;,
-        &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/published_models/c19ea489-1674-4883-bcbd-68f0089ef7dc/deployments/bb3cb635-7d08-4115-9592-113ff94aabde&#34;,
-        &#34;modified_at&#34;: &#34;2018-02-19T15:12:01.871Z&#34;,
-        &#34;guid&#34;: &#34;bb3cb635-7d08-4115-9592-113ff94aabde&#34;
-      },
-      &#34;entity&#34;: {
-        &#34;runtime_environment&#34;: &#34;spark-2.0&#34;,
-        &#34;status&#34;: &#34;COMPLETED&#34;,
-        &#34;name&#34;: &#34;Customer Churn Prediction&#34;,
-        &#34;description&#34;: &#34;Batch Deployment&#34;,
-        &#34;model_type&#34;: &#34;mllib-2.0&#34;,
-        &#34;deployed_version&#34;: {
-          &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/ml_assets/models/c19ea489-1674-4883-bcbd-68f0089ef7dc/versions/f23dbbcb-11a5-47ba-a109-78f0b6005475&#34;,
-          &#34;guid&#34;: &#34;f23dbbcb-11a5-47ba-a109-78f0b6005475&#34;
-        },
-        &#34;output&#34;: {
-          &#34;connection&#34;: {
-            &#34;secret_key&#34;: &#34;572f8527a5f16f56e3431d13a479d6a42ed1956a5cc610fb&#34;,
-            &#34;access_key&#34;: &#34;736554a6d2344da5b8430f186ac33030&#34;,
-            &#34;url&#34;: &#34;https://s3-api.us-geo.objectstorage.softlayer.net&#34;
-          },
-          &#34;target&#34;: {
-            &#34;fileformat&#34;: &#34;csv&#34;,
-            &#34;type&#34;: &#34;cloudobjectstorage&#34;,
-            &#34;filename&#34;: &#34;result.csv&#34;,
-            &#34;bucket&#34;: &#34;batch-job-4516bf71-147b-4215-b259-0266d1f41423&#34;,
-            &#34;firstlineheader&#34;: &#34;true&#34;
-          }
-        },
-        &#34;spark_service&#34;: {
-          &#34;credentials&#34;: {
-            &#34;tenant_id_full&#34;: &#34;cb2f9c82-58f4-46f2-9778-bfb6f75aebc1_f6ef3ba5-8f4e-4614-a10f-9bb95b1f072f&#34;,
-            &#34;plan&#34;: &#34;ibm.SparkService.PayGoPersonal&#34;,
-            &#34;tenant_secret&#34;: &#34;5eae9474-5095-4f05-a7e6-4b92b66b2737&#34;,
-            &#34;tenant_id&#34;: &#34;s778-bfb6f75aebc10f-9bb95b1f072f&#34;,
-            &#34;cluster_master_url&#34;: &#34;https://spark.bluemix.net&#34;,
-            &#34;instance_id&#34;: &#34;cb2f9c82-58f4-46f2-9778-bfb6f75aebc1&#34;
-          },
-          &#34;version&#34;: &#34;2.0&#34;
-        },
-        &#34;status_message&#34;: &#34;SUCCESS&#34;,
-        &#34;input&#34;: {
-          &#34;connection&#34;: {
-            &#34;secret_key&#34;: &#34;572f8527a5f16f56e3431d13a479d6a42ed1956a5cc610fb&#34;,
-            &#34;access_key&#34;: &#34;736554a6d2344da5b8430f186ac33030&#34;,
-            &#34;url&#34;: &#34;https://s3-api.us-geo.objectstorage.softlayer.net&#34;
-          },
-          &#34;source&#34;: {
-            &#34;fileformat&#34;: &#34;csv&#34;,
-            &#34;inferschema&#34;: 1,
-            &#34;type&#34;: &#34;cloudobjectstorage&#34;,
-            &#34;bucket&#34;: &#34;batch-job-4516bf71-147b-4215-b259-0266d1f41423&#34;,
-            &#34;filename&#34;: &#34;scoreInput.csv&#34;
-          }
-        },
-        &#34;published_model&#34;: {
-          &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/published_models/c19ea489-1674-4883-bcbd-68f0089ef7dc&#34;,
-          &#34;name&#34;: &#34;Customer Churn Model&#34;,
-          &#34;author&#34;: {},
-          &#34;guid&#34;: &#34;c19ea489-1674-4883-bcbd-68f0089ef7dc&#34;,
-          &#34;created_at&#34;: &#34;2018-02-19T15:11:40.900Z&#34;
-        },
-        &#34;status_details&#34;: {
-          &#34;startDateTime&#34;: &#34;2018-02-19T15:11:41Z&#34;,
-          &#34;logFile&#34;: &#34;SubmissionID = driver-20180219091143-0433-c4a6c11c-1e29-4e59-8ed2-db2aa317a435&#34;,
-          &#34;completionCode&#34;: &#34;200&#34;,
-          &#34;status&#34;: &#34;COMPLETED&#34;,
-          &#34;queueDateTime&#34;: &#34;2018-02-19T15:12:01Z&#34;,
-          &#34;message&#34;: &#34;SUCCESS&#34;
-        },
-        &#34;type&#34;: &#34;batch&#34;
-      }
-    }
-  ],
-  &#34;count&#34;: 2
-}
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can get deployment_url by parsing deployment details for last deployed model.</p>
+<p>You can get the deployment_url by parsing the deployment details for last deployed model.</p>
 
 </div>
 </div>
@@ -14492,15 +14320,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="5.3:-Score">5.3: Score<a class="anchor-link" href="#5.3:-Score">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You can use below method to do test scoring request against deployed model.</p>
+<h3>5.3: Run a scoring request<a id="score"></h3>
 
 </div>
 </div>
@@ -14509,7 +14329,16 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Action</strong>: Prepare scoring payload with records to score.</p>
+<p>Run a test scoring request against the deployed model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>Action</strong>: Prepare the scoring payload with records to score.</p>
 
 </div>
 </div>
@@ -14531,7 +14360,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Use <code>client.deployments.score()</code> method to run scoring.</p>
+<p>Use the <code>client.deployments.score()</code> method to run scoring, and print the output.</p>
 
 </div>
 </div>
@@ -14596,7 +14425,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="5.4:-Delete-deployment">5.4: Delete deployment<a class="anchor-link" href="#5.4:-Delete-deployment">&#182;</a></h3>
+<h3 id="5.4:-Delete-the-deployment">5.4: Delete the deployment<a id="deletedeploy" /><a class="anchor-link" href="#5.4:-Delete-the-deployment">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -14604,7 +14433,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Use the following method to delete deployment.</p>
+<p>Use the following method to delete the deployment.</p>
 
 </div>
 </div>
@@ -14626,7 +14455,7 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model                     2
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can check depoyments by running <code>list</code> method.</p>
+<p>Run <code>list</code> to verify that the deployment is not displayed in the list and has been deleted.</p>
 
 </div>
 </div>
@@ -14669,7 +14498,8 @@ bb3cb635-7d08-4115-9592-113ff94aabde  Customer Churn Prediction  batch  2018-02-
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="5.5:-Delete-model">5.5: Delete model<a class="anchor-link" href="#5.5:-Delete-model">&#182;</a></h3>
+<h3 id="5.5:-Delete-the-model">5.5: Delete the model<a id="deletemodel" /><a class="anchor-link" href="#5.5:-Delete-the-model">&#182;</a></h3><p>Run the code in the cell below to delete your model.</p>
+
 </div>
 </div>
 </div>
@@ -14690,7 +14520,7 @@ bb3cb635-7d08-4115-9592-113ff94aabde  Customer Churn Prediction  batch  2018-02-
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You can check your stored models by running below <code>list</code> method.</p>
+<p>Run <code>list</code> to verify that the model has been deleted.</p>
 
 </div>
 </div>
@@ -14745,7 +14575,9 @@ d9083d24-67f6-418e-869d-4fe344f7d9e5  Customer Churn Model         2018-02-20T07
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You successfully completed this notebook! You learned how to use scikit-learn machine learning as well as Watson Machine Learning for model creation and deployment. Check out our <em><a href="https://console.ng.bluemix.net/docs/services/PredictiveModeling/index.html?pos=2">Online Documentation</a></em> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
+<p>You have successfully completed this notebook! 
+You learned how to use scikit-learn machine learning as well as Watson Machine Learning for model creation and deployment. 
+Check out our <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html">Online Documentation</a> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
 
 </div>
 </div>
