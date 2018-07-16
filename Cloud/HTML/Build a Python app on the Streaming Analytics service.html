@@ -11761,6 +11761,7 @@ font-family: 'ibm-plex-sans', 'Helvetica Neue for IBM', 'Helvetica Neue', Helvet
 
 .notebook_app {
 font-size: 0.875rem;
+background-color: transparent;
 }
 
 .notebook_app .container {
@@ -11822,6 +11823,7 @@ background-color: transparent;
 color: #5a6872;
 text-align: right;
 margin-right: 3em;
+line-height: normal;
 }
 
 .notebook_app .navbar-btn.btn-xs {
@@ -11861,20 +11863,37 @@ padding-left: 0;
 }
 
 .notebook_app .btn-group button {
-margin-right: 0.675rem;
-border: none;
-border-radius: 0;
-background-color: transparent;
-padding: 0;
-border-width: 0;
-fill: #3d70b2;
+  margin-right: 0.675rem;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  padding: 0;
+  border-width: 0;
+  font: inherit;
+  fill: #3d70b2;
+  color: #5a6872;
 }
 
 .notebook_app .btn-group button:hover,
 .notebook_app .btn-group button:active,
 .notebook_app .btn-group button:focus {
-fill: #5596e6;
-background-color: transparent;
+  fill: #5596e6;
+  background-color: transparent;
+}
+
+.notebook_app .btn .toolbar-btn-label {
+  vertical-align: middle;
+}
+
+.notebook_app .toolbar .btn-group .btn .fa {
+  color: #3d70b2;
+  font-size: 1rem;
+}
+
+.notebook_app .toolbar .btn-group .btn:hover .fa,
+.notebook_app .toolbar .btn-group .btn:active .fa,
+.notebook_app .toolbar .btn-group .btn:focus .fa {
+  color: #5596e6;
 }
 
 /*ICONS*/
@@ -11902,7 +11921,7 @@ position: relative;
 .notebook_app .toolbar_select::after {
 position: absolute;
 display: block;
-bottom: 0.725rem;
+bottom: 0.575rem;
 right: 1rem;
 width: 0; 
 height: 0; 
@@ -11931,7 +11950,7 @@ margin: 0;
 padding: 0;
 padding-left: 0.5rem;
 padding-right: 2rem;
-height: 2rem;
+height: 1.68rem;
 text-overflow: ellipsis;
 cursor: pointer;
 }
@@ -12012,6 +12031,19 @@ align-items: center;
 align-items: center;
 }
 
+.notebook_app #notebook-container .celltoolbar .tags-input input {
+border: 0;
+background-color: rgba(60, 112, 178, .1);
+font-size: 0.875rem;
+height: 1.68rem;
+border: 1px solid transparent;
+box-sizing: border-box;
+}
+
+.notebook_app #notebook-container .celltoolbar .tags-input input:focus {
+border-color: #3d70b2;
+}
+
 .notebook_app #notebook-container .btn-xs {
 padding: 0 0.5rem;
 line-height: 1;
@@ -12020,7 +12052,7 @@ font-weight: 600;
 text-decoration: none;
 transition: all .2s ease-in-out;
 cursor: pointer;
-height: 2rem;
+height: 1.68rem;
 border: 0.125rem solid #3d70b2;
 background-color: transparent;
 }
@@ -12045,6 +12077,10 @@ padding-left: 0.5rem;
 line-height: 1.5;
 background-color: #dfe3e6;
 border-radius: 0.9375rem;
+}
+
+.notebook_app #notebook-container .cell-tag:last-child::after {
+display: none;
 }
 
 .notebook_app #notebook-container .cell-tag .remove-tag-btn {
@@ -12208,6 +12244,13 @@ color: #5aa700;
 border: none;
 }
 
+#notification_area,
+#notification_notebook,
+#notification_kernel,
+#notification_trusted {
+line-height: normal;
+}
+
 #notification_trusted {
 background-color: transparent;
 padding: 0;
@@ -12219,6 +12262,12 @@ line-height: normal;
 font-size: 0.875rem;
 color: #3d70b2;
 border: none;
+}
+
+#notification_trusted:hover,
+#notification_trusted:active,
+#notification_trusted:focus {
+  color: #5596e6;
 }
 
 /*
@@ -12597,17 +12646,6 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div style="background:#F5F7FA; height:100px; padding: 2em; font-size:14px;">
-<span style="font-size:18px;color:#152935;">Want to do more?</span><span style="border: 1px solid #3d70b2;padding: 15px;float:right;margin-right:40px; color:#3d70b2; "><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
-<span style="color:#5A6872;"> Try out this notebook with your free trial of IBM Watson Studio.</span>
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Build-a-Python-app-on-the-Streaming-Analytics-service">Build a Python app on the Streaming Analytics service<a class="anchor-link" href="#Build-a-Python-app-on-the-Streaming-Analytics-service">&#182;</a></h1>
 </div>
 </div>
@@ -12645,7 +12683,7 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Tip:</strong> If you leave the notebook or you are not prompted after running a cell, click <strong>Kernel -&gt; Restart</strong> on the menu bar to rerun the cell.</p>
 <p>This notebook runs in a Python 3.5 environment with Spark 2.1. You should be familiar with Python, <a href="https://console.ng.bluemix.net/docs/services/StreamingAnalytics/index.html#gettingstarted" target="_blank" rel="noopener noreferrer">
-streaming analytics</a>, and <a href="http://datascience.ibm.com/docs/content/getting-started/quick-overview.html#notebooks" target="_blank" rel="noopener noreferrer">
+streaming analytics</a>, and <a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/notebooks-parent.html" target="_blank" rel="noopener noreferrer">
 Jupyter Notebooks</a>.</p>
 
 </div>
@@ -12957,8 +12995,22 @@ You should see the strings <code>Hello</code> and <code>World!</code> printed in
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Copyright © 2017, 2018 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+<p><hr>
+Copyright © 2017, 2018 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
+<span style="font-size:18px;color:#152935;">Love this notebook? </span>
+<span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
+<span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+</div>
 </div>
 </div>
 </div>
