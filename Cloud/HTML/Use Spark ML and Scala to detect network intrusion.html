@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Use Spark ML and Python to detect intrusion</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Use Spark ML and Scala to detect network intrusion</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -12654,7 +12654,7 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <table style="border: none" align="left">
    <tr style="border: none">
-      <th style="border: none"><font face="verdana" size="4" color="black"><b>Use Spark ML and Python to detect network intrusions</b></font></th>
+      <th style="border: none"><font face="verdana" size="4" color="black"><b>Use Spark ML and Scala to detect network intrusions</b></font></th>
       <th style="border: none"><img src="https://github.com/pmservice/customer-satisfaction-prediction/blob/master/app/static/images/ml_icon_gray.png?raw=true" alt="Watson Machine Learning icon" height="40" width="40"></th>
    </tr> 
    <tr style="border: none">
@@ -12670,23 +12670,22 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This notebook shows you how to easily build two classification models using the Spark Machine Learning (ML) library to detect network intrusions. It uses the Random Forest (RF) classifier and the Multilayer Perceptron (MLP) classifier to build the required algorithms.</p>
 <p><a href="http://kdd.ics.uci.edu/databases/kddcup99/kddcup99.html">UCI kddcup data</a> (743MB) is used in this notebook. This data set can be audited and provides intrusions simulated in a military network environment. It was originally used for the <strong>The Third International Knowledge Discovery and Data Mining Tools Competition</strong> organized for <strong>KDD-99</strong>.</p>
-<p>This notebook runs on Python 3.5 with Spark 2.3 in Watson Studio Spark Environments.</p>
+<p>This notebook runs on Scala 2.11 with Spark 2.3 and it was tested with Watson Studio Spark Environments.</p>
 <h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><ol>
 <li><a href="#download">Download data</a><br></li>
 <li><a href="#load">Load and prepare data</a><br></li>
 <li><a href="#build">Build the models</a><br>
  3.1 <a href="#rf">Set up the Random Forest model</a><br>
  3.2 <a href="#mlp">Set up the Multilayer Perceptron model</a><br></li>
-<li><a href="#save">Saving models</a><br></li>
 <li><a href="#summary">Summary and next steps</a>  </li>
 </ol>
 <p><a id="download"></a></p>
-<h2 id="1.-Download-data-">1. Download data <a id="download" /><a class="anchor-link" href="#1.-Download-data-">&#182;</a></h2><p>First, download the prerequisite data set from the Watson Studio Community page:</p>
+<h2 id="1.-Download-data">1. Download data<a class="anchor-link" href="#1.-Download-data">&#182;</a></h2><p>First, download the prerequisite data set from the Watson Studio Community page:</p>
 <ol>
 <li>Open the Community page. </li>
 <li>Search for <code>KDD</code> and open the <strong>UCI: KDD Cup 1999 Data</strong> data set.</li>
-<li>Click on the link button to copy the URL.</li>
-<li>Assign the copied URL to the variable <code>url</code>. </li>
+<li>Click the link button to copy the URL.</li>
+<li>Assign the copied URL to the variable <code>url</code>.</li>
 </ol>
 
 </div>
@@ -12697,9 +12696,11 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;LINK-TO-DATA-SET-URL&quot;</span>
-<span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;./kddcup.zip&quot;</span>
-<span class="o">!</span>wget <span class="nv">$url</span> -O <span class="nv">$filename</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">sys.process._</span>
+
+<span class="k">val</span> <span class="n">url</span> <span class="k">=</span> <span class="s">&quot;LINK-TO-DATA-SET-URL&quot;</span>
+<span class="k">val</span> <span class="n">filename</span> <span class="k">=</span> <span class="s">&quot;./kddcup.zip&quot;</span>
+<span class="s">s&quot;wget </span><span class="si">$url</span><span class="s"> -O </span><span class="si">$filename</span><span class="s">&quot;</span><span class="o">.!</span>
 </pre></div>
 
 </div>
@@ -12711,7 +12712,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create a <code>kddcup</code> directory and <strong>unzip</strong> the file that you downloaded to the directory:</p>
+<p>Create a <code>kddcup</code> directory and <strong>unzip</strong> the file that you downloaded:</p>
 
 </div>
 </div>
@@ -12721,9 +12722,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># !rm -rf kddcup</span>
-<span class="o">!</span>mkdir kddcup
-<span class="o">!</span>unzip kddcup.zip -d ./kddcup/
+<div class=" highlight hl-scala"><pre><span></span><span class="s">&quot;mkdir ./kddcup&quot;</span><span class="o">.!</span>
+<span class="s">&quot;unzip ./kddcup.zip -d ./kddcup/&quot;</span><span class="o">.!</span>
 </pre></div>
 
 </div>
@@ -12745,7 +12745,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>ls ./kddcup
+<div class=" highlight hl-scala"><pre><span></span><span class="s">&quot;ls ./kddcup/&quot;</span><span class="o">.!</span>
 </pre></div>
 
 </div>
@@ -12757,7 +12757,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To use the entire data set <code>kddcup.data</code> (743 MB), run <strong>gunzip</strong> to unzip the file to the same directory:</p>
+<p>To use the entire data set <code>kddcup.data</code> (743 MB) run <strong>gunzip</strong> to unzip the file to the same directory:</p>
 
 </div>
 </div>
@@ -12767,7 +12767,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>gunzip ./kddcup/kddcup.data.gz -d ./kddcup/kddcup.data
+<div class=" highlight hl-scala"><pre><span></span><span class="s">&quot;gunzip ./kddcup/kddcup.data.gz -d ./kddcup/kddcup.data&quot;</span><span class="o">.!</span>
 </pre></div>
 
 </div>
@@ -12787,16 +12787,19 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="k">import</span> <span class="n">SparkSession</span>
-<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span>\
-  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;csv&#39;</span><span class="p">)</span>\
-  <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;inferSchema&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>\
-  <span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;./kddcup/kddcup.data&quot;</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.sql.SparkSession</span>
+
+<span class="k">val</span> <span class="n">spark</span> <span class="k">=</span> <span class="nc">SparkSession</span><span class="o">.</span>
+    <span class="n">builder</span><span class="o">().</span>
+    <span class="n">getOrCreate</span><span class="o">()</span>
+<span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span>
+    <span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&quot;csv&quot;</span><span class="o">).</span>
+    <span class="n">option</span><span class="o">(</span><span class="s">&quot;inferSchema&quot;</span><span class="o">,</span> <span class="s">&quot;true&quot;</span><span class="o">).</span>
+    <span class="n">load</span><span class="o">(</span><span class="s">&quot;./kddcup/kddcup.data&quot;</span><span class="o">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -12828,6 +12831,34 @@ only showing top 5 rows
 </div>
 </div>
 
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>spark = org.apache.spark.sql.SparkSession@2510b661
+df = [_c0: int, _c1: string ... 40 more fields]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[_c0: int, _c1: string ... 40 more fields]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -12843,10 +12874,10 @@ only showing top 5 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">printSchema</span>
 </pre></div>
 
 </div>
@@ -12917,10 +12948,10 @@ only showing top 5 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;_c41&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;_c41&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;_c41&quot;</span><span class="o">).</span><span class="n">groupBy</span><span class="o">(</span><span class="s">&quot;_c41&quot;</span><span class="o">).</span><span class="n">count</span><span class="o">().</span><span class="n">show</span><span class="o">()</span>
 </pre></div>
 
 </div>
@@ -12943,8 +12974,8 @@ only showing top 5 rows
 |    warezmaster.|     20|
 |          smurf.|2807886|
 |            pod.|    264|
-|           nmap.|   2316|
 |           imap.|     12|
+|           nmap.|   2316|
 |   guess_passwd.|     53|
 |        ipsweep.|  12481|
 |      portsweep.|  10413|
@@ -12982,40 +13013,40 @@ only showing top 20 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">&quot;attack&quot;</span><span class="p">)</span>
-<span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;SELECT *, </span>
-<span class="s2">    CASE _c41 </span>
-<span class="s2">        WHEN &#39;back.&#39; THEN &#39;dos&#39;</span>
-<span class="s2">        WHEN &#39;buffer_overflow.&#39; THEN &#39;u2r&#39;</span>
-<span class="s2">        WHEN &#39;ftp_write.&#39; THEN &#39;r2l&#39;</span>
-<span class="s2">        WHEN &#39;guess_passwd.&#39; THEN &#39;r2l&#39;</span>
-<span class="s2">        WHEN &#39;imap.&#39; THEN &#39;r2l&#39;</span>
-<span class="s2">        WHEN &#39;ipsweep.&#39; THEN &#39;probe&#39;</span>
-<span class="s2">        WHEN &#39;land.&#39; THEN &#39;dos&#39;</span>
-<span class="s2">        WHEN &#39;loadmodule.&#39; THEN &#39;u2r&#39;</span>
-<span class="s2">        WHEN &#39;multihop.&#39; THEN &#39;r2l&#39;</span>
-<span class="s2">        WHEN &#39;neptune.&#39; THEN &#39;dos&#39;</span>
-<span class="s2">        WHEN &#39;nmap.&#39; THEN &#39;probe&#39;</span>
-<span class="s2">        WHEN &#39;perl.&#39; THEN &#39;u2r&#39;</span>
-<span class="s2">        WHEN &#39;phf.&#39; THEN &#39;r2l&#39;</span>
-<span class="s2">        WHEN &#39;pod.&#39; THEN &#39;dos&#39;</span>
-<span class="s2">        WHEN &#39;portsweep.&#39; THEN &#39;probe&#39;</span>
-<span class="s2">        WHEN &#39;rootkit.&#39; THEN &#39;u2r&#39;</span>
-<span class="s2">        WHEN &#39;satan.&#39; THEN &#39;probe&#39;</span>
-<span class="s2">        WHEN &#39;smurf.&#39; THEN &#39;dos&#39;</span>
-<span class="s2">        WHEN &#39;spy.&#39; THEN &#39;r2l&#39;</span>
-<span class="s2">        WHEN &#39;teardrop.&#39; THEN &#39;dos&#39;</span>
-<span class="s2">        WHEN &#39;warezclient.&#39; THEN &#39;r2l&#39;</span>
-<span class="s2">        WHEN &#39;warezmaster.&#39; THEN &#39;r2l&#39;</span>
-<span class="s2">        ELSE &#39;normal&#39;</span>
-<span class="s2">END AS label_s </span>
-<span class="s2">FROM attack&quot;&quot;&quot;</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="o">(</span><span class="s">&quot;attack&quot;</span><span class="o">)</span>
 
-<span class="n">labeled</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-<span class="n">labeled</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;label_s&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;label_s&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="k">val</span> <span class="n">query</span> <span class="k">=</span> <span class="s">&quot;&quot;&quot;SELECT *, </span>
+<span class="s">    CASE _c41 </span>
+<span class="s">        WHEN &#39;back.&#39; THEN &#39;dos&#39;</span>
+<span class="s">        WHEN &#39;buffer_overflow.&#39; THEN &#39;u2r&#39;</span>
+<span class="s">        WHEN &#39;ftp_write.&#39; THEN &#39;r2l&#39;</span>
+<span class="s">        WHEN &#39;guess_passwd.&#39; THEN &#39;r2l&#39;</span>
+<span class="s">        WHEN &#39;imap.&#39; THEN &#39;r2l&#39;</span>
+<span class="s">        WHEN &#39;ipsweep.&#39; THEN &#39;probe&#39;</span>
+<span class="s">        WHEN &#39;land.&#39; THEN &#39;dos&#39;</span>
+<span class="s">        WHEN &#39;loadmodule.&#39; THEN &#39;u2r&#39;</span>
+<span class="s">        WHEN &#39;multihop.&#39; THEN &#39;r2l&#39;</span>
+<span class="s">        WHEN &#39;neptune.&#39; THEN &#39;dos&#39;</span>
+<span class="s">        WHEN &#39;nmap.&#39; THEN &#39;probe&#39;</span>
+<span class="s">        WHEN &#39;perl.&#39; THEN &#39;u2r&#39;</span>
+<span class="s">        WHEN &#39;phf.&#39; THEN &#39;r2l&#39;</span>
+<span class="s">        WHEN &#39;pod.&#39; THEN &#39;dos&#39;</span>
+<span class="s">        WHEN &#39;portsweep.&#39; THEN &#39;probe&#39;</span>
+<span class="s">        WHEN &#39;rootkit.&#39; THEN &#39;u2r&#39;</span>
+<span class="s">        WHEN &#39;satan.&#39; THEN &#39;probe&#39;</span>
+<span class="s">        WHEN &#39;smurf.&#39; THEN &#39;dos&#39;</span>
+<span class="s">        WHEN &#39;spy.&#39; THEN &#39;r2l&#39;</span>
+<span class="s">        WHEN &#39;teardrop.&#39; THEN &#39;dos&#39;</span>
+<span class="s">        WHEN &#39;warezclient.&#39; THEN &#39;r2l&#39;</span>
+<span class="s">        WHEN &#39;warezmaster.&#39; THEN &#39;r2l&#39;</span>
+<span class="s">        ELSE &#39;normal&#39;</span>
+<span class="s">END AS label_s </span>
+<span class="s">FROM attack&quot;&quot;&quot;</span>
+<span class="k">val</span> <span class="n">labeled</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="o">(</span><span class="n">query</span><span class="o">)</span>
+<span class="n">labeled</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;label_s&quot;</span><span class="o">).</span><span class="n">groupBy</span><span class="o">(</span><span class="s">&quot;label_s&quot;</span><span class="o">).</span><span class="n">count</span><span class="o">().</span><span class="n">show</span><span class="o">()</span>
 </pre></div>
 
 </div>
@@ -13046,6 +13077,73 @@ only showing top 20 rows
 </div>
 </div>
 
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>query = 
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>        WHEN &#39;warez...
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>SELECT *, 
+    CASE _c41 
+        WHEN &#39;back.&#39; THEN &#39;dos&#39;
+        WHEN &#39;buffer_overflow.&#39; THEN &#39;u2r&#39;
+        WHEN &#39;ftp_write.&#39; THEN &#39;r2l&#39;
+        WHEN &#39;guess_passwd.&#39; THEN &#39;r2l&#39;
+        WHEN &#39;imap.&#39; THEN &#39;r2l&#39;
+        WHEN &#39;ipsweep.&#39; THEN &#39;probe&#39;
+        WHEN &#39;land.&#39; THEN &#39;dos&#39;
+        WHEN &#39;loadmodule.&#39; THEN &#39;u2r&#39;
+        WHEN &#39;multihop.&#39; THEN &#39;r2l&#39;
+        WHEN &#39;neptune.&#39; THEN &#39;dos&#39;
+        WHEN &#39;nmap.&#39; THEN &#39;probe&#39;
+        WHEN &#39;perl.&#39; THEN &#39;u2r&#39;
+        WHEN &#39;phf.&#39; THEN &#39;r2l&#39;
+        WHEN &#39;pod.&#39; THEN &#39;dos&#39;
+        WHEN &#39;portsweep.&#39; THEN &#39;probe&#39;
+        WHEN &#39;rootkit.&#39; THEN &#39;u2r&#39;
+        WHEN &#39;satan.&#39; THEN &#39;probe&#39;
+        WHEN &#39;smurf.&#39; THEN &#39;dos&#39;
+        WHEN &#39;spy.&#39; THEN &#39;r2l&#39;
+        WHEN &#39;teardrop.&#39; THEN &#39;dos&#39;
+        WHEN &#39;warezclient.&#39; THEN &#39;r2l&#39;
+        WHEN &#39;warezmaster.&#39; THEN &#39;r2l&#39;
+        ELSE &#39;normal&#39;
+END AS label_s 
+FROM attack</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13054,82 +13152,13 @@ only showing top 20 rows
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now, build a pipeline to prepare data before building models.</p>
+<p>Now, build a pipeline to prepare the data before building the models.</p>
 <p><strong>Data preparation pipeline:</strong></p>
 <ul>
-<li>StringIndexers: <code>c1</code>, <code>c2</code>, and <code>c3</code> are categorical strings. They must be indexed first.</li>
+<li>StringIndexers: c1, c2, and c3 are categorical strings. They must be indexed first.</li>
 <li>OneHotEncoders: When the categorical strings have been indexed, you can use one-hot encoding to the indexed columns.</li>
 <li>VectorAssembler: Include the wanted columns and assemble them as a feature vector.</li>
-<li>labelIndexer: Another <code>StringIndexer</code> is used to index the <code>label_s</code> column to output it as <code>label</code> column.</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="k">import</span> <span class="n">IndexToString</span><span class="p">,</span> <span class="n">StringIndexer</span><span class="p">,</span> <span class="n">VectorAssembler</span><span class="p">,</span> <span class="n">OneHotEncoder</span>
-<span class="kn">from</span> <span class="nn">pyspark.ml</span> <span class="k">import</span> <span class="n">Pipeline</span>
-<span class="n">indexer1</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&quot;_c1&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;i_c1&quot;</span><span class="p">)</span>
-<span class="n">indexer2</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&quot;_c2&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;i_c2&quot;</span><span class="p">)</span>
-<span class="n">indexer3</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&quot;_c3&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;i_c3&quot;</span><span class="p">)</span>
-
-<span class="n">encoder1</span> <span class="o">=</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&quot;i_c1&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;v_c1&quot;</span><span class="p">)</span>
-<span class="n">encoder2</span> <span class="o">=</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&quot;i_c2&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;v_c2&quot;</span><span class="p">)</span>
-<span class="n">encoder3</span> <span class="o">=</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&quot;i_c3&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;v_c3&quot;</span><span class="p">)</span>
-
-<span class="n">featurenames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;_c0&quot;</span><span class="p">,</span> <span class="s2">&quot;v_c1&quot;</span><span class="p">,</span> <span class="s2">&quot;v_c2&quot;</span><span class="p">,</span> <span class="s2">&quot;v_c3&quot;</span><span class="p">,</span> <span class="s2">&quot;_c4&quot;</span><span class="p">,</span> <span class="s2">&quot;_c5&quot;</span><span class="p">,</span> <span class="s2">&quot;_c6&quot;</span><span class="p">,</span> 
-                         <span class="s2">&quot;_c7&quot;</span><span class="p">,</span> <span class="s2">&quot;_c8&quot;</span><span class="p">,</span> <span class="s2">&quot;_c9&quot;</span><span class="p">,</span> <span class="s2">&quot;_c10&quot;</span><span class="p">,</span> <span class="s2">&quot;_c11&quot;</span><span class="p">,</span> <span class="s2">&quot;_c12&quot;</span><span class="p">,</span> <span class="s2">&quot;_c13&quot;</span><span class="p">,</span> 
-                         <span class="s2">&quot;_c14&quot;</span><span class="p">,</span> <span class="s2">&quot;_c15&quot;</span><span class="p">,</span> <span class="s2">&quot;_c16&quot;</span><span class="p">,</span> <span class="s2">&quot;_c17&quot;</span><span class="p">,</span> <span class="s2">&quot;_c18&quot;</span><span class="p">,</span> <span class="s2">&quot;_c19&quot;</span><span class="p">,</span>
-                         <span class="s2">&quot;_c22&quot;</span><span class="p">,</span> <span class="s2">&quot;_c23&quot;</span><span class="p">,</span> <span class="s2">&quot;_c24&quot;</span><span class="p">,</span> <span class="s2">&quot;_c25&quot;</span><span class="p">,</span> <span class="s2">&quot;_c26&quot;</span><span class="p">,</span> <span class="s2">&quot;_c27&quot;</span><span class="p">,</span> 
-                         <span class="s2">&quot;_c28&quot;</span><span class="p">,</span> <span class="s2">&quot;_c29&quot;</span><span class="p">,</span> <span class="s2">&quot;_c30&quot;</span><span class="p">,</span> <span class="s2">&quot;_c31&quot;</span><span class="p">,</span> <span class="s2">&quot;_c32&quot;</span><span class="p">,</span> <span class="s2">&quot;_c33&quot;</span><span class="p">,</span> <span class="s2">&quot;_c34&quot;</span><span class="p">,</span> 
-                         <span class="s2">&quot;_c35&quot;</span><span class="p">,</span> <span class="s2">&quot;_c36&quot;</span><span class="p">,</span> <span class="s2">&quot;_c37&quot;</span><span class="p">,</span> <span class="s2">&quot;_c38&quot;</span><span class="p">,</span> <span class="s2">&quot;_c39&quot;</span><span class="p">,</span> <span class="s2">&quot;_c40&quot;</span><span class="p">]</span>
-<span class="n">assembler</span> <span class="o">=</span> <span class="n">VectorAssembler</span><span class="p">(</span><span class="n">inputCols</span><span class="o">=</span><span class="n">featurenames</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;features&quot;</span><span class="p">)</span>
-
-<span class="n">labelIndexer</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">(</span><span class="n">inputCol</span><span class="o">=</span><span class="s2">&quot;label_s&quot;</span><span class="p">,</span> <span class="n">outputCol</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">)</span>
-
-<span class="n">pipeline_prepare</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">stages</span><span class="o">=</span><span class="p">[</span><span class="n">indexer1</span><span class="p">,</span><span class="n">indexer2</span><span class="p">,</span><span class="n">indexer3</span><span class="p">,</span><span class="n">encoder1</span><span class="p">,</span><span class="n">encoder2</span><span class="p">,</span><span class="n">encoder3</span><span class="p">,</span><span class="n">assembler</span><span class="p">,</span><span class="n">labelIndexer</span><span class="p">])</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You can now fit and transform the data to train the model.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pipeline_prepare</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">labeled</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">labeled</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="build"></a></p>
-<h2 id="3.-Build-the-models">3. Build the models<a class="anchor-link" href="#3.-Build-the-models">&#182;</a></h2><p>This section describes how to build the models. Because of the large amount of data, we can use 60/40 split to mitigate overfitting:</p>
-<ul>
-<li>60% for the <code>training</code> set</li>
-<li>40% for the <code>testing</code> set</li>
+<li>labelIndexer: Another StringIndexer is used to index the label_s column to output it as label column.</li>
 </ul>
 
 </div>
@@ -13140,10 +13169,109 @@ only showing top 20 rows
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">randomSplit</span><span class="p">([</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">])</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.feature.</span><span class="o">{</span><span class="nc">IndexToString</span><span class="o">,</span> <span class="nc">StringIndexer</span><span class="o">,</span> <span class="nc">VectorAssembler</span><span class="o">,</span> <span class="nc">OneHotEncoder</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.ml.Pipeline</span>
+
+<span class="k">val</span> <span class="n">indexer1</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;_c1&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;i_c1&quot;</span><span class="o">)</span>
+<span class="c1">//   .setHandleInvalid(&quot;skip&quot;)</span>
+
+<span class="k">val</span> <span class="n">indexer2</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;_c2&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;i_c2&quot;</span><span class="o">)</span>
+<span class="c1">//   .setHandleInvalid(&quot;skip&quot;)</span>
+
+<span class="k">val</span> <span class="n">indexer3</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;_c3&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;i_c3&quot;</span><span class="o">)</span>
+<span class="c1">//   .setHandleInvalid(&quot;skip&quot;)</span>
+
+<span class="k">val</span> <span class="n">encoder1</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">OneHotEncoder</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;i_c1&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;v_c1&quot;</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">encoder2</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">OneHotEncoder</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;i_c2&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;v_c2&quot;</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">encoder3</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">OneHotEncoder</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;i_c3&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;v_c3&quot;</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">featurenames</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="s">&quot;_c0&quot;</span><span class="o">,</span> <span class="s">&quot;v_c1&quot;</span><span class="o">,</span> <span class="s">&quot;v_c2&quot;</span><span class="o">,</span> <span class="s">&quot;v_c3&quot;</span><span class="o">,</span> <span class="s">&quot;_c4&quot;</span><span class="o">,</span> <span class="s">&quot;_c5&quot;</span><span class="o">,</span> <span class="s">&quot;_c6&quot;</span><span class="o">,</span> 
+                         <span class="s">&quot;_c7&quot;</span><span class="o">,</span> <span class="s">&quot;_c8&quot;</span><span class="o">,</span> <span class="s">&quot;_c9&quot;</span><span class="o">,</span> <span class="s">&quot;_c10&quot;</span><span class="o">,</span> <span class="s">&quot;_c11&quot;</span><span class="o">,</span> <span class="s">&quot;_c12&quot;</span><span class="o">,</span> <span class="s">&quot;_c13&quot;</span><span class="o">,</span> 
+                         <span class="s">&quot;_c14&quot;</span><span class="o">,</span> <span class="s">&quot;_c15&quot;</span><span class="o">,</span> <span class="s">&quot;_c16&quot;</span><span class="o">,</span> <span class="s">&quot;_c17&quot;</span><span class="o">,</span> <span class="s">&quot;_c18&quot;</span><span class="o">,</span> <span class="s">&quot;_c19&quot;</span><span class="o">,</span>
+                         <span class="s">&quot;_c22&quot;</span><span class="o">,</span> <span class="s">&quot;_c23&quot;</span><span class="o">,</span> <span class="s">&quot;_c24&quot;</span><span class="o">,</span> <span class="s">&quot;_c25&quot;</span><span class="o">,</span> <span class="s">&quot;_c26&quot;</span><span class="o">,</span> <span class="s">&quot;_c27&quot;</span><span class="o">,</span> 
+                         <span class="s">&quot;_c28&quot;</span><span class="o">,</span> <span class="s">&quot;_c29&quot;</span><span class="o">,</span> <span class="s">&quot;_c30&quot;</span><span class="o">,</span> <span class="s">&quot;_c31&quot;</span><span class="o">,</span> <span class="s">&quot;_c32&quot;</span><span class="o">,</span> <span class="s">&quot;_c33&quot;</span><span class="o">,</span> <span class="s">&quot;_c34&quot;</span><span class="o">,</span> 
+                         <span class="s">&quot;_c35&quot;</span><span class="o">,</span> <span class="s">&quot;_c36&quot;</span><span class="o">,</span> <span class="s">&quot;_c37&quot;</span><span class="o">,</span> <span class="s">&quot;_c38&quot;</span><span class="o">,</span> <span class="s">&quot;_c39&quot;</span><span class="o">,</span> <span class="s">&quot;_c40&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">assembler</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">VectorAssembler</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setInputCols</span><span class="o">(</span><span class="n">featurenames</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">labelIndexer</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;label_s&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">pipeline_prepare</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Pipeline</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setStages</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="n">indexer1</span><span class="o">,</span><span class="n">indexer2</span><span class="o">,</span><span class="n">indexer3</span><span class="o">,</span><span class="n">encoder1</span><span class="o">,</span><span class="n">encoder2</span><span class="o">,</span><span class="n">encoder3</span><span class="o">,</span><span class="n">assembler</span><span class="o">,</span><span class="n">labelIndexer</span><span class="o">))</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>indexer1 = strIdx_a7eb7d249c8b
+indexer2 = strIdx_bae7a99525b3
+indexer3 = strIdx_d2290e2b7896
+encoder1 = oneHot_0ba66b85978c
+encoder2 = oneHot_2cc465e87014
+encoder3 = oneHot_7587f352e24a
+featurenames = Array(_c0, v_c1, v_c2, v_c3, _c4, _c5, _c6, _c7, _c8, _c9, _c10, _c11, _c12, _c13, _c14, _c15, _c16, _c17, _c18, _c19, _c22, _c23, _c24, _c25, _c26, _c27, _c28, _c29, _c30, _c31, _c32, _c33...
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>warning: there were three deprecation warnings; re-run with -deprecation for details
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[_c0, v_c1, v_c2, v_c3, _c4, _c5, _c6, _c7, _c8, _c9, _c10, _c11, _c12, _c13, _c14, _c15, _c16, _c17, _c18, _c19, _c22, _c23, _c24, _c25, _c26, _c27, _c28, _c29, _c30, _c31, _c32, _c33, _c34, _c35, _c36, _c37, _c38, _c39, _c40]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13152,10 +13280,7 @@ only showing top 20 rows
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="rf"></a></p>
-<h3 id="3.1-Set-up-the-Random-Forest-model">3.1 Set up the Random Forest model<a class="anchor-link" href="#3.1-Set-up-the-Random-Forest-model">&#182;</a></h3><p>As the Random Forest (RF) algorithm is provided by Spark ML, you only have to set it up.</p>
-<p>In order to use the Watson Machine Learning (WML) service to store and deploy model, you need to put the classifier into a pipeline object.</p>
-<p><strong>Note:</strong> There are 70 categories in the <code>c2</code> column. This is larger than the default of <code>_MaxBins_</code>. To avoid errors <code>_MaxBins_</code> is set to 72, because it has to be larger than the biggest number of categories of all categorical variables.</p>
+<p>You can now fit and transform the data.</p>
 
 </div>
 </div>
@@ -13165,14 +13290,44 @@ only showing top 20 rows
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.classification</span> <span class="k">import</span> <span class="n">RandomForestClassifier</span>
-
-<span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">labelCol</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">featuresCol</span><span class="o">=</span><span class="s2">&quot;features&quot;</span><span class="p">,</span> <span class="n">numTrees</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">maxBins</span><span class="o">=</span><span class="mi">72</span><span class="p">)</span>
-
-<span class="n">rf_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">stages</span><span class="o">=</span><span class="p">[</span><span class="n">rf</span><span class="p">])</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="n">pipeline_prepare</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">labeled</span><span class="o">).</span><span class="n">transform</span><span class="o">(</span><span class="n">labeled</span><span class="o">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>data = [_c0: int, _c1: string ... 49 more fields]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[12]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[_c0: int, _c1: string ... 49 more fields]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13181,7 +13336,13 @@ only showing top 20 rows
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now train and fit the model to the training data.</p>
+<p><a id="build"></a></p>
+<h2 id="3.-Build-the-models">3. Build the models<a class="anchor-link" href="#3.-Build-the-models">&#182;</a></h2><p>This section describes how to build the models.
+Because of the large amount of data, we can use 60/40 split to mitigate overfitting:</p>
+<ul>
+<li>60% for the <code>training</code> set</li>
+<li>40% for the <code>testing</code> set</li>
+</ul>
 
 </div>
 </div>
@@ -13191,10 +13352,76 @@ only showing top 20 rows
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
-<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-<span class="n">rf_model</span> <span class="o">=</span> <span class="n">rf_pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training process takes </span><span class="si">%s</span><span class="s2"> secs&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="nc">Array</span><span class="o">(</span><span class="n">train</span><span class="o">,</span> <span class="n">test</span><span class="o">)</span> <span class="k">=</span> <span class="n">data</span><span class="o">.</span><span class="n">randomSplit</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mf">0.6</span><span class="o">,</span> <span class="mf">0.4</span><span class="o">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>train = [_c0: int, _c1: string ... 49 more fields]
+test = [_c0: int, _c1: string ... 49 more fields]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[13]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[_c0: int, _c1: string ... 49 more fields]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="rf"></a></p>
+<h3 id="3.1-Set-up-the-Random-Forest-model">3.1 Set up the Random Forest model<a class="anchor-link" href="#3.1-Set-up-the-Random-Forest-model">&#182;</a></h3><p>As the Random Forest (RF) algorithm is provided by Spark ML, you only have to set it up. Train and fit the model to the training data.</p>
+<p><strong>Note:</strong> There are 70 categories in the <code>c2</code> column. This is larger than the default of <code>_MaxBins_</code>. To avoid errors <code>_MaxBins_</code> is set to 72, because it has to be larger than the biggest number of categories of all categorical variables.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.classification.</span><span class="o">{</span><span class="nc">RandomForestClassificationModel</span><span class="o">,</span> <span class="nc">RandomForestClassifier</span><span class="o">}</span>
+<span class="k">val</span> <span class="n">t</span> <span class="k">=</span> <span class="nc">System</span><span class="o">.</span><span class="n">nanoTime</span>
+<span class="k">val</span> <span class="n">rf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">RandomForestClassifier</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setLabelCol</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setFeaturesCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setNumTrees</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setMaxBins</span><span class="o">(</span><span class="mi">72</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="n">rf_model</span> <span class="k">=</span> <span class="n">rf</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">train</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">duration</span> <span class="k">=</span> <span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="n">nanoTime</span> <span class="o">-</span> <span class="n">t</span><span class="o">)</span> <span class="o">/</span> <span class="mi">1</span><span class="n">e9d</span>
+<span class="n">println</span><span class="o">(</span><span class="s">s&quot;Training process takes </span><span class="si">$duration</span><span class="s"> secs&quot;</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -13211,9 +13438,39 @@ only showing top 20 rows
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Training process takes 128.3435480594635 secs
+<pre>Training process takes 124.641922243 secs
 </pre>
 </div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>t = 4439303327041089
+rf = rfc_a37b39f56d8b
+rf_model = RandomForestClassificationModel (uid=rfc_a37b39f56d8b) with 5 trees
+duration = 124.641922243
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[14]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>124.641922243</pre>
+</div>
+
 </div>
 
 </div>
@@ -13226,53 +13483,79 @@ only showing top 20 rows
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Details about the random forest classification model can be printed and will look something like the following:</p>
 
-<pre><code>RandomForestClassificationModel (uid=RandomForestClassifier_45c1962e4b7f0c44ea25) with 5 trees
+<pre><code>RandomForestClassificationModel (uid=rfc_a37b39f56d8b) with 5 trees
   Tree 0 (weight 1.0):
-    If (feature 83 &lt;= 2.0)
-     If (feature 102 &lt;= 0.04)
-      If (feature 105 &lt;= 0.32)
-       If (feature 108 &lt;= 254.5)
-        If (feature 98 &lt;= 16.5)
+    If (feature 1 in {0.0})
+     If (feature 104 &lt;= 0.325)
+      If (feature 116 &lt;= 0.005)
+       If (feature 100 &lt;= 0.375)
+        If (feature 113 &lt;= 0.025)
          Predict: 1.0
-        Else (feature 98 &gt; 16.5)
-         Predict: 0.0
-       Else (feature 108 &gt; 254.5)
-        If (feature 82 &lt;= 299.5)
+        Else (feature 113 &gt; 0.025)
          Predict: 2.0
-        Else (feature 82 &gt; 299.5)
+       Else (feature 100 &gt; 0.375)
+        If (feature 110 &lt;= 0.14500000000000002)
          Predict: 0.0
-      Else (feature 105 &gt; 0.32)
-       If (feature 98 &lt;= 5.5)
-        If (feature 114 &lt;= 0.05)
-         Predict: 1.0
-        Else (feature 114 &gt; 0.05)
+        Else (feature 110 &gt; 0.14500000000000002)
          Predict: 0.0
-       Else (feature 98 &gt; 5.5)
-        If (feature 94 &lt;= 0.5)
+      Else (feature 116 &gt; 0.005)
+       If (feature 0 &lt;= 0.5)
+        If (feature 105 &lt;= 0.41500000000000004)
          Predict: 0.0
-        Else (feature 94 &gt; 0.5)
-         Predict: 1.0
-     Else (feature 102 &gt; 0.04)
-      If (feature 4 in {0.0})
-       If (feature 75 in {0.0})
-        If (feature 74 in {0.0})
-         Predict: 0.0
-        Else (feature 74 not in {0.0})
-         Predict: 1.0
-       Else (feature 75 not in {0.0})
-        If (feature 6 in {0.0})
+        Else (feature 105 &gt; 0.41500000000000004)
          Predict: 2.0
-        Else (feature 6 not in {0.0})
+       Else (feature 0 &gt; 0.5)
+        If (feature 110 &lt;= 0.025)
          Predict: 1.0
-      Else (feature 4 not in {0.0})
-       If (feature 110 &lt;= 0.10500000000000001)
-        If (feature 105 &lt;= 0.365)
-         Predict: 0.0
-        Else (feature 105 &gt; 0.365)
+        Else (feature 110 &gt; 0.025)
          Predict: 2.0
-       Else (feature 110 &gt; 0.10500000000000001)
-        Predict: 2.0
-    Else ...</code></pre>
+     Else (feature 104 &gt; 0.325)
+      If (feature 73 in {0.0})
+       If (feature 90 &lt;= 0.5)
+        If (feature 83 &lt;= 17.0)
+         Predict: 1.0
+        Else (feature 83 &gt; 17.0)
+         Predict: 1.0
+       Else (feature 90 &gt; 0.5)
+        If (feature 87 &lt;= 1.5)
+         Predict: 1.0
+        Else (feature 87 &gt; 1.5)
+         Predict: 0.0
+      Else (feature 73 not in {0.0})
+       If (feature 108 &lt;= 143.5)
+        If (feature 111 &lt;= 0.095)
+         Predict: 0.0
+        Else (feature 111 &gt; 0.095)
+         Predict: 0.0
+       Else (feature 108 &gt; 143.5)
+        If (feature 110 &lt;= 0.045)
+         Predict: 1.0
+        Else (feature 110 &gt; 0.045)
+         Predict: 0.0
+    Else (feature 1 not in {0.0})
+     If (feature 100 &lt;= 0.01)
+      If (feature 111 &lt;= 0.245)
+       If (feature 110 &lt;= 0.015)
+        Predict: 1.0
+       Else (feature 110 &gt; 0.015)
+        If (feature 108 &lt;= 18.5)
+         Predict: 1.0
+        Else (feature 108 &gt; 18.5)
+         Predict: 0.0
+      Else (feature 111 &gt; 0.245)
+       If (feature 99 &lt;= 48.5)
+        If (feature 115 &lt;= 0.005)
+         Predict: 2.0
+        Else (feature 115 &gt; 0.005)
+         Predict: 0.0
+       Else (feature 99 &gt; 48.5)
+        If (feature 108 &lt;= 24.5)
+         Predict: 2.0
+        Else (feature 108 &gt; 24.5)
+         Predict: 0.0
+     Else (feature 100 &gt; 0.01)
+      Predict: 1.0
+      ...</code></pre>
 
 </div>
 </div>
@@ -13282,8 +13565,7 @@ only showing top 20 rows
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rf</span> <span class="o">=</span> <span class="n">rf_model</span><span class="o">.</span><span class="n">stages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">rf</span><span class="o">.</span><span class="n">toDebugString</span><span class="p">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">rf_model</span><span class="o">.</span><span class="n">toDebugString</span>
 </pre></div>
 
 </div>
@@ -13295,25 +13577,25 @@ only showing top 20 rows
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now check the error and accuracy. Notice that the model is very good!</p>
+<p>Then, check the error and accuracy. Notice that the model is very good!</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rf_prediction</span> <span class="o">=</span> <span class="n">rf_model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">rf_predictions</span> <span class="k">=</span> <span class="n">rf_model</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">test</span><span class="o">)</span>
 
-<span class="kn">from</span> <span class="nn">pyspark.ml.evaluation</span> <span class="k">import</span> <span class="n">MulticlassClassificationEvaluator</span>
-<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-<span class="n">evaluator</span> <span class="o">=</span> <span class="n">MulticlassClassificationEvaluator</span><span class="p">(</span>
-    <span class="n">labelCol</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">predictionCol</span><span class="o">=</span><span class="s2">&quot;prediction&quot;</span><span class="p">,</span> <span class="n">metricName</span><span class="o">=</span><span class="s2">&quot;accuracy&quot;</span><span class="p">)</span>
-<span class="n">rf_accuracy</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">rf_prediction</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Evaluating process takes </span><span class="si">%s</span><span class="s2"> secs&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test Error of RF = </span><span class="si">%g</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">rf_accuracy</span><span class="p">))</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator</span>
+<span class="k">val</span> <span class="n">evaluator</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">MulticlassClassificationEvaluator</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setLabelCol</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setPredictionCol</span><span class="o">(</span><span class="s">&quot;prediction&quot;</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setMetricName</span><span class="o">(</span><span class="s">&quot;accuracy&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">accuracy</span> <span class="k">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="o">(</span><span class="n">rf_predictions</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="s">&quot;Test Error of RF = &quot;</span> <span class="o">+</span> <span class="o">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">accuracy</span><span class="o">))</span>
 </pre></div>
 
 </div>
@@ -13330,10 +13612,37 @@ only showing top 20 rows
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Evaluating process takes 43.46675395965576 secs
-Test Error of RF = 0.00214254 
+<pre>Test Error of RF = 0.006327153168961042
 </pre>
 </div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>evaluator = mcEval_4e127ff5dadb
+accuracy = 0.993672846831039
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[16]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.993672846831039</pre>
+</div>
+
 </div>
 
 </div>
@@ -13353,35 +13662,41 @@ Test Error of RF = 0.00214254
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">inputlayer</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The <strong>output</strong> layer should have <code>5</code> nodes (5 label categories). This definition also contains an additional hidden layer with <code>10</code> nodes to build the model. You can change the definition of hidden layer(s).</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 <div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">inputlayer</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">train</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">).</span><span class="n">show</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+--------------------+
+|            features|
++--------------------+
+|(117,[1,10,72,82,...|
+|(117,[1,10,72,82,...|
+|(117,[1,10,72,82,...|
+|(117,[1,10,72,82,...|
+|(117,[1,10,72,82,...|
++--------------------+
+only showing top 5 rows
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13390,7 +13705,7 @@ Test Error of RF = 0.00214254
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Put the MLP classifier into a pipeline.</p>
+<p>The <strong>input</strong> layer should have 117 nodes and the <strong>output</strong> layer should have <code>5</code> (5 label categories). This definition also contains an additional hidden layer with <code>10</code> nodes to build the model. You can change the definition of hidden layer(s).</p>
 
 </div>
 </div>
@@ -13400,14 +13715,52 @@ Test Error of RF = 0.00214254
 <div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.classification</span> <span class="k">import</span> <span class="n">MultilayerPerceptronClassifier</span>
-
-<span class="n">mlp</span> <span class="o">=</span> <span class="n">MultilayerPerceptronClassifier</span><span class="p">(</span><span class="n">maxIter</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span> <span class="n">blockSize</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1234</span><span class="p">)</span>
-
-<span class="n">mlp_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">stages</span><span class="o">=</span><span class="p">[</span><span class="n">mlp</span><span class="p">])</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.classification.MultilayerPerceptronClassifier</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator</span>
+<span class="k">val</span> <span class="n">layers</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">[</span><span class="kt">Int</span><span class="o">](</span><span class="mi">117</span><span class="o">,</span> <span class="mi">10</span><span class="o">,</span> <span class="mi">5</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">mlp</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">MultilayerPerceptronClassifier</span><span class="o">()</span>
+  <span class="o">.</span><span class="n">setLayers</span><span class="o">(</span><span class="n">layers</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setBlockSize</span><span class="o">(</span><span class="mi">128</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setSeed</span><span class="o">(</span><span class="mi">1234L</span><span class="o">)</span>
+  <span class="o">.</span><span class="n">setMaxIter</span><span class="o">(</span><span class="mi">25</span><span class="o">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>layers = Array(117, 8, 5)
+mlp = mlpc_ce78101a560d
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[18]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>mlpc_ce78101a560d</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13426,9 +13779,10 @@ Test Error of RF = 0.00214254
 <div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-<span class="n">mlp_model</span> <span class="o">=</span> <span class="n">mlp_pipeline</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training process takes </span><span class="si">%s</span><span class="s2"> secs&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">t</span> <span class="k">=</span> <span class="nc">System</span><span class="o">.</span><span class="n">nanoTime</span>
+<span class="k">val</span> <span class="n">mlp_model</span> <span class="k">=</span> <span class="n">mlp</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">train</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">duration</span> <span class="k">=</span> <span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="n">nanoTime</span> <span class="o">-</span> <span class="n">t</span><span class="o">)</span> <span class="o">/</span> <span class="mi">1</span><span class="n">e9d</span>
+<span class="n">println</span><span class="o">(</span><span class="s">s&quot;Training process takes </span><span class="si">$duration</span><span class="s"> secs&quot;</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -13445,9 +13799,38 @@ Test Error of RF = 0.00214254
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Training process takes 78.19903659820557 secs
+<pre>Training process takes 89.397066077 secs
 </pre>
 </div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>t = 4439491555134199
+mlp_model = mlpc_ce78101a560d
+duration = 89.397066077
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[19]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>89.397066077</pre>
+</div>
+
 </div>
 
 </div>
@@ -13468,12 +13851,9 @@ Test Error of RF = 0.00214254
 <div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mlp_prediction</span> <span class="o">=</span> <span class="n">mlp_model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">test</span><span class="p">)</span>
-
-<span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-<span class="n">mlp_accuracy</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">mlp_prediction</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Evaluating process takes </span><span class="si">%s</span><span class="s2"> secs&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test Error of MLP = </span><span class="si">%g</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">mlp_accuracy</span><span class="p">))</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">mlp_predictions</span> <span class="k">=</span> <span class="n">mlp_model</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">test</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">accuracy</span> <span class="k">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="o">(</span><span class="n">mlp_predictions</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="s">&quot;Test Error of MLP = &quot;</span> <span class="o">+</span> <span class="o">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">accuracy</span><span class="o">))</span>
 </pre></div>
 
 </div>
@@ -13490,380 +13870,35 @@ Test Error of RF = 0.00214254
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Evaluating process takes 42.84950494766235 secs
-Test Error of MLP = 0.010878 
+<pre>Test Error of MLP = 0.015756382401562186
 </pre>
 </div>
 </div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="save"></a></p>
-<h2 id="4.-Saving-models">4. Saving models<a class="anchor-link" href="#4.-Saving-models">&#182;</a></h2><p>You can use the Watson Machine Learning (WML) service to save and deploy your models.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Import the WML client and credentials. Credentials can be generated and copied from bluemix.net. Then connect to WML using credentials.</p>
-<p><b>Tip:</b> Authentication information (your credentials) can be found in the Service Credentials tab of the service instance that you created on IBM Cloud.
-If you cannot see the instance_id field in Service Credentials, click New credential (+) to generate new authentication information.</p>
-<p><b>Action:</b> Enter your Watson Machine Learning service instance credentials here.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>rm -rf <span class="nv">$PIP_BUILD</span>/watson-machine-learning-client
-<span class="o">!</span>pip install watson-machine-learning-client --upgrade
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">watson_machine_learning_client</span> <span class="k">import</span> <span class="n">WatsonMachineLearningAPIClient</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;instance_id&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm-watson-ml.mybluemix.net&quot;</span>
-<span class="p">}</span>
-<span class="n">client</span> <span class="o">=</span> <span class="n">WatsonMachineLearningAPIClient</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>After connecting to the WML client, you can manage the models you have. API details can be found <a href="https://wml-api-pyclient.mybluemix.net/" target="_blank" rel="noopener noreferrer">here</a>.</p>
-<p>List the models:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">list_models</span><span class="p">()</span>
-
-<span class="c1">## To delete the model(s):</span>
-<span class="c1">#client.repository.delete(GUID)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
 
 <div class="output_area">
 
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>------------------------------------  --------------------------  ------------------------  --------------
-GUID                                  NAME                        CREATED                   FRAMEWORK
-4d2d79e9-88fe-477f-ae36-49e60467debd  RF_AttackDetection_PySpark  2018-07-17T15:46:30.155Z  mllib-2.3
-53c1a878-94e9-402e-88a6-110df59a363e  My linear svc model         2018-07-13T21:48:56.344Z  mllib-2.3
-48570f35-e9d3-434d-9ba5-030b84c5b9f4  test1                       2018-07-06T18:03:12.847Z  tensorflow-1.5
-c0abf3ad-af7c-4be4-ba22-3c39dca28c12  MyDLModel                   2018-06-26T20:38:21.425Z  tensorflow-1.5
-e614cddc-cb0a-440c-8e95-f4cfc4a29509  Kddcuprf                    2018-06-26T18:20:13.068Z  pmml-4.3
-f9aace7f-c3f8-4ab6-afd2-e7876eaccad1  My linear svc model         2018-06-19T14:48:05.469Z  mllib-2.2
-4a22405a-4464-40e0-a8a5-0ebc53537e3b  Best Heart Drug Selection   2018-05-31T20:02:18.644Z  mllib-2.1
-------------------------------------  --------------------------  ------------------------  --------------
+
+
+<div class="output_text output_subarea ">
+<pre>mlp_predictions = [_c0: int, _c1: string ... 52 more fields]
+accuracy = 0.9842436175984378
 </pre>
 </div>
-</div>
 
 </div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Meta data can be added to the model. You then pass the fitted pipeline object and the training data to save the model.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rf_props</span> <span class="o">=</span> <span class="p">{</span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">AUTHOR_NAME</span><span class="p">:</span> <span class="s2">&quot;Bufan&quot;</span><span class="p">,</span> 
-               <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s2">&quot;RF_AttackDetection_PySpark&quot;</span><span class="p">}</span>
-
-<span class="n">rf_saved_model</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_model</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">rf_model</span><span class="p">,</span> <span class="n">pipeline</span> <span class="o">=</span> <span class="n">rf_pipeline</span><span class="p">,</span> <span class="n">meta_props</span><span class="o">=</span><span class="n">rf_props</span><span class="p">,</span> <span class="n">training_data</span><span class="o">=</span><span class="n">train</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Details of the saved model can be printed and will look something like the following:</p>
-
-<pre><code>{
-  "entity": {
-    "deployments": {
-      "count": 0,
-      "url": "https://us-south.ml.cloud.ibm.com/v3/wml_instances/40ac6090-70f5-40d9-836c-30dff9242a25/published_models/b365e08c-a480-4195-a920-94d8da0d0001/deployments"
-    },
-    "label_col": "label",
-    "model_type": "mllib-2.3",
-    "evaluation_metrics_url": "https://us-south.ml.cloud.ibm.com/v3/wml_instances/40ac6090-70f5-40d9-836c-30dff9242a25/published_models/b365e08c-a480-4195-a920-94d8da0d0001/evaluation_metrics",
-    "author": {
-      "name": "Bufan"
-    },
-    "name": "RF_AttackDetection_PySpark",
-    "learning_iterations_url": "https://us-south.ml.cloud.ibm.com/v3/wml_instances/40ac6090-70f5-40d9-836c-30dff9242a25/published_models/b365e08c-a480-4195-a920-94d8da0d0001/learning_iterations",
-    "input_data_schema": {
-      "type": "struct",
-      "fields": [
-        {
-          "nullable": true,
-          "name": "_c0",
-          "type": "integer",
-          "metadata": {}
-        },
-        {
-          "nullable": true,
-          "name": "_c1",
-          "type": "string",
-          "metadata": {}
-        },
-        {
-          "nullable": true,
-          "name": "_c2",
-          "type": "string",
-          "metadata": {}
-        },
-        ....</code></pre>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rf_model_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_model_uid</span><span class="p">(</span><span class="n">rf_saved_model</span><span class="p">)</span>
-<span class="n">model_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_details</span><span class="p">(</span><span class="n">rf_model_uid</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">model_details</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Now the model should be in the WML service model list:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">list_models</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
 
 <div class="output_area">
 
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>------------------------------------  --------------------------  ------------------------  --------------
-GUID                                  NAME                        CREATED                   FRAMEWORK
-b365e08c-a480-4195-a920-94d8da0d0001  RF_AttackDetection_PySpark  2018-07-20T19:56:24.554Z  mllib-2.3
-4d2d79e9-88fe-477f-ae36-49e60467debd  RF_AttackDetection_PySpark  2018-07-17T15:46:30.155Z  mllib-2.3
-53c1a878-94e9-402e-88a6-110df59a363e  My linear svc model         2018-07-13T21:48:56.344Z  mllib-2.3
-48570f35-e9d3-434d-9ba5-030b84c5b9f4  test1                       2018-07-06T18:03:12.847Z  tensorflow-1.5
-c0abf3ad-af7c-4be4-ba22-3c39dca28c12  MyDLModel                   2018-06-26T20:38:21.425Z  tensorflow-1.5
-e614cddc-cb0a-440c-8e95-f4cfc4a29509  Kddcuprf                    2018-06-26T18:20:13.068Z  pmml-4.3
-f9aace7f-c3f8-4ab6-afd2-e7876eaccad1  My linear svc model         2018-06-19T14:48:05.469Z  mllib-2.2
-4a22405a-4464-40e0-a8a5-0ebc53537e3b  Best Heart Drug Selection   2018-05-31T20:02:18.644Z  mllib-2.1
-------------------------------------  --------------------------  ------------------------  --------------
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Once the model is in saved to the WML service, it can be loaded by connecting to WML client using the GUID.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rf_loaded_model</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">rf_model_uid</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You can print the details of the loaded_model, looks like this:</p>
-
-<pre><code>RandomForestClassificationModel (uid=RandomForestClassifier_45c1962e4b7f0c44ea25) with 5 trees
-  Tree 0 (weight 1.0):
-    If (feature 83 &lt;= 2.0)
-     If (feature 102 &lt;= 0.04)
-      If (feature 105 &lt;= 0.32)
-       If (feature 108 &lt;= 254.5)
-        If (feature 98 &lt;= 16.5)
-         Predict: 1.0
-        Else (feature 98 &gt; 16.5)
-         Predict: 0.0
-       Else (feature 108 &gt; 254.5)
-        If (feature 82 &lt;= 299.5)
-         Predict: 2.0
-        Else (feature 82 &gt; 299.5)
-         Predict: 0.0
-      Else (feature 105 &gt; 0.32)
-       If (feature 98 &lt;= 5.5)
-        If (feature 114 &lt;= 0.05)
-         Predict: 1.0
-        Else (feature 114 &gt; 0.05)
-         Predict: 0.0
-       Else (feature 98 &gt; 5.5)
-        If (feature 94 &lt;= 0.5)
-         Predict: 0.0
-        Else (feature 94 &gt; 0.5)
-         Predict: 1.0
-     Else (feature 102 &gt; 0.04)
-      If (feature 4 in {0.0})
-       If (feature 75 in {0.0})
-        If (feature 74 in {0.0})
-         Predict: 0.0
-        Else (feature 74 not in {0.0})
-         Predict: 1.0
-       Else (feature 75 not in {0.0})
-        If (feature 6 in {0.0})
-         Predict: 2.0
-        Else (feature 6 not in {0.0})
-         Predict: 1.0
-      Else (feature 4 not in {0.0})
-       If (feature 110 &lt;= 0.10500000000000001)
-        If (feature 105 &lt;= 0.365)
-         Predict: 0.0
-        Else (feature 105 &gt; 0.365)
-         Predict: 2.0
-       Else (feature 110 &gt; 0.10500000000000001)
-        Predict: 2.0
-        ....</code></pre>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loaded_debug_string</span> <span class="o">=</span> <span class="n">rf_loaded_model</span><span class="o">.</span><span class="n">stages</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">toDebugString</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">loaded_debug_string</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">loaded_debug_string</span> <span class="o">==</span> <span class="n">rf</span><span class="o">.</span><span class="n">toDebugString</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[29]:</div>
+<div class="prompt output_prompt">Out[20]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
+<pre>0.9842436175984378</pre>
 </div>
 
 </div>
@@ -13877,7 +13912,7 @@ f9aace7f-c3f8-4ab6-afd2-e7876eaccad1  My linear svc model         2018-06-19T14:
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="summary"></a></p>
-<h2 id="5.-Summary-and-next-steps">5. Summary and next steps<a class="anchor-link" href="#5.-Summary-and-next-steps">&#182;</a></h2><p>This notebook shows how to build two well-performing models using the Spark environment in Watson Studio. It is easy to build models using the Spark API and Watson Studio. Just provision the Spark environment, create the notebook, and you are ready to write your code!</p>
+<h2 id="4.-Summary-and-next-steps">4. Summary and next steps<a class="anchor-link" href="#4.-Summary-and-next-steps">&#182;</a></h2><p>This notebook shows how to build two well-performing models using the Spark environment in Watson Studio. It is easy to build models using the Spark API and Watson Studio. Just provision the Spark environment, create the notebook, and you are ready to write your code!</p>
 
 </div>
 </div>
@@ -13895,7 +13930,7 @@ f9aace7f-c3f8-4ab6-afd2-e7876eaccad1  My linear svc model         2018-06-19T14:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Author">Author<a class="anchor-link" href="#Author">&#182;</a></h2><p><strong>Bufan Zeng</strong>: a Data Scientist with the Watson Studio offering management team at IBM.</p>
+<h3 id="Author">Author<a class="anchor-link" href="#Author">&#182;</a></h3><p><strong>Bufan Zeng</strong> is a Data Scientist in IBM and a member of the Watson Studio offering management team.</p>
 
 </div>
 </div>
