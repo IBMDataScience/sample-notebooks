@@ -12699,9 +12699,9 @@ div#notebook {
 <p><a id="setup"></a></p>
 <h2 id="1.-Set-up">1. Set up<a class="anchor-link" href="#1.-Set-up">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a lite plan is offered and information about how to create the instance is <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener no referrer">here</a>)</li>
+<li>If you do not have existing instance of <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/">Watson Machine Learning (WML) Service</a> create one (a free plan is offered and information about how to create the instance is <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html">here</a>)</li>
 <li>Make sure that you are using a Spark 2.1 kernel</li>
-<li>Download <strong>GoSales Transactions</strong> from the Watson Studio Community (code provided below)</li>
+<li>Download <strong>GoSales Transactions</strong> from the Watson Studio Community (code provided below).</li>
 </ul>
 
 </div>
@@ -13358,13 +13358,44 @@ Test Error = 0.414641
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="o">!</span>pip install watson-machine-learning-client --upgrade
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Requirement already up-to-date: watson-machine-learning-client in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages
+Requirement already up-to-date: tqdm in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from watson-machine-learning-client)
+Requirement already up-to-date: tabulate in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from watson-machine-learning-client)
+Requirement already up-to-date: urllib3 in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from watson-machine-learning-client)
+Requirement already up-to-date: certifi in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from watson-machine-learning-client)
+Requirement already up-to-date: pandas in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from watson-machine-learning-client)
+Requirement already up-to-date: lomond in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from watson-machine-learning-client)
+Requirement already up-to-date: requests in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from watson-machine-learning-client)
+Requirement already up-to-date: python-dateutil&gt;=2 in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from pandas-&gt;watson-machine-learning-client)
+Requirement already up-to-date: numpy&gt;=1.9.0 in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from pandas-&gt;watson-machine-learning-client)
+Requirement already up-to-date: pytz&gt;=2011k in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from pandas-&gt;watson-machine-learning-client)
+Requirement already up-to-date: six&gt;=1.10.0 in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from lomond-&gt;watson-machine-learning-client)
+Requirement already up-to-date: chardet&lt;3.1.0,&gt;=3.0.2 in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from requests-&gt;watson-machine-learning-client)
+Requirement already up-to-date: idna&lt;2.7,&gt;=2.5 in /gpfs/global_fs01/sym_shared/YPProdSpark/user/s86b-18e61b28c674e4-3fbaf243aed6/.local/lib/python3.5/site-packages (from requests-&gt;watson-machine-learning-client)
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13387,7 +13418,7 @@ Test Error = 0.414641
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Authenticate to the Watson Machine Learning service on IBM Cloud.</p>
-<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://console.bluemix.net/docs/services/service_credentials.html#service_credentials" target="_blank" rel="noopener no referrer">Service credentials</a> tab of the service instance that you created on IBM Cloud.</p>
+<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://console.bluemix.net/docs/services/service_credentials.html#service_credentials">Service Credentials</a> tab of the service instance that you created on IBM Cloud.</p>
 <p>If you cannot see the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
 <p><strong>Action</strong>: Enter your Watson Machine Learning service instance credentials here.</p>
 
@@ -13405,19 +13436,6 @@ Test Error = 0.414641
   <span class="s">&quot;password&quot;</span><span class="p">:</span> <span class="s">&quot;***&quot;</span><span class="p">,</span>
   <span class="s">&quot;instance_id&quot;</span><span class="p">:</span> <span class="s">&quot;***&quot;</span>
 <span class="p">}</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># The code was removed by Watson Studio for sharing.</span>
 </pre></div>
 
 </div>
@@ -13813,7 +13831,7 @@ only showing top 5 rows
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>First, you need to install the required packages. You can do it by running the following code. Run it one time only.</p>
+<p>First, you need to install the required packages. You can do it by running the following code. Run it only one time.</p>
 
 </div>
 </div>
@@ -14048,7 +14066,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 <div class="prompt input_prompt">In&nbsp;[48]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="n">deployment_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model_uid</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;Product line model deployment&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span class="n">deployment_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model_uid</span><span class="o">=</span><span class="n">model_uid</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;Product line model deployment&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
