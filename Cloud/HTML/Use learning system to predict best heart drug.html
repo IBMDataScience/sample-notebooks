@@ -12092,6 +12092,26 @@ cursor: pointer;
 color: #5596e6;
 }
 
+.notebook_app #notebook-container .input .run_this_cell {
+  padding: 0;
+  padding-top: 0.125rem;
+  width: initial;
+  align-self: flex-start;
+  fill: #3d70b2;
+}
+
+.notebook_app #notebook-container .input .run_this_cell:hover {
+  fill: #5596e6;
+}
+
+.notebook_app #notebook-container .input .prompt {
+  min-width: 13ex;
+}
+
+.notebook_app #notebook-container .prompt {
+  min-width: 16.125ex;
+}
+
 /*DIALOGS*/
 .notebook_app .modal-dialog {
 color: #5a6872;
@@ -12699,11 +12719,11 @@ div#notebook {
 <p><a id="setup"></a></p>
 <h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance is <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html">here</a>)</li>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/spark/">Spark Service</a> instance (an entry plan is offered).</li>
-<li>Create a <a href="https://console.bluemix.net/catalog/services/db2-warehouse-on-cloud/">Db2 Warehouse on Cloud Service</a> instance (an entry plan is offered).</li>
+<li>Create a <a href="https://console.bluemix.net/catalog/services/machine-learning" target="_blank" rel="noopener noreferrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance is <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener noreferrer">here</a>).</li>
+<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/spark/" target="_blank" rel="noopener noreferrer">Spark Service</a> instance (an entry plan is offered).</li>
+<li>Create a <a href="https://console.bluemix.net/catalog/services/db2-warehouse" target="_blank" rel="noopener noreferrer">Db2 Warehouse on Cloud Service</a> instance (an entry plan is offered).</li>
 <li>Create the <strong>DRUG_TRAIN_DATA_UPDATED</strong> and <strong>DRUG_FEEDBACK_DATA</strong> tables in <strong>Db2 Warehouse on Cloud</strong>. <ul>
-<li>Download <a href="https://raw.githubusercontent.com/pmservice/wml-sample-models/master/spark/drug-selection/data/drug_train_data_updated.csv">drug_train_data_updated.csv</a> and <a href="https://raw.githubusercontent.com/pmservice/wml-sample-models/master/spark/drug-selection/data/drug_feedback_data.csv">drug_feedback_data.csv</a> files from git repository.</li>
+<li>Download <a href="https://raw.githubusercontent.com/pmservice/wml-sample-models/master/spark/drug-selection/data/drug_train_data_updated.csv" target="_blank" rel="noopener noreferrer">drug_train_data_updated.csv</a> and <a href="https://raw.githubusercontent.com/pmservice/wml-sample-models/master/spark/drug-selection/data/drug_feedback_data.csv" target="_blank" rel="noopener noreferrer">drug_feedback_data.csv</a> files from git repository.</li>
 <li>Click <strong>Open the console</strong> to get started with <strong>Db2 Warehouse on Cloud</strong> icon.</li>
 <li>Select the <strong>Load Data</strong> and <strong>Desktop</strong> load type.</li>
 <li><strong>Drag and drop</strong> previously downloaded file and press <strong>Next</strong>.</li>
@@ -13276,7 +13296,7 @@ Number of records for evaluation: 31
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Authenticate to the Watson Machine Learning service on IBM Cloud.</p>
-<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://console.bluemix.net/docs/services/service_credentials.html#service_credentials">Service Credentials</a> tab of the service instance that you created on IBM Cloud.</p>
+<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://console.bluemix.net/docs/services/service_credentials.html#service_credentials" target="_blank" rel="noopener no referrer">Service Credentials</a> tab of the service instance that you created on IBM Cloud.</p>
 <p>If you cannot see the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
 <p><strong>Action</strong>: Enter your Watson Machine Learning service instance credentials here.</p>
 
@@ -13290,7 +13310,6 @@ Number of records for evaluation: 31
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span class="n">wml_credentials</span><span class="o">=</span><span class="p">{</span>
   <span class="s">&quot;url&quot;</span><span class="p">:</span> <span class="s">&quot;https://ibm-watson-ml.mybluemix.net&quot;</span><span class="p">,</span>
-  <span class="s">&quot;access_key&quot;</span><span class="p">:</span> <span class="s">&quot;***&quot;</span><span class="p">,</span>
   <span class="s">&quot;username&quot;</span><span class="p">:</span> <span class="s">&quot;***&quot;</span><span class="p">,</span>
   <span class="s">&quot;password&quot;</span><span class="p">:</span> <span class="s">&quot;***&quot;</span><span class="p">,</span>
   <span class="s">&quot;instance_id&quot;</span><span class="p">:</span> <span class="s">&quot;***&quot;</span>
@@ -13520,7 +13539,7 @@ Number of records for evaluation: 31
 <li>Retrain the model if the quality is below a specified threshold value</li>
 <li>Redeploy the model if the retrained model performs better</li>
 </ul>
-<p>For more information about REST APIs, see the <a href="http://watson-ml-api.mybluemix.net/">Swagger Documentation</a>.</p>
+<p>For more information about REST APIs, see the <a href="http://watson-ml-api.mybluemix.net/" target="_blank" rel="noopener noreferrer">Swagger Documentation</a>.</p>
 <ul>
 <li><a href="#token">4.1 Prepare the authorization header</a></li>
 <li><a href="#config">4.2 Configure the continuous learning system for the published model</a></li>
@@ -13756,6 +13775,7 @@ Number of records for evaluation: 31
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>
+
 #######################################################################
 
 Synchronous run for uid: &#39;604d5ef2-879d-49f0-a7a8-33be2eaaeab4&#39; started
@@ -14246,7 +14266,7 @@ training    2018-03-29T08:47:33.793Z  accuracy     0.8398066941113299  0.8      
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>You successfully completed this notebook!</p>
 <p>You learned how to use Continuous Learning System of Watson Machine Learning. 
-Check out our <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html">Online Documentation</a>
+Check out our <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener noreferrer">Online Documentation</a>
  for more samples, tutorials, documentation, how-tos, and blog posts.</p>
 
 </div>
