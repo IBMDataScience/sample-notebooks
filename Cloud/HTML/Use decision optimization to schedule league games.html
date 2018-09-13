@@ -11611,8 +11611,10 @@ ul.typeahead-list > li > a {
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
 .highlight .o { color: #666666 } /* Operator */
+.highlight .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
 .highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
 .highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
 .highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
 .highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
 .highlight .gd { color: #A00000 } /* Generic.Deleted */
@@ -11652,8 +11654,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11664,9 +11668,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style type="text/css">
@@ -11761,6 +11767,7 @@ font-family: 'ibm-plex-sans', 'Helvetica Neue for IBM', 'Helvetica Neue', Helvet
 
 .notebook_app {
 font-size: 0.875rem;
+background-color: transparent;
 }
 
 .notebook_app .container {
@@ -11822,6 +11829,7 @@ background-color: transparent;
 color: #5a6872;
 text-align: right;
 margin-right: 3em;
+line-height: normal;
 }
 
 .notebook_app .navbar-btn.btn-xs {
@@ -11861,20 +11869,37 @@ padding-left: 0;
 }
 
 .notebook_app .btn-group button {
-margin-right: 0.675rem;
-border: none;
-border-radius: 0;
-background-color: transparent;
-padding: 0;
-border-width: 0;
-fill: #3d70b2;
+  margin-right: 0.675rem;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  padding: 0;
+  border-width: 0;
+  font: inherit;
+  fill: #3d70b2;
+  color: #5a6872;
 }
 
 .notebook_app .btn-group button:hover,
 .notebook_app .btn-group button:active,
 .notebook_app .btn-group button:focus {
-fill: #5596e6;
-background-color: transparent;
+  fill: #5596e6;
+  background-color: transparent;
+}
+
+.notebook_app .btn .toolbar-btn-label {
+  vertical-align: middle;
+}
+
+.notebook_app .toolbar .btn-group .btn .fa {
+  color: #3d70b2;
+  font-size: 1rem;
+}
+
+.notebook_app .toolbar .btn-group .btn:hover .fa,
+.notebook_app .toolbar .btn-group .btn:active .fa,
+.notebook_app .toolbar .btn-group .btn:focus .fa {
+  color: #5596e6;
 }
 
 /*ICONS*/
@@ -11902,7 +11927,7 @@ position: relative;
 .notebook_app .toolbar_select::after {
 position: absolute;
 display: block;
-bottom: 0.725rem;
+bottom: 0.575rem;
 right: 1rem;
 width: 0; 
 height: 0; 
@@ -11931,7 +11956,7 @@ margin: 0;
 padding: 0;
 padding-left: 0.5rem;
 padding-right: 2rem;
-height: 2rem;
+height: 1.68rem;
 text-overflow: ellipsis;
 cursor: pointer;
 }
@@ -12012,6 +12037,19 @@ align-items: center;
 align-items: center;
 }
 
+.notebook_app #notebook-container .celltoolbar .tags-input input {
+border: 0;
+background-color: rgba(60, 112, 178, .1);
+font-size: 0.875rem;
+height: 1.68rem;
+border: 1px solid transparent;
+box-sizing: border-box;
+}
+
+.notebook_app #notebook-container .celltoolbar .tags-input input:focus {
+border-color: #3d70b2;
+}
+
 .notebook_app #notebook-container .btn-xs {
 padding: 0 0.5rem;
 line-height: 1;
@@ -12020,7 +12058,7 @@ font-weight: 600;
 text-decoration: none;
 transition: all .2s ease-in-out;
 cursor: pointer;
-height: 2rem;
+height: 1.68rem;
 border: 0.125rem solid #3d70b2;
 background-color: transparent;
 }
@@ -12047,6 +12085,10 @@ background-color: #dfe3e6;
 border-radius: 0.9375rem;
 }
 
+.notebook_app #notebook-container .cell-tag:last-child::after {
+display: none;
+}
+
 .notebook_app #notebook-container .cell-tag .remove-tag-btn {
 color: #3d70b2;
 cursor: pointer;
@@ -12054,6 +12096,26 @@ cursor: pointer;
 
 .notebook_app #notebook-container .cell-tag .remove-tag-btn:hover {
 color: #5596e6;
+}
+
+.notebook_app #notebook-container .input .run_this_cell {
+  padding: 0;
+  padding-top: 0.125rem;
+  width: initial;
+  align-self: flex-start;
+  fill: #3d70b2;
+}
+
+.notebook_app #notebook-container .input .run_this_cell:hover {
+  fill: #5596e6;
+}
+
+.notebook_app #notebook-container .input .prompt {
+  min-width: 13ex;
+}
+
+.notebook_app #notebook-container .prompt {
+  min-width: 16.125ex;
 }
 
 /*DIALOGS*/
@@ -12208,6 +12270,13 @@ color: #5aa700;
 border: none;
 }
 
+#notification_area,
+#notification_notebook,
+#notification_kernel,
+#notification_trusted {
+line-height: normal;
+}
+
 #notification_trusted {
 background-color: transparent;
 padding: 0;
@@ -12219,6 +12288,12 @@ line-height: normal;
 font-size: 0.875rem;
 color: #3d70b2;
 border: none;
+}
+
+#notification_trusted:hover,
+#notification_trusted:active,
+#notification_trusted:focus {
+  color: #5596e6;
 }
 
 /*
@@ -12597,23 +12672,12 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div style="background:#F5F7FA; height:100px; padding: 2em; font-size:14px;">
-<span style="font-size:18px;color:#152935;">Want to do more?</span><span style="border: 1px solid #3d70b2;padding: 15px;float:right;margin-right:40px; color:#3d70b2; "><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
-<span style="color:#5A6872;"> Try out this notebook with your free trial of IBM Watson Studio.</span>
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Use-Decision-Optimization-to-help-a-sports-league-schedule-its-games">Use Decision Optimization to help a sports league schedule its games<a class="anchor-link" href="#Use-Decision-Optimization-to-help-a-sports-league-schedule-its-games">&#182;</a></h1><p>This tutorial includes everything you need to set up decision optimization engines, build mathematical programming models, and arrive at a good working schedule for a sports league's games.</p>
 <p>When you finish this tutorial, you'll have a foundational knowledge of <em>Prescriptive Analytics</em>.</p>
 <blockquote><p>This notebook is part of <a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Prescriptive Analytics for Python</a>.</p>
 <p>It requires a valid subscription to <strong>Decision Optimization on Cloud</strong>. Try it for free <a href="https://developer.ibm.com/docloud" target="_blank" rel="noopener noreferrer">here</a>.</p>
 </blockquote>
-<p>This notebook runs on Python 2 with Spark 2.1.</p>
+<p>This notebook runs on Python 2 with Spark.</p>
 <p>Table of contents:</p>
 <ul>
 <li><a href="#Describe-the-business-problem:--Games-Scheduling-in-the-National-Football-League">Describe the business problem</a></li>
@@ -12706,18 +12770,12 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">docplex.cp</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">&#39;real_prefix&#39;</span><span class="p">):</span>
-        <span class="c">#we are in a virtual env.</span>
-        <span class="o">!</span>pip install docplex
-    <span class="k">else</span><span class="p">:</span>
-        <span class="o">!</span>pip install --user docplex
+<div class=" highlight hl-ipython2"><pre><span></span><span class="o">!</span>pip install docplex
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">docplex.cp</span>
 </pre></div>
 
 </div>
@@ -12742,9 +12800,9 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">docplex.cp.model</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">SVC_URL</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="c">#ENTER YOUR URL HERE</span>
-<span class="n">SVC_KEY</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="c">#ENTER YOUR KEY (Client_id) HERE</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.cp.model</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">SVC_URL</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="c1">#ENTER YOUR URL HERE</span>
+<span class="n">SVC_KEY</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="c1">#ENTER YOUR KEY (Client_id) HERE</span>
 </pre></div>
 
 </div>
@@ -12768,17 +12826,17 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># Teams in 1st division</span>
-<span class="n">TEAM_DIV1</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Baltimore Ravens&quot;</span><span class="p">,</span><span class="s">&quot;Cincinnati Bengals&quot;</span><span class="p">,</span> <span class="s">&quot;Cleveland Browns&quot;</span><span class="p">,</span><span class="s">&quot;Pittsburgh Steelers&quot;</span><span class="p">,</span><span class="s">&quot;Houston Texans&quot;</span><span class="p">,</span>
-                <span class="s">&quot;Indianapolis Colts&quot;</span><span class="p">,</span><span class="s">&quot;Jacksonville Jaguars&quot;</span><span class="p">,</span><span class="s">&quot;Tennessee Titans&quot;</span><span class="p">,</span><span class="s">&quot;Buffalo Bills&quot;</span><span class="p">,</span><span class="s">&quot;Miami Dolphins&quot;</span><span class="p">,</span>
-                <span class="s">&quot;New England Patriots&quot;</span><span class="p">,</span><span class="s">&quot;New York Jets&quot;</span><span class="p">,</span><span class="s">&quot;Denver Broncos&quot;</span><span class="p">,</span><span class="s">&quot;Kansas City Chiefs&quot;</span><span class="p">,</span><span class="s">&quot;Oakland Raiders&quot;</span><span class="p">,</span>
-                <span class="s">&quot;San Diego Chargers&quot;</span><span class="p">]</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Teams in 1st division</span>
+<span class="n">TEAM_DIV1</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Baltimore Ravens&quot;</span><span class="p">,</span><span class="s2">&quot;Cincinnati Bengals&quot;</span><span class="p">,</span> <span class="s2">&quot;Cleveland Browns&quot;</span><span class="p">,</span><span class="s2">&quot;Pittsburgh Steelers&quot;</span><span class="p">,</span><span class="s2">&quot;Houston Texans&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Indianapolis Colts&quot;</span><span class="p">,</span><span class="s2">&quot;Jacksonville Jaguars&quot;</span><span class="p">,</span><span class="s2">&quot;Tennessee Titans&quot;</span><span class="p">,</span><span class="s2">&quot;Buffalo Bills&quot;</span><span class="p">,</span><span class="s2">&quot;Miami Dolphins&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;New England Patriots&quot;</span><span class="p">,</span><span class="s2">&quot;New York Jets&quot;</span><span class="p">,</span><span class="s2">&quot;Denver Broncos&quot;</span><span class="p">,</span><span class="s2">&quot;Kansas City Chiefs&quot;</span><span class="p">,</span><span class="s2">&quot;Oakland Raiders&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;San Diego Chargers&quot;</span><span class="p">]</span>
 
-<span class="c"># Teams in 2nd division</span>
-<span class="n">TEAM_DIV2</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Chicago Bears&quot;</span><span class="p">,</span><span class="s">&quot;Detroit Lions&quot;</span><span class="p">,</span><span class="s">&quot;Green Bay Packers&quot;</span><span class="p">,</span><span class="s">&quot;Minnesota Vikings&quot;</span><span class="p">,</span><span class="s">&quot;Atlanta Falcons&quot;</span><span class="p">,</span>
-                <span class="s">&quot;Carolina Panthers&quot;</span><span class="p">,</span><span class="s">&quot;New Orleans Saints&quot;</span><span class="p">,</span><span class="s">&quot;Tampa Bay Buccaneers&quot;</span><span class="p">,</span><span class="s">&quot;Dallas Cowboys&quot;</span><span class="p">,</span><span class="s">&quot;New York Giants&quot;</span><span class="p">,</span>
-                <span class="s">&quot;Philadelphia Eagles&quot;</span><span class="p">,</span><span class="s">&quot;Washington Redskins&quot;</span><span class="p">,</span><span class="s">&quot;Arizona Cardinals&quot;</span><span class="p">,</span><span class="s">&quot;San Francisco 49ers&quot;</span><span class="p">,</span>
-                <span class="s">&quot;Seattle Seahawks&quot;</span><span class="p">,</span><span class="s">&quot;St. Louis Rams&quot;</span><span class="p">]</span>
+<span class="c1"># Teams in 2nd division</span>
+<span class="n">TEAM_DIV2</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Chicago Bears&quot;</span><span class="p">,</span><span class="s2">&quot;Detroit Lions&quot;</span><span class="p">,</span><span class="s2">&quot;Green Bay Packers&quot;</span><span class="p">,</span><span class="s2">&quot;Minnesota Vikings&quot;</span><span class="p">,</span><span class="s2">&quot;Atlanta Falcons&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Carolina Panthers&quot;</span><span class="p">,</span><span class="s2">&quot;New Orleans Saints&quot;</span><span class="p">,</span><span class="s2">&quot;Tampa Bay Buccaneers&quot;</span><span class="p">,</span><span class="s2">&quot;Dallas Cowboys&quot;</span><span class="p">,</span><span class="s2">&quot;New York Giants&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Philadelphia Eagles&quot;</span><span class="p">,</span><span class="s2">&quot;Washington Redskins&quot;</span><span class="p">,</span><span class="s2">&quot;Arizona Cardinals&quot;</span><span class="p">,</span><span class="s2">&quot;San Francisco 49ers&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Seattle Seahawks&quot;</span><span class="p">,</span><span class="s2">&quot;St. Louis Rams&quot;</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -12791,20 +12849,20 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
-<span class="n">NUMBER_OF_MATCHES_TO_PLAY</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c"># Number of match to play between two teams on the league</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="n">NUMBER_OF_MATCHES_TO_PLAY</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># Number of match to play between two teams on the league</span>
 
-<span class="n">T_SCHEDULE_PARAMS</span> <span class="o">=</span> <span class="p">(</span><span class="n">namedtuple</span><span class="p">(</span><span class="s">&quot;TScheduleParams&quot;</span><span class="p">,</span>
-                                <span class="p">[</span><span class="s">&quot;nbTeamsInDivision&quot;</span><span class="p">,</span>
-                                 <span class="s">&quot;maxTeamsInDivision&quot;</span><span class="p">,</span>
-                                 <span class="s">&quot;numberOfMatchesToPlayInsideDivision&quot;</span><span class="p">,</span>
-                                 <span class="s">&quot;numberOfMatchesToPlayOutsideDivision&quot;</span>
+<span class="n">T_SCHEDULE_PARAMS</span> <span class="o">=</span> <span class="p">(</span><span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;TScheduleParams&quot;</span><span class="p">,</span>
+                                <span class="p">[</span><span class="s2">&quot;nbTeamsInDivision&quot;</span><span class="p">,</span>
+                                 <span class="s2">&quot;maxTeamsInDivision&quot;</span><span class="p">,</span>
+                                 <span class="s2">&quot;numberOfMatchesToPlayInsideDivision&quot;</span><span class="p">,</span>
+                                 <span class="s2">&quot;numberOfMatchesToPlayOutsideDivision&quot;</span>
                                  <span class="p">]))</span>
-<span class="c"># Schedule parameters</span>
-<span class="n">SCHEDULE_PARAMS</span> <span class="o">=</span> <span class="n">T_SCHEDULE_PARAMS</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span>   <span class="c"># nbTeamsInDivision</span>
-                                    <span class="mi">16</span><span class="p">,</span>  <span class="c"># maxTeamsInDivision</span>
-                                    <span class="n">NUMBER_OF_MATCHES_TO_PLAY</span><span class="p">,</span>  <span class="c"># numberOfMatchesToPlayInsideDivision</span>
-                                    <span class="n">NUMBER_OF_MATCHES_TO_PLAY</span>   <span class="c"># numberOfMatchesToPlayOutsideDivision</span>
+<span class="c1"># Schedule parameters</span>
+<span class="n">SCHEDULE_PARAMS</span> <span class="o">=</span> <span class="n">T_SCHEDULE_PARAMS</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span>   <span class="c1"># nbTeamsInDivision</span>
+                                    <span class="mi">16</span><span class="p">,</span>  <span class="c1"># maxTeamsInDivision</span>
+                                    <span class="n">NUMBER_OF_MATCHES_TO_PLAY</span><span class="p">,</span>  <span class="c1"># numberOfMatchesToPlayInsideDivision</span>
+                                    <span class="n">NUMBER_OF_MATCHES_TO_PLAY</span>   <span class="c1"># numberOfMatchesToPlayOutsideDivision</span>
                                     <span class="p">)</span>
 </pre></div>
 
@@ -12827,47 +12885,47 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">CSS</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
-<span class="s">body {</span>
-<span class="s">    margin: 0;</span>
-<span class="s">    font-family: Helvetica;</span>
-<span class="s">}</span>
-<span class="s">table.dataframe {</span>
-<span class="s">    border-collapse: collapse;</span>
-<span class="s">    border: none;</span>
-<span class="s">}</span>
-<span class="s">table.dataframe tr {</span>
-<span class="s">    border: none;</span>
-<span class="s">}</span>
-<span class="s">table.dataframe td, table.dataframe th {</span>
-<span class="s">    margin: 0;</span>
-<span class="s">    border: 1px solid white;</span>
-<span class="s">    padding-left: 0.25em;</span>
-<span class="s">    padding-right: 0.25em;</span>
-<span class="s">}</span>
-<span class="s">table.dataframe th:not(:empty) {</span>
-<span class="s">    background-color: #fec;</span>
-<span class="s">    text-align: left;</span>
-<span class="s">    font-weight: normal;</span>
-<span class="s">}</span>
-<span class="s">table.dataframe tr:nth-child(2) th:empty {</span>
-<span class="s">    border-left: none;</span>
-<span class="s">    border-right: 1px dashed #888;</span>
-<span class="s">}</span>
-<span class="s">table.dataframe td {</span>
-<span class="s">    border: 2px solid #ccf;</span>
-<span class="s">    background-color: #f4f4ff;</span>
-<span class="s">}</span>
-<span class="s">    table.dataframe thead th:first-child {</span>
-<span class="s">        display: none;</span>
-<span class="s">    }</span>
-<span class="s">    table.dataframe tbody th {</span>
-<span class="s">        display: none;</span>
-<span class="s">    }</span>
-<span class="s">&quot;&quot;&quot;</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">CSS</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">body {</span>
+<span class="s2">    margin: 0;</span>
+<span class="s2">    font-family: Helvetica;</span>
+<span class="s2">}</span>
+<span class="s2">table.dataframe {</span>
+<span class="s2">    border-collapse: collapse;</span>
+<span class="s2">    border: none;</span>
+<span class="s2">}</span>
+<span class="s2">table.dataframe tr {</span>
+<span class="s2">    border: none;</span>
+<span class="s2">}</span>
+<span class="s2">table.dataframe td, table.dataframe th {</span>
+<span class="s2">    margin: 0;</span>
+<span class="s2">    border: 1px solid white;</span>
+<span class="s2">    padding-left: 0.25em;</span>
+<span class="s2">    padding-right: 0.25em;</span>
+<span class="s2">}</span>
+<span class="s2">table.dataframe th:not(:empty) {</span>
+<span class="s2">    background-color: #fec;</span>
+<span class="s2">    text-align: left;</span>
+<span class="s2">    font-weight: normal;</span>
+<span class="s2">}</span>
+<span class="s2">table.dataframe tr:nth-child(2) th:empty {</span>
+<span class="s2">    border-left: none;</span>
+<span class="s2">    border-right: 1px dashed #888;</span>
+<span class="s2">}</span>
+<span class="s2">table.dataframe td {</span>
+<span class="s2">    border: 2px solid #ccf;</span>
+<span class="s2">    background-color: #f4f4ff;</span>
+<span class="s2">}</span>
+<span class="s2">    table.dataframe thead th:first-child {</span>
+<span class="s2">        display: none;</span>
+<span class="s2">    }</span>
+<span class="s2">    table.dataframe tbody th {</span>
+<span class="s2">        display: none;</span>
+<span class="s2">    }</span>
+<span class="s2">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
-<span class="n">HTML</span><span class="p">(</span><span class="s">&#39;&lt;style&gt;{}&lt;/style&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CSS</span><span class="p">))</span>
+<span class="n">HTML</span><span class="p">(</span><span class="s1">&#39;&lt;style&gt;{}&lt;/style&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CSS</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12948,12 +13006,12 @@ table.dataframe td {
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 
 <span class="n">team1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">TEAM_DIV1</span><span class="p">)</span>
 <span class="n">team2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">TEAM_DIV2</span><span class="p">)</span>
-<span class="n">team1</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;AFC&quot;</span><span class="p">]</span>
-<span class="n">team2</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;NFC&quot;</span><span class="p">]</span>
+<span class="n">team1</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AFC&quot;</span><span class="p">]</span>
+<span class="n">team2</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;NFC&quot;</span><span class="p">]</span>
 
 <span class="n">teams</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">team1</span><span class="p">,</span><span class="n">team2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -12977,7 +13035,7 @@ table.dataframe td {
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
 
 <span class="n">display</span><span class="p">(</span><span class="n">teams</span><span class="p">)</span>
 </pre></div>
@@ -12998,6 +13056,19 @@ table.dataframe td {
 
 <div class="output_html rendered_html output_subarea ">
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -13113,19 +13184,19 @@ table.dataframe td {
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="n">NB_TEAMS</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">SCHEDULE_PARAMS</span><span class="o">.</span><span class="n">nbTeamsInDivision</span>
 <span class="n">TEAMS</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">NB_TEAMS</span><span class="p">)</span>
 
-<span class="c"># Calculate the number of weeks necessary</span>
+<span class="c1"># Calculate the number of weeks necessary</span>
 <span class="n">NB_WEEKS</span> <span class="o">=</span> <span class="p">(</span><span class="n">SCHEDULE_PARAMS</span><span class="o">.</span><span class="n">nbTeamsInDivision</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">SCHEDULE_PARAMS</span><span class="o">.</span><span class="n">numberOfMatchesToPlayInsideDivision</span> \
             <span class="o">+</span> <span class="n">SCHEDULE_PARAMS</span><span class="o">.</span><span class="n">nbTeamsInDivision</span> <span class="o">*</span> <span class="n">SCHEDULE_PARAMS</span><span class="o">.</span><span class="n">numberOfMatchesToPlayOutsideDivision</span>
 
 
-<span class="c"># Weeks to schedule</span>
+<span class="c1"># Weeks to schedule</span>
 <span class="n">WEEKS</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">NB_WEEKS</span><span class="p">))</span>
 
-<span class="c"># Season is split into two halves</span>
+<span class="c1"># Season is split into two halves</span>
 <span class="n">FIRST_HALF_WEEKS</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">NB_WEEKS</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>
 <span class="n">NB_FIRST_HALS_WEEKS</span> <span class="o">=</span> <span class="n">NB_WEEKS</span> <span class="o">//</span> <span class="mi">3</span>
 </pre></div>
@@ -13151,15 +13222,15 @@ table.dataframe td {
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">mdl</span> <span class="o">=</span> <span class="n">CpoModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;SportsScheduling&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">mdl</span> <span class="o">=</span> <span class="n">CpoModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;SportsScheduling&quot;</span><span class="p">)</span>
 
-<span class="c"># Variables of the model</span>
+<span class="c1"># Variables of the model</span>
 <span class="n">plays</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUMBER_OF_MATCHES_TO_PLAY</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">t1</span> <span class="ow">in</span> <span class="n">TEAMS</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">t2</span> <span class="ow">in</span> <span class="n">TEAMS</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">t1</span> <span class="o">!=</span> <span class="n">t2</span><span class="p">:</span>
-                <span class="n">plays</span><span class="p">[(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">integer_var</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">NB_WEEKS</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;team1_{}_team2_{}_match_{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+                <span class="n">plays</span><span class="p">[(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">integer_var</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">NB_WEEKS</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;team1_{}_team2_{}_match_{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -13186,12 +13257,12 @@ table.dataframe td {
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># Constraints of the model</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Constraints of the model</span>
 <span class="k">for</span> <span class="n">t1</span> <span class="ow">in</span> <span class="n">TEAMS</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">t2</span> <span class="ow">in</span> <span class="n">TEAMS</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">t2</span> <span class="o">!=</span> <span class="n">t1</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUMBER_OF_MATCHES_TO_PLAY</span><span class="p">):</span>
-                <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">plays</span><span class="p">[(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">i</span><span class="p">)]</span> <span class="o">==</span> <span class="n">plays</span><span class="p">[(</span><span class="n">t2</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">i</span><span class="p">)])</span>  <span class="c">### symmetrical match t1-&gt;t2 = t2-&gt;t1 at the ieme match</span>
+                <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">plays</span><span class="p">[(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">i</span><span class="p">)]</span> <span class="o">==</span> <span class="n">plays</span><span class="p">[(</span><span class="n">t2</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">i</span><span class="p">)])</span>  <span class="c1">### symmetrical match t1-&gt;t2 = t2-&gt;t1 at the ieme match</span>
 </pre></div>
 
 </div>
@@ -13217,9 +13288,9 @@ table.dataframe td {
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">for</span> <span class="n">t1</span> <span class="ow">in</span> <span class="n">TEAMS</span><span class="p">:</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">for</span> <span class="n">t1</span> <span class="ow">in</span> <span class="n">TEAMS</span><span class="p">:</span>
     <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">all_diff</span><span class="p">([</span><span class="n">plays</span><span class="p">[(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">i</span><span class="p">)]</span> <span class="k">for</span> <span class="n">t2</span> <span class="ow">in</span> <span class="n">TEAMS</span> <span class="k">if</span> <span class="n">t2</span> <span class="o">!=</span> <span class="n">t1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span>
-                      <span class="nb">range</span><span class="p">(</span><span class="n">NUMBER_OF_MATCHES_TO_PLAY</span><span class="p">)]))</span>  <span class="c">### team t1 must play one match per week</span>
+                      <span class="nb">range</span><span class="p">(</span><span class="n">NUMBER_OF_MATCHES_TO_PLAY</span><span class="p">)]))</span>  <span class="c1">### team t1 must play one match per week</span>
 </pre></div>
 
 </div>
@@ -13247,12 +13318,12 @@ table.dataframe td {
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># Function that returns 1 if the two teams are in same division, 0 if not</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Function that returns 1 if the two teams are in same division, 0 if not</span>
 <span class="k">def</span> <span class="nf">intra_divisional_pair</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">int</span><span class="p">((</span><span class="n">t1</span> <span class="o">&lt;=</span> <span class="n">SCHEDULE_PARAMS</span><span class="o">.</span><span class="n">nbTeamsInDivision</span> <span class="ow">and</span> <span class="n">t2</span> <span class="o">&lt;=</span> <span class="n">SCHEDULE_PARAMS</span><span class="o">.</span><span class="n">nbTeamsInDivision</span><span class="p">)</span> <span class="ow">or</span>
                <span class="p">(</span><span class="n">t1</span> <span class="o">&gt;</span> <span class="n">SCHEDULE_PARAMS</span><span class="o">.</span><span class="n">nbTeamsInDivision</span> <span class="ow">and</span> <span class="n">t2</span> <span class="o">&gt;</span> <span class="n">SCHEDULE_PARAMS</span><span class="o">.</span><span class="n">nbTeamsInDivision</span><span class="p">))</span>
 
-<span class="c"># Some intradivisional games should be in the first half</span>
+<span class="c1"># Some intradivisional games should be in the first half</span>
 <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="n">intra_divisional_pair</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">)</span> <span class="o">*</span> <span class="n">allowed_assignments</span><span class="p">(</span><span class="n">plays</span><span class="p">[(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">i</span><span class="p">)],</span> <span class="n">FIRST_HALF_WEEKS</span><span class="p">)</span> 
              <span class="k">for</span> <span class="n">t1</span> <span class="ow">in</span> <span class="n">TEAMS</span> <span class="k">for</span> <span class="n">t2</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">TEAMS</span> <span class="k">if</span> <span class="n">a</span> <span class="o">!=</span> <span class="n">t1</span><span class="p">]</span> 
              <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUMBER_OF_MATCHES_TO_PLAY</span><span class="p">)])</span> <span class="o">&gt;=</span> <span class="n">NB_FIRST_HALS_WEEKS</span><span class="p">)</span>
@@ -13279,7 +13350,7 @@ table.dataframe td {
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="c"># Objective of the model is to schedule intradivisional games to be played late in the schedule</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Objective of the model is to schedule intradivisional games to be played late in the schedule</span>
 <span class="n">sm</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">t1</span> <span class="ow">in</span> <span class="n">TEAMS</span><span class="p">:</span>
     <span class="k">for</span> <span class="n">t2</span> <span class="ow">in</span> <span class="n">TEAMS</span><span class="p">:</span>
@@ -13309,7 +13380,7 @@ table.dataframe td {
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">n</span> <span class="o">=</span> <span class="mi">25</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">25</span>
 <span class="n">msol</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">SVC_URL</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">SVC_KEY</span><span class="p">,</span> <span class="n">TimeLimit</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
 </pre></div>
 
@@ -13331,31 +13402,31 @@ table.dataframe td {
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">if</span> <span class="n">msol</span><span class="p">:</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">if</span> <span class="n">msol</span><span class="p">:</span>
     <span class="n">abb</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">()</span>  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NB_WEEKS</span><span class="p">)]</span>
     <span class="k">for</span> <span class="n">t1</span> <span class="ow">in</span> <span class="n">TEAMS</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">t2</span> <span class="ow">in</span> <span class="n">TEAMS</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">t1</span> <span class="o">!=</span> <span class="n">t2</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUMBER_OF_MATCHES_TO_PLAY</span><span class="p">):</span>
                     <span class="n">x</span> <span class="o">=</span> <span class="n">abb</span><span class="p">[</span><span class="n">msol</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">plays</span><span class="p">[(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">i</span><span class="p">)])</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">TEAM_DIV1</span><span class="p">[</span><span class="n">t1</span><span class="p">],</span> <span class="n">TEAM_DIV2</span><span class="p">[</span><span class="n">t2</span><span class="p">],</span> <span class="s">&quot;Home&quot;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s">&quot;Back&quot;</span><span class="p">,</span> <span class="n">intra_divisional_pair</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">)))</span>
+                    <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">TEAM_DIV1</span><span class="p">[</span><span class="n">t1</span><span class="p">],</span> <span class="n">TEAM_DIV2</span><span class="p">[</span><span class="n">t2</span><span class="p">],</span> <span class="s2">&quot;Home&quot;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;Back&quot;</span><span class="p">,</span> <span class="n">intra_divisional_pair</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">)))</span>
                 
     <span class="n">matches</span> <span class="o">=</span> <span class="p">[(</span><span class="n">week</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="n">intra</span><span class="p">)</span> <span class="k">for</span> <span class="n">week</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NB_WEEKS</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="n">intra</span><span class="p">)</span> <span class="ow">in</span> <span class="n">abb</span><span class="p">[</span><span class="n">week</span><span class="p">]]</span>
     <span class="n">matches_bd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
     
-    <span class="n">nfl_finals</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&quot;2014&quot;</span><span class="p">,</span> <span class="s">&quot;Patriots&quot;</span><span class="p">,</span> <span class="s">&quot;Seahawks&quot;</span><span class="p">),(</span><span class="s">&quot;2013&quot;</span><span class="p">,</span> <span class="s">&quot;Seahawks&quot;</span><span class="p">,</span> <span class="s">&quot;Broncos&quot;</span><span class="p">),</span>
-                  <span class="p">(</span><span class="s">&quot;2012&quot;</span><span class="p">,</span> <span class="s">&quot;Ravens&quot;</span><span class="p">,</span> <span class="s">&quot;Patriots&quot;</span><span class="p">),(</span><span class="s">&quot;2011&quot;</span><span class="p">,</span> <span class="s">&quot;Giants&quot;</span><span class="p">,</span> <span class="s">&quot;Patriots &quot;</span><span class="p">),</span>
-                  <span class="p">(</span><span class="s">&quot;2010&quot;</span><span class="p">,</span> <span class="s">&quot;Packers&quot;</span><span class="p">,</span> <span class="s">&quot;Steelers&quot;</span><span class="p">),(</span><span class="s">&quot;2009&quot;</span><span class="p">,</span> <span class="s">&quot;Saints&quot;</span><span class="p">,</span> <span class="s">&quot;Colts&quot;</span><span class="p">),</span>
-                  <span class="p">(</span><span class="s">&quot;2008&quot;</span><span class="p">,</span> <span class="s">&quot;Steelers&quot;</span><span class="p">,</span> <span class="s">&quot;Cardinals&quot;</span><span class="p">),(</span><span class="s">&quot;2007&quot;</span><span class="p">,</span> <span class="s">&quot;Giants&quot;</span><span class="p">,</span> <span class="s">&quot;Patriots&quot;</span><span class="p">),</span>
-                  <span class="p">(</span><span class="s">&quot;2006&quot;</span><span class="p">,</span> <span class="s">&quot;Colts&quot;</span><span class="p">,</span> <span class="s">&quot;Bears&quot;</span><span class="p">),(</span><span class="s">&quot;2005&quot;</span><span class="p">,</span> <span class="s">&quot;Steelers&quot;</span><span class="p">,</span> <span class="s">&quot;Seahawks&quot;</span><span class="p">),</span>
-                  <span class="p">(</span><span class="s">&quot;2004&quot;</span><span class="p">,</span> <span class="s">&quot;Patriots&quot;</span><span class="p">,</span> <span class="s">&quot;Eagles&quot;</span><span class="p">)]</span>
+    <span class="n">nfl_finals</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;2014&quot;</span><span class="p">,</span> <span class="s2">&quot;Patriots&quot;</span><span class="p">,</span> <span class="s2">&quot;Seahawks&quot;</span><span class="p">),(</span><span class="s2">&quot;2013&quot;</span><span class="p">,</span> <span class="s2">&quot;Seahawks&quot;</span><span class="p">,</span> <span class="s2">&quot;Broncos&quot;</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">&quot;2012&quot;</span><span class="p">,</span> <span class="s2">&quot;Ravens&quot;</span><span class="p">,</span> <span class="s2">&quot;Patriots&quot;</span><span class="p">),(</span><span class="s2">&quot;2011&quot;</span><span class="p">,</span> <span class="s2">&quot;Giants&quot;</span><span class="p">,</span> <span class="s2">&quot;Patriots &quot;</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">&quot;2010&quot;</span><span class="p">,</span> <span class="s2">&quot;Packers&quot;</span><span class="p">,</span> <span class="s2">&quot;Steelers&quot;</span><span class="p">),(</span><span class="s2">&quot;2009&quot;</span><span class="p">,</span> <span class="s2">&quot;Saints&quot;</span><span class="p">,</span> <span class="s2">&quot;Colts&quot;</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">&quot;2008&quot;</span><span class="p">,</span> <span class="s2">&quot;Steelers&quot;</span><span class="p">,</span> <span class="s2">&quot;Cardinals&quot;</span><span class="p">),(</span><span class="s2">&quot;2007&quot;</span><span class="p">,</span> <span class="s2">&quot;Giants&quot;</span><span class="p">,</span> <span class="s2">&quot;Patriots&quot;</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">&quot;2006&quot;</span><span class="p">,</span> <span class="s2">&quot;Colts&quot;</span><span class="p">,</span> <span class="s2">&quot;Bears&quot;</span><span class="p">),(</span><span class="s2">&quot;2005&quot;</span><span class="p">,</span> <span class="s2">&quot;Steelers&quot;</span><span class="p">,</span> <span class="s2">&quot;Seahawks&quot;</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s2">&quot;2004&quot;</span><span class="p">,</span> <span class="s2">&quot;Patriots&quot;</span><span class="p">,</span> <span class="s2">&quot;Eagles&quot;</span><span class="p">)]</span>
                 
     <span class="n">winners_bd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">nfl_finals</span><span class="p">)</span>
-    <span class="n">winners_bd</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;year&quot;</span><span class="p">,</span> <span class="s">&quot;team1&quot;</span><span class="p">,</span> <span class="s">&quot;team2&quot;</span><span class="p">]</span>
+    <span class="n">winners_bd</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;team1&quot;</span><span class="p">,</span> <span class="s2">&quot;team2&quot;</span><span class="p">]</span>
     
     <span class="n">display</span><span class="p">(</span><span class="n">winners_bd</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;No solution found&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;No solution found&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13374,6 +13445,19 @@ table.dataframe td {
 
 <div class="output_html rendered_html output_subarea ">
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -13476,9 +13560,9 @@ table.dataframe td {
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">if</span> <span class="n">msol</span><span class="p">:</span>
-    <span class="n">months</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;January&quot;</span><span class="p">,</span> <span class="s">&quot;February&quot;</span><span class="p">,</span> <span class="s">&quot;March&quot;</span><span class="p">,</span> <span class="s">&quot;April&quot;</span><span class="p">,</span> <span class="s">&quot;May&quot;</span><span class="p">,</span> <span class="s">&quot;June&quot;</span><span class="p">,</span> 
-              <span class="s">&quot;July&quot;</span><span class="p">,</span> <span class="s">&quot;August&quot;</span><span class="p">,</span> <span class="s">&quot;September&quot;</span><span class="p">,</span> <span class="s">&quot;October&quot;</span><span class="p">,</span> <span class="s">&quot;November&quot;</span><span class="p">,</span> <span class="s">&quot;December&quot;</span><span class="p">]</span>
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">if</span> <span class="n">msol</span><span class="p">:</span>
+    <span class="n">months</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;January&quot;</span><span class="p">,</span> <span class="s2">&quot;February&quot;</span><span class="p">,</span> <span class="s2">&quot;March&quot;</span><span class="p">,</span> <span class="s2">&quot;April&quot;</span><span class="p">,</span> <span class="s2">&quot;May&quot;</span><span class="p">,</span> <span class="s2">&quot;June&quot;</span><span class="p">,</span> 
+              <span class="s2">&quot;July&quot;</span><span class="p">,</span> <span class="s2">&quot;August&quot;</span><span class="p">,</span> <span class="s2">&quot;September&quot;</span><span class="p">,</span> <span class="s2">&quot;October&quot;</span><span class="p">,</span> <span class="s2">&quot;November&quot;</span><span class="p">,</span> <span class="s2">&quot;December&quot;</span><span class="p">]</span>
     <span class="n">report</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">nfl_finals</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">:</span>
@@ -13488,11 +13572,11 @@ table.dataframe td {
                 <span class="n">report</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">months</span><span class="p">[</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="mi">4</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
 
     <span class="n">matches_bd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
-    <span class="n">matches_bd</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;week&quot;</span><span class="p">,</span> <span class="s">&quot;Month&quot;</span><span class="p">,</span> <span class="s">&quot;Team1&quot;</span><span class="p">,</span> <span class="s">&quot;Team2&quot;</span><span class="p">,</span> <span class="s">&quot;location&quot;</span><span class="p">]</span>
-    <span class="k">try</span><span class="p">:</span> <span class="c">#pandas &gt;= 0.17</span>
-        <span class="n">display</span><span class="p">(</span><span class="n">matches_bd</span><span class="p">[</span><span class="n">matches_bd</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;Home&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s">&#39;week&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;week&#39;</span><span class="p">,</span> <span class="s">&#39;location&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">matches_bd</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;week&quot;</span><span class="p">,</span> <span class="s2">&quot;Month&quot;</span><span class="p">,</span> <span class="s2">&quot;Team1&quot;</span><span class="p">,</span> <span class="s2">&quot;Team2&quot;</span><span class="p">,</span> <span class="s2">&quot;location&quot;</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span> <span class="c1">#pandas &gt;= 0.17</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">matches_bd</span><span class="p">[</span><span class="n">matches_bd</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;Home&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;week&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;week&#39;</span><span class="p">,</span> <span class="s1">&#39;location&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
     <span class="k">except</span><span class="p">:</span>
-        <span class="n">display</span><span class="p">(</span><span class="n">matches_bd</span><span class="p">[</span><span class="n">matches_bd</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;Home&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s">&#39;week&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;week&#39;</span><span class="p">,</span> <span class="s">&#39;location&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">matches_bd</span><span class="p">[</span><span class="n">matches_bd</span><span class="p">[</span><span class="s1">&#39;location&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;Home&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;week&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;week&#39;</span><span class="p">,</span> <span class="s1">&#39;location&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -13511,6 +13595,19 @@ table.dataframe td {
 
 <div class="output_html rendered_html output_subarea ">
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -13522,50 +13619,50 @@ table.dataframe td {
   </thead>
   <tbody>
     <tr>
-      <th>2</th>
-      <td>February</td>
-      <td>Denver Broncos</td>
+      <th>0</th>
+      <td>January</td>
+      <td>New England Patriots</td>
       <td>Seattle Seahawks</td>
     </tr>
     <tr>
       <th>7</th>
-      <td>February</td>
+      <td>March</td>
       <td>Indianapolis Colts</td>
       <td>New Orleans Saints</td>
     </tr>
     <tr>
-      <th>8</th>
-      <td>February</td>
-      <td>Pittsburgh Steelers</td>
-      <td>Arizona Cardinals</td>
+      <th>3</th>
+      <td>April</td>
+      <td>Denver Broncos</td>
+      <td>Seattle Seahawks</td>
     </tr>
     <tr>
-      <th>10</th>
-      <td>March</td>
+      <th>14</th>
+      <td>May</td>
+      <td>Pittsburgh Steelers</td>
+      <td>Seattle Seahawks</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>May</td>
       <td>New England Patriots</td>
       <td>New York Giants</td>
     </tr>
     <tr>
-      <th>1</th>
-      <td>May</td>
-      <td>New England Patriots</td>
-      <td>Seattle Seahawks</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>July</td>
-      <td>Pittsburgh Steelers</td>
-      <td>Seattle Seahawks</td>
-    </tr>
-    <tr>
       <th>13</th>
-      <td>August</td>
+      <td>June</td>
       <td>Indianapolis Colts</td>
       <td>Chicago Bears</td>
     </tr>
     <tr>
+      <th>9</th>
+      <td>June</td>
+      <td>Pittsburgh Steelers</td>
+      <td>Arizona Cardinals</td>
+    </tr>
+    <tr>
       <th>5</th>
-      <td>August</td>
+      <td>July</td>
       <td>Pittsburgh Steelers</td>
       <td>Green Bay Packers</td>
     </tr>
@@ -13618,6 +13715,19 @@ table.dataframe td {
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Copyright © 2017, 2018 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
+<span style="font-size:18px;color:#152935;">Love this notebook? </span>
+<span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
+<span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+</div>
 </div>
 </div>
 </div>
