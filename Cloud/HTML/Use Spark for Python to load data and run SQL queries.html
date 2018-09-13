@@ -11611,8 +11611,10 @@ ul.typeahead-list > li > a {
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
 .highlight .o { color: #666666 } /* Operator */
+.highlight .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
 .highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
 .highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
 .highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
 .highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
 .highlight .gd { color: #A00000 } /* Generic.Deleted */
@@ -11652,8 +11654,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11664,9 +11668,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style type="text/css">
@@ -11761,6 +11767,7 @@ font-family: 'ibm-plex-sans', 'Helvetica Neue for IBM', 'Helvetica Neue', Helvet
 
 .notebook_app {
 font-size: 0.875rem;
+background-color: transparent;
 }
 
 .notebook_app .container {
@@ -11822,6 +11829,7 @@ background-color: transparent;
 color: #5a6872;
 text-align: right;
 margin-right: 3em;
+line-height: normal;
 }
 
 .notebook_app .navbar-btn.btn-xs {
@@ -11861,20 +11869,37 @@ padding-left: 0;
 }
 
 .notebook_app .btn-group button {
-margin-right: 0.675rem;
-border: none;
-border-radius: 0;
-background-color: transparent;
-padding: 0;
-border-width: 0;
-fill: #3d70b2;
+  margin-right: 0.675rem;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  padding: 0;
+  border-width: 0;
+  font: inherit;
+  fill: #3d70b2;
+  color: #5a6872;
 }
 
 .notebook_app .btn-group button:hover,
 .notebook_app .btn-group button:active,
 .notebook_app .btn-group button:focus {
-fill: #5596e6;
-background-color: transparent;
+  fill: #5596e6;
+  background-color: transparent;
+}
+
+.notebook_app .btn .toolbar-btn-label {
+  vertical-align: middle;
+}
+
+.notebook_app .toolbar .btn-group .btn .fa {
+  color: #3d70b2;
+  font-size: 1rem;
+}
+
+.notebook_app .toolbar .btn-group .btn:hover .fa,
+.notebook_app .toolbar .btn-group .btn:active .fa,
+.notebook_app .toolbar .btn-group .btn:focus .fa {
+  color: #5596e6;
 }
 
 /*ICONS*/
@@ -11902,7 +11927,7 @@ position: relative;
 .notebook_app .toolbar_select::after {
 position: absolute;
 display: block;
-bottom: 0.725rem;
+bottom: 0.575rem;
 right: 1rem;
 width: 0; 
 height: 0; 
@@ -11931,7 +11956,7 @@ margin: 0;
 padding: 0;
 padding-left: 0.5rem;
 padding-right: 2rem;
-height: 2rem;
+height: 1.68rem;
 text-overflow: ellipsis;
 cursor: pointer;
 }
@@ -12012,6 +12037,19 @@ align-items: center;
 align-items: center;
 }
 
+.notebook_app #notebook-container .celltoolbar .tags-input input {
+border: 0;
+background-color: rgba(60, 112, 178, .1);
+font-size: 0.875rem;
+height: 1.68rem;
+border: 1px solid transparent;
+box-sizing: border-box;
+}
+
+.notebook_app #notebook-container .celltoolbar .tags-input input:focus {
+border-color: #3d70b2;
+}
+
 .notebook_app #notebook-container .btn-xs {
 padding: 0 0.5rem;
 line-height: 1;
@@ -12020,7 +12058,7 @@ font-weight: 600;
 text-decoration: none;
 transition: all .2s ease-in-out;
 cursor: pointer;
-height: 2rem;
+height: 1.68rem;
 border: 0.125rem solid #3d70b2;
 background-color: transparent;
 }
@@ -12047,6 +12085,10 @@ background-color: #dfe3e6;
 border-radius: 0.9375rem;
 }
 
+.notebook_app #notebook-container .cell-tag:last-child::after {
+display: none;
+}
+
 .notebook_app #notebook-container .cell-tag .remove-tag-btn {
 color: #3d70b2;
 cursor: pointer;
@@ -12054,6 +12096,26 @@ cursor: pointer;
 
 .notebook_app #notebook-container .cell-tag .remove-tag-btn:hover {
 color: #5596e6;
+}
+
+.notebook_app #notebook-container .input .run_this_cell {
+  padding: 0;
+  padding-top: 0.125rem;
+  width: initial;
+  align-self: flex-start;
+  fill: #3d70b2;
+}
+
+.notebook_app #notebook-container .input .run_this_cell:hover {
+  fill: #5596e6;
+}
+
+.notebook_app #notebook-container .input .prompt {
+  min-width: 13ex;
+}
+
+.notebook_app #notebook-container .prompt {
+  min-width: 16.125ex;
 }
 
 /*DIALOGS*/
@@ -12208,6 +12270,13 @@ color: #5aa700;
 border: none;
 }
 
+#notification_area,
+#notification_notebook,
+#notification_kernel,
+#notification_trusted {
+line-height: normal;
+}
+
 #notification_trusted {
 background-color: transparent;
 padding: 0;
@@ -12219,6 +12288,12 @@ line-height: normal;
 font-size: 0.875rem;
 color: #3d70b2;
 border: none;
+}
+
+#notification_trusted:hover,
+#notification_trusted:active,
+#notification_trusted:focus {
+  color: #5596e6;
 }
 
 /*
@@ -12597,19 +12672,8 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div style="background:#F5F7FA; height:100px; padding: 2em; font-size:14px;">
-<span style="font-size:18px;color:#152935;">Want to do more?</span><span style="border: 1px solid #3d70b2;padding: 15px;float:right;margin-right:40px; color:#3d70b2; "><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
-<span style="color:#5A6872;"> Try out this notebook with your free trial of IBM Watson Studio.</span>
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Use-Spark-for-Python-to-load-data-and-run-SQL-queries">Use Spark for Python to load data and run SQL queries<a class="anchor-link" href="#Use-Spark-for-Python-to-load-data-and-run-SQL-queries">&#182;</a></h1><p>This notebook introduces basic Spark concepts and helps you to start using Spark for Python.</p>
-<p>Some familiarity with Python is recommended. This notebook runs on Python 2 with Spark 2.1.</p>
+<p>Some familiarity with Python is recommended. This notebook runs on Python 2.7 and 3.5 with Spark.</p>
 <p>In this notebook, you'll use the publicly available <strong>mtcars</strong> data set from <em>Motor Trend</em> magazine to learn some basic Python. You'll learn how to load data, create a Spark DataFrame, aggregate data, run mathematical formulas, and run SQL queries against the data.</p>
 
 </div>
@@ -12622,7 +12686,6 @@ div#notebook {
 <h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><p>This notebook contains these main sections:</p>
 <ol>
 <li><a href="#Load_a_DataFrame">Load a DataFrame</a></li>
-<li><a href="#Create_an_SQLContext">Create an SQLContext</a></li>
 <li><a href="#Create_a_Spark_DataFrame">Create a Spark DataFrame</a></li>
 <li><a href="#Aggregate_data_after_grouping_by_columns">Aggregate data after grouping by columns</a></li>
 <li><a href="#Operate_on_columns">Operate on columns</a></li>
@@ -12658,11 +12721,30 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="n">mtcars</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&#39;https://ibm.box.com/shared/static/f1dhhjnzjwxmy2c1ys2whvrgz05d1pui.csv&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">mtcars</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://ibm.box.com/shared/static/f1dhhjnzjwxmy2c1ys2whvrgz05d1pui.csv&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Waiting for a Spark session to start...
+Spark Initialization Done! ApplicationId = app-20180711091957-0000
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -12681,7 +12763,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mtcars</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12700,6 +12782,19 @@ div#notebook {
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -12724,7 +12819,7 @@ div#notebook {
       <td>Mazda RX4</td>
       <td>21.0</td>
       <td>6</td>
-      <td>160</td>
+      <td>160.0</td>
       <td>110</td>
       <td>3.90</td>
       <td>2.620</td>
@@ -12739,7 +12834,7 @@ div#notebook {
       <td>Mazda RX4 Wag</td>
       <td>21.0</td>
       <td>6</td>
-      <td>160</td>
+      <td>160.0</td>
       <td>110</td>
       <td>3.90</td>
       <td>2.875</td>
@@ -12754,7 +12849,7 @@ div#notebook {
       <td>Datsun 710</td>
       <td>22.8</td>
       <td>4</td>
-      <td>108</td>
+      <td>108.0</td>
       <td>93</td>
       <td>3.85</td>
       <td>2.320</td>
@@ -12779,8 +12874,8 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id='Create_an_SQLContext'></a></p>
-<h2 id="2.-Create-an-SQLContext">2. Create an SQLContext<a class="anchor-link" href="#2.-Create-an-SQLContext">&#182;</a></h2><p>To work with a DataFrame, you need an SQLContext class object, and to create a basic one, all you need is a SparkContext. A SparkContext represents the connection to a Spark cluster, and a SparkContext class object named sc, which has been created for you, is used to initialize the SQLContext:</p>
+<p><a id='Create_a_Spark_DataFrame'></a></p>
+<h2 id="2.-Create-a-Spark-DataFrame">2. Create a Spark DataFrame<a class="anchor-link" href="#2.-Create-a-Spark-DataFrame">&#182;</a></h2><p>Using the SQLContext class object and the loaded local DataFrame, create a Spark DataFrame and print the schema, or structure, of the DataFrame:</p>
 
 </div>
 </div>
@@ -12790,30 +12885,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">sqlContext</span> <span class="o">=</span> <span class="n">SQLContext</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id='Create_a_Spark_DataFrame'></a></p>
-<h2 id="3.-Create-a-Spark-DataFrame">3. Create a Spark DataFrame<a class="anchor-link" href="#3.-Create-a-Spark-DataFrame">&#182;</a></h2><p>Using the SQLContext class object and the loaded local DataFrame, create a Spark DataFrame and print the schema, or structure, of the DataFrame:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">sdf</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">mtcars</span><span class="p">)</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">mtcars</span><span class="p">)</span> 
 <span class="n">sdf</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
 </pre></div>
 
@@ -12864,10 +12936,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">sdf</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sdf</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12940,10 +13012,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">sdf</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&#39;mpg&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sdf</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;mpg&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12990,10 +13062,10 @@ only showing top 5 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">sdf</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">sdf</span><span class="p">[</span><span class="s">&#39;mpg&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sdf</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;mpg&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -13041,18 +13113,18 @@ only showing top 5 rows
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id='Aggregate_data_after_grouping_by_columns'></a></p>
-<h2 id="4.-Aggregate-data-after-grouping-by-columns">4. Aggregate data after grouping by columns<a class="anchor-link" href="#4.-Aggregate-data-after-grouping-by-columns">&#182;</a></h2><p>Spark DataFrames support a number of common functions to aggregate data after grouping. For example, you can compute the average weight of cars as a function of the number of cylinders:</p>
+<h2 id="3.-Aggregate-data-after-grouping-by-columns">3. Aggregate data after grouping by columns<a class="anchor-link" href="#3.-Aggregate-data-after-grouping-by-columns">&#182;</a></h2><p>Spark DataFrames support a number of common functions to aggregate data after grouping. For example, you can compute the average weight of cars as a function of the number of cylinders:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">sdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">&#39;cyl&#39;</span><span class="p">])</span>\
-<span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s">&quot;wt&quot;</span><span class="p">:</span> <span class="s">&quot;AVG&quot;</span><span class="p">})</span>\
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;cyl&#39;</span><span class="p">])</span>\
+<span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s2">&quot;wt&quot;</span><span class="p">:</span> <span class="s2">&quot;AVG&quot;</span><span class="p">})</span>\
 <span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -13097,12 +13169,12 @@ only showing top 5 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">car_counts</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s">&#39;cyl&#39;</span><span class="p">])</span>\
-<span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s">&quot;wt&quot;</span><span class="p">:</span> <span class="s">&quot;count&quot;</span><span class="p">})</span>\
-<span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s">&quot;count(wt)&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>\
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">car_counts</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;cyl&#39;</span><span class="p">])</span>\
+<span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s2">&quot;wt&quot;</span><span class="p">:</span> <span class="s2">&quot;count&quot;</span><span class="p">})</span>\
+<span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s2">&quot;count(wt)&quot;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>\
 <span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
@@ -13141,17 +13213,17 @@ only showing top 5 rows
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id='Operate_on_columns'></a></p>
-<h2 id="5.-Operate-on-columns">5. Operate on columns<a class="anchor-link" href="#5.-Operate-on-columns">&#182;</a></h2><p>Python provides a number of functions that you can apply directly to columns for data processing. In the following example, a basic arithmetic function converts lbs to metric tons:</p>
+<h2 id="4.-Operate-on-columns">4. Operate on columns<a class="anchor-link" href="#4.-Operate-on-columns">&#182;</a></h2><p>Python provides a number of functions that you can apply directly to columns for data processing. In the following example, a basic arithmetic function converts lbs to metric tons:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s">&#39;wtTon&#39;</span><span class="p">,</span> <span class="n">sdf</span><span class="p">[</span><span class="s">&#39;wt&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.45</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s">&#39;car&#39;</span><span class="p">,</span><span class="s">&#39;wt&#39;</span><span class="p">,</span><span class="s">&#39;wtTon&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sdf</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s1">&#39;wtTon&#39;</span><span class="p">,</span> <span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;wt&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.45</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;car&#39;</span><span class="p">,</span><span class="s1">&#39;wt&#39;</span><span class="p">,</span><span class="s1">&#39;wtTon&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13193,19 +13265,19 @@ only showing top 6 rows
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id='Run_SQL_queries_from_the_Spark_DataFrame'></a></p>
-<h2 id="6.-Run-SQL-queries-from-the-Spark-DataFrame">6. Run SQL queries from the Spark DataFrame<a class="anchor-link" href="#6.-Run-SQL-queries-from-the-Spark-DataFrame">&#182;</a></h2><p>You can register a Spark DataFrame as a temporary table and then run SQL queries over the data. The <code>sql</code> function enables an application to run SQL queries programmatically and returns the result as a DataFrame:</p>
+<h2 id="5.-Run-SQL-queries-from-the-Spark-DataFrame">5. Run SQL queries from the Spark DataFrame<a class="anchor-link" href="#5.-Run-SQL-queries-from-the-Spark-DataFrame">&#182;</a></h2><p>You can register a Spark DataFrame as a temporary table and then run SQL queries over the data. The <code>sql</code> function enables an application to run SQL queries programmatically and returns the result as a DataFrame:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">sdf</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s">&quot;cars&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sdf</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s2">&quot;cars&quot;</span><span class="p">)</span>
 
-<span class="n">highgearcars</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s">&quot;SELECT car, gear FROM cars WHERE gear &gt;= 5&quot;</span><span class="p">)</span>
+<span class="n">highgearcars</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT car, gear FROM cars WHERE gear &gt;= 5&quot;</span><span class="p">)</span>
 <span class="n">highgearcars</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>    
 </pre></div>
 
@@ -13275,6 +13347,19 @@ only showing top 6 rows
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Copyright © 2016, 2018 Big Data University. This notebook and its source code are released under the terms of the <a href="https://bigdatauniversity.com/mit-license/" rel="noopener noreferrer" target="_blank">MIT License</a>.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
+<span style="font-size:18px;color:#152935;">Love this notebook? </span>
+<span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
+<span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+</div>
 </div>
 </div>
 </div>
