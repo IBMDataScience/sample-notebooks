@@ -11611,8 +11611,10 @@ ul.typeahead-list > li > a {
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
 .highlight .o { color: #666666 } /* Operator */
+.highlight .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
 .highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
 .highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
 .highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
 .highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
 .highlight .gd { color: #A00000 } /* Generic.Deleted */
@@ -11652,8 +11654,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11664,9 +11668,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style type="text/css">
@@ -11761,6 +11767,7 @@ font-family: 'ibm-plex-sans', 'Helvetica Neue for IBM', 'Helvetica Neue', Helvet
 
 .notebook_app {
 font-size: 0.875rem;
+background-color: transparent;
 }
 
 .notebook_app .container {
@@ -11822,6 +11829,7 @@ background-color: transparent;
 color: #5a6872;
 text-align: right;
 margin-right: 3em;
+line-height: normal;
 }
 
 .notebook_app .navbar-btn.btn-xs {
@@ -11861,20 +11869,37 @@ padding-left: 0;
 }
 
 .notebook_app .btn-group button {
-margin-right: 0.675rem;
-border: none;
-border-radius: 0;
-background-color: transparent;
-padding: 0;
-border-width: 0;
-fill: #3d70b2;
+  margin-right: 0.675rem;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  padding: 0;
+  border-width: 0;
+  font: inherit;
+  fill: #3d70b2;
+  color: #5a6872;
 }
 
 .notebook_app .btn-group button:hover,
 .notebook_app .btn-group button:active,
 .notebook_app .btn-group button:focus {
-fill: #5596e6;
-background-color: transparent;
+  fill: #5596e6;
+  background-color: transparent;
+}
+
+.notebook_app .btn .toolbar-btn-label {
+  vertical-align: middle;
+}
+
+.notebook_app .toolbar .btn-group .btn .fa {
+  color: #3d70b2;
+  font-size: 1rem;
+}
+
+.notebook_app .toolbar .btn-group .btn:hover .fa,
+.notebook_app .toolbar .btn-group .btn:active .fa,
+.notebook_app .toolbar .btn-group .btn:focus .fa {
+  color: #5596e6;
 }
 
 /*ICONS*/
@@ -11902,7 +11927,7 @@ position: relative;
 .notebook_app .toolbar_select::after {
 position: absolute;
 display: block;
-bottom: 0.725rem;
+bottom: 0.575rem;
 right: 1rem;
 width: 0; 
 height: 0; 
@@ -11931,7 +11956,7 @@ margin: 0;
 padding: 0;
 padding-left: 0.5rem;
 padding-right: 2rem;
-height: 2rem;
+height: 1.68rem;
 text-overflow: ellipsis;
 cursor: pointer;
 }
@@ -12012,6 +12037,19 @@ align-items: center;
 align-items: center;
 }
 
+.notebook_app #notebook-container .celltoolbar .tags-input input {
+border: 0;
+background-color: rgba(60, 112, 178, .1);
+font-size: 0.875rem;
+height: 1.68rem;
+border: 1px solid transparent;
+box-sizing: border-box;
+}
+
+.notebook_app #notebook-container .celltoolbar .tags-input input:focus {
+border-color: #3d70b2;
+}
+
 .notebook_app #notebook-container .btn-xs {
 padding: 0 0.5rem;
 line-height: 1;
@@ -12020,7 +12058,7 @@ font-weight: 600;
 text-decoration: none;
 transition: all .2s ease-in-out;
 cursor: pointer;
-height: 2rem;
+height: 1.68rem;
 border: 0.125rem solid #3d70b2;
 background-color: transparent;
 }
@@ -12047,6 +12085,10 @@ background-color: #dfe3e6;
 border-radius: 0.9375rem;
 }
 
+.notebook_app #notebook-container .cell-tag:last-child::after {
+display: none;
+}
+
 .notebook_app #notebook-container .cell-tag .remove-tag-btn {
 color: #3d70b2;
 cursor: pointer;
@@ -12054,6 +12096,26 @@ cursor: pointer;
 
 .notebook_app #notebook-container .cell-tag .remove-tag-btn:hover {
 color: #5596e6;
+}
+
+.notebook_app #notebook-container .input .run_this_cell {
+  padding: 0;
+  padding-top: 0.125rem;
+  width: initial;
+  align-self: flex-start;
+  fill: #3d70b2;
+}
+
+.notebook_app #notebook-container .input .run_this_cell:hover {
+  fill: #5596e6;
+}
+
+.notebook_app #notebook-container .input .prompt {
+  min-width: 13ex;
+}
+
+.notebook_app #notebook-container .prompt {
+  min-width: 16.125ex;
 }
 
 /*DIALOGS*/
@@ -12208,6 +12270,13 @@ color: #5aa700;
 border: none;
 }
 
+#notification_area,
+#notification_notebook,
+#notification_kernel,
+#notification_trusted {
+line-height: normal;
+}
+
 #notification_trusted {
 background-color: transparent;
 padding: 0;
@@ -12219,6 +12288,12 @@ line-height: normal;
 font-size: 0.875rem;
 color: #3d70b2;
 border: none;
+}
+
+#notification_trusted:hover,
+#notification_trusted:active,
+#notification_trusted:focus {
+  color: #5596e6;
 }
 
 /*
@@ -12597,19 +12672,8 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div style="background:#F5F7FA; height:100px; padding: 2em; font-size:14px;">
-<span style="font-size:18px;color:#152935;">Want to do more?</span><span style="border: 1px solid #3d70b2;padding: 15px;float:right;margin-right:40px; color:#3d70b2; "><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
-<span style="color:#5A6872;"> Try out this notebook with your free trial of IBM Watson Studio.</span>
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Use-Spark-for-Scala-to-load-data-and-run-SQL-queries">Use Spark for Scala to load data and run SQL queries<a class="anchor-link" href="#Use-Spark-for-Scala-to-load-data-and-run-SQL-queries">&#182;</a></h1><p>This notebook introduces basic Spark concepts and helps you to start using Spark for Scala.</p>
-<p>Some familiarity with Scala is recommended. This notebook runs on Scala 2.11 with Spark 2.1</p>
+<p>Some familiarity with Scala is recommended. This notebook runs on Scala 2.11 with Spark.</p>
 <p>In this notebook, you'll use the publicly available <strong>mtcars</strong> data set from <em>Motor Trend</em> magazine to learn some basic Scala. You'll learn how to load data, create a Spark DataFrame, aggregate data, run mathematical formulas, and run SQL queries against the data.</p>
 
 </div>
@@ -12658,7 +12722,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">import</span> <span class="nn">sys.process._</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">sys.process._</span>
 <span class="k">import</span> <span class="nn">java.net.URL</span>
 <span class="k">import</span> <span class="nn">java.io.File</span>
 
@@ -12679,13 +12743,16 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[1]:</div>
+<div class="prompt"></div>
 
 
 
 
-<div class="output_text output_subarea output_execute_result">
-<pre>&#34;&#34;</pre>
+<div class="output_text output_subarea ">
+<pre>warning: there was one feature warning; re-run with -feature for details
+fileDownloader: (url: String, filename: String)String
+res0: String = &#34;&#34;
+</pre>
 </div>
 
 </div>
@@ -12706,10 +12773,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">import</span> <span class="nn">au.com.bytecode.opencsv.CSVParser</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">au.com.bytecode.opencsv.CSVParser</span>
 <span class="k">val</span> <span class="n">sqlContext</span> <span class="k">=</span> <span class="k">new</span> <span class="n">org</span><span class="o">.</span><span class="n">apache</span><span class="o">.</span><span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="nc">SQLContext</span><span class="o">(</span><span class="n">sc</span><span class="o">)</span>
 <span class="k">import</span> <span class="nn">sqlContext.implicits._</span>
 </pre></div>
@@ -12735,6 +12802,47 @@ div#notebook {
 
 </div>
 
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>sqlContext = org.apache.spark.sql.SQLContext@22663e10
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>warning: there was one deprecation warning; re-run with -deprecation for details
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>org.apache.spark.sql.SQLContext@22663e10</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -12751,10 +12859,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// Define the schema using a case class.</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// Define the schema using a case class.</span>
 <span class="k">case</span> <span class="k">class</span> <span class="nc">Cars</span><span class="o">(</span><span class="n">car</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">mpg</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">cyl</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">disp</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">hp</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">drat</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span>
  <span class="n">wt</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">qsec</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">vs</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">am</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">gear</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">carb</span><span class="k">:</span> <span class="kt">String</span><span class="o">);</span>
 </pre></div>
@@ -12763,13 +12871,34 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>defined class Cars
+</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">csv</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;mtcars.csv&quot;</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">csv</span> <span class="k">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="o">(</span><span class="s">&quot;mtcars.csv&quot;</span><span class="o">)</span>
 <span class="k">val</span> <span class="n">headerAndRows</span> <span class="k">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">line</span> <span class="k">=&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;,&quot;</span><span class="o">).</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">trim</span><span class="o">))</span>
 <span class="k">val</span> <span class="n">header</span> <span class="k">=</span> <span class="n">headerAndRows</span><span class="o">.</span><span class="n">first</span>
 <span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="n">headerAndRows</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="k">_</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">!=</span> <span class="n">header</span><span class="o">(</span><span class="mi">0</span><span class="o">))</span>
@@ -12809,6 +12938,37 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>csv = mtcars.csv MapPartitionsRDD[1] at textFile at &lt;console&gt;:46
+headerAndRows = MapPartitionsRDD[2] at map at &lt;console&gt;:47
+header = Array(car, mpg, cyl, disp, hp, drat, wt, qsec, vs, am, gear, carb)
+data = MapPartitionsRDD[3] at filter at &lt;console&gt;:49
+mtcars = [car: string, mpg: string ... 10 more fields]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[car: string, mpg: string ... 10 more fields]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -12824,10 +12984,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">32</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">mtcars</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">32</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -12900,10 +13060,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;mpg&quot;</span><span class="o">).</span><span class="n">show</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">mtcars</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;mpg&quot;</span><span class="o">).</span><span class="n">show</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -12950,10 +13110,10 @@ only showing top 5 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">mtcars</span><span class="o">(</span><span class="s">&quot;mpg&quot;</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="o">).</span><span class="n">show</span><span class="o">()</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">mtcars</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">mtcars</span><span class="o">(</span><span class="s">&quot;mpg&quot;</span><span class="o">)</span> <span class="o">&lt;</span> <span class="mi">18</span><span class="o">).</span><span class="n">show</span><span class="o">()</span>
 </pre></div>
 
 </div>
@@ -13008,10 +13168,10 @@ only showing top 5 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">import</span> <span class="nn">org.apache.spark.sql.functions._</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.sql.functions._</span>
 <span class="n">mtcars</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="s">&quot;cyl&quot;</span><span class="o">).</span><span class="n">agg</span><span class="o">(</span><span class="n">avg</span><span class="o">(</span><span class="s">&quot;wt&quot;</span><span class="o">)).</span><span class="n">show</span><span class="o">()</span>
 </pre></div>
 
@@ -13029,7 +13189,7 @@ only showing top 5 rows
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[Stage 15:===============================================&gt;        (64 + 3) / 75]+---+-----------------+
+<pre>+---+-----------------+
 |cyl|          avg(wt)|
 +---+-----------------+
 |  8|3.999214285714286|
@@ -13055,10 +13215,10 @@ only showing top 5 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="s">&quot;cyl&quot;</span><span class="o">).</span><span class="n">agg</span><span class="o">(</span><span class="n">count</span><span class="o">(</span><span class="s">&quot;wt&quot;</span><span class="o">)).</span><span class="n">sort</span><span class="o">(</span><span class="n">$</span><span class="s">&quot;count(wt)&quot;</span><span class="o">.</span><span class="n">desc</span><span class="o">).</span><span class="n">show</span><span class="o">()</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">mtcars</span><span class="o">.</span><span class="n">groupBy</span><span class="o">(</span><span class="s">&quot;cyl&quot;</span><span class="o">).</span><span class="n">agg</span><span class="o">(</span><span class="n">count</span><span class="o">(</span><span class="s">&quot;wt&quot;</span><span class="o">)).</span><span class="n">sort</span><span class="o">(</span><span class="n">$</span><span class="s">&quot;count(wt)&quot;</span><span class="o">.</span><span class="n">desc</span><span class="o">).</span><span class="n">show</span><span class="o">()</span>
 </pre></div>
 
 </div>
@@ -13075,7 +13235,7 @@ only showing top 5 rows
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[Stage 17:=====================================================&gt;(199 + 1) / 200]+---+---------+
+<pre>+---+---------+
 |cyl|count(wt)|
 +---+---------+
 |  8|       14|
@@ -13103,10 +13263,10 @@ only showing top 5 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">withColumn</span><span class="o">(</span><span class="s">&quot;wtTon&quot;</span><span class="o">,</span> <span class="n">mtcars</span><span class="o">(</span><span class="s">&quot;wt&quot;</span><span class="o">)</span> <span class="o">*</span> <span class="mf">0.45</span><span class="o">).</span><span class="n">select</span><span class="o">((</span><span class="s">&quot;car&quot;</span><span class="o">),(</span><span class="s">&quot;wt&quot;</span><span class="o">),(</span><span class="s">&quot;wtTon&quot;</span><span class="o">)).</span><span class="n">show</span><span class="o">(</span><span class="mi">6</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">mtcars</span><span class="o">.</span><span class="n">withColumn</span><span class="o">(</span><span class="s">&quot;wtTon&quot;</span><span class="o">,</span> <span class="n">mtcars</span><span class="o">(</span><span class="s">&quot;wt&quot;</span><span class="o">)</span> <span class="o">*</span> <span class="mf">0.45</span><span class="o">).</span><span class="n">select</span><span class="o">((</span><span class="s">&quot;car&quot;</span><span class="o">),(</span><span class="s">&quot;wt&quot;</span><span class="o">),(</span><span class="s">&quot;wtTon&quot;</span><span class="o">)).</span><span class="n">show</span><span class="o">(</span><span class="mi">6</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -13155,10 +13315,10 @@ only showing top 6 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">mtcars</span><span class="o">.</span><span class="n">registerTempTable</span><span class="o">(</span><span class="s">&quot;cars&quot;</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">mtcars</span><span class="o">.</span><span class="n">registerTempTable</span><span class="o">(</span><span class="s">&quot;cars&quot;</span><span class="o">)</span>
 
 <span class="k">val</span> <span class="n">highgearcars</span> <span class="k">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="o">(</span><span class="s">&quot;SELECT car, gear FROM cars WHERE gear &gt;= 5&quot;</span><span class="o">)</span>
 <span class="n">highgearcars</span><span class="o">.</span><span class="n">show</span><span class="o">()</span>
@@ -13190,6 +13350,47 @@ only showing top 6 rows
 
 </pre>
 </div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>highgearcars = [car: string, gear: string]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>warning: there was one deprecation warning; re-run with -deprecation for details
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[14]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[car: string, gear: string]</pre>
+</div>
+
 </div>
 
 </div>
@@ -13230,6 +13431,19 @@ only showing top 6 rows
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Copyright © 2016, 2018 Big Data University. This notebook and its source code are released under the terms of the <a href="https://bigdatauniversity.com/mit-license/" rel="noopener noreferrer" target="_blank">MIT License</a>.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
+<span style="font-size:18px;color:#152935;">Love this notebook? </span>
+<span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
+<span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+</div>
 </div>
 </div>
 </div>
