@@ -11611,8 +11611,10 @@ ul.typeahead-list > li > a {
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
 .highlight .o { color: #666666 } /* Operator */
+.highlight .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
 .highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
 .highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
 .highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
 .highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
 .highlight .gd { color: #A00000 } /* Generic.Deleted */
@@ -11652,8 +11654,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11664,9 +11668,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style type="text/css">
@@ -11863,20 +11869,37 @@ padding-left: 0;
 }
 
 .notebook_app .btn-group button {
-margin-right: 0.675rem;
-border: none;
-border-radius: 0;
-background-color: transparent;
-padding: 0;
-border-width: 0;
-fill: #3d70b2;
+  margin-right: 0.675rem;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  padding: 0;
+  border-width: 0;
+  font: inherit;
+  fill: #3d70b2;
+  color: #5a6872;
 }
 
 .notebook_app .btn-group button:hover,
 .notebook_app .btn-group button:active,
 .notebook_app .btn-group button:focus {
-fill: #5596e6;
-background-color: transparent;
+  fill: #5596e6;
+  background-color: transparent;
+}
+
+.notebook_app .btn .toolbar-btn-label {
+  vertical-align: middle;
+}
+
+.notebook_app .toolbar .btn-group .btn .fa {
+  color: #3d70b2;
+  font-size: 1rem;
+}
+
+.notebook_app .toolbar .btn-group .btn:hover .fa,
+.notebook_app .toolbar .btn-group .btn:active .fa,
+.notebook_app .toolbar .btn-group .btn:focus .fa {
+  color: #5596e6;
 }
 
 /*ICONS*/
@@ -12075,6 +12098,26 @@ cursor: pointer;
 color: #5596e6;
 }
 
+.notebook_app #notebook-container .input .run_this_cell {
+  padding: 0;
+  padding-top: 0.125rem;
+  width: initial;
+  align-self: flex-start;
+  fill: #3d70b2;
+}
+
+.notebook_app #notebook-container .input .run_this_cell:hover {
+  fill: #5596e6;
+}
+
+.notebook_app #notebook-container .input .prompt {
+  min-width: 13ex;
+}
+
+.notebook_app #notebook-container .prompt {
+  min-width: 16.125ex;
+}
+
 /*DIALOGS*/
 .notebook_app .modal-dialog {
 color: #5a6872;
@@ -12245,6 +12288,12 @@ line-height: normal;
 font-size: 0.875rem;
 color: #3d70b2;
 border: none;
+}
+
+#notification_trusted:hover,
+#notification_trusted:active,
+#notification_trusted:focus {
+  color: #5596e6;
 }
 
 /*
@@ -12623,21 +12672,10 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div style="background:#F5F7FA; height:100px; padding: 2em; font-size:14px;">
-<span style="font-size:18px;color:#152935;">Want to do more?</span><span style="border: 1px solid #3d70b2;padding: 15px;float:right;margin-right:40px; color:#3d70b2; "><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
-<span style="color:#5A6872;"> Try out this notebook with your free trial of IBM Watson Studio.</span>
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Model-a-Golomb-ruler-problem-by-using-decision-optimization">Model a Golomb ruler problem by using decision optimization<a class="anchor-link" href="#Model-a-Golomb-ruler-problem-by-using-decision-optimization">&#182;</a></h1><p>Decision optimization is used for planning decisions, scheduling, and helping you make a data-based decision when large numbers of options are up for consideration.</p>
 <p>This Python notebook shows you how to set up a decision optimization engine and create a constraint programming model that calculates and outputs a Golomb ruler.</p>
 <p>In this notebook, you will model the Golomb ruler problem by using the <a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization for Python</a> API and solve it in IBM Decision Optimization on Cloud.</p>
-<p>This notebook runs on Python 2.0 or Python 3.5 with Spark 2.1.</p>
+<p>This notebook runs on Python 2.0 or Python 3.5 with Spark.</p>
 <p>Table of contents:</p>
 <ul>
 <li><a href="#golomb_ruler">What is a Golomb ruler?</a></li>
@@ -12734,15 +12772,9 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="kn">import</span> <span class="nn">sys</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">docplex.cp</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s">&#39;real_prefix&#39;</span><span class="p">):</span>
-        <span class="c">#we are in a virtual env.</span>
-        <span class="o">!</span>pip install docplex
-    <span class="k">else</span><span class="p">:</span>
-        <span class="o">!</span>pip install --user docplex
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install docplex
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">docplex.cp</span>
 </pre></div>
 
 </div>
@@ -12780,9 +12812,9 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Initialize IBM Decision Optimization credentials</span>
-<span class="n">SVC_URL</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="c">#ENTER URL HERE</span>
-<span class="n">SVC_KEY</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="c"># ENTER KEY HERE</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Initialize IBM Decision Optimization credentials</span>
+<span class="n">SVC_URL</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="c1">#ENTER URL HERE</span>
+<span class="n">SVC_KEY</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="c1"># ENTER KEY HERE</span>
 </pre></div>
 
 </div>
@@ -12804,7 +12836,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Import Constraint Programming modelization functions</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Import Constraint Programming modelization functions</span>
 <span class="kn">from</span> <span class="nn">docplex.cp.model</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 
@@ -12828,7 +12860,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Define required number of marks on the ruler</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Define required number of marks on the ruler</span>
 <span class="n">ORDER</span> <span class="o">=</span> <span class="mi">7</span>
 </pre></div>
 
@@ -12853,7 +12885,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Create model object</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create model object</span>
 <span class="n">mdl</span> <span class="o">=</span> <span class="n">CpoModel</span><span class="p">()</span>
 </pre></div>
 
@@ -12879,8 +12911,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Create array of variables corresponding to ruler marks</span>
-<span class="n">marks</span> <span class="o">=</span> <span class="n">integer_var_list</span><span class="p">(</span><span class="n">ORDER</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">ORDER</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;M&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create array of variables corresponding to ruler marks</span>
+<span class="n">marks</span> <span class="o">=</span> <span class="n">integer_var_list</span><span class="p">(</span><span class="n">ORDER</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">ORDER</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12903,7 +12935,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Create an array with all distances between all marks</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create an array with all distances between all marks</span>
 <span class="n">dist</span> <span class="o">=</span> <span class="p">[</span><span class="n">marks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">marks</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ORDER</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">)]</span>
 </pre></div>
 
@@ -12927,7 +12959,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Force all distances to be different</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Force all distances to be different</span>
 <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">all_diff</span><span class="p">(</span><span class="n">dist</span><span class="p">))</span>
 </pre></div>
 
@@ -12960,7 +12992,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Avoid symmetric solutions by ordering marks</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Avoid symmetric solutions by ordering marks</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ORDER</span><span class="p">):</span>
     <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">marks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">marks</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
 </pre></div>
@@ -12984,7 +13016,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Force first mark position to zero</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Force first mark position to zero</span>
 <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">marks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 
@@ -13008,7 +13040,7 @@ The following constraint ensures that the reverse order won't occur:</p>
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Avoid mirror solution</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Avoid mirror solution</span>
 <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">marks</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">marks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">marks</span><span class="p">[</span><span class="n">ORDER</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">marks</span><span class="p">[</span><span class="n">ORDER</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]))</span>
 </pre></div>
 
@@ -13033,7 +13065,7 @@ The following constraint ensures that the reverse order won't occur:</p>
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Minimize ruler size</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Minimize ruler size</span>
 <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">minimize</span><span class="p">(</span><span class="n">marks</span><span class="p">[</span><span class="n">ORDER</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
 </pre></div>
 
@@ -13065,15 +13097,33 @@ The following constraint ensures that the reverse order won't occur:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Solve the model</span>
-<span class="nb">print</span><span class="p">(</span><span class="s">&quot;Solving model....&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Solve the model</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solving model....&quot;</span><span class="p">)</span>
 <span class="n">msol</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">SVC_URL</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">SVC_KEY</span><span class="p">,</span> <span class="n">TimeLimit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Solving model....
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13093,8 +13143,8 @@ The following constraint ensures that the reverse order won't occur:</p>
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Print solution</span>
-<span class="nb">print</span><span class="p">(</span><span class="s">&quot;Solution: &quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Print solution</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solution: &quot;</span><span class="p">)</span>
 <span class="n">msol</span><span class="o">.</span><span class="n">print_solution</span><span class="p">()</span>
 </pre></div>
 
@@ -13116,16 +13166,19 @@ The following constraint ensures that the reverse order won't occur:</p>
 -------------------------------------------------------------------------------
 Model constraints: 9, variables: integer: 7, interval: 0, sequence: 0
 Solve status: Optimal
-Solve time: 4.25 sec
+Search status: SearchCompleted, stop cause: SearchHasNotBeenStopped
+Solve time: 5.03 sec
 -------------------------------------------------------------------------------
 Objective values: (25,)
-M0: 0
-M1: 1
-M2: 4
-M3: 10
-M4: 18
-M5: 23
-M6: 25
+          bounds: (25,)
+          gaps: (0.0,)
+M_0: 0
+M_1: 1
+M_2: 11
+M_3: 16
+M_4: 19
+M_5: 23
+M_6: 25
 </pre>
 </div>
 </div>
@@ -13149,19 +13202,19 @@ M6: 25
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Print solution</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Print solution</span>
 <span class="kn">from</span> <span class="nn">sys</span> <span class="k">import</span> <span class="n">stdout</span>
 <span class="k">if</span> <span class="n">msol</span><span class="p">:</span>
-    <span class="c"># Print found solution</span>
-    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;Solution: &quot;</span> <span class="o">+</span> <span class="n">msol</span><span class="o">.</span><span class="n">get_solve_status</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
-    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;Position of ruler marks: &quot;</span><span class="p">)</span>
+    <span class="c1"># Print found solution</span>
+    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Solution: &quot;</span> <span class="o">+</span> <span class="n">msol</span><span class="o">.</span><span class="n">get_solve_status</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Position of ruler marks: &quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">marks</span><span class="p">:</span>
-        <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">msol</span><span class="p">[</span><span class="n">v</span><span class="p">]))</span>
-    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
-    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;Solve time: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">msol</span><span class="o">.</span><span class="n">get_solve_time</span><span class="p">(),</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="s">&quot;s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">msol</span><span class="p">[</span><span class="n">v</span><span class="p">]))</span>
+    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Solve time: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">msol</span><span class="o">.</span><span class="n">get_solve_time</span><span class="p">(),</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;s</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="c"># No solution found</span>
-    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;No solution found. Search status: &quot;</span> <span class="o">+</span> <span class="n">msol</span><span class="o">.</span><span class="n">get_solve_status</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="c1"># No solution found</span>
+    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;No solution found. Search status: &quot;</span> <span class="o">+</span> <span class="n">msol</span><span class="o">.</span><span class="n">get_solve_status</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13179,8 +13232,8 @@ M6: 25
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Solution: Optimal
-Position of ruler marks:  0 1 4 10 18 23 25
-Solve time: 4.25s
+Position of ruler marks:  0 1 11 16 19 23 25
+Solve time: 5.03s
 </pre>
 </div>
 </div>
@@ -13203,12 +13256,12 @@ Solve time: 4.25s
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span class="c"># Print solution as a ruler</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Print solution as a ruler</span>
 <span class="k">if</span> <span class="n">msol</span><span class="p">:</span>
-    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;Ruler: +&quot;</span><span class="p">)</span>
+    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Ruler: +&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ORDER</span><span class="p">):</span>
-        <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;-&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">msol</span><span class="p">[</span><span class="n">marks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">-</span> <span class="n">msol</span><span class="p">[</span><span class="n">marks</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;+&#39;</span><span class="p">)</span>
-    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">msol</span><span class="p">[</span><span class="n">marks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">-</span> <span class="n">msol</span><span class="p">[</span><span class="n">marks</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;+&#39;</span><span class="p">)</span>
+    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13225,7 +13278,7 @@ Solve time: 4.25s
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Ruler: ++--+-----+-------+----+-+
+<pre>Ruler: ++---------+----+--+---+-+
 </pre>
 </div>
 </div>
@@ -13275,6 +13328,19 @@ Solve time: 4.25s
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Copyright © 2017, 2018 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
+<span style="font-size:18px;color:#152935;">Love this notebook? </span>
+<span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
+<span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+</div>
 </div>
 </div>
 </div>
