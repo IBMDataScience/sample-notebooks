@@ -11611,8 +11611,10 @@ ul.typeahead-list > li > a {
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
 .highlight .o { color: #666666 } /* Operator */
+.highlight .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
 .highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
 .highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
 .highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
 .highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
 .highlight .gd { color: #A00000 } /* Generic.Deleted */
@@ -11652,8 +11654,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11664,9 +11668,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style type="text/css">
@@ -12090,6 +12096,26 @@ cursor: pointer;
 
 .notebook_app #notebook-container .cell-tag .remove-tag-btn:hover {
 color: #5596e6;
+}
+
+.notebook_app #notebook-container .input .run_this_cell {
+  padding: 0;
+  padding-top: 0.125rem;
+  width: initial;
+  align-self: flex-start;
+  fill: #3d70b2;
+}
+
+.notebook_app #notebook-container .input .run_this_cell:hover {
+  fill: #5596e6;
+}
+
+.notebook_app #notebook-container .input .prompt {
+  min-width: 13ex;
+}
+
+.notebook_app #notebook-container .prompt {
+  min-width: 16.125ex;
 }
 
 /*DIALOGS*/
@@ -12646,17 +12672,6 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div style="background:#F5F7FA; height:100px; padding: 2em; font-size:14px;">
-<span style="font-size:18px;color:#152935;">Want to do more?</span><span style="border: 1px solid #3d70b2;padding: 15px;float:right;margin-right:40px; color:#3d70b2; "><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
-<span style="color:#5A6872;"> Try out this notebook with your free trial of IBM Watson Studio.</span>
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Connect-to-Db2-Warehouse-on-Cloud-and-Db2-using-Scala">Connect to Db2 Warehouse on Cloud and Db2 using Scala<a class="anchor-link" href="#Connect-to-Db2-Warehouse-on-Cloud-and-Db2-using-Scala">&#182;</a></h1><p>This notebook shows how to access Db2 Warehouse on Cloud (or a Db2 database) using Scala by following the steps below:</p>
 <ol>
 <li>Import the JDBC library</li>
@@ -12666,7 +12681,7 @@ div#notebook {
 <li>Close the database connection</li>
 </ol>
 <h2 id="What-is-Db2-Warehouse-on-Cloud-?">What is Db2 Warehouse on Cloud ?<a class="anchor-link" href="#What-is-Db2-Warehouse-on-Cloud-?">&#182;</a></h2><p><strong>Db2 Warehouse on Cloud</strong> is a fully-managed, enterprise-class, cloud data warehouse service, purpose-built for analytics. It offers massively parallel processing (MPP) scale, and compatibility with a wide range of business intelligence (BI) tools.</p>
-<p><a href="https://console.ng.bluemix.net/catalog/services/dashdb">Get your own Db2 Warehouse on Cloud.</a></p>
+<p><a href="https://console.ng.bluemix.net/catalog/services/dashdb" target="_blank" rel="noopener noreferrer">Get your own Db2 Warehouse on Cloud</a>.</p>
 <h2 id="Import-the-JDBC-library">Import the JDBC library<a class="anchor-link" href="#Import-the-JDBC-library">&#182;</a></h2><p>Scala code gets compiled into byte code that runs on a Java™ virtual machine (JVM), which allows Scala applications to directly call Java libraries. Therefore, accessing Db2 Warehouse on Cloud from a Scala application is simply a matter of using the existing JDBC driver for Db2: the IBM Data Server Driver for JDBC and SQLJ.</p>
 
 </div>
@@ -12677,7 +12692,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">import</span> <span class="nn">com.ibm.db2.jcc._</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">com.ibm.db2.jcc._</span>
 <span class="k">import</span> <span class="nn">java.sql.</span><span class="o">{</span><span class="nc">Connection</span><span class="o">,</span> <span class="nc">DriverManager</span><span class="o">,</span> <span class="nc">ResultSet</span><span class="o">};</span>
 <span class="n">java</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="nc">DriverManager</span><span class="o">.</span><span class="n">registerDriver</span><span class="o">(</span><span class="k">new</span> <span class="n">com</span><span class="o">.</span><span class="n">ibm</span><span class="o">.</span><span class="n">db2</span><span class="o">.</span><span class="n">jcc</span><span class="o">.</span><span class="nc">DB2Driver</span><span class="o">)</span>
 </pre></div>
@@ -12737,7 +12752,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">//val connection = java.sql.DriverManager.getConnection(jdbcurl, dsn_username, dsn_password)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">//val connection = java.sql.DriverManager.getConnection(jdbcurl, dsn_username, dsn_password)</span>
 <span class="k">val</span> <span class="n">connection</span> <span class="k">=</span> <span class="n">java</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="nc">DriverManager</span><span class="o">.</span><span class="n">getConnection</span><span class="o">(</span><span class="s">&quot;jdbc:db2://dashdb-entry-yp-dal10-01.services.dal.bluemix.net:50000/BLUDB&quot;</span><span class="o">,</span> <span class="s">&quot;your_username&quot;</span><span class="o">,</span> <span class="s">&quot;your_password&quot;</span><span class="o">)</span>
 <span class="n">connection</span>
 </pre></div>
@@ -12752,13 +12767,27 @@ div#notebook {
 
 <div class="output_area">
 
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>connection = com.ibm.db2.jcc.t4.b@5631c053
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
 <div class="prompt output_prompt">Out[2]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>com.ibm.db2.jcc.t4.b@7995bf98</pre>
+<pre>com.ibm.db2.jcc.t4.b@5631c053</pre>
 </div>
 
 </div>
@@ -12795,7 +12824,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">query</span> <span class="k">=</span> <span class="s">&quot;select * from gosalesdw.emp_employee_dim LIMIT 10&quot;</span><span class="o">;</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">query</span> <span class="k">=</span> <span class="s">&quot;select * from gosalesdw.emp_employee_dim LIMIT 10&quot;</span><span class="o">;</span>
 <span class="k">val</span> <span class="n">resultSet</span> <span class="k">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">createStatement</span><span class="o">.</span><span class="n">executeQuery</span><span class="o">(</span><span class="n">query</span><span class="o">)</span>
 <span class="k">while</span> <span class="o">(</span> <span class="n">resultSet</span><span class="o">.</span><span class="n">next</span><span class="o">()</span> <span class="o">)</span> <span class="o">{</span>
     <span class="k">val</span> <span class="n">name</span> <span class="k">=</span> <span class="n">resultSet</span><span class="o">.</span><span class="n">getString</span><span class="o">(</span><span class="s">&quot;EMPLOYEE_NAME&quot;</span><span class="o">)</span>
@@ -12818,18 +12847,46 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Employee key, name = 4001, Élizabeth Michel
-Employee key, name = 4002, Émile Clermont
-Employee key, name = 4003, Étienne Jauvin
+<pre>Employee key, name = 4001, ?lizabeth Michel
+Employee key, name = 4002, ?mile Clermont
+Employee key, name = 4003, ?tienne Jauvin
 Employee key, name = 4004, Frank Fuhlroth
 Employee key, name = 4005, Gunter Erler
-Employee key, name = 4006, Björn Winkler
-Employee key, name = 4007, Björn Winkler
+Employee key, name = 4006, Bj?rn Winkler
+Employee key, name = 4007, Bj?rn Winkler
 Employee key, name = 4008, Belinda Jansen-Velasquez
 Employee key, name = 4009, Ellen Shapiro
 Employee key, name = 4010, Maria Laponder
 </pre>
 </div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>query = select * from gosalesdw.emp_employee_dim LIMIT 10
+resultSet = com.ibm.db2.jcc.t4.h@69ef4bf8
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[3]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>com.ibm.db2.jcc.t4.h@69ef4bf8</pre>
+</div>
+
 </div>
 
 </div>
@@ -12850,7 +12907,7 @@ Employee key, name = 4010, Maria Laponder
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="o">()</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="o">()</span>
 </pre></div>
 
 </div>
@@ -12883,6 +12940,19 @@ Employee key, name = 4010, Maria Laponder
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Copyright © 2016, 2018 Cognitive Class. This notebook and its source code are released under the terms of the <a href="https://bigdatauniversity.com/mit-license/" rel="noopener noreferrer" target="_blank">MIT License</a>.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
+<span style="font-size:18px;color:#152935;">Love this notebook? </span>
+<span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
+<span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+</div>
 </div>
 </div>
 </div>
