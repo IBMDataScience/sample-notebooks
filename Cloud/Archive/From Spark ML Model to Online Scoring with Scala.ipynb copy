@@ -1,0 +1,1256 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<div style=\"background:#F5F7FA; height:100px; padding: 2em; font-size:14px;\">\n",
+    "<span style=\"font-size:18px;color:#152935;\">Want to do more?</span><span style=\"border: 1px solid #3d70b2;padding: 15px;float:right;margin-right:40px; color:#3d70b2; \"><a href=\"https://ibm.co/wsnotebooks\" target=\"_blank\" style=\"color: #3d70b2;text-decoration: none;\">Sign Up</a></span><br>\n",
+    "<span style=\"color:#5A6872;\"> Try out this notebook with your free trial of IBM Watson Studio.</span>\n",
+    "</div>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true
+   },
+   "source": [
+    "<table style=\"border: none\" align=\"left\">\n",
+    "   <tr style=\"border: none\">\n",
+    "      <th style=\"border: none\"><font face=\"verdana\" size=\"5\" color=\"black\"><b>Predict Outdoor Equipment Purchase with IBM Watson Machine Learning</b></th>\n",
+    "      <th style=\"border: none\"><img src=\"https://github.com/pmservice/customer-satisfaction-prediction/blob/master/app/static/images/ml_icon_gray.png?raw=true\" alt=\"Watson Machine Learning icon\" height=\"40\" width=\"40\"></th>\n",
+    "   </tr>\n",
+    "   <tr style=\"border: none\">\n",
+    "       <th style=\"border: none\"><img src=\"https://github.com/pmservice/wml-sample-models/blob/master/spark/product-line-prediction/images/products_graphics.png?raw=true\" alt=\"Icon\" width=\"800\"> </th>\n",
+    "   </tr>\n",
+    "</table>"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This notebook contains steps and code to get data from the IBM Watson Studio Community, create a predictive model, and start scoring new data. This notebook introduces commands for getting data and for basic data cleaning and exploration, pipeline creation, model training, model persistance to Watson Machine Learning repository, model deployment, and scoring.\n",
+    "\n",
+    "Some familiarity with Scala is helpful. This notebook uses Scala 2.11 and Apache® Spark 2.1.\n",
+    "\n",
+    "You will use a publicly available data set, **GoSales Transactions for Naive Bayes Model**, which details anonymous outdoor equipment purchases. Use the details of this data set to predict clients' interests in terms of product line, such as golf accessories, camping equipment, and others.\n",
+    "\n",
+    "## Learning goals\n",
+    "\n",
+    "The learning goals of this notebook are:\n",
+    "\n",
+    "-  Load a CSV file into an Apache® Spark DataFrame.\n",
+    "-  Explore data.\n",
+    "-  Prepare data for training and evaluation.\n",
+    "-  Create an Apache® Spark machine learning pipeline.\n",
+    "-  Train and evaluate a model.\n",
+    "-  Persist a pipeline and model in Watson Machine Learning repository.\n",
+    "-  Deploy a model for online scoring using Wastson Machine Learning API.\n",
+    "-  Score sample scoring data using the Watson Machine Learning API.\n",
+    "\n",
+    "\n",
+    "## Contents\n",
+    "\n",
+    "This notebook contains the following parts:\n",
+    "\n",
+    "1.\t[Setup](#setup)\n",
+    "2.\t[Load and explore data](#load)\n",
+    "3.\t[Create spark ml model](#model)\n",
+    "4.\t[Persist model](#persistence)\n",
+    "5.\t[Predict locally and visualize](#visualization)\n",
+    "6.\t[Deploy and score in a Cloud](#scoring)\n",
+    "7.\t[Summary and next steps](#summary)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<a id=\"setup\"></a>\n",
+    "## 1. Setup\n",
+    "\n",
+    "Before you use the sample code in this notebook, you must perform the following setup tasks:\n",
+    "\n",
+    "-  Create a <a href=\"https://console.ng.bluemix.net/catalog/services/machine-learning/\" target=\"_blank\" rel=\"noopener noreferrer\">Watson Machine Learning Service</a>() instance (a free plan is offered). \n",
+    "-  Upload **GoSales Transactions** data as a data asset in IBM Watson Studio.\n",
+    "-  Make sure that you are using a Spark 2.1 kernel.\n",
+    "\n",
+    "### Create the GoSales Transactions Data Asset  \n",
+    "\n",
+    "The GOSales data is a freely available data set on the Watson Studio home page.\n",
+    "\n",
+    "1.  Go to the [GoSales Transactions for Naive Bayes Model](https://dataplatform.ibm.com/exchange-api/v1/entries/8044492073eb964f46597b4be06ff5ea/data?accessKey=be1716215c903d60be9275d6ef33c67a) data card on the Watson Studio **Community** page and open the card by double-clicking it.\n",
+    "2.  Click the link icon.\n",
+    "4.  Select the link, copy it by pressing Ctrl+C, and then, click **Close**.\n",
+    "5.  In the following cell, replace the **link_to_data** variable value with the link."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<a id=\"load\"></a>\n",
+    "## 2. Load and explore data\n",
+    "\n",
+    "In this section you will load the data as an Apache® Spark DataFrame and perform a basic exploration.\n",
+    "\n",
+    "Load the data to the Spark DataFrame by using *wget* to upload the data to gpfs and then *read* method. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "--2018-03-07 04:18:26--  https://dataplatform.ibm.com/exchange-api/v1/entries/8044492073eb964f46597b4be06ff5ea/data?accessKey=be1716215c903d60be9275d6ef33c67a\n",
+      "Resolving dataplatform.ibm.com (dataplatform.ibm.com)... 169.54.245.70\n",
+      "Connecting to dataplatform.ibm.com (dataplatform.ibm.com)|169.54.245.70|:443... connected.\n",
+      "HTTP request sent, awaiting response... 200 OK\n",
+      "Length: unspecified [application/octet-stream]\n",
+      "Saving to: ‘data?accessKey=be1716215c903d60be9275d6ef33c67a.3’\n",
+      "\n",
+      "     0K .......... .......... .......... .......... .......... 15.9M\n",
+      "    50K .......... .......... .......... .......... .......... 15.0M\n",
+      "   100K .......... .......... .......... .......... .......... 12.3M\n",
+      "   150K .......... .......... .......... .......... .......... 1.10M\n",
+      "   200K .......... .......... .......... .......... .......... 2.70M\n",
+      "   250K .......... .......... .......... .......... .......... 4.29M\n",
+      "   300K .......... .......... .......... .......... .......... 47.0M\n",
+      "   350K .......... .......... .......... .......... .......... 3.18M\n",
+      "   400K .......... .......... .......... .......... .......... 19.1M\n",
+      "   450K .......... .......... .......... .......... .......... 1.19M\n",
+      "   500K .......... .......... .......... .......... .......... 20.8M\n",
+      "   550K .......... .......... .......... .......... .......... 4.29M\n",
+      "   600K .......... .......... .......... .......... .......... 4.95M\n",
+      "   650K .......... .......... .......... .......... .......... 11.6M\n",
+      "   700K .......... .......... .......... .......... .......... 5.06M\n",
+      "   750K .......... .......... .......... .......... .......... 47.8M\n",
+      "   800K .......... .......... .......... .......... .......... 9.51M\n",
+      "   850K .......... .......... .......... .......... .......... 7.93M\n",
+      "   900K .......... .......... .......... .......... .......... 24.6M\n",
+      "   950K .......... .......... .......... .......... .......... 6.84M\n",
+      "  1000K .......... .......... .......... .......... .......... 12.0M\n",
+      "  1050K .......... .......... .......... .......... .......... 18.0M\n",
+      "  1100K .......... .......... .......... .......... .......... 25.7M\n",
+      "  1150K .......... .......... .......... .......... .......... 5.51M\n",
+      "  1200K .......... .......... .......... .......... .......... 17.2M\n",
+      "  1250K .......... .......... .......... .......... .......... 24.7M\n",
+      "  1300K .......... .......... .......... .......... .......... 17.7M\n",
+      "  1350K .......... .......... .......... .......... .......... 45.5M\n",
+      "  1400K .......... .......... .......... .......... .......... 16.4M\n",
+      "  1450K .......... .......... .......... .......... .......... 13.8M\n",
+      "  1500K .......... .......... .......... .......... .......... 13.4M\n",
+      "  1550K .......... .......... .......... .......... .......... 2.32M\n",
+      "  1600K .......... .......... .......... .......... .......... 27.3M\n",
+      "  1650K .......... .......... .......... .......... .......... 1.94M\n",
+      "  1700K .......... .......... .......... .......... .......... 3.45M\n",
+      "  1750K .......... .......... .......... .......... .......... 2.78M\n",
+      "  1800K .......... .......... .......... .......... .......... 20.3M\n",
+      "  1850K .......... .......... .......... .......... .......... 11.3M\n",
+      "  1900K .......... .......... .......... .......... .......... 10.9M\n",
+      "  1950K .......... .......... .......... .......... .......... 8.38M\n",
+      "  2000K .......... .......... .......... .......... .......... 28.4M\n",
+      "  2050K .......... .......... .......... .......... .......... 6.86M\n",
+      "  2100K .......... .......... .......... .......... .......... 19.7M\n",
+      "  2150K .......... .......... .......... .......... .......... 14.7M\n",
+      "  2200K .......... .......... .......... .......... .......... 32.7M\n",
+      "  2250K .......... .......... .......... .......... .......... 13.1M\n",
+      "  2300K .......... .......... .......... .......... .......... 18.5M\n",
+      "  2350K .......... .......... .......... .......... .......... 25.1M\n",
+      "  2400K .......... .......... .......... .......... .......... 15.6M\n",
+      "  2450K .                                                      12.3M=0.4s\n",
+      "\n",
+      "2018-03-07 04:18:27 (6.58 MB/s) - ‘data?accessKey=be1716215c903d60be9275d6ef33c67a.3’ saved [2510539]\n",
+      "\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "0"
+      ]
+     },
+     "execution_count": 1,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "import scala.sys.process._\n",
+    "\n",
+    "\"wget https://dataplatform.ibm.com/exchange-api/v1/entries/8044492073eb964f46597b4be06ff5ea/data?accessKey=be1716215c903d60be9275d6ef33c67a\".!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val filename = \"data?accessKey=be1716215c903d60be9275d6ef33c67a\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Waiting for a Spark session to start..."
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[Stage 2:=============================>                             (1 + 1) / 2]"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "Array([Personal Accessories,M,27,Single,Professional], [Personal Accessories,F,39,Married,Other], [Mountaineering Equipment,F,39,Married,Other], [Personal Accessories,F,56,Unspecified,Hospitality], [Golf Equipment,M,45,Married,Retired])"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "val df_data = spark.\n",
+    "    read.format(\"org.apache.spark.sql.execution.datasources.csv.CSVFileFormat\").\n",
+    "    option(\"header\", \"true\").\n",
+    "    option(\"inferSchema\", \"true\").\n",
+    "    load(filename)\n",
+    "df_data.take(5)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Explore the loaded data by using the following Apache® Spark DataFrame methods:\n",
+    "-  print schema\n",
+    "-  print top ten records\n",
+    "-  count all records"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "root\n",
+      " |-- PRODUCT_LINE: string (nullable = true)\n",
+      " |-- GENDER: string (nullable = true)\n",
+      " |-- AGE: integer (nullable = true)\n",
+      " |-- MARITAL_STATUS: string (nullable = true)\n",
+      " |-- PROFESSION: string (nullable = true)\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "df_data.printSchema()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As you can see, the data contains five fields. PRODUCT_LINE field is the one we would like to predict (label)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "+--------------------+------+---+--------------+------------+\n",
+      "|        PRODUCT_LINE|GENDER|AGE|MARITAL_STATUS|  PROFESSION|\n",
+      "+--------------------+------+---+--------------+------------+\n",
+      "|Personal Accessories|     M| 27|        Single|Professional|\n",
+      "|Personal Accessories|     F| 39|       Married|       Other|\n",
+      "|Mountaineering Eq...|     F| 39|       Married|       Other|\n",
+      "|Personal Accessories|     F| 56|   Unspecified| Hospitality|\n",
+      "|      Golf Equipment|     M| 45|       Married|     Retired|\n",
+      "|      Golf Equipment|     M| 45|       Married|     Retired|\n",
+      "|   Camping Equipment|     F| 39|       Married|       Other|\n",
+      "|   Camping Equipment|     F| 49|       Married|       Other|\n",
+      "|  Outdoor Protection|     F| 49|       Married|       Other|\n",
+      "|      Golf Equipment|     M| 47|       Married|     Retired|\n",
+      "|      Golf Equipment|     M| 47|       Married|     Retired|\n",
+      "|Mountaineering Eq...|     M| 21|        Single|      Retail|\n",
+      "|Personal Accessories|     F| 66|       Married|       Other|\n",
+      "|   Camping Equipment|     F| 35|       Married|Professional|\n",
+      "|Mountaineering Eq...|     M| 20|        Single|       Sales|\n",
+      "|Mountaineering Eq...|     M| 20|        Single|       Sales|\n",
+      "|Mountaineering Eq...|     M| 20|        Single|       Sales|\n",
+      "|Personal Accessories|     F| 37|        Single|       Other|\n",
+      "|   Camping Equipment|     M| 42|       Married|       Other|\n",
+      "|   Camping Equipment|     F| 24|       Married|      Retail|\n",
+      "+--------------------+------+---+--------------+------------+\n",
+      "only showing top 20 rows\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "df_data.show()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "60252"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df_data.count()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As you can see, the data set contains 60252 records."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<a id=\"model\"></a>\n",
+    "## 3. Create an Apache® Spark machine learning model\n",
+    "\n",
+    "In this section you will learn how to prepare data, create an Apache® Spark machine learning pipeline, and train a model."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 3.1: Prepare data\n",
+    "\n",
+    "In this subsection you will split your data into: train, test and predict datasets."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Number of training records: 48176\n",
+      "Number of testing records: 10860\n",
+      "Number of prediction records: 1216\n"
+     ]
+    }
+   ],
+   "source": [
+    "val splits = df_data.randomSplit(Array(0.8, 0.18, 0.02), seed = 24L)\n",
+    "val training_data = splits(0).cache()\n",
+    "val test_data = splits(1)\n",
+    "val prediction_data = splits(2)\n",
+    "\n",
+    "println(\"Number of training records: \" + training_data.count())\n",
+    "println(\"Number of testing records: \" + test_data.count())\n",
+    "println(\"Number of prediction records: \" + prediction_data.count())"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As you can see our data has been successfully split into three datasets: \n",
+    "\n",
+    "-  The train data set, which is the largest group, is used for training.\n",
+    "-  The test data set will be used for model evaluation and is used to test the assumptions of the model.\n",
+    "-  The predict data set will be used for prediction."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 3.2: Create pipeline and train a model"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In this section you will create an Apache® Spark machine learning pipeline and then train the model.\n",
+    "\n",
+    "In the first step you need to import the Apache® Spark machine learning packages that will be needed in the subsequent steps."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "// Spark ML libraries\n",
+    "\n",
+    "import org.apache.spark.ml.classification.RandomForestClassifier\n",
+    "import org.apache.spark.ml.feature.{OneHotEncoder, StringIndexer, IndexToString, VectorAssembler}\n",
+    "import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator\n",
+    "import org.apache.spark.ml.{Model, Pipeline, PipelineStage, PipelineModel}\n",
+    "import org.apache.spark.sql.SparkSession"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In the following step, convert all the string fields to numeric ones by using the StringIndexer transformer."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val stringIndexer_label = new StringIndexer().setInputCol(\"PRODUCT_LINE\").setOutputCol(\"label\").fit(df_data)\n",
+    "val stringIndexer_prof = new StringIndexer().setInputCol(\"PROFESSION\").setOutputCol(\"PROFESSION_IX\")\n",
+    "val stringIndexer_gend = new StringIndexer().setInputCol(\"GENDER\").setOutputCol(\"GENDER_IX\")\n",
+    "val stringIndexer_mar = new StringIndexer().setInputCol(\"MARITAL_STATUS\").setOutputCol(\"MARITAL_STATUS_IX\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In the following step, create a feature vector by combining all features together."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val vectorAssembler_features = new VectorAssembler().setInputCols(Array(\"GENDER_IX\", \"AGE\", \"MARITAL_STATUS_IX\", \"PROFESSION_IX\")).setOutputCol(\"features\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Next, define estimators you want to use for classification. Random Forest is used in the following example."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val rf = new RandomForestClassifier().setLabelCol(\"label\").setFeaturesCol(\"features\").setNumTrees(10)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Finally, indexed labels back to original labels."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val labelConverter = new IndexToString().setInputCol(\"prediction\").setOutputCol(\"predictedLabel\").setLabels(stringIndexer_label.labels)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Let's build the pipeline now. A pipeline consists of transformers and an estimator."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val pipeline_rf = new Pipeline().setStages(Array(stringIndexer_label, stringIndexer_prof, stringIndexer_gend, stringIndexer_mar, vectorAssembler_features, rf, labelConverter))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now, you can train your Random Forest model by using the previously defined **pipeline** and **training data**."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "root\n",
+      " |-- PRODUCT_LINE: string (nullable = true)\n",
+      " |-- GENDER: string (nullable = true)\n",
+      " |-- AGE: integer (nullable = true)\n",
+      " |-- MARITAL_STATUS: string (nullable = true)\n",
+      " |-- PROFESSION: string (nullable = true)\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "training_data.printSchema()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val model_rf = pipeline_rf.fit(training_data)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "You can check your **model accuracy** now. To evaluate the model, use **test data**."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Accuracy = 0.5821362799263352\n",
+      "Test Error = 0.4178637200736648\n"
+     ]
+    }
+   ],
+   "source": [
+    "val predictions = model_rf.transform(test_data)\n",
+    "val evaluatorRF = new MulticlassClassificationEvaluator().setLabelCol(\"label\").setPredictionCol(\"prediction\").setMetricName(\"accuracy\")\n",
+    "val accuracy = evaluatorRF.evaluate(predictions)\n",
+    "println(\"Accuracy = \" + accuracy)\n",
+    "println(\"Test Error = \" + (1.0 - accuracy))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "You can tune your model now to achieve better accuracy. For simplicity of this example tuning section is omitted."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<a id=\"persistence\"></a>\n",
+    "## 4. Persist model\n",
+    "\n",
+    "In this section you will learn how to store your pipeline and model in Watson Machine Learning repository by using Scala client libraries.\n",
+    "\n",
+    "First, you must import client libraries.\n",
+    "\n",
+    "**Note**: Apache® Spark 2.1 or higher is required."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "// WML client library\n",
+    "\n",
+    "import com.ibm.analytics.ngp.repository._\n",
+    "\n",
+    "// Helper libraries\n",
+    "\n",
+    "import scalaj.http.{Http, HttpOptions}\n",
+    "import scala.util.{Success, Failure}\n",
+    "import java.util.Base64\n",
+    "import java.nio.charset.StandardCharsets\n",
+    "import play.api.libs.json._"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Authenticate to Watson Machine Learning service on IBM Cloud.\n",
+    "\n",
+    "**Action**: Put authentication information from your instance of Watson Machine Learning service here.</div>"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val service_path = \"***\"\n",
+    "val instance_id = \"***\"\n",
+    "val username = \"***\"\n",
+    "val password = \"***\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**Tip**: service_path, user and password can be found on **Service Credentials** tab of service instance created in IBM Cloud. If you cannot see **instance_id** field in **Serice Credentials** generate new credentials by pressing **New credential (+)** button. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Success(())"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "val client = MLRepositoryClient(service_path)\n",
+    "client.authorize(username, password)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Create model artifact (abstraction layer)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val model_artifact = MLRepositoryArtifact(model_rf, training_data, \"WML Product Line Prediction Model\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**Tip**: The MLRepositoryArtifact method expects a trained model object, training data, and a model name. (It is this model name that is displayed by the Watson Machine Learning service)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 4.1: Save pipeline and model\n",
+    "\n",
+    "In this subsection you will learn how to save pipeline and model artifacts to your Watson Machine Learning instance."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val saved_model = client.models.save(model_artifact).get"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Get saved model metadata from Watson Machine Learning.\n",
+    "\n",
+    "**Tip**: Use *meta.availableProps* to get the list of available props."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Vector(trainingDataSchema, lastUpdated, label, inputDataSchema, modelVersionHref, prediction, modelType, version, modelHref, artifactPath, pipelineVersionHref, runtime, creationTime, probability)"
+      ]
+     },
+     "execution_count": 22,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "saved_model.meta.availableProps"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "modelType: Some(sparkml-model-2.1)\n",
+      "trainingDataSchema: Some({\"type\":\"struct\",\"fields\":[{\"name\":\"PRODUCT_LINE\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"GENDER\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"AGE\",\"type\":\"integer\",\"nullable\":true,\"metadata\":{}},{\"name\":\"MARITAL_STATUS\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}},{\"name\":\"PROFESSION\",\"type\":\"string\",\"nullable\":true,\"metadata\":{}}]})\n",
+      "creationTime: Some(2018-03-07T10:19:11.215Z)\n",
+      "modelVersionHref: Some(https://ibm-watson-ml.mybluemix.net/v2/artifacts/models/c6f5af23-37fb-4e5f-b00e-76d87e3b7b34/versions/d3193f01-8d2c-4122-90b9-0f137a21827e)\n",
+      "label: Some(PRODUCT_LINE)\n"
+     ]
+    }
+   ],
+   "source": [
+    "println(\"modelType: \" + saved_model.meta.prop(\"modelType\"))\n",
+    "println(\"trainingDataSchema: \" + saved_model.meta.prop(\"trainingDataSchema\"))\n",
+    "println(\"creationTime: \" + saved_model.meta.prop(\"creationTime\"))\n",
+    "println(\"modelVersionHref: \" + saved_model.meta.prop(\"modelVersionHref\"))\n",
+    "println(\"label: \" + saved_model.meta.prop(\"label\"))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "**Tip**: **modelVersionHref** is our model unique indentifier in the Watson Machine Learning repository."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 4.2: Load model and make predictions\n",
+    "\n",
+    "In this subsection you will learn how to load back saved model from specified instance of Watson Machine Learning."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val model_version_href = saved_model.meta.prop(\"modelVersionHref\").get\n",
+    "val loaded_model_artifact = client.models.version(model_version_href).get"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "You can print for example model name to make sure that model artifact has been loaded correctly."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "WML Product Line Prediction Model"
+      ]
+     },
+     "execution_count": 25,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "loaded_model_artifact.name.mkString"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As you can see the name is correct. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "+------+---+--------------+-----------+--------------------+\n",
+      "|GENDER|AGE|MARITAL_STATUS| PROFESSION|      predictedLabel|\n",
+      "+------+---+--------------+-----------+--------------------+\n",
+      "|     F| 18|        Single|      Other|Personal Accessories|\n",
+      "|     F| 18|        Single|     Retail|Personal Accessories|\n",
+      "|     F| 19|        Single|Hospitality|   Camping Equipment|\n",
+      "|     F| 19|        Single|Hospitality|   Camping Equipment|\n",
+      "|     F| 19|        Single|Hospitality|   Camping Equipment|\n",
+      "|     F| 19|        Single|Hospitality|   Camping Equipment|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "|     F| 19|        Single|      Other|Personal Accessories|\n",
+      "+------+---+--------------+-----------+--------------------+\n",
+      "only showing top 20 rows\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "loaded_model_artifact match {\n",
+    "        case SparkPipelineModelLoader(Success(model)) => {\n",
+    "          val predictions = model.transform(prediction_data)\n",
+    "        }\n",
+    "        case SparkPipelineModelLoader(Failure(e)) => \"Loading failed.\"\n",
+    "        case _ => println(s\"Unexpected artifact class: ${loaded_model_artifact.getClass}\")\n",
+    "    }\n",
+    "predictions.select(\"GENDER\", \"AGE\", \"MARITAL_STATUS\", \"PROFESSION\",\"predictedLabel\").show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "By tabulating a count, you can see which product line is the most popular."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[Stage 109:=============================================>        (84 + 1) / 100]+--------------------+-----+\n",
+      "|      predictedLabel|count|\n",
+      "+--------------------+-----+\n",
+      "|   Camping Equipment| 6356|\n",
+      "|      Golf Equipment|  631|\n",
+      "|Mountaineering Eq...|  699|\n",
+      "|Personal Accessories| 3174|\n",
+      "+--------------------+-----+\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "predictions.select(\"predictedLabel\").groupBy(\"predictedLabel\").count().show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "You have already learned how save and load the model from Watson Machine Learning repository."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<a id=\"scoring\"></a>\n",
+    "## 5. Deploy and score in a Cloud\n",
+    "\n",
+    "In this section you will learn how to create online scoring and to score a new data record by using the Watson Machine Learning REST API. \n",
+    "For more information about REST APIs, see the <a href=\"http://watson-ml-api.mybluemix.net/\" target=\"_blank\" rel=\"noopener noreferrer\">Swagger Documentation</a>.\n",
+    "\n",
+    "To work with the Watson Machine Learning REST API you must generate an access token. To do that you can use the following sample code:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "// Get WML service instance token\n",
+    "\n",
+    "val wml_auth_header = \"Basic \" + Base64.getEncoder.encodeToString((username + \":\" + password).getBytes(StandardCharsets.UTF_8))\n",
+    "val wml_url = service_path + \"/v3/identity/token\"\n",
+    "val wml_response = Http(wml_url).header(\"Authorization\", wml_auth_header).asString\n",
+    "val wmltoken_json: JsValue = Json.parse(wml_response.body)\n",
+    "\n",
+    "val wmltoken = (wmltoken_json \\ \"token\").asOpt[String] match {\n",
+    "    case Some(x) => x\n",
+    "    case None => \"\"\n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJ0ZW5hbnRJZCI6IjhmMTFjZmFjLTU3Y2EtNGEwYy05ODE1LTdhYmJkN2E3MjQ5MSIsImluc3RhbmNlSWQiOiI4ZjExY2ZhYy01N2NhLTRhMGMtOTgxNS03YWJiZDdhNzI0OTEiLCJwbGFuSWQiOiIzZjZhY2Y0My1lZGU4LTQxM2EtYWM2OS1mOGFmM2JiMGNiZmUiLCJyZWdpb24iOiJ1cy1zb3V0aCIsInVzZXJJZCI6IjVmYTliNDU0LTJjOGMtNDlhOC05YzQzLTBhZmU1M2JkNzEwNiIsImlzcyI6Imh0dHBzOi8vaWJtLXdhdHNvbi1tbC5teWJsdWVtaXgubmV0L3YzL2lkZW50aXR5IiwiaWF0IjoxNTIwNDE3OTY3LCJleHAiOjE1MjA0NDY3Njd9.Fh_E1lY3wlsRq4DpOJjIWYeT5OPRUoMY6vSn6fupVBkwV1hZvt5wVgzPd_u9rzrYydgBnvCA_M410l6Tyc1Boo8UcybI-FFsAM6x2pDwGAwaNvbPSilN_GZQt2hG7lrjJ1hcTQbRT6rCJ1P6NdB3zqPDinOKaF4LL34f2DrGPgJ7PGxupPZ2B93LHF35flEX_G57MwZe538kIL4nU7FjZ0z09QpC2v2eP5r1Bko-RoMZ8K1bPqDdg10SgSqcL3vcjSgXtavLLEVgaEtHsn1kPGpWRgyQcFxnMQRz-l-NCEslm9-P3oyeIpcqGlC0hnJ454OVb0IC1ea..."
+      ]
+     },
+     "execution_count": 29,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "wmltoken"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 5.1: Create online scoring endpoint\n",
+    "\n",
+    "Now you can create an online scoring endpoint. Execute the following sample code that uses the publishedModelId value to create the scoring endpoint to the IBM Cloud repository."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Get published_models url from instance details"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val endpoint_instance = service_path + \"/v3/wml_instances/\" + instance_id\n",
+    "val wml_response_instance = Http(endpoint_instance).header(\"Content-Type\", \"application/json\").header(\"Authorization\", \"Bearer \" + wmltoken).option(HttpOptions.connTimeout(10000)).option(HttpOptions.readTimeout(50000)).asString"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "HttpResponse({\"metadata\":{\"guid\":\"8f11cfac-57ca-4a0c-9815-7abbd7a72491\",\"url\":\"https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491\",\"created_at\":\"2018-02-19T14:57:53.275Z\",\"modified_at\":\"2018-03-07T10:19:11.350Z\"},\"entity\":{\"source\":\"Bluemix\",\"published_models\":{\"url\":\"https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/published_models\"},\"usage\":{\"expiration_date\":\"2018-04-01T00:00:00.000Z\",\"computation_time\":{\"limit\":180000,\"current\":0},\"model_count\":{\"limit\":200,\"current\":7},\"prediction_count\":{\"limit\":5000,\"current\":4},\"gpu_count\":{\"limit\":8,\"current\":0},\"capacity_units\":{\"limit\":180000000,\"current\":3},\"deployment_count\":{\"limit\":5,\"current\":3}},\"plan_id\":\"3f6acf43-e..."
+      ]
+     },
+     "execution_count": 31,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "wml_response_instance"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 32,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/published_models"
+      ]
+     },
+     "execution_count": 32,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "val published_models_json: JsValue = Json.parse(wml_response_instance.body)\n",
+    "val published_models_url = (((published_models_json \\ \"entity\") \\\\ \"published_models\")(0) \\ \"url\").as[JsString].value\n",
+    "published_models_url"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Get list of published models"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 33,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "HttpResponse({\"limit\":1000,\"resources\":[{\"metadata\":{\"guid\":\"c19ea489-1674-4883-bcbd-68f0089ef7dc\",\"url\":\"https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/published_models/c19ea489-1674-4883-bcbd-68f0089ef7dc\",\"created_at\":\"2018-02-19T15:01:13.485Z\",\"modified_at\":\"2018-02-19T15:12:01.907Z\"},\"entity\":{\"runtime_environment\":\"spark-2.0\",\"learning_configuration_url\":\"https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/published_models/c19ea489-1674-4883-bcbd-68f0089ef7dc/learning_configuration\",\"author\":{},\"name\":\"Customer Churn Model\",\"label_col\":\"Churn\",\"learning_iterations_url\":\"https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/p..."
+      ]
+     },
+     "execution_count": 33,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "val wml_models = Http(published_models_url).header(\"Content-Type\", \"application/json\").header(\"Authorization\", \"Bearer \" + wmltoken).option(HttpOptions.connTimeout(10000)).option(HttpOptions.readTimeout(50000)).asString\n",
+    "wml_models"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/published_models/c6f5af23-37fb-4e5f-b00e-76d87e3b7b34/deployments"
+      ]
+     },
+     "execution_count": 34,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "var deployment_endpoint: String = _\n",
+    "wml_models.body.split(\"\\\"\").map{ s => {if ((s contains \"deployments\") & (s contains saved_model.uid.mkString)) {deployment_endpoint = s}}}\n",
+    "deployment_endpoint"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Create online deployment for published model"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val payload_name = \"Online scoring\"\n",
+    "val payload_data_online = Json.stringify(Json.toJson(Map(\"type\" -> \"online\", \"name\" -> payload_name)))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val response_online = Http(deployment_endpoint).postData(payload_data_online).header(\"Content-Type\", \"application/json\").header(\"Authorization\", \"Bearer \" + wmltoken).option(HttpOptions.connTimeout(50000)).option(HttpOptions.readTimeout(50000)).asString"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val scoring_url_json: JsValue = Json.parse(response_online.body)\n",
+    "val scoring_url = (scoring_url_json \\ \"entity\" \\ \"scoring_url\").asOpt[String] match {\n",
+    "    case Some(x) => x\n",
+    "    case None => \"\"\n",
+    "}"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "https://ibm-watson-ml.mybluemix.net/v3/wml_instances/8f11cfac-57ca-4a0c-9815-7abbd7a72491/published_models/c6f5af23-37fb-4e5f-b00e-76d87e3b7b34/deployments/0c198739-0366-4733-96f5-0555e06d1390/online"
+     ]
+    }
+   ],
+   "source": [
+    "print(scoring_url)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val payload_scoring = Json.stringify(Json.toJson(Map(\"fields\" -> Json.toJson(List(Json.toJson(\"GENDER\"), Json.toJson(\"AGE\"), Json.toJson(\"MARITAL_STATUS\"), Json.toJson(\"PROFESSION\"))),\n",
+    "                                                    \"values\" -> Json.toJson(List(List(Json.toJson(\"M\"), Json.toJson(55), Json.toJson(\"Single\"), Json.toJson(\"Executive\")))))))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 40,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "{\"fields\":[\"GENDER\",\"AGE\",\"MARITAL_STATUS\",\"PROFESSION\"],\"values\":[[\"M\",55,\"Single\",\"Executive\"]]}"
+      ]
+     },
+     "execution_count": 40,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "payload_scoring"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now, you can send (POST) new scoring records (new data) for which you would like to get predictions. To do that, execute the following sample code: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 41,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "val response_scoring = Http(scoring_url).postData(payload_scoring).header(\"Content-Type\", \"application/json\").header(\"Authorization\", \"Bearer \" + wmltoken).option(HttpOptions.method(\"POST\")).option(HttpOptions.connTimeout(10000)).option(HttpOptions.readTimeout(50000)).asString"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "metadata": {
+    "scrolled": false
+   },
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "HttpResponse({\n",
+      "  \"fields\": [\"GENDER\", \"AGE\", \"MARITAL_STATUS\", \"PROFESSION\", \"PRODUCT_LINE\", \"label\", \"PROFESSION_IX\", \"GENDER_IX\", \"MARITAL_STATUS_IX\", \"features\", \"rawPrediction\", \"probability\", \"prediction\", \"predictedLabel\"],\n",
+      "  \"values\": [[\"M\", 55, \"Single\", \"Executive\", \"Camping Equipment\", 0.0, 3.0, 0.0, 1.0, [0.0, 55.0, 1.0, 3.0], [2.5050408694752604, 1.8771700964659068, 2.338808434620882, 3.1481331680893025, 0.13084743134864898], [0.250504086947526, 0.1877170096465907, 0.2338808434620882, 0.31481331680893027, 0.013084743134864898], 3.0, \"Golf Equipment\"]]\n",
+      "},200,Map(Cache-Control -> Vector(private, no-cache, no-store, must-revalidate), Connection -> Vector(Keep-Alive), Content-Type -> Vector(application/json), Date -> Vector(Wed, 07 Mar 2018 10:19:37 GMT), Pragma -> Vector(no-cache), Server -> Vector(nginx/1.13.6), Status -> Vector(HTTP/1.1 200 OK), Transfer-Encoding -> Vector(chunked), X-Backside-Transport -> Vector(OK OK), X-Content-Type-Options -> Vector(nosniff), X-Envoy-Upstream-Service-Time -> Vector(26), X-Frame-Options -> Vector(DENY), X-Global-Transaction-ID -> Vector(3166232157), X-Xss-Protection -> Vector(1)))"
+     ]
+    }
+   ],
+   "source": [
+    "print(response_scoring)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As we can see we predict that a 55-year-old single male executive is interested in Mountaineering Equipment (prediction: 2.0)."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "<a id=\"summary\"></a>\n",
+    "## 6. Summary and next steps \n",
+    "\n",
+    "You successfully completed this notebook! You learned how to use Apache Spark machine learning as well as Watson Machine Learning for model creation and deployment. Check out our <a href=\"https://console.bluemix.net/docs/services/PredictiveModeling/index.html#WMLgettingstarted\" target=\"_blank\" rel=\"noopener noreferrer\">Online Documentation</a> for more samples, tutorials, documentation, how-tos, and blog posts. \n",
+    " \n",
+    "### Authors\n",
+    "\n",
+    "**Umit Mert Cakmak** is Data Scientist in IBM with a track record of developing enterprise-level applications that substantially increases clients' ability to turn data into actionable insights.\n",
+    "\n",
+    "Copyright © 2017, 2018 IBM. This notebook and its source code are released under the terms of the MIT License."
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Scala 2.11 with Spark 2.1",
+   "language": "scala",
+   "name": "scala-spark21"
+  },
+  "language_info": {
+   "codemirror_mode": "text/x-scala",
+   "file_extension": ".scala",
+   "mimetype": "text/x-scala",
+   "name": "scala",
+   "pygments_lexer": "scala",
+   "version": "2.11.8"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 1
+}
