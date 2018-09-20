@@ -11611,8 +11611,10 @@ ul.typeahead-list > li > a {
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
 .highlight .o { color: #666666 } /* Operator */
+.highlight .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
 .highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
 .highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
 .highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
 .highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
 .highlight .gd { color: #A00000 } /* Generic.Deleted */
@@ -11652,8 +11654,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11664,9 +11668,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style type="text/css">
@@ -11863,20 +11869,37 @@ padding-left: 0;
 }
 
 .notebook_app .btn-group button {
-margin-right: 0.675rem;
-border: none;
-border-radius: 0;
-background-color: transparent;
-padding: 0;
-border-width: 0;
-fill: #3d70b2;
+  margin-right: 0.675rem;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  padding: 0;
+  border-width: 0;
+  font: inherit;
+  fill: #3d70b2;
+  color: #5a6872;
 }
 
 .notebook_app .btn-group button:hover,
 .notebook_app .btn-group button:active,
 .notebook_app .btn-group button:focus {
-fill: #5596e6;
-background-color: transparent;
+  fill: #5596e6;
+  background-color: transparent;
+}
+
+.notebook_app .btn .toolbar-btn-label {
+  vertical-align: middle;
+}
+
+.notebook_app .toolbar .btn-group .btn .fa {
+  color: #3d70b2;
+  font-size: 1rem;
+}
+
+.notebook_app .toolbar .btn-group .btn:hover .fa,
+.notebook_app .toolbar .btn-group .btn:active .fa,
+.notebook_app .toolbar .btn-group .btn:focus .fa {
+  color: #5596e6;
 }
 
 /*ICONS*/
@@ -12075,6 +12098,26 @@ cursor: pointer;
 color: #5596e6;
 }
 
+.notebook_app #notebook-container .input .run_this_cell {
+  padding: 0;
+  padding-top: 0.125rem;
+  width: initial;
+  align-self: flex-start;
+  fill: #3d70b2;
+}
+
+.notebook_app #notebook-container .input .run_this_cell:hover {
+  fill: #5596e6;
+}
+
+.notebook_app #notebook-container .input .prompt {
+  min-width: 13ex;
+}
+
+.notebook_app #notebook-container .prompt {
+  min-width: 16.125ex;
+}
+
 /*DIALOGS*/
 .notebook_app .modal-dialog {
 color: #5a6872;
@@ -12245,6 +12288,12 @@ line-height: normal;
 font-size: 0.875rem;
 color: #3d70b2;
 border: none;
+}
+
+#notification_trusted:hover,
+#notification_trusted:active,
+#notification_trusted:focus {
+  color: #5596e6;
 }
 
 /*
@@ -12623,17 +12672,6 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div style="background:#F5F7FA; height:100px; padding: 2em; font-size:14px;">
-<span style="font-size:18px;color:#152935;">Want to do more?</span><span style="border: 1px solid #3d70b2;padding: 15px;float:right;margin-right:40px; color:#3d70b2; "><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
-<span style="color:#5A6872;"> Try out this notebook with your free trial of IBM Watson Studio.</span>
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Visualize-car-data-with-Brunel">Visualize car data with Brunel<a class="anchor-link" href="#Visualize-car-data-with-Brunel">&#182;</a></h1>
 </div>
 </div>
@@ -12643,7 +12681,7 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The Brunel Visualization language makes it easy to build interactive charts and diagrams that you can deploy rapidly. This notebook contains the steps and code to get you started with visualizing data with Brunel.</p>
-<p>Some familiarity with Python is recommended. This notebook runs on Python 2 with Spark 2.1.</p>
+<p>Some familiarity with Python is recommended. This notebook runs on Python 3 with Spark.</p>
 <p>You will use data about cars to graph the relationships between various properties, for example, how horsepower affects gas mileage. The cars data set was used for the 1983 American Statistical Association Data Exposition. This data set was collected by Ernesto Ramos and David Donoho and obtained from StatLib.</p>
 <h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><p>This notebook has the following sections:</p>
 <ol>
@@ -12676,14 +12714,29 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install <span class="nv">brunel</span><span class="o">==</span><span class="m">2</span>.3
+<span class="kn">import</span> <span class="nn">brunel</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">brunel</span>
 
-<span class="n">cars</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">&quot;LINK-TO-DATA&quot;</span><span class="p">,</span>
-                   <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;mpg&#39;</span><span class="p">,</span><span class="s">&#39;cylinders&#39;</span><span class="p">,</span><span class="s">&#39;engine&#39;</span><span class="p">,</span><span class="s">&#39;horsepower&#39;</span><span class="p">,</span><span class="s">&#39;weight&#39;</span><span class="p">,</span><span class="s">&#39;acceleration&#39;</span><span class="p">,</span><span class="s">&#39;year&#39;</span><span class="p">,</span><span class="s">&#39;origin&#39;</span><span class="p">,</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
+
+<span class="n">cars</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;LINK-TO-DATA&quot;</span><span class="p">)</span><span class="c1">#Replace LINK-TO-DATA with link to data set</span>
+
 
 <span class="n">cars</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
 </pre></div>
@@ -12698,12 +12751,25 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[1]:</div>
+<div class="prompt output_prompt">Out[2]:</div>
 
 
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -12722,10 +12788,10 @@ div#notebook {
   <tbody>
     <tr>
       <th>0</th>
-      <td>18</td>
+      <td>18.0</td>
       <td>8</td>
-      <td>307</td>
-      <td>130</td>
+      <td>307.0</td>
+      <td>130.0</td>
       <td>3504</td>
       <td>12.0</td>
       <td>70</td>
@@ -12734,10 +12800,10 @@ div#notebook {
     </tr>
     <tr>
       <th>1</th>
-      <td>15</td>
+      <td>15.0</td>
       <td>8</td>
-      <td>350</td>
-      <td>165</td>
+      <td>350.0</td>
+      <td>165.0</td>
       <td>3693</td>
       <td>11.5</td>
       <td>70</td>
@@ -12746,10 +12812,10 @@ div#notebook {
     </tr>
     <tr>
       <th>2</th>
-      <td>18</td>
+      <td>18.0</td>
       <td>8</td>
-      <td>318</td>
-      <td>150</td>
+      <td>318.0</td>
+      <td>150.0</td>
       <td>3436</td>
       <td>11.0</td>
       <td>70</td>
@@ -12758,10 +12824,10 @@ div#notebook {
     </tr>
     <tr>
       <th>3</th>
-      <td>16</td>
+      <td>16.0</td>
       <td>8</td>
-      <td>304</td>
-      <td>150</td>
+      <td>304.0</td>
+      <td>150.0</td>
       <td>3433</td>
       <td>12.0</td>
       <td>70</td>
@@ -12770,10 +12836,10 @@ div#notebook {
     </tr>
     <tr>
       <th>4</th>
-      <td>17</td>
+      <td>17.0</td>
       <td>8</td>
-      <td>302</td>
-      <td>140</td>
+      <td>302.0</td>
+      <td>140.0</td>
       <td>3449</td>
       <td>10.5</td>
       <td>70</td>
@@ -12782,10 +12848,10 @@ div#notebook {
     </tr>
     <tr>
       <th>5</th>
-      <td>15</td>
+      <td>15.0</td>
       <td>8</td>
-      <td>429</td>
-      <td>198</td>
+      <td>429.0</td>
+      <td>198.0</td>
       <td>4341</td>
       <td>10.0</td>
       <td>70</td>
@@ -12826,10 +12892,10 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%</span><span class="k">brunel</span> data(&#39;cars&#39;) x(mpg) y(horsepower) color(origin) :: width=800, height=300
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">brunel</span> data(&#39;cars&#39;) x(mpg) y(horsepower) color(origin) :: width=800, height=300
 </pre></div>
 
 </div>
@@ -12864,31 +12930,31 @@ div#notebook {
   -->
 
 
-<link rel="stylesheet" type="text/css" href="/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.2.3.css">
-<link rel="stylesheet" type="text/css" href="/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/sumoselect.css">
+<link rel="stylesheet" type="text/css" href="/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.2.3.css">
+<link rel="stylesheet" type="text/css" href="/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/sumoselect.css">
 
 <style>
     
 </style>
 
-<div id="controlsida5cab9e6-17d9-11e8-8f55-002590fb6dc0" class="brunel"/>
-<svg id="visida5cab2ac-17d9-11e8-8f55-002590fb6dc0" width="800" height="300"></svg>
+<div id="controlsidd421828e-b748-11e8-ba3d-3279971b4c90" class="brunel"/>
+<svg id="visidd4218036-b748-11e8-ba3d-3279971b4c90" width="800" height="300"></svg>
 </div>
 
 </div>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[2]:</div>
+<div class="prompt output_prompt">Out[3]:</div>
 
 
 
 
 
-<div id="42d3702e-082d-47bb-b4a1-23bc76e16594"></div>
+<div id="77f7f134-4a6d-4a67-ad5f-3f0edbb06984"></div>
 <div class="output_subarea output_javascript output_execute_result">
 <script type="text/javascript">
-var element = $('#42d3702e-082d-47bb-b4a1-23bc76e16594');
+var element = $('#77f7f134-4a6d-4a67-ad5f-3f0edbb06984');
 /*
  * Copyright (c) 2015 IBM Corporation and others.
  *
@@ -12910,8 +12976,8 @@ require.config({
     paths: {
         'd3': '//cdnjs.cloudflare.com/ajax/libs/d3/4.2.1/d3.min',
         'topojson': '//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.min',
-        'brunel' : '/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.2.3.min',
-        'brunelControls' : '/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.controls.2.3.min'
+        'brunel' : '/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.2.3.min',
+        'brunelControls' : '/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.controls.2.3.min'
     },
     shim: {
        'brunel' : {
@@ -12972,14 +13038,14 @@ require(["d3"], function(d3) {
     chart.append('rect').attr('class', 'background').attr('width', geom.chart_right-geom.chart_left).attr('height', geom.chart_bottom-geom.chart_top);
     var interior = chart.append('g').attr('class', 'interior zoomNone')
       .attr('transform','translate(' + geom.inner_left + ',' + geom.inner_top + ')')
-      .attr('clip-path', 'url(#clip_visida5cab2ac-17d9-11e8-8f55-002590fb6dc0_chart1_inner)');
+      .attr('clip-path', 'url(#clip_visidd4218036-b748-11e8-ba3d-3279971b4c90_chart1_inner)');
     interior.append('rect').attr('class', 'inner').attr('width', geom.inner_width).attr('height', geom.inner_height);
     var gridGroup = interior.append('g').attr('class', 'grid');
     var axes = chart.append('g').attr('class', 'axis')
       .attr('transform','translate(' + geom.inner_left + ',' + geom.inner_top + ')');
     var legends = chart.append('g').attr('class', 'legend')
       .attr('transform','translate(' + (geom.chart_right-geom.chart_left - 3) + ',' + 0 + ')');
-    vis.append('clipPath').attr('id', 'clip_visida5cab2ac-17d9-11e8-8f55-002590fb6dc0_chart1_inner').append('rect')
+    vis.append('clipPath').attr('id', 'clip_visidd4218036-b748-11e8-ba3d-3279971b4c90_chart1_inner').append('rect')
       .attr('x', 0).attr('y', 0)
       .attr('width', geom.inner_rawWidth+1).attr('height', geom.inner_rawHeight+1);
 
@@ -12997,15 +13063,15 @@ require(["d3"], function(d3) {
 
     axes.append('g').attr('class', 'x axis')
       .attr('transform','translate(0,' + geom.inner_rawHeight + ')')
-      .attr('clip-path', 'url(#clip_visida5cab2ac-17d9-11e8-8f55-002590fb6dc0_chart1_haxis)');
-    vis.append('clipPath').attr('id', 'clip_visida5cab2ac-17d9-11e8-8f55-002590fb6dc0_chart1_haxis').append('polyline')
+      .attr('clip-path', 'url(#clip_visidd4218036-b748-11e8-ba3d-3279971b4c90_chart1_haxis)');
+    vis.append('clipPath').attr('id', 'clip_visidd4218036-b748-11e8-ba3d-3279971b4c90_chart1_haxis').append('polyline')
       .attr('points', '-1,-1000, -1,-1 -5,5, -1000,5, -100,1000, 10000,1000 10000,-1000');
     axes.select('g.axis.x').append('text').attr('class', 'title').text('Mpg').style('text-anchor', 'middle')
       .attr('x',geom.inner_rawWidth/2)
       .attr('y', geom.inner_bottom - 2.0).attr('dy','-0.27em');
     axes.append('g').attr('class', 'y axis')
-      .attr('clip-path', 'url(#clip_visida5cab2ac-17d9-11e8-8f55-002590fb6dc0_chart1_vaxis)');
-    vis.append('clipPath').attr('id', 'clip_visida5cab2ac-17d9-11e8-8f55-002590fb6dc0_chart1_vaxis').append('polyline')
+      .attr('clip-path', 'url(#clip_visidd4218036-b748-11e8-ba3d-3279971b4c90_chart1_vaxis)');
+    vis.append('clipPath').attr('id', 'clip_visidd4218036-b748-11e8-ba3d-3279971b4c90_chart1_vaxis').append('polyline')
       .attr('points', '-1000,-10000, 10000,-10000, 10000,' + (geom.inner_rawHeight+1) + ', -1,' + (geom.inner_rawHeight+1) + ', -1,' + (geom.inner_rawHeight+5) + ', -1000,' + (geom.inner_rawHeight+5) );
     axes.select('g.axis.y').append('text').attr('class', 'title').text('Horsepower').style('text-anchor', 'middle')
       .attr('x',-geom.inner_rawHeight/2)
@@ -13295,7 +13361,7 @@ var table1 = {
 
 // Call Code to Build the system ///////////////////////////////////////////////////////////////////
 
-var v  = new BrunelVis('visida5cab2ac-17d9-11e8-8f55-002590fb6dc0');
+var v  = new BrunelVis('visidd4218036-b748-11e8-ba3d-3279971b4c90');
 v.build(table1);
 
     });
@@ -13321,10 +13387,10 @@ v.build(table1);
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%</span><span class="k">brunel</span> data(&#39;cars&#39;) x(horsepower) y(weight) color(origin) tooltip(name) :: width=800, height=300
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">brunel</span> data(&#39;cars&#39;) x(horsepower) y(weight) color(origin) tooltip(name) :: width=800, height=300
 </pre></div>
 
 </div>
@@ -13359,31 +13425,31 @@ v.build(table1);
   -->
 
 
-<link rel="stylesheet" type="text/css" href="/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.2.3.css">
-<link rel="stylesheet" type="text/css" href="/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/sumoselect.css">
+<link rel="stylesheet" type="text/css" href="/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.2.3.css">
+<link rel="stylesheet" type="text/css" href="/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/sumoselect.css">
 
 <style>
     
 </style>
 
-<div id="controlsida5f13490-17d9-11e8-8f55-002590fb6dc0" class="brunel"/>
-<svg id="visida5f131fc-17d9-11e8-8f55-002590fb6dc0" width="800" height="300"></svg>
+<div id="controlsidd9468c82-b748-11e8-ba3d-3279971b4c90" class="brunel"/>
+<svg id="visidd9468aac-b748-11e8-ba3d-3279971b4c90" width="800" height="300"></svg>
 </div>
 
 </div>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[3]:</div>
+<div class="prompt output_prompt">Out[4]:</div>
 
 
 
 
 
-<div id="c2ab7911-d420-4521-a500-7a03f2d406a9"></div>
+<div id="a5cb2483-75a1-466e-9ea3-d211ed2fd21a"></div>
 <div class="output_subarea output_javascript output_execute_result">
 <script type="text/javascript">
-var element = $('#c2ab7911-d420-4521-a500-7a03f2d406a9');
+var element = $('#a5cb2483-75a1-466e-9ea3-d211ed2fd21a');
 /*
  * Copyright (c) 2015 IBM Corporation and others.
  *
@@ -13405,8 +13471,8 @@ require.config({
     paths: {
         'd3': '//cdnjs.cloudflare.com/ajax/libs/d3/4.2.1/d3.min',
         'topojson': '//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.min',
-        'brunel' : '/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.2.3.min',
-        'brunelControls' : '/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.controls.2.3.min'
+        'brunel' : '/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.2.3.min',
+        'brunelControls' : '/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.controls.2.3.min'
     },
     shim: {
        'brunel' : {
@@ -13467,14 +13533,14 @@ require(["d3"], function(d3) {
     chart.append('rect').attr('class', 'background').attr('width', geom.chart_right-geom.chart_left).attr('height', geom.chart_bottom-geom.chart_top);
     var interior = chart.append('g').attr('class', 'interior zoomNone')
       .attr('transform','translate(' + geom.inner_left + ',' + geom.inner_top + ')')
-      .attr('clip-path', 'url(#clip_visida5f131fc-17d9-11e8-8f55-002590fb6dc0_chart1_inner)');
+      .attr('clip-path', 'url(#clip_visidd9468aac-b748-11e8-ba3d-3279971b4c90_chart1_inner)');
     interior.append('rect').attr('class', 'inner').attr('width', geom.inner_width).attr('height', geom.inner_height);
     var gridGroup = interior.append('g').attr('class', 'grid');
     var axes = chart.append('g').attr('class', 'axis')
       .attr('transform','translate(' + geom.inner_left + ',' + geom.inner_top + ')');
     var legends = chart.append('g').attr('class', 'legend')
       .attr('transform','translate(' + (geom.chart_right-geom.chart_left - 3) + ',' + 0 + ')');
-    vis.append('clipPath').attr('id', 'clip_visida5f131fc-17d9-11e8-8f55-002590fb6dc0_chart1_inner').append('rect')
+    vis.append('clipPath').attr('id', 'clip_visidd9468aac-b748-11e8-ba3d-3279971b4c90_chart1_inner').append('rect')
       .attr('x', 0).attr('y', 0)
       .attr('width', geom.inner_rawWidth+1).attr('height', geom.inner_rawHeight+1);
 
@@ -13492,15 +13558,15 @@ require(["d3"], function(d3) {
 
     axes.append('g').attr('class', 'x axis')
       .attr('transform','translate(0,' + geom.inner_rawHeight + ')')
-      .attr('clip-path', 'url(#clip_visida5f131fc-17d9-11e8-8f55-002590fb6dc0_chart1_haxis)');
-    vis.append('clipPath').attr('id', 'clip_visida5f131fc-17d9-11e8-8f55-002590fb6dc0_chart1_haxis').append('polyline')
+      .attr('clip-path', 'url(#clip_visidd9468aac-b748-11e8-ba3d-3279971b4c90_chart1_haxis)');
+    vis.append('clipPath').attr('id', 'clip_visidd9468aac-b748-11e8-ba3d-3279971b4c90_chart1_haxis').append('polyline')
       .attr('points', '-1,-1000, -1,-1 -5,5, -1000,5, -100,1000, 10000,1000 10000,-1000');
     axes.select('g.axis.x').append('text').attr('class', 'title').text('Horsepower').style('text-anchor', 'middle')
       .attr('x',geom.inner_rawWidth/2)
       .attr('y', geom.inner_bottom - 2.0).attr('dy','-0.27em');
     axes.append('g').attr('class', 'y axis')
-      .attr('clip-path', 'url(#clip_visida5f131fc-17d9-11e8-8f55-002590fb6dc0_chart1_vaxis)');
-    vis.append('clipPath').attr('id', 'clip_visida5f131fc-17d9-11e8-8f55-002590fb6dc0_chart1_vaxis').append('polyline')
+      .attr('clip-path', 'url(#clip_visidd9468aac-b748-11e8-ba3d-3279971b4c90_chart1_vaxis)');
+    vis.append('clipPath').attr('id', 'clip_visidd9468aac-b748-11e8-ba3d-3279971b4c90_chart1_vaxis').append('polyline')
       .attr('points', '-1000,-10000, 10000,-10000, 10000,' + (geom.inner_rawHeight+1) + ', -1,' + (geom.inner_rawHeight+1) + ', -1,' + (geom.inner_rawHeight+5) + ', -1000,' + (geom.inner_rawHeight+5) );
     axes.select('g.axis.y').append('text').attr('class', 'title').text('Weight').style('text-anchor', 'middle')
       .attr('x',-geom.inner_rawHeight/2)
@@ -13922,7 +13988,7 @@ var table1 = {
 
 // Call Code to Build the system ///////////////////////////////////////////////////////////////////
 
-var v  = new BrunelVis('visida5f131fc-17d9-11e8-8f55-002590fb6dc0');
+var v  = new BrunelVis('visidd9468aac-b748-11e8-ba3d-3279971b4c90');
 v.build(table1);
 
     });
@@ -13947,10 +14013,10 @@ v.build(table1);
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%</span><span class="k">brunel</span> data(&#39;cars&#39;) x(origin) y(year) chord size(#count) color(origin) :: width=500, height=400
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">brunel</span> data(&#39;cars&#39;) x(origin) y(year) chord size(#count) color(origin) :: width=500, height=400
 </pre></div>
 
 </div>
@@ -13985,31 +14051,31 @@ v.build(table1);
   -->
 
 
-<link rel="stylesheet" type="text/css" href="/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.2.3.css">
-<link rel="stylesheet" type="text/css" href="/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/sumoselect.css">
+<link rel="stylesheet" type="text/css" href="/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.2.3.css">
+<link rel="stylesheet" type="text/css" href="/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/sumoselect.css">
 
 <style>
     
 </style>
 
-<div id="controlsida604d310-17d9-11e8-8f55-002590fb6dc0" class="brunel"/>
-<svg id="visida604d072-17d9-11e8-8f55-002590fb6dc0" width="500" height="400"></svg>
+<div id="controlsidd95e372e-b748-11e8-ba3d-3279971b4c90" class="brunel"/>
+<svg id="visidd95e353a-b748-11e8-ba3d-3279971b4c90" width="500" height="400"></svg>
 </div>
 
 </div>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[4]:</div>
+<div class="prompt output_prompt">Out[5]:</div>
 
 
 
 
 
-<div id="16d2d53d-3a36-4488-8a98-438a6997e396"></div>
+<div id="508f7607-d110-4bc1-8c1f-90db7a4036d8"></div>
 <div class="output_subarea output_javascript output_execute_result">
 <script type="text/javascript">
-var element = $('#16d2d53d-3a36-4488-8a98-438a6997e396');
+var element = $('#508f7607-d110-4bc1-8c1f-90db7a4036d8');
 /*
  * Copyright (c) 2015 IBM Corporation and others.
  *
@@ -14031,8 +14097,8 @@ require.config({
     paths: {
         'd3': '//cdnjs.cloudflare.com/ajax/libs/d3/4.2.1/d3.min',
         'topojson': '//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.min',
-        'brunel' : '/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.2.3.min',
-        'brunelControls' : '/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.controls.2.3.min'
+        'brunel' : '/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.2.3.min',
+        'brunelControls' : '/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.controls.2.3.min'
     },
     shim: {
        'brunel' : {
@@ -14093,12 +14159,12 @@ require(["d3"], function(d3) {
     chart.append('rect').attr('class', 'background').attr('width', geom.chart_right-geom.chart_left).attr('height', geom.chart_bottom-geom.chart_top);
     var interior = chart.append('g').attr('class', 'interior zoomNone')
       .attr('transform','translate(' + geom.inner_left + ',' + geom.inner_top + ')')
-      .attr('clip-path', 'url(#clip_visida604d072-17d9-11e8-8f55-002590fb6dc0_chart1_inner)');
+      .attr('clip-path', 'url(#clip_visidd95e353a-b748-11e8-ba3d-3279971b4c90_chart1_inner)');
     interior.append('rect').attr('class', 'inner').attr('width', geom.inner_width).attr('height', geom.inner_height);
     var gridGroup = interior.append('g').attr('class', 'grid');
     var legends = chart.append('g').attr('class', 'legend')
       .attr('transform','translate(' + (geom.chart_right-geom.chart_left - 3) + ',' + 0 + ')');
-    vis.append('clipPath').attr('id', 'clip_visida604d072-17d9-11e8-8f55-002590fb6dc0_chart1_inner').append('rect')
+    vis.append('clipPath').attr('id', 'clip_visidd95e353a-b748-11e8-ba3d-3279971b4c90_chart1_inner').append('rect')
       .attr('x', 0).attr('y', 0)
       .attr('width', geom.inner_rawWidth+1).attr('height', geom.inner_rawHeight+1);
     var scale_x = d3.scaleLinear(), scale_y = d3.scaleLinear();
@@ -14314,7 +14380,7 @@ var table1 = {
 
 // Call Code to Build the system ///////////////////////////////////////////////////////////////////
 
-var v  = new BrunelVis('visida604d072-17d9-11e8-8f55-002590fb6dc0');
+var v  = new BrunelVis('visidd95e353a-b748-11e8-ba3d-3279971b4c90');
 v.build(table1);
 
     });
@@ -14340,10 +14406,10 @@ v.build(table1);
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%</span><span class="k">brunel</span> data(&#39;cars&#39;) treemap x(origin, year, cylinders) color(mpg) mean(mpg) size(#count) label(cylinders) tooltip(#all):: width=900, height=600
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">brunel</span> data(&#39;cars&#39;) treemap x(origin, year, cylinders) color(mpg) mean(mpg) size(#count) label(cylinders) tooltip(#all):: width=900, height=600
 </pre></div>
 
 </div>
@@ -14378,31 +14444,31 @@ v.build(table1);
   -->
 
 
-<link rel="stylesheet" type="text/css" href="/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.2.3.css">
-<link rel="stylesheet" type="text/css" href="/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/sumoselect.css">
+<link rel="stylesheet" type="text/css" href="/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.2.3.css">
+<link rel="stylesheet" type="text/css" href="/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/sumoselect.css">
 
 <style>
     
 </style>
 
-<div id="controlsida61299dc-17d9-11e8-8f55-002590fb6dc0" class="brunel"/>
-<svg id="visida612972a-17d9-11e8-8f55-002590fb6dc0" width="900" height="600"></svg>
+<div id="controlsidd973f3b6-b748-11e8-ba3d-3279971b4c90" class="brunel"/>
+<svg id="visidd973f1e0-b748-11e8-ba3d-3279971b4c90" width="900" height="600"></svg>
 </div>
 
 </div>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[5]:</div>
+<div class="prompt output_prompt">Out[6]:</div>
 
 
 
 
 
-<div id="c3b590f6-93a8-4616-8b01-101b5675464f"></div>
+<div id="aae02e3d-7d1f-441b-add3-000505b3b261"></div>
 <div class="output_subarea output_javascript output_execute_result">
 <script type="text/javascript">
-var element = $('#c3b590f6-93a8-4616-8b01-101b5675464f');
+var element = $('#aae02e3d-7d1f-441b-add3-000505b3b261');
 /*
  * Copyright (c) 2015 IBM Corporation and others.
  *
@@ -14424,8 +14490,8 @@ require.config({
     paths: {
         'd3': '//cdnjs.cloudflare.com/ajax/libs/d3/4.2.1/d3.min',
         'topojson': '//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.min',
-        'brunel' : '/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.2.3.min',
-        'brunelControls' : '/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.controls.2.3.min'
+        'brunel' : '/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.2.3.min',
+        'brunelControls' : '/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.controls.2.3.min'
     },
     shim: {
        'brunel' : {
@@ -14486,12 +14552,12 @@ require(["d3"], function(d3) {
     chart.append('rect').attr('class', 'background').attr('width', geom.chart_right-geom.chart_left).attr('height', geom.chart_bottom-geom.chart_top);
     var interior = chart.append('g').attr('class', 'interior zoomNone')
       .attr('transform','translate(' + geom.inner_left + ',' + geom.inner_top + ')')
-      .attr('clip-path', 'url(#clip_visida612972a-17d9-11e8-8f55-002590fb6dc0_chart1_inner)');
+      .attr('clip-path', 'url(#clip_visidd973f1e0-b748-11e8-ba3d-3279971b4c90_chart1_inner)');
     interior.append('rect').attr('class', 'inner').attr('width', geom.inner_width).attr('height', geom.inner_height);
     var gridGroup = interior.append('g').attr('class', 'grid');
     var legends = chart.append('g').attr('class', 'legend')
       .attr('transform','translate(' + (geom.chart_right-geom.chart_left - 3) + ',' + 0 + ')');
-    vis.append('clipPath').attr('id', 'clip_visida612972a-17d9-11e8-8f55-002590fb6dc0_chart1_inner').append('rect')
+    vis.append('clipPath').attr('id', 'clip_visidd973f1e0-b748-11e8-ba3d-3279971b4c90_chart1_inner').append('rect')
       .attr('x', 0).attr('y', 0)
       .attr('width', geom.inner_rawWidth+1).attr('height', geom.inner_rawHeight+1);
     var tree, expandState = [], collapseState = {};    // collapse state maps node IDs to true/false
@@ -14754,7 +14820,7 @@ var table1 = {
 
 // Call Code to Build the system ///////////////////////////////////////////////////////////////////
 
-var v  = new BrunelVis('visida612972a-17d9-11e8-8f55-002590fb6dc0');
+var v  = new BrunelVis('visidd973f1e0-b748-11e8-ba3d-3279971b4c90');
 v.build(table1);
 
     });
@@ -14780,15 +14846,15 @@ v.build(table1);
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">def</span> <span class="nf">identify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">search</span><span class="p">):</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">identify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">search</span><span class="p">):</span> 
     <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">search</span><span class="p">:</span> 
         <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span> <span class="k">return</span> <span class="n">y</span>
-    <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="kc">None</span>
 
-<span class="n">cars</span><span class="p">[</span><span class="s">&#39;Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cars</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">identify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="s">&quot;Ford&quot;</span><span class="p">,</span> <span class="s">&quot;Buick&quot;</span><span class="p">]))</span>
+<span class="n">cars</span><span class="p">[</span><span class="s1">&#39;Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cars</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">identify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Ford&quot;</span><span class="p">,</span> <span class="s2">&quot;Buick&quot;</span><span class="p">]))</span>
 </pre></div>
 
 </div>
@@ -14807,10 +14873,10 @@ v.build(table1);
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">brunel</span> data(&#39;cars&#39;) x(engine) y(mpg) color(Type)  style(&#39;size:50%; fill:#eee&#39;) +
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">brunel</span> data(&#39;cars&#39;) x(engine) y(mpg) color(Type)  style(&#39;size:50%; fill:#eee&#39;) +
      x(engine) y(mpg) color(Type) style(&#39;text {font-size:14; font-weight:bold; fill:darker}&#39;) 
      :: width=800, height=800
 </pre></div>
@@ -14847,40 +14913,40 @@ v.build(table1);
   -->
 
 
-<link rel="stylesheet" type="text/css" href="/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.2.3.css">
-<link rel="stylesheet" type="text/css" href="/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/sumoselect.css">
+<link rel="stylesheet" type="text/css" href="/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.2.3.css">
+<link rel="stylesheet" type="text/css" href="/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/sumoselect.css">
 
 <style>
-    #visida62560c6-17d9-11e8-8f55-002590fb6dc0.brunel .chart1 text {
+    #visidd98df324-b748-11e8-ba3d-3279971b4c90.brunel .chart1 text {
 	fill: darker;
 	font-size: 14;
 	font-weight: bold;
 }
 
-#visida62560c6-17d9-11e8-8f55-002590fb6dc0.brunel .chart1 .element1 .element {
+#visidd98df324-b748-11e8-ba3d-3279971b4c90.brunel .chart1 .element1 .element {
 	fill: #eee;
 	size: 50%;
 }
 </style>
 
-<div id="controlsida625636e-17d9-11e8-8f55-002590fb6dc0" class="brunel"/>
-<svg id="visida62560c6-17d9-11e8-8f55-002590fb6dc0" width="800" height="800"></svg>
+<div id="controlsidd98df5c2-b748-11e8-ba3d-3279971b4c90" class="brunel"/>
+<svg id="visidd98df324-b748-11e8-ba3d-3279971b4c90" width="800" height="800"></svg>
 </div>
 
 </div>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[7]:</div>
+<div class="prompt output_prompt">Out[8]:</div>
 
 
 
 
 
-<div id="327b0a48-2a9d-4392-a305-a3082260f1bf"></div>
+<div id="0a4248d9-ba1e-4b50-9d69-e50c6f8db5b2"></div>
 <div class="output_subarea output_javascript output_execute_result">
 <script type="text/javascript">
-var element = $('#327b0a48-2a9d-4392-a305-a3082260f1bf');
+var element = $('#0a4248d9-ba1e-4b50-9d69-e50c6f8db5b2');
 /*
  * Copyright (c) 2015 IBM Corporation and others.
  *
@@ -14902,8 +14968,8 @@ require.config({
     paths: {
         'd3': '//cdnjs.cloudflare.com/ajax/libs/d3/4.2.1/d3.min',
         'topojson': '//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.min',
-        'brunel' : '/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.2.3.min',
-        'brunelControls' : '/data/jupyter2/936b332d-c4c4-422d-bf9b-795b2b888c32/nbextensions/brunel_ext/brunel.controls.2.3.min'
+        'brunel' : '/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.2.3.min',
+        'brunelControls' : '/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.controls.2.3.min'
     },
     shim: {
        'brunel' : {
@@ -14964,14 +15030,14 @@ require(["d3"], function(d3) {
     chart.append('rect').attr('class', 'background').attr('width', geom.chart_right-geom.chart_left).attr('height', geom.chart_bottom-geom.chart_top);
     var interior = chart.append('g').attr('class', 'interior zoomNone')
       .attr('transform','translate(' + geom.inner_left + ',' + geom.inner_top + ')')
-      .attr('clip-path', 'url(#clip_visida62560c6-17d9-11e8-8f55-002590fb6dc0_chart1_inner)');
+      .attr('clip-path', 'url(#clip_visidd98df324-b748-11e8-ba3d-3279971b4c90_chart1_inner)');
     interior.append('rect').attr('class', 'inner').attr('width', geom.inner_width).attr('height', geom.inner_height);
     var gridGroup = interior.append('g').attr('class', 'grid');
     var axes = chart.append('g').attr('class', 'axis')
       .attr('transform','translate(' + geom.inner_left + ',' + geom.inner_top + ')');
     var legends = chart.append('g').attr('class', 'legend')
       .attr('transform','translate(' + (geom.chart_right-geom.chart_left - 3) + ',' + 0 + ')');
-    vis.append('clipPath').attr('id', 'clip_visida62560c6-17d9-11e8-8f55-002590fb6dc0_chart1_inner').append('rect')
+    vis.append('clipPath').attr('id', 'clip_visidd98df324-b748-11e8-ba3d-3279971b4c90_chart1_inner').append('rect')
       .attr('x', 0).attr('y', 0)
       .attr('width', geom.inner_rawWidth+1).attr('height', geom.inner_rawHeight+1);
 
@@ -14989,15 +15055,15 @@ require(["d3"], function(d3) {
 
     axes.append('g').attr('class', 'x axis')
       .attr('transform','translate(0,' + geom.inner_rawHeight + ')')
-      .attr('clip-path', 'url(#clip_visida62560c6-17d9-11e8-8f55-002590fb6dc0_chart1_haxis)');
-    vis.append('clipPath').attr('id', 'clip_visida62560c6-17d9-11e8-8f55-002590fb6dc0_chart1_haxis').append('polyline')
+      .attr('clip-path', 'url(#clip_visidd98df324-b748-11e8-ba3d-3279971b4c90_chart1_haxis)');
+    vis.append('clipPath').attr('id', 'clip_visidd98df324-b748-11e8-ba3d-3279971b4c90_chart1_haxis').append('polyline')
       .attr('points', '-1,-1000, -1,-1 -5,5, -1000,5, -100,1000, 10000,1000 10000,-1000');
     axes.select('g.axis.x').append('text').attr('class', 'title').text('Engine').style('text-anchor', 'middle')
       .attr('x',geom.inner_rawWidth/2)
       .attr('y', geom.inner_bottom - 2.0).attr('dy','-0.27em');
     axes.append('g').attr('class', 'y axis')
-      .attr('clip-path', 'url(#clip_visida62560c6-17d9-11e8-8f55-002590fb6dc0_chart1_vaxis)');
-    vis.append('clipPath').attr('id', 'clip_visida62560c6-17d9-11e8-8f55-002590fb6dc0_chart1_vaxis').append('polyline')
+      .attr('clip-path', 'url(#clip_visidd98df324-b748-11e8-ba3d-3279971b4c90_chart1_vaxis)');
+    vis.append('clipPath').attr('id', 'clip_visidd98df324-b748-11e8-ba3d-3279971b4c90_chart1_vaxis').append('polyline')
       .attr('points', '-1000,-10000, 10000,-10000, 10000,' + (geom.inner_rawHeight+1) + ', -1,' + (geom.inner_rawHeight+1) + ', -1,' + (geom.inner_rawHeight+5) + ', -1000,' + (geom.inner_rawHeight+5) );
     axes.select('g.axis.y').append('text').attr('class', 'title').text('Mpg').style('text-anchor', 'middle')
       .attr('x',-geom.inner_rawHeight/2)
@@ -15376,7 +15442,7 @@ var table1 = {
 
 // Call Code to Build the system ///////////////////////////////////////////////////////////////////
 
-var v  = new BrunelVis('visida62560c6-17d9-11e8-8f55-002590fb6dc0');
+var v  = new BrunelVis('visidd98df324-b748-11e8-ba3d-3279971b4c90');
 v.build(table1);
 
     });
@@ -15409,6 +15475,19 @@ v.build(table1);
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Copyright © 2017, 2018 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
+<span style="font-size:18px;color:#152935;">Love this notebook? </span>
+<span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
+<span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+</div>
 </div>
 </div>
 </div>
