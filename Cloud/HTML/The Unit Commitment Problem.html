@@ -12672,29 +12672,22 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-Unit-Commitment-Problem-(UCP)">The Unit Commitment Problem (UCP)<a class="anchor-link" href="#The-Unit-Commitment-Problem-(UCP)">&#182;</a></h1><p>This tutorial includes everything you need to set up IBM Decision Optimization CPLEX Modeling for Python (DOcplex), build a Mathematical Programming model, and get its solution by solving the model on the cloud with IBM ILOG CPLEX Optimizer.</p>
-<p>When you finish this tutorial, you'll have a foundational knowledge of <em>Prescriptive Analytics</em>.</p>
-<blockquote><p>This notebook is part of <a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Prescriptive Analytics for Python</a>.</p>
-<p>It requires a valid subscription to <strong>Decision Optimization on Cloud</strong>. Try it for free <a href="https://developer.ibm.com/docloud" target="_blank" rel="noopener noreferrer">here</a>.</p>
-</blockquote>
-<p>This notebook runs on Python 3.5 with Spark.</p>
+<h1 id="The-Unit-Commitment-Problem-(UCP)">The Unit Commitment Problem (UCP)<a class="anchor-link" href="#The-Unit-Commitment-Problem-(UCP)">&#182;</a></h1><p>This tutorial includes everything you need to set up IBM Decision Optimization CPLEX Modeling for Python (DOcplex), build a Mathematical Programming model, and get its solution by solving the model with IBM ILOG CPLEX Optimizer.</p>
 <p>Table of contents:</p>
 <ul>
 <li><a href="#Describe-the-business-problem">Describe the business problem</a></li>
 <li><a href="#How--decision-optimization-can-help">How decision optimization (prescriptive analytics) can help</a></li>
 <li><a href="#Use-decision-optimization">Use decision optimization</a><ul>
-<li><a href="#Step-1:-Download-the-library">Step 1: Download the library</a></li>
-<li><a href="#Step-2:-Set-up-the-prescriptive-engine">Step 2: Set up the engines</a></li>
-<li><a href="#Step-3:-Model-the-data">Step 3: Model the Data</a></li>
-<li><a href="#Step-4:-Prepare-the-data">Step 4: Prepare the data</a></li>
-<li><a href="#Step-5:-Set-up-the-prescriptive-model">Step 5: Set up the prescriptive model</a><ul>
+<li><a href="#Step-1:-Model-the-data">Step 1: Model the Data</a></li>
+<li><a href="#Step-2:-Prepare-the-data">Step 2: Prepare the data</a></li>
+<li><a href="#Step-3:-Set-up-the-prescriptive-model">Step 3: Set up the prescriptive model</a><ul>
 <li><a href="#Define-the-decision-variables">Define the decision variables</a></li>
 <li><a href="#Express-the-business-constraints">Express the business constraints</a></li>
 <li><a href="#Express-the-objective">Express the objective</a></li>
-<li><a href="#Solve-with-the-Decision-Optimization-solve-service">Solve with the Decision Optimization solve service</a></li>
+<li><a href="#Solve-with-Decision-Optimization">Solve with Decision Optimization</a></li>
 </ul>
 </li>
-<li><a href="#Step-6:-Investigate-the-solution-and-then-run-an-example-analysis">Step 6: Investigate the solution and run an example analysis</a></li>
+<li><a href="#Step-4:-Investigate-the-solution-and-then-run-an-example-analysis">Step 4: Investigate the solution and run an example analysis</a></li>
 </ul>
 </li>
 <li><a href="#Summary">Summary</a></li>
@@ -12757,35 +12750,16 @@ Depending on the demand for electricity, we turn on or off units that generate p
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pip</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pip</span>
 <span class="n">REQUIRED_MINIMUM_PANDAS_VERSION</span> <span class="o">=</span> <span class="s1">&#39;0.17.1&#39;</span>
-<span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="n">pkg</span><span class="o">.</span><span class="n">key</span> <span class="p">:</span> <span class="n">pkg</span><span class="o">.</span><span class="n">version</span> <span class="k">for</span> <span class="n">pkg</span> <span class="ow">in</span> <span class="n">pip</span><span class="o">.</span><span class="n">get_installed_distributions</span><span class="p">()}</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="k">assert</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;pandas&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">REQUIRED_MINIMUM_PANDAS_VERSION</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+    <span class="k">assert</span> <span class="n">pd</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="n">REQUIRED_MINIMUM_PANDAS_VERSION</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Version &quot;</span> <span class="o">+</span> <span class="n">REQUIRED_MINIMUM_PANDAS_VERSION</span> <span class="o">+</span> <span class="s2">&quot; or above of Pandas is required to run this notebook&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Waiting for a Spark session to start...
-Spark Initialization Done! ApplicationId = app-20180906064617-0000
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -12802,57 +12776,7 @@ Spark Initialization Done! ApplicationId = app-20180906064617-0000
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Step-1:-Download-the-library">Step 1: Download the library<a class="anchor-link" href="#Step-1:-Download-the-library">&#182;</a></h3><p>Run the following code to the install the Decision Optimization CPLEX Modeling library.  The <em>DOcplex</em> library contains the two modeling packages, Mathematical Programming (<em>docplex.mp</em>) and Constraint Programming (<em>docplex.cp</em>).</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="o">!</span>pip install docplex 
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">docplex.mp</span>   
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Step-2:-Set-up-the-prescriptive-engine">Step 2: Set up the prescriptive engine<a class="anchor-link" href="#Step-2:-Set-up-the-prescriptive-engine">&#182;</a></h3><ul>
-<li>Subscribe to the <a href="https://developer.ibm.com/docloud" target="_blank" rel="noopener noreferrer">Decision Optimization on Cloud solve service</a>.</li>
-<li>Get the service URL and your personal API key (Client_id) and enter your credentials here:</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="c1"># ENTER YOUR URL HERE</span>
-<span class="n">key</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="c1"># ENTER YOUR KEY (Client_id) HERE</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Step-3:-Model-the-data">Step 3: Model the data<a class="anchor-link" href="#Step-3:-Model-the-data">&#182;</a></h3><h4 id="Load-data-from-a-pandas-DataFrame">Load data from a <em>pandas</em> DataFrame<a class="anchor-link" href="#Load-data-from-a-pandas-DataFrame">&#182;</a></h4><p>Data for the Unit Commitment Problem is provided as a <em>pandas</em> DataFrame.
+<h3 id="Step-1:-Model-the-data">Step 1: Model the data<a class="anchor-link" href="#Step-1:-Model-the-data">&#182;</a></h3><h4 id="Load-data-from-a-pandas-DataFrame">Load data from a <em>pandas</em> DataFrame<a class="anchor-link" href="#Load-data-from-a-pandas-DataFrame">&#182;</a></h4><p>Data for the Unit Commitment Problem is provided as a <em>pandas</em> DataFrame.
 For a standalone notebook, we provide the raw data as Python collections,
 but real data could be loaded
 from an Excel sheet, also using <em>pandas</em>.</p>
@@ -12862,16 +12786,16 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">Series</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="k">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">Series</span>
 
 <span class="c1"># make matplotlib plots appear inside the notebook</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
-<span class="kn">from</span> <span class="nn">pylab</span> <span class="kn">import</span> <span class="n">rcParams</span>
+<span class="kn">from</span> <span class="nn">pylab</span> <span class="k">import</span> <span class="n">rcParams</span>
 <span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">5</span> <span class="c1">############################ &lt;-Use this to change the plot</span>
 </pre></div>
 
@@ -12891,10 +12815,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">HTML</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="k">import</span> <span class="n">HTML</span>
 <span class="n">HTML</span><span class="p">(</span><span class="s2">&quot;&lt;style&gt;.container { width:100%; }&lt;/style&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -12908,7 +12832,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[4]:</div>
+<div class="prompt output_prompt">Out[3]:</div>
 
 
 
@@ -12933,10 +12857,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="s2">&quot;gas&quot;</span><span class="p">,</span> <span class="s2">&quot;diesel&quot;</span><span class="p">,</span> <span class="s2">&quot;wind&quot;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">energies</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;coal&quot;</span><span class="p">,</span> <span class="s2">&quot;gas&quot;</span><span class="p">,</span> <span class="s2">&quot;diesel&quot;</span><span class="p">,</span> <span class="s2">&quot;wind&quot;</span><span class="p">]</span>
 <span class="n">df_energy</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;co2_cost&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span> <span class="n">index</span><span class="o">=</span><span class="n">energies</span><span class="p">)</span>
 
 <span class="c1"># Display the &#39;df_energy&#39; Data Frame</span>
@@ -12953,7 +12877,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[5]:</div>
+<div class="prompt output_prompt">Out[4]:</div>
 
 
 
@@ -13018,10 +12942,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">all_units</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;coal1&quot;</span><span class="p">,</span> <span class="s2">&quot;coal2&quot;</span><span class="p">,</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">all_units</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;coal1&quot;</span><span class="p">,</span> <span class="s2">&quot;coal2&quot;</span><span class="p">,</span> 
              <span class="s2">&quot;gas1&quot;</span><span class="p">,</span> <span class="s2">&quot;gas2&quot;</span><span class="p">,</span> <span class="s2">&quot;gas3&quot;</span><span class="p">,</span> <span class="s2">&quot;gas4&quot;</span><span class="p">,</span> 
              <span class="s2">&quot;diesel1&quot;</span><span class="p">,</span> <span class="s2">&quot;diesel2&quot;</span><span class="p">,</span> <span class="s2">&quot;diesel3&quot;</span><span class="p">,</span> <span class="s2">&quot;diesel4&quot;</span><span class="p">]</span>
              
@@ -13056,7 +12980,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[6]:</div>
+<div class="prompt output_prompt">Out[5]:</div>
 
 
 
@@ -13259,7 +13183,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Step-4:-Prepare-the-data">Step 4: Prepare the data<a class="anchor-link" href="#Step-4:-Prepare-the-data">&#182;</a></h3>
+<h3 id="Step-2:-Prepare-the-data">Step 2: Prepare the data<a class="anchor-link" href="#Step-2:-Prepare-the-data">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13275,12 +13199,12 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Add a derived co2-cost column by merging with df_energies</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Add a derived co2-cost column by merging with df_energies</span>
 <span class="c1"># Use energy key from units and index from energy dataframe</span>
-<span class="n">df_up</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_units</span><span class="p">,</span> <span class="n">df_energy</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">df_up</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">df_units</span><span class="p">,</span> <span class="n">df_energy</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s2">&quot;energy&quot;</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">df_up</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
 
 <span class="c1"># Display first rows of new &#39;df_up&#39; Data Frame</span>
@@ -13297,7 +13221,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[7]:</div>
+<div class="prompt output_prompt">Out[6]:</div>
 
 
 
@@ -13454,10 +13378,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">raw_demand</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1259.0</span><span class="p">,</span> <span class="mf">1439.0</span><span class="p">,</span> <span class="mf">1289.0</span><span class="p">,</span> <span class="mf">1211.0</span><span class="p">,</span> <span class="mf">1433.0</span><span class="p">,</span> <span class="mf">1287.0</span><span class="p">,</span> <span class="mf">1285.0</span><span class="p">,</span> <span class="mf">1227.0</span><span class="p">,</span> <span class="mf">1269.0</span><span class="p">,</span> <span class="mf">1158.0</span><span class="p">,</span> <span class="mf">1277.0</span><span class="p">,</span> <span class="mf">1417.0</span><span class="p">,</span> <span class="mf">1294.0</span><span class="p">,</span> <span class="mf">1396.0</span><span class="p">,</span> <span class="mf">1414.0</span><span class="p">,</span> <span class="mf">1386.0</span><span class="p">,</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">raw_demand</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1259.0</span><span class="p">,</span> <span class="mf">1439.0</span><span class="p">,</span> <span class="mf">1289.0</span><span class="p">,</span> <span class="mf">1211.0</span><span class="p">,</span> <span class="mf">1433.0</span><span class="p">,</span> <span class="mf">1287.0</span><span class="p">,</span> <span class="mf">1285.0</span><span class="p">,</span> <span class="mf">1227.0</span><span class="p">,</span> <span class="mf">1269.0</span><span class="p">,</span> <span class="mf">1158.0</span><span class="p">,</span> <span class="mf">1277.0</span><span class="p">,</span> <span class="mf">1417.0</span><span class="p">,</span> <span class="mf">1294.0</span><span class="p">,</span> <span class="mf">1396.0</span><span class="p">,</span> <span class="mf">1414.0</span><span class="p">,</span> <span class="mf">1386.0</span><span class="p">,</span>
               <span class="mf">1302.0</span><span class="p">,</span> <span class="mf">1215.0</span><span class="p">,</span> <span class="mf">1433.0</span><span class="p">,</span> <span class="mf">1354.0</span><span class="p">,</span> <span class="mf">1436.0</span><span class="p">,</span> <span class="mf">1285.0</span><span class="p">,</span> <span class="mf">1332.0</span><span class="p">,</span> <span class="mf">1172.0</span><span class="p">,</span> <span class="mf">1446.0</span><span class="p">,</span> <span class="mf">1367.0</span><span class="p">,</span> <span class="mf">1243.0</span><span class="p">,</span> <span class="mf">1275.0</span><span class="p">,</span> <span class="mf">1363.0</span><span class="p">,</span> <span class="mf">1208.0</span><span class="p">,</span> <span class="mf">1394.0</span><span class="p">,</span> <span class="mf">1345.0</span><span class="p">,</span> 
               <span class="mf">1217.0</span><span class="p">,</span> <span class="mf">1432.0</span><span class="p">,</span> <span class="mf">1431.0</span><span class="p">,</span> <span class="mf">1356.0</span><span class="p">,</span> <span class="mf">1360.0</span><span class="p">,</span> <span class="mf">1364.0</span><span class="p">,</span> <span class="mf">1286.0</span><span class="p">,</span> <span class="mf">1440.0</span><span class="p">,</span> <span class="mf">1440.0</span><span class="p">,</span> <span class="mf">1313.0</span><span class="p">,</span> <span class="mf">1389.0</span><span class="p">,</span> <span class="mf">1385.0</span><span class="p">,</span> <span class="mf">1265.0</span><span class="p">,</span> <span class="mf">1442.0</span><span class="p">,</span> <span class="mf">1435.0</span><span class="p">,</span> <span class="mf">1432.0</span><span class="p">,</span> 
               <span class="mf">1280.0</span><span class="p">,</span> <span class="mf">1411.0</span><span class="p">,</span> <span class="mf">1440.0</span><span class="p">,</span> <span class="mf">1258.0</span><span class="p">,</span> <span class="mf">1333.0</span><span class="p">,</span> <span class="mf">1293.0</span><span class="p">,</span> <span class="mf">1193.0</span><span class="p">,</span> <span class="mf">1440.0</span><span class="p">,</span> <span class="mf">1306.0</span><span class="p">,</span> <span class="mf">1264.0</span><span class="p">,</span> <span class="mf">1244.0</span><span class="p">,</span> <span class="mf">1368.0</span><span class="p">,</span> <span class="mf">1437.0</span><span class="p">,</span> <span class="mf">1236.0</span><span class="p">,</span> <span class="mf">1354.0</span><span class="p">,</span> <span class="mf">1356.0</span><span class="p">,</span> 
@@ -13470,7 +13394,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
               <span class="mf">1362.0</span><span class="p">,</span> <span class="mf">1360.0</span><span class="p">,</span> <span class="mf">1448.0</span><span class="p">,</span> <span class="mf">1220.0</span><span class="p">,</span> <span class="mf">1435.0</span><span class="p">,</span> <span class="mf">1425.0</span><span class="p">,</span> <span class="mf">1413.0</span><span class="p">,</span> <span class="mf">1279.0</span><span class="p">,</span> <span class="mf">1269.0</span><span class="p">,</span> <span class="mf">1162.0</span><span class="p">,</span> <span class="mf">1437.0</span><span class="p">,</span> <span class="mf">1441.0</span><span class="p">,</span> <span class="mf">1433.0</span><span class="p">,</span> <span class="mf">1307.0</span><span class="p">,</span> <span class="mf">1436.0</span><span class="p">,</span> <span class="mf">1357.0</span><span class="p">,</span> 
               <span class="mf">1437.0</span><span class="p">,</span> <span class="mf">1308.0</span><span class="p">,</span> <span class="mf">1207.0</span><span class="p">,</span> <span class="mf">1420.0</span><span class="p">,</span> <span class="mf">1338.0</span><span class="p">,</span> <span class="mf">1311.0</span><span class="p">,</span> <span class="mf">1328.0</span><span class="p">,</span> <span class="mf">1417.0</span><span class="p">,</span> <span class="mf">1394.0</span><span class="p">,</span> <span class="mf">1336.0</span><span class="p">,</span> <span class="mf">1160.0</span><span class="p">,</span> <span class="mf">1231.0</span><span class="p">,</span> <span class="mf">1422.0</span><span class="p">,</span> <span class="mf">1294.0</span><span class="p">,</span> <span class="mf">1434.0</span><span class="p">,</span> <span class="mf">1289.0</span><span class="p">]</span>
 <span class="n">nb_periods</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw_demand</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;nb periods = {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_periods</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;nb periods = </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_periods</span><span class="p">))</span>
 
 <span class="n">demand</span> <span class="o">=</span> <span class="n">Series</span><span class="p">(</span><span class="n">raw_demand</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nb_periods</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
 
@@ -13499,13 +13423,13 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[8]:</div>
+<div class="prompt output_prompt">Out[7]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7feefde16c10&gt;</pre>
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f891908c6a0&gt;</pre>
 </div>
 
 </div>
@@ -13533,16 +13457,17 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Step-5:-Set-up-the-prescriptive-model">Step 5: Set up the prescriptive model<a class="anchor-link" href="#Step-5:-Set-up-the-prescriptive-model">&#182;</a></h3>
+<h3 id="Step-3:-Set-up-the-prescriptive-model">Step 3: Set up the prescriptive model<a class="anchor-link" href="#Step-3:-Set-up-the-prescriptive-model">&#182;</a></h3><p>Set up the prescriptive model using  Mathematical Programming (docplex.mp) modeling package.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.environment</span> <span class="kn">import</span> <span class="n">Environment</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.environment</span> <span class="k">import</span> <span class="n">Environment</span>
 <span class="n">env</span> <span class="o">=</span> <span class="n">Environment</span><span class="p">()</span>
 <span class="n">env</span><span class="o">.</span><span class="n">print_information</span><span class="p">()</span>
 </pre></div>
@@ -13562,9 +13487,9 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>* system is: Linux 64bit
-* Python is present, version is 2.7.14
-* docplex is present, version is (2, 7, 113)
-* CPLEX wrapper is not available
+* Python is present, version is 3.5.5
+* docplex is present, version is (2, 8, 125)
+* CPLEX wrapper is present, version is 12.8.0.0, located at: /opt/conda/envs/DSX-Python35/lib/python3.5/site-packages
 </pre>
 </div>
 </div>
@@ -13584,15 +13509,34 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="kn">import</span> <span class="n">Model</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="k">import</span> <span class="n">Model</span>
 
 <span class="n">ucpm</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s2">&quot;ucp&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/opt/conda/envs/DSX-Python35/lib/python3.5/site-packages/docplex/mp/model.py:14: Warning: These editions of DOcplex and CPLEX for Watson Studio are in beta.
+  warnings.warn(&#39;These editions of DOcplex and CPLEX for Watson Studio are in beta.&#39;, Warning)
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13614,10 +13558,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">units</span> <span class="o">=</span> <span class="n">all_units</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">units</span> <span class="o">=</span> <span class="n">all_units</span>
 <span class="c1"># periods range from 1 to nb_periods included</span>
 <span class="n">periods</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nb_periods</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 
@@ -13668,10 +13612,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Organize all decision variables in a DataFrame indexed by &#39;units&#39; and &#39;periods&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Organize all decision variables in a DataFrame indexed by &#39;units&#39; and &#39;periods&#39;</span>
 <span class="n">df_decision_vars</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;in_use&#39;</span><span class="p">:</span> <span class="n">in_use</span><span class="p">,</span> <span class="s1">&#39;turn_on&#39;</span><span class="p">:</span> <span class="n">turn_on</span><span class="p">,</span> <span class="s1">&#39;turn_off&#39;</span><span class="p">:</span> <span class="n">turn_off</span><span class="p">,</span> <span class="s1">&#39;production&#39;</span><span class="p">:</span> <span class="n">production</span><span class="p">})</span>
 <span class="c1"># Set index names</span>
 <span class="n">df_decision_vars</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="s1">&#39;periods&#39;</span><span class="p">]</span>
@@ -13690,7 +13634,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[12]:</div>
+<div class="prompt output_prompt">Out[11]:</div>
 
 
 
@@ -13787,10 +13731,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Create a join between &#39;df_decision_vars&#39; and &#39;df_up&#39; Data Frames based on common index id (ie: &#39;units&#39;)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create a join between &#39;df_decision_vars&#39; and &#39;df_up&#39; Data Frames based on common index id (ie: &#39;units&#39;)</span>
 <span class="c1"># In &#39;df_up&#39;, one keeps only relevant columns: &#39;min_gen&#39; and &#39;max_gen&#39;</span>
 <span class="n">df_join_decision_vars_up</span> <span class="o">=</span> <span class="n">df_decision_vars</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df_up</span><span class="p">[[</span><span class="s1">&#39;min_gen&#39;</span><span class="p">,</span> <span class="s1">&#39;max_gen&#39;</span><span class="p">]],</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
 
@@ -13808,7 +13752,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[13]:</div>
+<div class="prompt output_prompt">Out[12]:</div>
 
 
 
@@ -13910,11 +13854,11 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pb</span>
-<span class="k">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pb</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13942,11 +13886,11 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># When in use, the production level is constrained to be between min and max generation.</span>
-<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">df_join_decision_vars_up</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># When in use, the production level is constrained to be between min and max generation.</span>
+<span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">df_join_decision_vars_up</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="n">ucpm</span> <span class="o">+=</span> <span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">production</span> <span class="o">&lt;=</span> <span class="n">item</span><span class="o">.</span><span class="n">max_gen</span> <span class="o">*</span> <span class="n">item</span><span class="o">.</span><span class="n">in_use</span><span class="p">)</span>
     <span class="n">ucpm</span> <span class="o">+=</span> <span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">production</span> <span class="o">&gt;=</span> <span class="n">item</span><span class="o">.</span><span class="n">min_gen</span> <span class="o">*</span> <span class="n">item</span><span class="o">.</span><span class="n">in_use</span><span class="p">)</span>
 </pre></div>
@@ -13967,10 +13911,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Initial state</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Initial state</span>
 <span class="c1"># If initial production is nonzero, then period #1 is not a turn_on</span>
 <span class="c1"># else turn_on equals in_use</span>
 <span class="c1"># Dual logic is implemented for turn_off</span>
@@ -14028,10 +13972,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Use groupby operation to process each unit</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Use groupby operation to process each unit</span>
 <span class="k">for</span> <span class="n">unit</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">df_decision_vars</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;units&#39;</span><span class="p">):</span>
     <span class="n">u_ramp_up</span> <span class="o">=</span> <span class="n">df_up</span><span class="o">.</span><span class="n">ramp_up</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span>
     <span class="n">u_ramp_down</span> <span class="o">=</span> <span class="n">df_up</span><span class="o">.</span><span class="n">ramp_down</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span>
@@ -14087,10 +14031,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Turn_on, turn_off</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Turn_on, turn_off</span>
 <span class="c1"># Use groupby operation to process each unit</span>
 <span class="k">for</span> <span class="n">unit</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">df_decision_vars</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;units&#39;</span><span class="p">):</span>
     <span class="k">for</span> <span class="p">(</span><span class="n">in_use_curr</span><span class="p">,</span> <span class="n">in_use_next</span><span class="p">,</span> <span class="n">turn_on_next</span><span class="p">,</span> <span class="n">turn_off_next</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">in_use</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">in_use</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">r</span><span class="o">.</span><span class="n">turn_on</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">r</span><span class="o">.</span><span class="n">turn_off</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
@@ -14145,20 +14089,20 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Minimum uptime, downtime</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Minimum uptime, downtime</span>
 <span class="k">for</span> <span class="n">unit</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">df_decision_vars</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;units&#39;</span><span class="p">):</span>
     <span class="n">min_uptime</span>   <span class="o">=</span> <span class="n">df_up</span><span class="o">.</span><span class="n">min_uptime</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span>
     <span class="n">min_downtime</span> <span class="o">=</span> <span class="n">df_up</span><span class="o">.</span><span class="n">min_downtime</span><span class="p">[</span><span class="n">unit</span><span class="p">]</span>
     <span class="c1"># Note that r.turn_on and r.in_use are Series that can be indexed as arrays (ie: first item index = 0)</span>
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_uptime</span><span class="p">,</span> <span class="n">nb_periods</span><span class="p">):</span>
-        <span class="n">ctname</span> <span class="o">=</span> <span class="s2">&quot;min_up_{0!s}_{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">r</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">ctname</span> <span class="o">=</span> <span class="s2">&quot;min_up_</span><span class="si">{0!s}</span><span class="s2">_</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">r</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
         <span class="n">ucpm</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">ucpm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">turn_on</span><span class="p">[(</span><span class="n">t</span> <span class="o">-</span> <span class="n">min_uptime</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="o">.</span><span class="n">in_use</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">ctname</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">min_downtime</span><span class="p">,</span> <span class="n">nb_periods</span><span class="p">):</span>
-        <span class="n">ctname</span> <span class="o">=</span> <span class="s2">&quot;min_down_{0!s}_{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">r</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">ctname</span> <span class="o">=</span> <span class="s2">&quot;min_down_</span><span class="si">{0!s}</span><span class="s2">_</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">r</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
         <span class="n">ucpm</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">ucpm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">turn_off</span><span class="p">[(</span><span class="n">t</span> <span class="o">-</span> <span class="n">min_downtime</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">r</span><span class="o">.</span><span class="n">in_use</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">ctname</span><span class="p">)</span>
 </pre></div>
 
@@ -14179,10 +14123,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Enforcing demand</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Enforcing demand</span>
 <span class="c1"># we use a &gt;= here to be more robust, </span>
 <span class="c1"># objective will ensure  we produce efficiently</span>
 <span class="k">for</span> <span class="n">period</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">df_decision_vars</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;periods&#39;</span><span class="p">):</span>
@@ -14209,10 +14153,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Create a join between &#39;df_decision_vars&#39; and &#39;df_up&#39; Data Frames based on common index ids (ie: &#39;units&#39;)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create a join between &#39;df_decision_vars&#39; and &#39;df_up&#39; Data Frames based on common index ids (ie: &#39;units&#39;)</span>
 <span class="c1"># In &#39;df_up&#39;, one keeps only relevant columns: &#39;fixed_cost&#39;, &#39;variable_cost&#39;, &#39;start_cost&#39; and &#39;co2_cost&#39;</span>
 <span class="n">df_join_obj</span> <span class="o">=</span> <span class="n">df_decision_vars</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
     <span class="n">df_up</span><span class="p">[[</span><span class="s1">&#39;fixed_cost&#39;</span><span class="p">,</span> <span class="s1">&#39;variable_cost&#39;</span><span class="p">,</span> <span class="s1">&#39;start_cost&#39;</span><span class="p">,</span> <span class="s1">&#39;co2_cost&#39;</span><span class="p">]],</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span><span class="p">)</span>
@@ -14231,7 +14175,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[21]:</div>
+<div class="prompt output_prompt">Out[20]:</div>
 
 
 
@@ -14347,10 +14291,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># objective</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># objective</span>
 <span class="n">total_fixed_cost</span> <span class="o">=</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">df_join_obj</span><span class="o">.</span><span class="n">in_use</span> <span class="o">*</span> <span class="n">df_join_obj</span><span class="o">.</span><span class="n">fixed_cost</span><span class="p">)</span>
 <span class="n">total_variable_cost</span> <span class="o">=</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">df_join_obj</span><span class="o">.</span><span class="n">production</span> <span class="o">*</span> <span class="n">df_join_obj</span><span class="o">.</span><span class="n">variable_cost</span><span class="p">)</span>
 <span class="n">total_startup_cost</span> <span class="o">=</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">df_join_obj</span><span class="o">.</span><span class="n">turn_on</span> <span class="o">*</span> <span class="n">df_join_obj</span><span class="o">.</span><span class="n">start_cost</span><span class="p">)</span>
@@ -14382,17 +14326,17 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Solve-with-the-Decision-Optimization-solve-service">Solve with the Decision Optimization solve service<a class="anchor-link" href="#Solve-with-the-Decision-Optimization-solve-service">&#182;</a></h4><p>Solve the model on the cloud.</p>
+<h4 id="Solve-with-Decision-Optimization">Solve with Decision Optimization<a class="anchor-link" href="#Solve-with-Decision-Optimization">&#182;</a></h4><p>If you're using a Community Edition of CPLEX runtimes, depending on the size of the problem, the solve stage might fail and you will need to use a Waston Studio premium environment.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">ucpm</span><span class="o">.</span><span class="n">print_information</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ucpm</span><span class="o">.</span><span class="n">print_information</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -14425,10 +14369,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">assert</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">),</span> <span class="s2">&quot;!!! Solve of the model fails&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">solve</span><span class="p">(),</span> <span class="s2">&quot;!!! Solve of the model fails&quot;</span>
 </pre></div>
 
 </div>
@@ -14438,10 +14382,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">ucpm</span><span class="o">.</span><span class="n">report</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ucpm</span><span class="o">.</span><span class="n">report</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -14478,7 +14422,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Step-6:-Investigate-the-solution-and-then-run-an-example-analysis">Step 6: Investigate the solution and then run an example analysis<a class="anchor-link" href="#Step-6:-Investigate-the-solution-and-then-run-an-example-analysis">&#182;</a></h3><p>Now let's store the results in a new <em>pandas</em> DataFrame.</p>
+<h3 id="Step-4:-Investigate-the-solution-and-then-run-an-example-analysis">Step 4: Investigate the solution and then run an example analysis<a class="anchor-link" href="#Step-4:-Investigate-the-solution-and-then-run-an-example-analysis">&#182;</a></h3><p>Now let's store the results in a new <em>pandas</em> DataFrame.</p>
 <p>For convenience, the different figures are organized into pivot tables with <em>periods</em> as row index and <em>units</em> as columns. The <em>pandas</em> <em>unstack</em> operation does this for us.</p>
 
 </div>
@@ -14486,10 +14430,10 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df_prods</span> <span class="o">=</span> <span class="n">df_decision_vars</span><span class="o">.</span><span class="n">production</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">solution_value</span><span class="p">)</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;units&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_prods</span> <span class="o">=</span> <span class="n">df_decision_vars</span><span class="o">.</span><span class="n">production</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">solution_value</span><span class="p">)</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;units&#39;</span><span class="p">)</span>
 <span class="n">df_used</span> <span class="o">=</span> <span class="n">df_decision_vars</span><span class="o">.</span><span class="n">in_use</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">solution_value</span><span class="p">)</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;units&#39;</span><span class="p">)</span>
 <span class="n">df_started</span> <span class="o">=</span> <span class="n">df_decision_vars</span><span class="o">.</span><span class="n">turn_on</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">solution_value</span><span class="p">)</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;units&#39;</span><span class="p">)</span>
 
@@ -14507,7 +14451,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[26]:</div>
+<div class="prompt output_prompt">Out[25]:</div>
 
 
 
@@ -14645,10 +14589,10 @@ the unit's maximum generation minus the current production.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df_spins</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">df_up</span><span class="o">.</span><span class="n">max_gen</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">index</span><span class="o">=</span><span class="n">periods</span><span class="p">)</span> <span class="o">-</span> <span class="n">df_prods</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_spins</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">df_up</span><span class="o">.</span><span class="n">max_gen</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">index</span><span class="o">=</span><span class="n">periods</span><span class="p">)</span> <span class="o">-</span> <span class="n">df_prods</span>
 
 <span class="c1"># Display the first few rows of the &#39;df_spins&#39; Data Frame, representing the reserve for each unit, over time</span>
 <span class="n">df_spins</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -14664,7 +14608,7 @@ the unit's maximum generation minus the current production.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[27]:</div>
+<div class="prompt output_prompt">Out[26]:</div>
 
 
 
@@ -14787,10 +14731,10 @@ the unit's maximum generation minus the current production.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df_spins</span><span class="o">.</span><span class="n">coal2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">200</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_spins</span><span class="o">.</span><span class="n">coal2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;o-&#39;</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">200</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -14803,13 +14747,13 @@ the unit's maximum generation minus the current production.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[28]:</div>
+<div class="prompt output_prompt">Out[27]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7feef03d7b10&gt;</pre>
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f8908ebcc18&gt;</pre>
 </div>
 
 </div>
@@ -14846,10 +14790,10 @@ with axis=1 (for rows).</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">global_spin</span> <span class="o">=</span> <span class="n">df_spins</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">global_spin</span> <span class="o">=</span> <span class="n">df_spins</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">global_spin</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Global spinning reserve&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -14863,13 +14807,13 @@ with axis=1 (for rows).</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[29]:</div>
+<div class="prompt output_prompt">Out[28]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7feeeb641250&gt;</pre>
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f89182af5c0&gt;</pre>
 </div>
 
 </div>
@@ -14905,10 +14849,10 @@ Again, we use the <em>pandas</em> sum with axis=1 (for rows) to sum over all uni
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">df_used</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Number of plants online&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;r-&quot;</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">)])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_used</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Number of plants online&quot;</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;line&#39;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;r-&quot;</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">)])</span>
 </pre></div>
 
 </div>
@@ -14921,13 +14865,13 @@ Again, we use the <em>pandas</em> sum with axis=1 (for rows) to sum over all uni
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[30]:</div>
+<div class="prompt output_prompt">Out[29]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7feeebb30bd0&gt;</pre>
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f89182c7ac8&gt;</pre>
 </div>
 
 </div>
@@ -14961,10 +14905,10 @@ Again, we use the <em>pandas</em> sum with axis=1 (for rows) to sum over all uni
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># extract unit cost data</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># extract unit cost data</span>
 <span class="n">all_costs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;fixed_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;variable_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;start_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;co2_cost&quot;</span><span class="p">]</span>
 <span class="n">df_costs</span> <span class="o">=</span> <span class="n">df_up</span><span class="p">[</span><span class="n">all_costs</span><span class="p">]</span>
 
@@ -14976,7 +14920,7 @@ Again, we use the <em>pandas</em> sum with axis=1 (for rows) to sum over all uni
 
 <span class="n">running_cost</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
 <span class="n">startup_cost</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
-<span class="n">variable_cost</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">logy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">variable_cost</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">logy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">co2_cost</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -14990,13 +14934,13 @@ Again, we use the <em>pandas</em> sum with axis=1 (for rows) to sum over all uni
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[31]:</div>
+<div class="prompt output_prompt">Out[30]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7feeea85a410&gt;</pre>
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f88fef9e278&gt;</pre>
 </div>
 
 </div>
@@ -15030,10 +14974,10 @@ Again, we use the <em>pandas</em> sum with axis=1 (for rows) to sum over all uni
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Calculate sum by column (by default, axis = 0) to get total cost for each unit</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Calculate sum by column (by default, axis = 0) to get total cost for each unit</span>
 <span class="n">cost_by_unit</span> <span class="o">=</span> <span class="n">total_cost</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
 <span class="c1"># Create a dictionary storing energy type for each unit, from the corresponding pandas Series</span>
@@ -15057,13 +15001,13 @@ Again, we use the <em>pandas</em> sum with axis=1 (for rows) to sum over all uni
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[32]:</div>
+<div class="prompt output_prompt">Out[31]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>Text(0.5,1,u&#39;total cost by energy type&#39;)</pre>
+<pre>Text(0.5,1,&#39;total cost by energy type&#39;)</pre>
 </div>
 
 </div>
@@ -15101,16 +15045,16 @@ To know this, let's solve again with CO<sub>2</sub> cost as the only objective.<
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># first retrieve the co2 and economic kpis</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># first retrieve the co2 and economic kpis</span>
 <span class="n">co2_kpi</span> <span class="o">=</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">kpi_by_name</span><span class="p">(</span><span class="s2">&quot;co2&quot;</span><span class="p">)</span> <span class="c1"># does a name matching</span>
 <span class="n">eco_kpi</span> <span class="o">=</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">kpi_by_name</span><span class="p">(</span><span class="s2">&quot;eco&quot;</span><span class="p">)</span>
 <span class="n">prev_co2_cost</span> <span class="o">=</span> <span class="n">co2_kpi</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
 <span class="n">prev_eco_cost</span> <span class="o">=</span> <span class="n">eco_kpi</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;* current CO2 cost is: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prev_co2_cost</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;* current $$$ cost is: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prev_eco_cost</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;* current CO2 cost is: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prev_co2_cost</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;* current $$$ cost is: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prev_eco_cost</span><span class="p">))</span>
 <span class="c1"># now set the objective</span>
 <span class="n">old_objective</span> <span class="o">=</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">objective_expr</span> <span class="c1"># save it</span>
 <span class="n">ucpm</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">co2_kpi</span><span class="o">.</span><span class="n">as_expression</span><span class="p">())</span>
@@ -15130,8 +15074,8 @@ To know this, let's solve again with CO<sub>2</sub> cost as the only objective.<
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>* current CO2 cost is: 5183324.5
-* current $$$ cost is: 9029757.5639
+<pre>* current CO2 cost is: 5183324.500000002
+* current $$$ cost is: 9029757.563900148
 </pre>
 </div>
 </div>
@@ -15142,10 +15086,10 @@ To know this, let's solve again with CO<sub>2</sub> cost as the only objective.<
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">assert</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">),</span> <span class="s2">&quot;Solve failed&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">solve</span><span class="p">(),</span> <span class="s2">&quot;Solve failed&quot;</span>
 </pre></div>
 
 </div>
@@ -15155,13 +15099,13 @@ To know this, let's solve again with CO<sub>2</sub> cost as the only objective.<
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">min_co2_cost</span> <span class="o">=</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">objective_value</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">min_co2_cost</span> <span class="o">=</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">objective_value</span>
 <span class="n">min_co2_eco_cost</span> <span class="o">=</span> <span class="n">eco_kpi</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;* absolute minimum for CO2 cost is {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_co2_cost</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;* at this point $$$ cost is {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_co2_eco_cost</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;* absolute minimum for CO2 cost is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_co2_cost</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;* at this point $$$ cost is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_co2_eco_cost</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -15179,7 +15123,7 @@ To know this, let's solve again with CO<sub>2</sub> cost as the only objective.<
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>* absolute minimum for CO2 cost is 3399032.0
-* at this point $$$ cost is 12433527.06
+* at this point $$$ cost is 12433527.060000222
 </pre>
 </div>
 </div>
@@ -15201,11 +15145,24 @@ the economic cost, regardless of CO<sub>2</sub> cost.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># minimize only economic cost</span>
+<span class="n">ucpm</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">eco_kpi</span><span class="o">.</span><span class="n">as_expression</span><span class="p">())</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
 <div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># minimize only economic cost</span>
-<span class="n">ucpm</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">eco_kpi</span><span class="o">.</span><span class="n">as_expression</span><span class="p">())</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">solve</span><span class="p">(),</span> <span class="s2">&quot;Solve failed&quot;</span>
 </pre></div>
 
 </div>
@@ -15218,23 +15175,10 @@ the economic cost, regardless of CO<sub>2</sub> cost.</p>
 <div class="prompt input_prompt">In&nbsp;[37]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">assert</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">),</span> <span class="s2">&quot;Solve failed&quot;</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[38]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">min_eco_cost</span> <span class="o">=</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">objective_value</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">min_eco_cost</span> <span class="o">=</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">objective_value</span>
 <span class="n">min_eco_co2_cost</span> <span class="o">=</span> <span class="n">co2_kpi</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;* absolute minimum for $$$ cost is {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_eco_cost</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;* at this point CO2 cost is {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_eco_co2_cost</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;* absolute minimum for $$$ cost is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_eco_cost</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;* at this point CO2 cost is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">min_eco_co2_cost</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -15252,7 +15196,7 @@ the economic cost, regardless of CO<sub>2</sub> cost.</p>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>* absolute minimum for $$$ cost is 8886788.6474
-* at this point CO2 cost is 5375788.0
+* at this point CO2 cost is 5375788.000000001
 </pre>
 </div>
 </div>
@@ -15278,10 +15222,10 @@ of this CO<sub>2</sub> limit variable between successive solves.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># add extra variable</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># add extra variable</span>
 <span class="n">co2_limit</span> <span class="o">=</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">continuous_var</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="c1"># add a named constraint which limits total co2 cost to this variable:</span>
 <span class="n">max_co2_ctname</span> <span class="o">=</span> <span class="s2">&quot;ct_max_co2&quot;</span>
@@ -15295,10 +15239,10 @@ of this CO<sub>2</sub> limit variable between successive solves.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">co2min</span> <span class="o">=</span> <span class="n">min_co2_cost</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">co2min</span> <span class="o">=</span> <span class="n">min_co2_cost</span>
 <span class="n">co2max</span> <span class="o">=</span> <span class="n">min_eco_co2_cost</span>
 <span class="k">def</span> <span class="nf">explore_ucp</span><span class="p">(</span><span class="n">nb_iters</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
 
@@ -15311,9 +15255,9 @@ of this CO<sub>2</sub> limit variable between successive solves.</p>
     <span class="n">all_ecos</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_iters</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">co2_ub</span> <span class="o">=</span> <span class="n">co2min</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="n">step</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot; iteration #{0} co2_ub={1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">co2_ub</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; iteration #</span><span class="si">{0}</span><span class="s2"> co2_ub=</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">co2_ub</span><span class="p">))</span>
         <span class="n">co2_limit</span><span class="o">.</span><span class="n">ub</span> <span class="o">=</span> <span class="n">co2_ub</span> <span class="o">+</span> <span class="n">eps</span>
-        <span class="k">assert</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Solve failed&quot;</span>
+        <span class="k">assert</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Solve failed&quot;</span>
         <span class="n">cur_co2</span> <span class="o">=</span> <span class="n">co2_kpi</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
         <span class="n">cur_eco</span> <span class="o">=</span> <span class="n">eco_kpi</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
         <span class="n">all_co2s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur_co2</span><span class="p">)</span>
@@ -15328,10 +15272,10 @@ of this CO<sub>2</sub> limit variable between successive solves.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1">#explore the co2/eco frontier in 50 points</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#explore the co2/eco frontier in 50 points</span>
 <span class="n">co2s</span><span class="p">,</span> <span class="n">ecos</span> <span class="o">=</span> <span class="n">explore_ucp</span><span class="p">(</span><span class="n">nb_iters</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 </pre></div>
 
@@ -15356,34 +15300,50 @@ of this CO<sub>2</sub> limit variable between successive solves.</p>
  iteration #4 co2_ub=3557172.48
  iteration #5 co2_ub=3596707.6
  iteration #6 co2_ub=3636242.72
- iteration #7 co2_ub=3675777.84
+ iteration #7 co2_ub=3675777.8400000003
  iteration #8 co2_ub=3715312.96
  iteration #9 co2_ub=3754848.08
  iteration #10 co2_ub=3794383.2
- iteration #11 co2_ub=3833918.32
- iteration #12 co2_ub=3873453.44
+ iteration #11 co2_ub=3833918.3200000003
+ iteration #12 co2_ub=3873453.4400000004
  iteration #13 co2_ub=3912988.56
  iteration #14 co2_ub=3952523.68
- iteration #15 co2_ub=3992058.8
- iteration #16 co2_ub=4031593.92
+ iteration #15 co2_ub=3992058.8000000003
+ iteration #16 co2_ub=4031593.9200000004
  iteration #17 co2_ub=4071129.04
  iteration #18 co2_ub=4110664.16
- iteration #19 co2_ub=4150199.28
- iteration #20 co2_ub=4189734.4
- iteration #21 co2_ub=4229269.52
- iteration #22 co2_ub=4268804.64
- iteration #23 co2_ub=4308339.76
- iteration #24 co2_ub=4347874.88
+ iteration #19 co2_ub=4150199.2800000003
+ iteration #20 co2_ub=4189734.4000000004
+ iteration #21 co2_ub=4229269.5200000005
+ iteration #22 co2_ub=4268804.640000001
+ iteration #23 co2_ub=4308339.760000001
+ iteration #24 co2_ub=4347874.880000001
  iteration #25 co2_ub=4387410.0
  iteration #26 co2_ub=4426945.12
  iteration #27 co2_ub=4466480.24
  iteration #28 co2_ub=4506015.36
  iteration #29 co2_ub=4545550.48
- iteration #30 co2_ub=4585085.6
- iteration #31 co2_ub=4624620.72
- iteration #32 co2_ub=4664155.84
- iteration #33 co2_ub=4703690.96
+ iteration #30 co2_ub=4585085.600000001
+ iteration #31 co2_ub=4624620.720000001
+ iteration #32 co2_ub=4664155.840000001
+ iteration #33 co2_ub=4703690.960000001
  iteration #34 co2_ub=4743226.08
+ iteration #35 co2_ub=4782761.200000001
+ iteration #36 co2_ub=4822296.32
+ iteration #37 co2_ub=4861831.44
+ iteration #38 co2_ub=4901366.5600000005
+ iteration #39 co2_ub=4940901.680000001
+ iteration #40 co2_ub=4980436.800000001
+ iteration #41 co2_ub=5019971.920000001
+ iteration #42 co2_ub=5059507.040000001
+ iteration #43 co2_ub=5099042.160000001
+ iteration #44 co2_ub=5138577.280000001
+ iteration #45 co2_ub=5178112.4
+ iteration #46 co2_ub=5217647.5200000005
+ iteration #47 co2_ub=5257182.640000001
+ iteration #48 co2_ub=5296717.760000001
+ iteration #49 co2_ub=5336252.880000001
+ iteration #50 co2_ub=5375788.000000001
 </pre>
 </div>
 </div>
@@ -15394,10 +15354,10 @@ of this CO<sub>2</sub> limit variable between successive solves.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># normalize all values by dividing by their maximum</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># normalize all values by dividing by their maximum</span>
 <span class="n">eco_max</span> <span class="o">=</span> <span class="n">min_co2_eco_cost</span>
 <span class="n">nxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="o">/</span> <span class="n">co2max</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">co2s</span><span class="p">]</span>
 <span class="n">nys</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="o">/</span> <span class="n">eco_max</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">ecos</span><span class="p">]</span>
@@ -15411,6 +15371,28 @@ of this CO<sub>2</sub> limit variable between successive solves.</p>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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
+"
+>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -15429,7 +15411,7 @@ economic cost over CO<sub>2</sub> cost: CO<sub>2</sub> cost is well above 95% of
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You learned how to set up and use IBM Decision Optimization CPLEX Modeling for Python to formulate a Mathematical Programming model and solve it with IBM Decision Optimization on Cloud.</p>
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You learned how to set up and use IBM Decision Optimization CPLEX Modeling for Python to formulate a Mathematical Programming model and solve it with IBM Decision Optimization.</p>
 
 </div>
 </div>
@@ -15438,20 +15420,10 @@ economic cost over CO<sub>2</sub> cost: CO<sub>2</sub> cost is well above 95% of
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Author">Author<a class="anchor-link" href="#Author">&#182;</a></h2><p><b>Vincent Beraudier</b> is Software Architect and Program Manager for Prescriptive Analytics and Decision Optimization in IBM Analytics. With IBM and ILOG for more than 16 years, he has been responsible for optimization model development tools: OPL and DOcplex. OPL, the Optimization Programming Language, provides a natural mathematical description of optimization models. DOcplex, IBM's CPLEX modeling for Python offering, is an open source project that aims at leveraging the scientific ecosystem of Python and Jupyter/Zeppeling Notebooks. It can solve Optimization Mathematical Programming models with CPLEX cloud service (DOcplexcloud) or with CPLEX local solver, without any code change.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="References">References<a class="anchor-link" href="#References">&#182;</a></h2><ul>
-<li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">CPLEX Modeling for Python documentation</a></li>
-<li><a href="https://developer.ibm.com/docloud/" target="_blank" rel="noopener noreferrer">Decision Optimization on Cloud</a></li>
-<li>Need help with DOcplex or to report a bug? Please go <a href="https://developer.ibm.com/answers/smartspace/docloud" target="_blank" rel="noopener noreferrer">here</a>.</li>
-<li>Contact us at dofeedback@wwpdl.vnet.ibm.com.</li>
+<h4 id="References">References<a class="anchor-link" href="#References">&#182;</a></h4><ul>
+<li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization CPLEX Modeling for Python documentation</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/getting-started/welcome-main.html?audience=wdp&context=wdp" target="_blank" rel="noopener noreferrer">Watson Studio documentation</a></li>
+<li>Need help with DOcplex or to report a bug? Go to <a href="https://developer.ibm.com/answers/smartspace/docloud" target="_blank" rel="noopener noreferrer">https://developer.ibm.com/answers/smartspace/docloud</a></li>
 </ul>
 
 </div>
@@ -15461,7 +15433,8 @@ economic cost over CO<sub>2</sub> cost: CO<sub>2</sub> cost is well above 95% of
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Copyright © IBM 2017, 2018. This notebook and its source code are released under the terms of the MIT License.</p>
+<p><hr>
+Copyright © 2017-2018. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
