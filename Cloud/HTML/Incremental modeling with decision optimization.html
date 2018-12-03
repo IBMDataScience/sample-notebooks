@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Sudoku</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Incremental modeling with decision optimization</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -12672,21 +12672,22 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Sudoku">Sudoku<a class="anchor-link" href="#Sudoku">&#182;</a></h1><p>This tutorial includes everything you need to set up decision optimization engines, build constraint programming models.</p>
+<h1 id="Incremental-modeling-with-decision-optimization">Incremental modeling with decision optimization<a class="anchor-link" href="#Incremental-modeling-with-decision-optimization">&#182;</a></h1><p>This tutorial includes everything you need to set up decision optimization engines, build a mathematical programming model, then incrementally modify it.
+You will learn how to:</p>
+<ul>
+<li>change coefficients in an expression</li>
+<li>add terms in an expression</li>
+<li>modify constraints and variables bounds</li>
+<li>remove/add constraints</li>
+<li>play with relaxations</li>
+</ul>
 <p>Table of contents:</p>
 <ul>
-<li><a href="#Describe-the-business-problem">Describe the business problem</a></li>
+<li><a href="#Describe-the-business-problem:--Games-Scheduling-in-the-National-Football-League">Describe the business problem</a></li>
 <li><a href="#How--decision-optimization-can-help">How decision optimization (prescriptive analytics) can help</a></li>
 <li><a href="#Use-decision-optimization">Use decision optimization</a><ul>
-<li><a href="#Step-1:-Model-the-data">Step 1: Model the Data</a></li>
-<li><a href="#Step-2:-Set-up-the-prescriptive-model">Step 2: Set up the prescriptive model</a><ul>
-<li><a href="#Define-the-decision-variables">Define the decision variables</a></li>
-<li><a href="#Express-the-business-constraints">Express the business constraints</a></li>
-<li><a href="#Express-the-objective">Express the objective</a></li>
-<li><a href="#Solve-with-Decision-Optimization-solve-service">Solve with Decision Optimization solve service</a></li>
-</ul>
-</li>
-<li><a href="#Step-3:-Investigate-the-solution-and-then-run-an-example-analysis">Step 3: Investigate the solution and run an example analysis</a></li>
+<li><a href="#Step-1:-Set-up-the-prescriptive-model">Step 1: Set up the prescriptive model</a></li>
+<li><a href="#Step-2:-Modify-the-model">Step 2: Modify the model</a></li>
 </ul>
 </li>
 <li><a href="#Summary">Summary</a></li>
@@ -12700,12 +12701,27 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Describe-the-business-problem">Describe the business problem<a class="anchor-link" href="#Describe-the-business-problem">&#182;</a></h3><ul>
-<li>Sudoku is a logic-based, combinatorial number-placement puzzle.</li>
-<li>The objective is to fill a 9x9 grid with digits so that each column, each row,
-and each of the nine 3x3 sub-grids that compose the grid contains all of the digits from 1 to 9.</li>
-<li>The puzzle setter provides a partially completed grid, which for a well-posed puzzle has a unique solution.</li>
+<h2 id="Describe-the-business-problem:--Telephone-production">Describe the business problem:  Telephone production<a class="anchor-link" href="#Describe-the-business-problem:--Telephone-production">&#182;</a></h2><p>A possible descriptive model of the telephone production problem is as follows:</p>
+<ul>
+<li>Decision variables:<ul>
+<li>Number of desk phones produced (DeskProduction)</li>
+<li>Number of cellular phones produced (CellProduction)
+Objective: Maximize profit</li>
 </ul>
+</li>
+<li>Constraints:<ul>
+<li>The DeskProduction should be greater than or equal to 100.</li>
+<li>The CellProduction should be greater than or equal to 100.</li>
+<li>The assembly time for DeskProduction plus the assembly time for CellProduction should not exceed 400 hours.</li>
+<li>The painting time for DeskProduction plus the painting time for CellProduction should not exceed 490 hours.</li>
+</ul>
+</li>
+</ul>
+<p>This is a type of discrete optimization problem that can be solved by using either <strong>Integer Programming</strong> (IP) or <strong>Constraint Programming</strong> (CP).</p>
+<blockquote><p><strong>Integer Programming</strong> is the class of problems defined as the optimization of a linear function, subject to linear constraints over integer variables.</p>
+<p><strong>Constraint Programming</strong> problems generally have discrete decision variables, but the constraints can be logical, and the arithmetic expressions are not restricted to being linear.</p>
+</blockquote>
+<p>For the purposes of this tutorial, we will illustrate a solution with mathematical programming (MP).</p>
 
 </div>
 </div>
@@ -12714,34 +12730,21 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="References">References<a class="anchor-link" href="#References">&#182;</a></h4><ul>
-<li>See <a href="https://en.wikipedia.org/wiki/Sudoku" target="_blank" rel="noopener noreferrer">https://en.wikipedia.org/wiki/Sudoku</a> for details.</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<hr>
 <h2 id="How--decision-optimization-can-help">How  decision optimization can help<a class="anchor-link" href="#How--decision-optimization-can-help">&#182;</a></h2><ul>
-<li><p>Prescriptive analytics technology recommends actions based on desired outcomes, taking into account specific scenarios, resources, and knowledge of past and current events. This insight can help your organization make better decisions and have greater control of business outcomes.</p>
+<li><p>Prescriptive analytics (decision optimization) technology recommends actions that are based on desired outcomes.  It takes into account specific scenarios, resources, and knowledge of past and current events. With this insight, your organization can make better decisions and have greater control of business outcomes.</p>
 </li>
 <li><p>Prescriptive analytics is the next step on the path to insight-based actions. It creates value through synergy with predictive analytics, which analyzes data to predict future outcomes.</p>
 </li>
 <li><p>Prescriptive analytics takes that insight to the next level by suggesting the optimal way to handle that future situation. Organizations that can act fast in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.<br>
 <br/></p>
 </li>
-<li><p>For example:</p>
+</ul>
+<p><u>With prescriptive analytics, you can:</u></p>
 <ul>
-<li>Automate complex decisions and trade-offs to better manage limited resources.</li>
+<li>Automate the complex decisions and trade-offs to better manage your limited resources.</li>
 <li>Take advantage of a future opportunity or mitigate a future risk.</li>
 <li>Proactively update recommendations based on changing events.</li>
 <li>Meet operational goals, increase customer loyalty, prevent threats and fraud, and optimize business processes.</li>
-</ul>
-</li>
 </ul>
 
 </div>
@@ -12759,7 +12762,7 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Step-1:-Model-the-data">Step 1: Model the data<a class="anchor-link" href="#Step-1:-Model-the-data">&#182;</a></h3>
+<h3 id="Step-1:-Set-up-the-prescriptive-model">Step 1: Set up the prescriptive model<a class="anchor-link" href="#Step-1:-Set-up-the-prescriptive-model">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -12767,7 +12770,22 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>First import some of the packages you need to use.</p>
+<h4 id="Writing-a-mathematical-model">Writing a mathematical model<a class="anchor-link" href="#Writing-a-mathematical-model">&#182;</a></h4><p>Convert the descriptive model into a mathematical model:</p>
+<ul>
+<li>Use the two decision variables DeskProduction and CellProduction</li>
+<li>Use the data given in the problem description (remember to convert minutes to hours where appropriate)</li>
+<li>Write the objective as a mathematical expression</li>
+<li>Write the constraints as mathematical expressions (use “=”, “&lt;=”, or “&gt;=”, and name the constraints to describe their purpose)</li>
+<li>Define the domain for the decision variables</li>
+</ul>
+<h4 id="Telephone-production:-a-mathematical-model">Telephone production: a mathematical model<a class="anchor-link" href="#Telephone-production:-a-mathematical-model">&#182;</a></h4><p>To express the last two constraints, we model assembly time and painting time as linear combinations of the two productions, resulting in the following mathematical model:</p>
+<p><code>maximize:  12 desk_production+20 cell_production</p>
+<p>subject to:<br>
+   desk_production&gt;=100<br>
+   cell_production&gt;=100<br>
+   0.2 desk_production+0.4 cell_production&lt;=400<br>
+   0.5 desk_production+0.4 cell_production&lt;=490
+&lt;/code&gt;</p>
 
 </div>
 </div>
@@ -12777,8 +12795,11 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.cp.model</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">sys</span> <span class="k">import</span> <span class="n">stdout</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># first import the Model class from docplex.mp</span>
+<span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="k">import</span> <span class="n">Model</span>
+
+<span class="c1"># create one model instance, with a name</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;telephone_production&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12790,7 +12811,9 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Grid-range">Grid range<a class="anchor-link" href="#Grid-range">&#182;</a></h4>
+<p>The continuous variable desk represents the production of desk telephones.
+The continuous variable cell represents the production of cell phones.</p>
+
 </div>
 </div>
 </div>
@@ -12799,89 +12822,85 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">GRNG</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># by default, all variables in Docplex have a lower bound of 0 and infinite upper bound</span>
+<span class="n">desk</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">integer_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;desk&#39;</span><span class="p">)</span>
+<span class="n">cell</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">integer_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;cell&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Different-problems">Different problems<a class="anchor-link" href="#Different-problems">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><em>zero means cell to be filled with appropriate value</em></p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">SUDOKU_PROBLEM_1</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span>  <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                   <span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">maximize</span><span class="p">(</span><span class="mi">12</span> <span class="o">*</span> <span class="n">desk</span> <span class="o">+</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">cell</span><span class="p">)</span>
 
-<span class="n">SUDOKU_PROBLEM_2</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
-                   <span class="p">)</span>
+<span class="c1"># write constraints</span>
+<span class="c1"># constraint #1: desk production is greater than 100</span>
+<span class="n">m</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">desk</span> <span class="o">&gt;=</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;desk&quot;</span><span class="p">)</span>
 
-<span class="n">SUDOKU_PROBLEM_3</span> <span class="o">=</span> <span class="p">(</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-                     <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-                    <span class="p">)</span>
+<span class="c1"># constraint #2: cell production is greater than 100</span>
+<span class="n">m</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">cell</span> <span class="o">&gt;=</span> <span class="mi">100</span><span class="p">,</span> <span class="s2">&quot;cell&quot;</span><span class="p">)</span>
+
+<span class="c1"># constraint #3: assembly time limit</span>
+<span class="n">ct_assembly</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">desk</span> <span class="o">+</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">cell</span> <span class="o">&lt;=</span> <span class="mi">400</span><span class="p">,</span> <span class="s2">&quot;assembly_limit&quot;</span><span class="p">)</span>
+
+<span class="c1"># constraint #4: paiting time limit</span>
+<span class="n">ct_painting</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">desk</span> <span class="o">+</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">cell</span> <span class="o">&lt;=</span> <span class="mi">490</span><span class="p">,</span> <span class="s2">&quot;painting_limit&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Solve-with-Decision-Optimization">Solve with Decision Optimization<a class="anchor-link" href="#Solve-with-Decision-Optimization">&#182;</a></h4><p>If you're using a Community Edition of CPLEX runtimes, depending on the size of the problem, the solve stage may fail and will need a paying subscription or product installation.</p>
+<p>You will get the best solution found after <strong><em>n</em></strong> seconds, thanks to a time limit parameter.</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-    <span class="n">VISU_ENABLED</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">VISU_ENABLED</span> <span class="o">=</span> <span class="kc">False</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">print_information</span><span class="p">()</span>
+<span class="n">msol</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Model: telephone_production
+ - number of variables: 2
+   - binary=0, integer=2, continuous=0
+ - number of constraints: 4
+   - linear=4
+ - parameters: defaults
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -12891,46 +12910,82 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">print_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Print Sudoku grid &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">GRNG</span><span class="p">:</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">l</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">l</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-           <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">GRNG</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">c</span><span class="p">]</span>
-            <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;   &#39;</span> <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
-            <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
-        <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">msol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;model can&#39;t solve&quot;</span>
+<span class="n">m</span><span class="o">.</span><span class="n">print_solution</span><span class="p">()</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>objective: 20600
+  desk=300
+  cell=850
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Step-2:-Modify-the-model">Step 2: Modify the model<a class="anchor-link" href="#Step-2:-Modify-the-model">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Modify-constraints-and-variables-bounds">Modify constraints and variables bounds<a class="anchor-link" href="#Modify-constraints-and-variables-bounds">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The model object provides getters to retrieve variables and constraints by name:</p>
+<ul>
+<li>get_var_by_name</li>
+<li>get_constraint_by_name
+The variable and constraint objects both provide properties to access the right hand side (rhs) and left hand side (lhs).
+When you modify a rhs or lhs of a variable, you of course need to give a number.
+When you modify a rhs or lhs of a constraint, you can give a number or an expression based on variables.</li>
+</ul>
+<p>Let's say we want to build 2000 cells and 1000 desks maximum.</p>
+<p>And let's say we want to increase the production of both of them from 100 to 350</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">draw_grid</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
-    <span class="o">%</span><span class="k">matplotlib</span> inline
-    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
-    <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span>
-    <span class="n">R</span> <span class="o">=</span>  <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">9</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">R</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">R</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">c</span><span class="p">][</span><span class="n">l</span><span class="p">]</span>
-            <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
-            <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">l</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">8.5</span><span class="o">-</span><span class="n">c</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">max_val</span><span class="p">))</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">max_val</span><span class="p">))</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Access by name</span>
+<span class="n">m</span><span class="o">.</span><span class="n">get_var_by_name</span><span class="p">(</span><span class="s2">&quot;desk&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ub</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="c1"># acess via the object</span>
+<span class="n">cell</span><span class="o">.</span><span class="n">ub</span> <span class="o">=</span> <span class="mi">1000</span>
+
+
+<span class="n">m</span><span class="o">.</span><span class="n">get_constraint_by_name</span><span class="p">(</span><span class="s2">&quot;desk&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rhs</span> <span class="o">=</span> <span class="mi">350</span>
+<span class="n">m</span><span class="o">.</span><span class="n">get_constraint_by_name</span><span class="p">(</span><span class="s2">&quot;cell&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rhs</span> <span class="o">=</span> <span class="mi">350</span>
 </pre></div>
 
 </div>
@@ -12943,28 +12998,9 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">display_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">VISU_ENABLED</span><span class="p">:</span>
-        <span class="n">draw_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">print_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">display_grid</span><span class="p">(</span><span class="n">SUDOKU_PROBLEM_1</span><span class="p">,</span> <span class="s2">&quot;PROBLEM 1&quot;</span><span class="p">)</span>
-<span class="n">display_grid</span><span class="p">(</span><span class="n">SUDOKU_PROBLEM_2</span><span class="p">,</span> <span class="s2">&quot;PROBLEM 2&quot;</span><span class="p">)</span>
-<span class="n">display_grid</span><span class="p">(</span><span class="n">SUDOKU_PROBLEM_3</span><span class="p">,</span> <span class="s2">&quot;PROBLEM 3&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">msol</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">msol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;model can&#39;t solve&quot;</span>
+<span class="n">m</span><span class="o">.</span><span class="n">print_solution</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12981,76 +13017,11 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>PROBLEM 1:
+<pre>objective: 19940
+  desk=350
+  cell=787
 </pre>
 </div>
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
-"
->
-</div>
-
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>PROBLEM 2:
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
-"
->
-</div>
-
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>PROBLEM 3:
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
-"
->
-</div>
-
 </div>
 
 </div>
@@ -13061,7 +13032,51 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Choose-your-preferred-problem-(SUDOKU_PROBLEM_1-or-SUDOKU_PROBLEM_2-or-SUDOKU_PROBLEM_3)">Choose your preferred problem (SUDOKU_PROBLEM_1 or SUDOKU_PROBLEM_2 or SUDOKU_PROBLEM_3)<a class="anchor-link" href="#Choose-your-preferred-problem-(SUDOKU_PROBLEM_1-or-SUDOKU_PROBLEM_2-or-SUDOKU_PROBLEM_3)">&#182;</a></h4><p>If you change the problem, ensure to re-run all cells below this one.</p>
+<p>The production plan has been updated accordingly to our small changes.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Modify-expressions">Modify expressions<a class="anchor-link" href="#Modify-expressions">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We now want to introduce a new type of product: the "hybrid" telephone.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hybrid</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">integer_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;hybrid&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We need to:</p>
+<ul>
+<li>introduce it in the objective</li>
+<li>introduce it in the existing painting and assembly time constraints </li>
+<li>add a new constraint for its production to produce at least 350 of them.</li>
+</ul>
 
 </div>
 </div>
@@ -13071,10 +13086,31 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">problem</span> <span class="o">=</span> <span class="n">SUDOKU_PROBLEM_3</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">hybrid</span> <span class="o">&gt;=</span> <span class="mi">350</span><span class="p">)</span>
+<span class="p">;</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[9]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;&#39;</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13083,7 +13119,15 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Step-2:-Set-up-the-prescriptive-model">Step 2: Set up the prescriptive model<a class="anchor-link" href="#Step-2:-Set-up-the-prescriptive-model">&#182;</a></h3>
+<p>The objective will move from
+<code>
+maximize:  12 desk_production+20 cell_production
+</code>
+to
+<code>
+maximize:  12 desk_production+20 cell_production + 10 hybrid_prodction
+</code></p>
+
 </div>
 </div>
 </div>
@@ -13092,10 +13136,31 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mdl</span> <span class="o">=</span> <span class="n">CpoModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sudoku&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">get_objective_expr</span><span class="p">()</span><span class="o">.</span><span class="n">add_term</span><span class="p">(</span><span class="n">hybrid</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="p">;</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;&#39;</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13104,7 +13169,27 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Define-the-decision-variables">Define the decision variables<a class="anchor-link" href="#Define-the-decision-variables">&#182;</a></h4>
+<p>The time constraints will be updated from 
+<code>
+0.2 desk_production+0.4 cell_production<=400
+0.5 desk_production+0.4 cell_production<=490
+</code>
+to
+<code>
+0.2 desk_production+0.4 cell_production + 0.2 hybrid_production<=400
+0.5 desk_production+0.4 cell_production + 0.2 hybrid_production<=490
+</code></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>When you add a constraint to a model, its object is returned to you by the method add_constraint.
+If you don't have it, you can access it via its name</p>
+
 </div>
 </div>
 </div>
@@ -13113,27 +13198,41 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grid</span> <span class="o">=</span> <span class="p">[[</span><span class="n">integer_var</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;C&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">))</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">GRNG</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">GRNG</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">get_constraint_by_name</span><span class="p">(</span><span class="s2">&quot;assembly_limit&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lhs</span><span class="o">.</span><span class="n">add_term</span><span class="p">(</span><span class="n">hybrid</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="n">ct_painting</span><span class="o">.</span><span class="n">lhs</span><span class="o">.</span><span class="n">add_term</span><span class="p">(</span><span class="n">hybrid</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
+<span class="p">;</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Express-the-business-constraints">Express the business constraints<a class="anchor-link" href="#Express-the-business-constraints">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Add alldiff constraints for lines</p>
+<p>We can now compute the new production plan for our 3 products</p>
 
 </div>
 </div>
@@ -13143,11 +13242,33 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">GRNG</span><span class="p">:</span>
-    <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">all_diff</span><span class="p">([</span><span class="n">grid</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">GRNG</span><span class="p">]))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">msol</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">msol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;model can&#39;t solve&quot;</span>
+<span class="n">m</span><span class="o">.</span><span class="n">print_solution</span><span class="p">()</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>objective: 19950
+  desk=350
+  cell=612
+  hybrid=351
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13156,7 +13277,8 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Add alldiff constraints for columns</p>
+<p>Let's now say we improved our painting process, the distribution of the coefficients in the painting limits is not [0.5, 0.4, 0.2] anymore but [0.1, 0.1, 0.1]
+When you have the hand on an expression, you can modify the coefficient variable by variable with set_coefficient or via a list of (variable, coeff) with set_coefficients</p>
 
 </div>
 </div>
@@ -13166,36 +13288,46 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">GRNG</span><span class="p">:</span>
-    <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">all_diff</span><span class="p">([</span><span class="n">grid</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">GRNG</span><span class="p">]))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ct_painting</span><span class="o">.</span><span class="n">lhs</span><span class="o">.</span><span class="n">set_coefficients</span><span class="p">([(</span><span class="n">desk</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="p">(</span><span class="n">hybrid</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)])</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Add alldiff constraints for sub-squares</p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ssrng</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="n">ssrng</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">sc</span> <span class="ow">in</span> <span class="n">ssrng</span><span class="p">:</span>
-        <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">all_diff</span><span class="p">([</span><span class="n">grid</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sl</span><span class="p">,</span> <span class="n">sl</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">sc</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)]))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">msol</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">msol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;model can&#39;t solve&quot;</span>
+<span class="n">m</span><span class="o">.</span><span class="n">print_solution</span><span class="p">()</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>objective: 21900
+  desk=950
+  cell=350
+  hybrid=350
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13204,7 +13336,15 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Initialize known cells</p>
+<h4 id="Relaxations">Relaxations<a class="anchor-link" href="#Relaxations">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's now introduce a new constraint: polishing time limit.</p>
 
 </div>
 </div>
@@ -13214,11 +13354,8 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">GRNG</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">GRNG</span><span class="p">:</span>
-        <span class="n">v</span> <span class="o">=</span> <span class="n">problem</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">c</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">grid</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">set_domain</span><span class="p">((</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># constraint: polishing time limit</span>
+<span class="n">ct_polishing</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="n">desk</span> <span class="o">+</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="n">cell</span> <span class="o">+</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">hybrid</span> <span class="o">&lt;=</span> <span class="mi">290</span><span class="p">,</span> <span class="s2">&quot;polishing_limit&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13226,21 +13363,14 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Solve-with-Decision-Optimization-solve-service">Solve with Decision Optimization solve service<a class="anchor-link" href="#Solve-with-Decision-Optimization-solve-service">&#182;</a></h4>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Solving model....&quot;</span><span class="p">)</span>
-<span class="n">msol</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">TimeLimit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">msol</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">msol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;model can&#39;t solve&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13257,8 +13387,7 @@ and each of the nine 3x3 sub-grids that compose the grid contains all of the dig
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>
-Solving model....
+<pre>model can&#39;t solve
 </pre>
 </div>
 </div>
@@ -13271,7 +13400,26 @@ Solving model....
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Step-4:-Investigate-the-solution-and-then-run-an-example-analysis">Step 4: Investigate the solution and then run an example analysis<a class="anchor-link" href="#Step-4:-Investigate-the-solution-and-then-run-an-example-analysis">&#182;</a></h3>
+<p>The model is now infeasible. We need to handle it and dig into the infeasibilities.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>You can now use the Relaxer object. You can control the way it will relax the constraints or you can use 1 of the various automatic modes:</p>
+<ul>
+<li>'all' relaxes all constraints using a MEDIUM priority; this is the default.</li>
+<li>'named' relaxes all constraints with a user name but not the others.</li>
+<li>'match' looks for priority names within constraint names; unnamed constraints are not relaxed.</li>
+</ul>
+<p>We will use the 'match' mode.
+Polishing constraint is mandatory.
+Painting constraint is a nice to have.
+Assembly constraint has low priority.</p>
+
 </div>
 </div>
 </div>
@@ -13280,13 +13428,32 @@ Solving model....
 <div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">display_grid</span><span class="p">(</span><span class="n">problem</span><span class="p">,</span> <span class="s2">&quot;Initial problem&quot;</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">msol</span><span class="p">:</span>
-    <span class="n">sol</span> <span class="o">=</span> <span class="p">[[</span><span class="n">msol</span><span class="p">[</span><span class="n">grid</span><span class="p">[</span><span class="n">l</span><span class="p">][</span><span class="n">c</span><span class="p">]]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">GRNG</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">GRNG</span><span class="p">]</span>
-    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;Solve time: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">msol</span><span class="o">.</span><span class="n">get_solve_time</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="n">display_grid</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="s2">&quot;Solution&quot;</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;No solution found</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ct_polishing</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;high_&quot;</span><span class="o">+</span><span class="n">ct_polishing</span><span class="o">.</span><span class="n">name</span>
+<span class="n">ct_assembly</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;low_&quot;</span><span class="o">+</span><span class="n">ct_assembly</span><span class="o">.</span><span class="n">name</span>
+<span class="n">ct_painting</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;medium_&quot;</span><span class="o">+</span><span class="n">ct_painting</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># if a name contains &quot;low&quot;, it has priority LOW</span>
+<span class="c1"># if a ct name contains &quot;medium&quot; it has priority MEDIUM</span>
+<span class="c1"># same for HIGH</span>
+<span class="c1"># if a constraint has no name or does not match any, it is not relaxable.</span>
+<span class="kn">from</span> <span class="nn">docplex.mp.relaxer</span> <span class="k">import</span> <span class="n">Relaxer</span>
+<span class="n">relaxer</span> <span class="o">=</span> <span class="n">Relaxer</span><span class="p">(</span><span class="n">prioritizer</span><span class="o">=</span><span class="s1">&#39;match&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">relaxed_sol</span> <span class="o">=</span> <span class="n">relaxer</span><span class="o">.</span><span class="n">relax</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="n">relaxed_ok</span> <span class="o">=</span> <span class="n">relaxed_sol</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="k">assert</span> <span class="n">relaxed_ok</span><span class="p">,</span> <span class="s2">&quot;relaxation failed&quot;</span>
+<span class="n">relaxer</span><span class="o">.</span><span class="n">print_information</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -13303,25 +13470,40 @@ Solving model....
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Initial problem:
+<pre>Warning: 3 constraint(s) will not be relaxed (e.g.: desk: desk &gt;= 350)
+-- starting relaxation. mode: OptSum, precision=1e-05
+-&gt; relaxation #1 starts with priority: LOW, #relaxables=1
+&lt;- relaxation #1 fails, priority: LOW, #relaxables=1
+-&gt; relaxation #2 starts with priority: MEDIUM, #relaxables=2
+&lt;- relaxation #2 fails, priority: MEDIUM, #relaxables=2
+-&gt; relaxation #3 starts with priority: HIGH, #relaxables=3
+&lt;- relaxation #3 succeeds: priority: HIGH, #relaxables=3, obj=14700, #relaxations=1
+* number of relaxations: 1
+ - relaxed: high_polishing_limit, with relaxation: 235.0
+* total absolute relaxation: 235.0
 </pre>
 </div>
 </div>
 
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
-"
->
+</div>
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">print_solution</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
 
 <div class="output_area">
 
@@ -13329,25 +13511,53 @@ Solving model....
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Solve time: 0.13495445251464844
-Solution:
+<pre>objective: 14700
+  desk=350
+  cell=350
+  hybrid=350
 </pre>
 </div>
 </div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ct_polishing_relax</span> <span class="o">=</span> <span class="n">relaxer</span><span class="o">.</span><span class="n">get_relaxation</span><span class="p">(</span><span class="n">ct_polishing</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;* found slack of </span><span class="si">{0}</span><span class="s2"> for polish ct&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ct_polishing_relax</span><span class="p">))</span>
+<span class="n">ct_polishing</span><span class="o">.</span><span class="n">rhs</span><span class="o">+=</span> <span class="n">ct_polishing_relax</span>
+<span class="n">m</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="n">m</span><span class="o">.</span><span class="n">report</span><span class="p">()</span>
+<span class="n">m</span><span class="o">.</span><span class="n">print_solution</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
 
 <div class="output_area">
 
 <div class="prompt"></div>
 
 
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
-"
->
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>* found slack of 235.0 for polish ct
+* model telephone_production solved with objective = 14700
+objective: 14700
+  desk=350
+  cell=350
+  hybrid=350
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -13358,7 +13568,7 @@ Solution:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You learned how to set up and use the IBM Decision Optimization CPLEX Modeling for Python to formulate and solve a Constraint Programming model.</p>
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You learned how to set up and use the IBM Decision Optimization CPLEX Modeling for Python to formulate a Mathematical Programming model and modify it in various ways.</p>
 
 </div>
 </div>
@@ -13370,8 +13580,7 @@ Solution:
 <h4 id="References">References<a class="anchor-link" href="#References">&#182;</a></h4><ul>
 <li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization CPLEX Modeling for Python documentation</a></li>
 <li><a href="https://dataplatform.cloud.ibm.com/docs/content/getting-started/welcome-main.html?audience=wdp&context=wdp" target="_blank" rel="noopener noreferrer">Watson Studio documentation</a></li>
-<li>Need help with DOcplex or to report a bug? Go to <a href="https://developer.ibm.com/answers/smartspace/docloud" target="_blank" rel="noopener noreferrer">https://developer.ibm.com/answers/smartspace/docloud</a>
-Contact us at dofeedback@wwpdl.vnet.ibm.com</li>
+<li>Need help with DOcplex or to report a bug? Go to <a href="https://developer.ibm.com/answers/smartspace/docloud" target="_blank" rel="noopener noreferrer">https://developer.ibm.com/answers/smartspace/docloud</a></li>
 </ul>
 
 </div>
@@ -13382,7 +13591,7 @@ Contact us at dofeedback@wwpdl.vnet.ibm.com</li>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><hr>
-Copyright © 2017, 2018. This notebook and its source code are released under the terms of the MIT License.</p>
+Copyright © 2017-2018. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
