@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Model a Golomb Ruler</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Model a Golomb ruler using DO</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -12672,29 +12672,24 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Model-a-Golomb-ruler-problem-by-using-decision-optimization">Model a Golomb ruler problem by using decision optimization<a class="anchor-link" href="#Model-a-Golomb-ruler-problem-by-using-decision-optimization">&#182;</a></h1><p>Decision optimization is used for planning decisions, scheduling, and helping you make a data-based decision when large numbers of options are up for consideration.</p>
-<p>This Python notebook shows you how to set up a decision optimization engine and create a constraint programming model that calculates and outputs a Golomb ruler.</p>
-<p>In this notebook, you will model the Golomb ruler problem by using the <a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization for Python</a> API and solve it in IBM Decision Optimization on Cloud.</p>
-<p>This notebook runs on Python 2.0 or Python 3.5 with Spark.</p>
+<h1 id="Golomb-Ruler">Golomb Ruler<a class="anchor-link" href="#Golomb-Ruler">&#182;</a></h1><p>This tutorial includes everything you need to set up decision optimization engines, build constraint programming models.</p>
 <p>Table of contents:</p>
 <ul>
-<li><a href="#golomb_ruler">What is a Golomb ruler?</a></li>
-<li><a href="#decision_optimization">How can decision optimization solve a problem</a></li>
-<li><a href="#model_problem">Model a Golomb ruler problem</a><ul>
-<li><a href="#load_library">Step 1: Load library</a></li>
-<li><a href="#set_up_prescriptive_engine">Step 2: Set up the optimization engine</a></li>
-<li><a href="#model_data">Step 3: Model the input data</a></li>
-<li><a href="#define_prescriptive_model">Step 4: Define the optimization model</a><ul>
-<li><a href="#define_variables">Define the decision variables</a></li>
-<li><a href="#express_constraints">Express the business constraints</a></li>
-<li><a href="#express_objective">Express the objective</a></li>
-<li><a href="#solve_model">Solve the model</a></li>
+<li><a href="#Describe-the-business-problem">Describe the business problem</a></li>
+<li><a href="#How--decision-optimization-can-help">How decision optimization (prescriptive analytics) can help</a></li>
+<li><a href="#Use-decision-optimization">Use decision optimization</a><ul>
+<li><a href="#Step-1:-Model-the-data">Step 1: Model the Data</a></li>
+<li><a href="#Step-2:-Set-up-the-prescriptive-model">Step 2: Set up the prescriptive model</a><ul>
+<li><a href="#Define-the-decision-variables">Define the decision variables</a></li>
+<li><a href="#Express-the-business-constraints">Express the business constraints</a></li>
+<li><a href="#Express-the-objective">Express the objective</a></li>
+<li><a href="#Solve-with-Decision-Optimization-solve-service">Solve with Decision Optimization solve service</a></li>
 </ul>
 </li>
-<li><a href="#output_results">Step 5: Output the results</a></li>
+<li><a href="#Step-3:-Investigate-the-solution-and-then-run-an-example-analysis">Step 3: Investigate the solution and run an example analysis</a></li>
 </ul>
 </li>
-<li><a href="#summary">Summary</a></li>
+<li><a href="#Summary">Summary</a></li>
 </ul>
 <hr>
 
@@ -12705,20 +12700,48 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="golomb_ruler"></a></p>
-<h2 id="What-is-a-Golomb-ruler?">What is a Golomb ruler?<a class="anchor-link" href="#What-is-a-Golomb-ruler?">&#182;</a></h2><p>A Golomb ruler is a sequence of non-negative integers such that the difference of two integer pairs in all sequences is distinct. Golomb rulers are used in many applications, including radio astronomy, information theory, and decision optimization to measure the distance between objects.</p>
-<p>For example:</p>
-<ul>
-<li>In selecting radio frequencies to reduce the effects of intermodulation interference</li>
-<li>In detecting and correcting errors in radio astronomy</li>
-<li>In designing conference rooms, to maximize the number of possible configurations with a minimum of partitions</li>
-<li>For positioning radio telescopes for optimal performance using the minimum number of telescopes on the least amount of land</li>
-<li>For optimal positioning of x-ray sensors   </li>
+<h3 id="Describe-the-business-problem">Describe the business problem<a class="anchor-link" href="#Describe-the-business-problem">&#182;</a></h3><ul>
+<li><p>A detailed description (from which this paragraph comes from) is available on <b>Wikipedia</b> at <a href="https://en.wikipedia.org/wiki/Golomb_ruler" target="_blank" rel="noopener noreferrer">https://en.wikipedia.org/wiki/Golomb_ruler</a>.</p>
+</li>
+<li><p>In mathematics, a Golomb ruler is a set of marks at integer positions along an imaginary ruler such that no two pairs of marks are the same distance apart. The number of marks on the ruler is its order, and the largest distance between two of its marks is its length.</p>
+</li>
 </ul>
-<p>The following examples show Golomb rulers of the order 4, and length 6 and 11.</p>
-<p><br/>
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Golomb_Ruler-4.svg/220px-Golomb_Ruler-4.svg.png" align="left">
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Golomb_ruler_conference_room.svg/300px-Golomb_ruler_conference_room.svg.png" align="middle"></p>
+<p>Following is an example of Golomb ruler of order 4 and length 6.
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Golomb_Ruler-4.svg/220px-Golomb_Ruler-4.svg.png">&lt;/center&gt;</p>
+<p><p>
+This problem is not only an intellectual problem. It has a lot of practical applications:</p>
+<p><ul></p>
+<p><li> within Information Theory related to error correcting codes,</p>
+<p><li> the selection of radio frequencies to reduce the effects of intermodulation interference,</p>
+<p><li> the design of conference rooms, to maximize the number of possible configurations with a minimum of partitions:
+&lt;/ul&gt;</p>
+<center>
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Golomb_ruler_conference_room.svg/300px-Golomb_ruler_conference_room.svg.png"></center>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h2 id="How--decision-optimization-can-help">How  decision optimization can help<a class="anchor-link" href="#How--decision-optimization-can-help">&#182;</a></h2><ul>
+<li><p>Prescriptive analytics technology recommends actions based on desired outcomes, taking into account specific scenarios, resources, and knowledge of past and current events. This insight can help your organization make better decisions and have greater control of business outcomes.</p>
+</li>
+<li><p>Prescriptive analytics is the next step on the path to insight-based actions. It creates value through synergy with predictive analytics, which analyzes data to predict future outcomes.</p>
+</li>
+<li><p>Prescriptive analytics takes that insight to the next level by suggesting the optimal way to handle that future situation. Organizations that can act fast in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.<br>
+<br/></p>
+</li>
+<li><p>For example:</p>
+<ul>
+<li>Automate complex decisions and trade-offs to better manage limited resources.</li>
+<li>Take advantage of a future opportunity or mitigate a future risk.</li>
+<li>Proactively update recommendations based on changing events.</li>
+<li>Meet operational goals, increase customer loyalty, prevent threats and fraud, and optimize business processes.</li>
+</ul>
+</li>
+</ul>
 
 </div>
 </div>
@@ -12727,15 +12750,18 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="decision_optimization"></a></p>
-<h2 id="How-can-decision-optimization-solve-a-problem?">How can decision optimization solve a problem?<a class="anchor-link" href="#How-can-decision-optimization-solve-a-problem?">&#182;</a></h2><p>In decision optimization, actions are recommended based on the outcomes you desire, taking into account specific scenarios, resources, and knowledge of past and current events. Analyzing data to predict future outcomes and suggesting the optimal way to handle future outcomes can help you to make better decisions in uncertain situations and gain a strong competitive advantage.</p>
-<p>Examples where decision otimization modeling can help:</p>
-<ul>
-<li>Automating complex decisions and trade-offs to better manage limited resources</li>
-<li>Taking advantage of a future opportunity or mitigating a future risk</li>
-<li>Proactively updating recommendations based on changing events</li>
-<li>Meeting operational goals, increasing customer loyalty, preventing threats and fraud, and optimizing business processes</li>
-</ul>
+<p><h3>Modeling the problem</h3></p>
+<p><p>
+Constraint Programming is a programming paradigm that allows to express a problem using:</p>
+<p><ul></p>
+<p><li> the unknowns of the problem (the <i>variables</i>),</p>
+<p><li> the constraints/laws/rules of the problem, mathematical expressions linking variables together (the <i>constraints</i>),</p>
+<p><li> what is to be optimized (the <i>objective function</i>).
+&lt;/ul&gt;</p>
+<p><p>
+All this information, plus some configuration parameters, is aggregated into a single object called <i>model</i>.</p>
+<p><p>
+The remainder of this notebook describes in details how to build and solve this problem with IBM CP Optimizer, using its <i>DOcplex</i> Python modeling API.</p>
 
 </div>
 </div>
@@ -12744,16 +12770,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="model_problem"></a></p>
-<h2 id="Model-a-Golomb-ruler-problem">Model a Golomb ruler problem<a class="anchor-link" href="#Model-a-Golomb-ruler-problem">&#182;</a></h2><p>Constraint programming is a technology that is used in solving complex decision optimization problems. Constraint programming is a programming paradigm that allows you to express a problem by using:</p>
-<ul>
-<li>The unknowns of the problem - the <em>variables</em></li>
-<li>The constraints or rules of the problem, the mathematical expressions that link the variables - the <em>constraints</em></li>
-<li>What you optimize - the <em>objective function</em></li>
-</ul>
-<p>All this information, plus some configuration parameters, is aggregated into a single object called a <em>model</em>.</p>
-<p>In this notebook, you will learn how to solve a Golomb ruler problem with IBM Constraint Programming Optimizer, using the <em>DOcplex</em> Python modeling API.</p>
-
+<h2 id="Use-decision-optimization">Use decision optimization<a class="anchor-link" href="#Use-decision-optimization">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12761,20 +12778,17 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="load_library"></a></p>
-<h3 id="Step-1:-Load-library">Step 1: Load library<a class="anchor-link" href="#Step-1:-Load-library">&#182;</a></h3><p>Run the following code to install the Decision Optimization CPLEX Modeling library.  The <em>DOcplex</em> library contains the two modeling packages, Mathematical Programming and Constraint Programming.</p>
-
+<h3 id="Step-1:-Model-the-data">Step 1: Model the data<a class="anchor-link" href="#Step-1:-Model-the-data">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install docplex
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">docplex.cp</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Import Constraint Programming modelization functions</span>
+<span class="kn">from</span> <span class="nn">docplex.cp.model</span> <span class="k">import</span> <span class="n">CpoModel</span>
 </pre></div>
 
 </div>
@@ -12786,23 +12800,10 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Note that the global <code>docplex</code> package contains the subpackage <code>docplex.mp</code> that is dedicated to Mathematical Programming, another branch of optimization.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="set_up_prescriptive_engine"></a></p>
-<h3 id="Step-2:-Set-up-the-optimization-engine">Step 2: Set up the optimization engine<a class="anchor-link" href="#Step-2:-Set-up-the-optimization-engine">&#182;</a></h3><p>DOcplexcloud includes a web service, DropSolve, where you can drag and drop problem files, download results, and manage your jobs in the queue.</p>
-<p>To use the DropSolve service:</p>
-<ul>
-<li>Register for the <a href="https://developer.ibm.com/docloud">DOcplexcloud 30 days free trial</a>.</li>
-<li>Get your <a href="http://developer.ibm.com/docloud/docs/api-key/">access credentials (the base URL and access key)</a>.</li>
-</ul>
-<p>Add the URL and API key to the following cell and run it:</p>
+<p><h4>Define model input data</h4></p>
+<p><p>
+The first thing to define is the model input data.
+In the case of the Golomb Ruler problem, there is only one input which is the order of the ruler, that is the number of marks:</p>
 
 </div>
 </div>
@@ -12810,54 +12811,6 @@ div#notebook {
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Initialize IBM Decision Optimization credentials</span>
-<span class="n">SVC_URL</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="c1">#ENTER URL HERE</span>
-<span class="n">SVC_KEY</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="c1"># ENTER KEY HERE</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Now, import the required modeling functions that are provided by the <em>docplex.cp</em> package:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Import Constraint Programming modelization functions</span>
-<span class="kn">from</span> <span class="nn">docplex.cp.model</span> <span class="k">import</span> <span class="o">*</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="model_data"></a></p>
-<h3 id="Step-3:-Model-the-input-data">Step 3: Model the input data<a class="anchor-link" href="#Step-3:-Model-the-input-data">&#182;</a></h3><p>The first thing to define is the input data to the model. In the case of the Golomb ruler problem, there is only one input,  which is the order of the ruler, that is, the number of marks on the ruler:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Define required number of marks on the ruler</span>
@@ -12873,9 +12826,74 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="define_prescriptive_model"></a></p>
-<h3 id="Step-4:-Define-the-optimization-model">Step 4: Define the optimization model<a class="anchor-link" href="#Step-4:-Define-the-optimization-model">&#182;</a></h3><p>The optimization model is represented by a container that is filled with the different model elements, in this case, the variables, constraints, and the objective function. The container is a Python model object.</p>
-<p>Run the following cell to create a Python model object:</p>
+<h3 id="Step-2:-Set-up-the-prescriptive-model">Step 2: Set up the prescriptive model<a class="anchor-link" href="#Step-2:-Set-up-the-prescriptive-model">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><h4>Create the model container</h4></p>
+<p><p>
+The model is represented by a Python object that is filled with the different model elements (variables, constraints, objective function, etc). The first thing to do is then to create such an object:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create model object</span>
+<span class="n">mdl</span> <span class="o">=</span> <span class="n">CpoModel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;GolombRuler&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Define-the-decision-variables">Define the decision variables<a class="anchor-link" href="#Define-the-decision-variables">&#182;</a></h4><ul>
+<li><p>Now, we need to define the variables of the problem. As the expected problem result is the list of mark positions, the simplest choice is to create one integer variable to represent the position of each mark on the ruler.</p>
+</li>
+<li><p>Each variable has a a set of possible values called his <i>domain</i>. To reduce the search space, it is important to reduce this domain as far as possible.</p>
+</li>
+<li><p>In our case, we can naively estimate that the maximum distance between two adjacent marks is the order of the ruler minus one. Then the maximal position of a mark is (ORDER - 1)². Each variable domain is then limited to an interval [0..(ORDER - 1)²].</p>
+</li>
+<li><p>A list of integer variables can be defined using method <i>integer_var_list()</i>. In our case, defining one variable for each mark can be created as follows:</p>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create array of variables corresponding to ruler marks</span>
+<span class="n">marks</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">integer_var_list</span><span class="p">(</span><span class="n">ORDER</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">ORDER</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Express-the-business-constraints">Express the business constraints<a class="anchor-link" href="#Express-the-business-constraints">&#182;</a></h4><ul>
+<li>We need to express that all possible distances between two marks must be different. To do this, we create an array that contains all these distances:</li>
+</ul>
 
 </div>
 </div>
@@ -12883,56 +12901,6 @@ div#notebook {
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create model object</span>
-<span class="n">mdl</span> <span class="o">=</span> <span class="n">CpoModel</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="define_variables"></a></p>
-<h4 id="Define-the-decision-variables">Define the decision variables<a class="anchor-link" href="#Define-the-decision-variables">&#182;</a></h4><p>Now define the variables of the model. As the expected problem result is the list of mark positions, the simplest choice is to create one integer variable to represent the position of each mark on the ruler.</p>
-<p>Each variable has a set of possible values called its <em>domain</em>. To reduce the search space, it is important to reduce this domain as far as possible. For the domain, you can estimate that the maximum distance between two adjacent marks is the order of the ruler minus one. Then the maximal position of a mark is <code>(ORDER - 1)²</code>. Each variable domain is then limited to an interval <code>[0..(ORDER - 1)²]</code>.</p>
-<p>You can define a list of integer variables by using the <code>integer_var_list()</code>. Run the following cell to define one variable for each mark:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create array of variables corresponding to ruler marks</span>
-<span class="n">marks</span> <span class="o">=</span> <span class="n">integer_var_list</span><span class="p">(</span><span class="n">ORDER</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">ORDER</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="express_constraints"></a></p>
-<h4 id="Express-the-business-constraints">Express the business constraints<a class="anchor-link" href="#Express-the-business-constraints">&#182;</a></h4><p>For a Golomb ruler, you need to express that all possible distances between two marks are different. To do this, create an array that contains all these distances:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create an array with all distances between all marks</span>
@@ -12948,19 +12916,20 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In the computation, you used the <code>-</code> operator to express the difference between variables. Using this operator might appear strange because the variables are not instanciated at that time. The Python operator is overloaded to construct a constraint programming expression instead of attempting to compute the arithmetic difference. All of the standard Python operators <code>(&lt;, &gt;, &lt;=, &gt;=, ==, !=, +, -, /, *, &amp;, |, //, **,...)</code> can be used for operations between constraint programming objects.</p>
-<p>To force the distances to be different, use the <code>all_diff()</code> constraint:</p>
+<p>We have used here the operator '-' to express the difference between variables. It may appear strange as the variables are not instanciated at that time, but the Python operator has been overloaded to construct a CP expression instead of attempting to compute the arithmetic difference. All other standard Python operators can be used to make operations between CP objects (&lt;, &gt;, &lt;=, &gt;=, ==, !=, +, -, /, *, &amp;, |, //, **,  ...). Have a look to documentation for details.</p>
+<p><p>
+To force all these distances to be different, we use the special <i>all_diff()</i> constraint as follows:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Force all distances to be different</span>
-<span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">all_diff</span><span class="p">(</span><span class="n">dist</span><span class="p">))</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">all_diff</span><span class="p">(</span><span class="n">dist</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -12972,7 +12941,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The <code>mdl.add(...)</code> function is necessary to express that the constraint is to be added to the model.</p>
+<p>The call <i>mdl.add(...)</i> is necessary to express that the constraint must be added to the model.</p>
 
 </div>
 </div>
@@ -12981,15 +12950,20 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="Remove-symmetries">Remove symmetries<a class="anchor-link" href="#Remove-symmetries">&#182;</a></h5><p>Although the <code>all_diff()</code> constraint is enough to solve the model, it does not differentiate between all possible permutations of the different mark positions that could be solutions to the problem, for example, <code>0-1-4-6, 4-6-1-0, 6-0-1-4</code>, and so on. Because  there is a factorial magnitude of such permutations, the search space is drastically reduced by removing them.</p>
-<p>To reduce the permutations, run the next cell to force an order between marks, for example, the order of their index:</p>
+<p><h4>Remove symmetries</h4></p>
+<p><p>
+The constraint we have expressed above is theoritically enough, and the model can be solved as it is.</p>
+<p><p>
+However, it does not differentiate between all possible permutations of the different mark positions that are solutions to the problem, for example, 0-1-4-6, 4-6-1-0, 6-0-1-4, etc. As there are ORDER! (factorial of ORDER) such permutations, the search space would be drastically reduced by removing them.</p>
+<p><p>
+We can do that by forcing an order between marks, for example the order of their index:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Avoid symmetric solutions by ordering marks</span>
@@ -13006,14 +12980,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You know that the first mark of the ruler is zero:</p>
+<p>We also know that first mark is at the beginning of the ruler:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Force first mark position to zero</span>
@@ -13029,15 +13003,17 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="Avoid-mirror-solutions">Avoid mirror solutions<a class="anchor-link" href="#Avoid-mirror-solutions">&#182;</a></h5><p>Each optimal solution has a mirror, with all mark distances in the reverse order, for example, <code>0-1-4-6</code> and <code>0-2-5-6</code>. 
-The following constraint ensures that the reverse order won't occur:</p>
+<p><h4>Avoid mirror solutions</h4></p>
+<p><p>
+Each optimal solution has a mirror, with all mark distances in the reverse order, for example, 0-1-4-6 and 0-2-5-6. 
+The following constraint can be added to avoid this:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Avoid mirror solution</span>
@@ -13053,20 +13029,21 @@ The following constraint ensures that the reverse order won't occur:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="express_objective"></a></p>
-<h4 id="Express-the-objective">Express the objective<a class="anchor-link" href="#Express-the-objective">&#182;</a></h4><p>You don't only want the marks to be as close together as possible. More specifically, you want to find the shortest possible ruler for a given number of marks. Such a ruler is called optimal.</p>
-<p>As the marks are ordered, you can express this by minimizing the position of the last mark:</p>
+<h4 id="Express-the-objective">Express the objective<a class="anchor-link" href="#Express-the-objective">&#182;</a></h4><ul>
+<li>Finally, we want to get the shortest Golomb Ruler. This can be expressed by minimizing the position of the last mark.
+As we have ordered the marks, we can do this using:</li>
+</ul>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Minimize ruler size</span>
-<span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">minimize</span><span class="p">(</span><span class="n">marks</span><span class="p">[</span><span class="n">ORDER</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">marks</span><span class="p">[</span><span class="n">ORDER</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
 </pre></div>
 
 </div>
@@ -13078,8 +13055,8 @@ The following constraint ensures that the reverse order won't occur:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If the marks are not ordered, you would run the following code instead:<br>
-<code>   mdl.add(minimize(max(marks)))</code><br></p>
+<p>If the marks were not ordered, we should have use instead:<br>
+<code>   mdl.add(mdl.minimize(mdl.max(marks)))</code><br></p>
 
 </div>
 </div>
@@ -13088,21 +13065,30 @@ The following constraint ensures that the reverse order won't occur:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="solve_model"></a></p>
-<h4 id="Solve-the-model">Solve the model<a class="anchor-link" href="#Solve-the-model">&#182;</a></h4><p>You have finished defining the model. Now, it's time to solve it by using the Decision Optimization on Cloud DropSolve service.</p>
-<p>Run the following cell to solve the model:</p>
+<h4 id="Solve-with-Decision-Optimization-solve-service">Solve with Decision Optimization solve service<a class="anchor-link" href="#Solve-with-Decision-Optimization-solve-service">&#182;</a></h4><p>By default, the modeling layer look for a local runtime, but other solving environments, such as <em>docloud</em>, are also available.
+Look at the documentation for a good understanding of the various solving/generation modes.</p>
+<p>If you're using a Community Edition of CPLEX runtimes, depending on the size of the problem, the solve stage may fail and will need a paying subscription or product installation.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The model can be solved by calling:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Solve the model</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solving model....&quot;</span><span class="p">)</span>
-<span class="n">msol</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">SVC_URL</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">SVC_KEY</span><span class="p">,</span> <span class="n">TimeLimit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">msol</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">TimeLimit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13132,20 +13118,19 @@ The following constraint ensures that the reverse order won't occur:</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="output_results"></a></p>
-<h3 id="Step-5:-Output-the-results">Step 5: Output the results<a class="anchor-link" href="#Step-5:-Output-the-results">&#182;</a></h3><p>The quickest way to output what was found by the DropSolve service is to call the method <code>print_solution()</code> as follows:</p>
+<h3 id="Step-3:-Investigate-the-solution-and-then-run-an-example-analysis">Step 3: Investigate the solution and then run an example analysis<a class="anchor-link" href="#Step-3:-Investigate-the-solution-and-then-run-an-example-analysis">&#182;</a></h3><p>The shortest way to output the solution that has been found by the solver is to call the method <i>print_solution()</i> as follows:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Print solution</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solution: &quot;</span><span class="p">)</span>
-<span class="n">msol</span><span class="o">.</span><span class="n">print_solution</span><span class="p">()</span>
+<span class="n">msol</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -13165,13 +13150,11 @@ The following constraint ensures that the reverse order won't occur:</p>
 <pre>Solution: 
 -------------------------------------------------------------------------------
 Model constraints: 9, variables: integer: 7, interval: 0, sequence: 0
-Solve status: Optimal
+Solve status: Optimal, Fail status: SearchHasFailedNormally
 Search status: SearchCompleted, stop cause: SearchHasNotBeenStopped
-Solve time: 5.03 sec
+Solve time: 5.13 sec
 -------------------------------------------------------------------------------
-Objective values: (25,)
-          bounds: (25,)
-          gaps: (0.0,)
+Objective values: (25,), bounds: (25,), gaps: (0.0,)
 M_0: 0
 M_1: 1
 M_2: 11
@@ -13191,15 +13174,16 @@ M_6: 25
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>However, this output is very generic and simply prints the value of all the model variables, the objective value, and some other solving information.</p>
-<p>You can generate more specific output by writing code that accesses various elements of the solution:</p>
+<p>This output is totally generic and simply prints the value of all model variables, the objective value, and some other solving information.</p>
+<p><p>
+A more specific output can be generated by writing more code. The following example illustrates how to access specific elements of the solution.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Print solution</span>
@@ -13233,7 +13217,7 @@ M_6: 25
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Solution: Optimal
 Position of ruler marks:  0 1 11 16 19 23 25
-Solve time: 5.03s
+Solve time: 5.13s
 </pre>
 </div>
 </div>
@@ -13246,14 +13230,14 @@ Solve time: 5.03s
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Another possibility, for example, is  to simulate a real ruler using characters, as follows:</p>
+<p>Another possibility is for example to simulate real ruler using characters, as follows:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Print solution as a ruler</span>
@@ -13291,8 +13275,8 @@ Solve time: 5.03s
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="summary"></a></p>
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You learned how to set up and use IBM Decision Optimization CPLEX Modeling for Python to formulate a constraint programming model for a Golomb ruler problem and how to solve the problem with IBM Decision Optimization on Cloud.</p>
+<h3>Going further with Constraint Programming</h3><p>The last available installable package is available on Pypi here: <a href="https://pypi.python.org/pypi/docplex" target="_blank" rel="noopener noreferrer">https://pypi.python.org/pypi/docplex</a></p>
+<p>A complete set of modeling examples can be downloaded here: <a href="https://github.com/IBMDecisionOptimization/docplex-examples" target="_blank" rel="noopener noreferrer">https://github.com/IBMDecisionOptimization/docplex-examples</a></p>
 
 </div>
 </div>
@@ -13301,13 +13285,19 @@ Solve time: 5.03s
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="References">References<a class="anchor-link" href="#References">&#182;</a></h3><ul>
-<li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">The latest PyPi library</a></li>
-<li><a href="https://github.com/IBMDecisionOptimization/docplex-examples" target="_blank" rel="noopener noreferrer">Modeling examples for download</a></li>
-<li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">CPLEX Modeling for Python documentation</a></li>
-<li><a href="https://developer.ibm.com/docloud/" target="_blank" rel="noopener noreferrer">Decision Optimization on Cloud</a></li>
-<li>Need help with DOcplex or want to report a bug? Go <a href="https://developer.ibm.com/answers/smartspace/docloud" target="_blank" rel="noopener noreferrer">here</a></li>
-<li>Contact us at <code>dofeedback@wwpdl.vnet.ibm.com</code></li>
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You learned how to set up and use the IBM Decision Optimization CPLEX Modeling for Python to build and solve a Constraint Programming model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="References">References<a class="anchor-link" href="#References">&#182;</a></h4><ul>
+<li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization CPLEX Modeling for Python documentation</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/getting-started/welcome-main.html?audience=wdp&context=wdp" target="_blank" rel="noopener noreferrer">Watson Studio documentation</a></li>
+<li>Need help with DOcplex or to report a bug? Go to <a href="https://developer.ibm.com/answers/smartspace/docloud" target="_blank" rel="noopener noreferrer">https://developer.ibm.com/answers/smartspace/docloud</a></li>
 </ul>
 
 </div>
@@ -13317,16 +13307,8 @@ Solve time: 5.03s
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Author">Author<a class="anchor-link" href="#Author">&#182;</a></h3><p><strong>Olivier Oudot</strong>, Ph.D. in Logical Programming and IBM Master Inventor, joined the development team of the IBM Constraint Programming Optimizer in 2010 after a career of software development in military, space, and telecommunications areas. He worked on performance measurements for the CPO solver before developing its Python interface, part of <code>docplex</code> initiative (docplex.cp).</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Copyright © 2017, 2018 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+<p><hr>
+Copyright © 2017, 2018. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
