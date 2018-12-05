@@ -12674,31 +12674,33 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Promoting-financial-products-to-bank-customers">Promoting financial products to bank customers<a class="anchor-link" href="#Promoting-financial-products-to-bank-customers">&#182;</a></h1><p>In 2016, a retail bank sold several products (mortgage account, savings account, and pension account) to its customers.
 It kept a record of all historical data, and this data is available for analysis and reuse.
-Following a merger in 2017, the bank has new customers and wants to start some marketing campaigns.</p>
+Following a merger in 2017, the bank has new customers and wants to launch some marketing campaigns.</p>
 <p>The budget for the campaigns is limited. The bank wants to contact a customer and propose only one product.</p>
 <p>The marketing department needs to decide:</p>
 <ul>
 <li>Who should be contacted?</li>
-<li>Which product should be proposed? Proposing too many products is counter productive, so only one product per customer contact.</li>
-<li>How will a customer be contacted? There are different ways, with different costs and efficiency.</li>
-<li>How can they optimally use the limited budget?</li>
+<li>Which product should be proposed?<br>
+Proposing too many products is counter productive, so only one product per customer contact will be proposed.</li>
+<li>How will a customer be contacted?<br>
+There are different ways, with different costs and efficiency.</li>
+<li>How can they optimally use their limited budget?</li>
 <li>Will such campaigns be profitable?</li>
 </ul>
-<h4 id="Predictive-and-prescriptive-workflow">Predictive and prescriptive workflow<a class="anchor-link" href="#Predictive-and-prescriptive-workflow">&#182;</a></h4><p>From the historical data, we can train a machine learning product-based classifier on customer profile (age, income, account level, ...) to predict whether a customer would subscribe to a mortgage, savings, or pension account.</p>
+<h4 id="Predictive-and-prescriptive-workflow">Predictive and prescriptive workflow<a class="anchor-link" href="#Predictive-and-prescriptive-workflow">&#182;</a></h4><p>From the historical data, you can train a machine learning product-based classifier on customer profile (age, income, account level, ...) to predict whether a customer would subscribe to a mortgage, savings, or pension account.</p>
 <ul>
-<li>We can apply this predictive model to the new customers data to predict for each new customer what they will buy.</li>
-<li>On this new data, we decide which offers are proposed. Which product is offered to which customer through which channel:<ul>
+<li>You can apply this predictive model to the new customer data to predict for each new customer what they will buy.</li>
+<li>With this new data, you decide which offers are proposed. Which product is offered to which customer through which channel is determined:<ul>
 <li>a. with a greedy algorithm that reproduces what a human being would do</li>
 <li>b. using an optimization model wih IBM Decision Optimization.</li>
 </ul>
 </li>
 <li>The solutions can be displayed, compared, and analyzed.</li>
 </ul>
-<p><b>Table of contents</b>:</p>
+<p><strong>Table of contents:</strong></p>
 <ul>
 <li><a href="#Understanding-the-historical-data">Understand the historical data</a></li>
 <li><a href="#Predict-the-2017-customer-behavior">Predict the 2017 customer behavior</a></li>
-<li><a href="#Get-business-decisions-on-the-2017-data">Get business decisions on the 2017 data</a></li>
+<li><a href="#Get-business-decisions-on-the-2017-data">Get business decisions for the 2017 data</a></li>
 <li><a href="#Conclusion">Conclusion on the decision making</a></li>
 </ul>
 
@@ -12710,16 +12712,8 @@ Following a merger in 2017, the bank has new customers and wants to start some m
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This notebook requires a mathematical background.
-<br/>If you're new to optimization, following the online free Decision Optimization tutorials (<a href="https://ibmdecisionoptimization.github.io/tutorials/html/Linear_Programming.html">here</a> and <a href="https://ibmdecisionoptimization.github.io/tutorials/html/Beyond_Linear_Programming.html">here</a>) might help you get a better understanding of Mathematical Optimization.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<blockquote><p>This notebook requires the Commercial Edition of CPLEX engines, which is available in gthe IBM Premium Libs Jupyter runtime only.</p>
+<br/>If you're new to optimization, following the free online Decision Optimization tutorials (<a href="https://ibmdecisionoptimization.github.io/tutorials/html/Linear_Programming.html">here</a> and <a href="https://ibmdecisionoptimization.github.io/tutorials/html/Beyond_Linear_Programming.html">here</a>) might help you get a better understanding of Mathematical Optimization.</p>
+<blockquote><p>This notebook requires the Commercial Edition of CPLEX engines, which is included in the premium environments in Watson Studio.</p>
 </blockquote>
 
 </div>
@@ -12729,9 +12723,8 @@ Following a merger in 2017, the bank has new customers and wants to start some m
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The purpose of this Notebook is not to provide a perfect machine learning model nor a perfect optimization model.
-The purpose is to show how easy it is to mix machine learning and CPLEX data transformations by doing a forecast, then getting fast and reliable decisions on this new data.</p>
-<p>This notebook takes some time to run because multiple optimization models are solved and compared in the part dedicated to what-if analysis. The time it takes depends on your subscription type, which determines what optimization service configuration is used.</p>
+<p>The purpose of this notebook is to show how easy it is to mix machine learning and CPLEX data transformations by doing a forecast, then getting fast and reliable decisions on this new data.</p>
+<p>This notebook can take some time to run because multiple optimization models are solved and compared in the part dedicated to what-if analysis. The time it takes depends on your subscription type, which determines what optimization service configuration is used.</p>
 
 </div>
 </div>
@@ -12757,12 +12750,10 @@ The purpose is to show how easy it is to mix machine learning and CPLEX data tra
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
-<span class="kn">import</span> <span class="nn">brunel</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="k">import</span> <span class="n">ListedColormap</span>
@@ -12786,10 +12777,10 @@ The purpose is to show how easy it is to mix machine learning and CPLEX data tra
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">known_behaviors</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/vberaudi/utwt/master/known_behaviors2.csv&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">known_behaviors</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;https://raw.githubusercontent.com/vberaudi/utwt/master/known_behaviors2.csv&quot;</span><span class="p">)</span>
 <span class="n">known_behaviors</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
@@ -12803,7 +12794,7 @@ The purpose is to show how easy it is to mix machine learning and CPLEX data tra
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[2]:</div>
+<div class="prompt output_prompt">Out[3]:</div>
 
 
 
@@ -12992,7 +12983,7 @@ The purpose is to show how easy it is to mix machine learning and CPLEX data tra
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">known_behaviors</span><span class="p">[</span><span class="n">known_behaviors</span><span class="o">.</span><span class="n">Mortgage</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
@@ -13032,7 +13023,7 @@ Number of clients predicted to buy savings accounts: 4222
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">known_behaviors</span><span class="p">[</span><span class="s2">&quot;nb_products&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">known_behaviors</span><span class="o">.</span><span class="n">Mortgage</span> <span class="o">+</span> <span class="n">known_behaviors</span><span class="o">.</span><span class="n">Pension</span> <span class="o">+</span> <span class="n">known_behaviors</span><span class="o">.</span><span class="n">Savings</span>
@@ -13045,13 +13036,13 @@ Number of clients predicted to buy savings accounts: 4222
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">abc</span> <span class="o">=</span> <span class="n">known_behaviors</span><span class="p">[</span><span class="n">known_behaviors</span><span class="o">.</span><span class="n">nb_products</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;We have </span><span class="si">%d</span><span class="s2"> clients who bought several products&quot;</span> <span class="o">%</span><span class="k">len</span>(abc))
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You have </span><span class="si">%d</span><span class="s2"> clients who bought several products&quot;</span> <span class="o">%</span><span class="k">len</span>(abc))
 <span class="n">abc</span> <span class="o">=</span> <span class="n">known_behaviors</span><span class="p">[</span><span class="n">known_behaviors</span><span class="o">.</span><span class="n">nb_products</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;We have </span><span class="si">%d</span><span class="s2"> clients who bought all the products&quot;</span> <span class="o">%</span><span class="k">len</span>(abc))
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You have </span><span class="si">%d</span><span class="s2"> clients who bought all the products&quot;</span> <span class="o">%</span><span class="k">len</span>(abc))
 </pre></div>
 
 </div>
@@ -13068,8 +13059,8 @@ Number of clients predicted to buy savings accounts: 4222
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>We have 1650 clients who bought several products
-We have 123 clients who bought all the products
+<pre>You have 1650 clients who bought several products
+You have 123 clients who bought all the products
 </pre>
 </div>
 </div>
@@ -13080,7 +13071,7 @@ We have 123 clients who bought all the products
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">products</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Savings&quot;</span><span class="p">,</span> <span class="s2">&quot;Mortgage&quot;</span><span class="p">,</span> <span class="s2">&quot;Pension&quot;</span><span class="p">]</span>
@@ -13095,7 +13086,7 @@ We have 123 clients who bought all the products
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="Do-some-visual-analysis-of-the-historical-data">Do some visual analysis of the historical data<a class="anchor-link" href="#Do-some-visual-analysis-of-the-historical-data">&#182;</a></h5>
+<h5 id="Provide-some-visual-analysis-of-the-historical-data">Provide some visual analysis of the historical data<a class="anchor-link" href="#Provide-some-visual-analysis-of-the-historical-data">&#182;</a></h5>
 </div>
 </div>
 </div>
@@ -13103,14 +13094,14 @@ We have 123 clients who bought all the products
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It's possible to use pandas plotting capabilities, but it would require a new version of it. This Notebook relies on matplotlib as it is present everywhere.</p>
+<p>It's possible to use pandas plotting capabilities, but that would require a new version of it. This notebook relies on matplotlib as it is commonly used.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">plot_cloud_points</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
@@ -13144,7 +13135,7 @@ The depth of the color indicates the number of purchases or non-purchases.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">plot_cloud_points</span><span class="p">(</span><span class="n">known_behaviors</span><span class="p">)</span>
@@ -13181,10 +13172,10 @@ The depth of the color indicates the number of purchases or non-purchases.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Understanding-the-2016-customers">Understanding the 2016 customers<a class="anchor-link" href="#Understanding-the-2016-customers">&#182;</a></h3><p>We can see that:</p>
+<h3 id="Understanding-the-2016-customers">Understanding the 2016 customers<a class="anchor-link" href="#Understanding-the-2016-customers">&#182;</a></h3><p>You can see that:</p>
 <ul>
-<li>The greater a customer's income, the more likely it is s/he will buy a savings account.</li>
-<li>The older a customer is, the more likely it is s/he will buy a pension account.</li>
+<li>The greater a customer's income, the more likely it is he or she will buy a savings account.</li>
+<li>The older a customer is, the more likely it is he or she will buy a pension account.</li>
 <li>There is a correlation between the number of people in a customer's household, the number of loan accounts held by the customer, and the likelihood a customer buys a mortgage account. To see the correlation, look at the upper right and lower left corners of the mortgage chart.</li>
 </ul>
 
@@ -13201,7 +13192,7 @@ The depth of the color indicates the number of purchases or non-purchases.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">known_behaviors</span><span class="o">.</span><span class="n">columns</span>
@@ -13217,7 +13208,7 @@ The depth of the color indicates the number of purchases or non-purchases.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[9]:</div>
+<div class="prompt output_prompt">Out[10]:</div>
 
 
 
@@ -13243,14 +13234,14 @@ The depth of the color indicates the number of purchases or non-purchases.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's use the following columns as machine-learning features:</p>
+<p>Use the following columns as machine-learning features:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;income&#39;</span><span class="p">,</span> <span class="s1">&#39;members_in_household&#39;</span><span class="p">,</span> <span class="s1">&#39;loan_accounts&#39;</span><span class="p">]</span>
@@ -13263,7 +13254,7 @@ The depth of the color indicates the number of purchases or non-purchases.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">known_behaviors</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span>
@@ -13277,7 +13268,7 @@ The depth of the color indicates the number of purchases or non-purchases.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -13293,7 +13284,7 @@ The depth of the color indicates the number of purchases or non-purchases.</p>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[12]:</div>
+<div class="prompt output_prompt">Out[13]:</div>
 
 
 
@@ -13373,14 +13364,14 @@ The depth of the color indicates the number of purchases or non-purchases.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We use a standard basic support gradient boosting algorithm to predict whether a customer might by product A, B, or C.</p>
+<p>You are using a standard basic support gradient boosting algorithm to predict whether a customer might by product A, B, or C.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn</span> <span class="k">import</span> <span class="n">svm</span>
@@ -13394,7 +13385,7 @@ The depth of the color indicates the number of purchases or non-purchases.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">classifiers</span> <span class="o">=</span> <span class="p">[]</span>
@@ -13413,18 +13404,18 @@ The depth of the color indicates the number of purchases or non-purchases.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="New-customer-data-and-predictions">New customer data and predictions<a class="anchor-link" href="#New-customer-data-and-predictions">&#182;</a></h3><p>Load new customer data, predict behaviors using trained classifier, and do some visual analysis.
-We have all the characteristics of the new customers, as for the 2016 clients, but the new customers did not buy any product yet.</p>
+<h3 id="New-customer-data-and-predictions">New customer data and predictions<a class="anchor-link" href="#New-customer-data-and-predictions">&#182;</a></h3><p>Load new customer data, predict behaviors using a trained classifier, and perform some visual analysis.
+You have all the characteristics of the new customers, as for the 2016 clients, but the new customers have not yet bought any product.</p>
 <h5 id="Load-new-customer-data">Load new customer data<a class="anchor-link" href="#Load-new-customer-data">&#182;</a></h5>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">unknown_behaviors</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/vberaudi/utwt/master/unknown_behaviors.csv&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">unknown_behaviors</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;https://raw.githubusercontent.com/vberaudi/utwt/master/unknown_behaviors.csv&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13434,7 +13425,7 @@ We have all the characteristics of the new customers, as for the 2016 clients, b
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">unknown_behaviors</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
@@ -13448,7 +13439,7 @@ We have all the characteristics of the new customers, as for the 2016 clients, b
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">to_predict</span> <span class="o">=</span> <span class="n">unknown_behaviors</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span>
@@ -13461,7 +13452,7 @@ We have all the characteristics of the new customers, as for the 2016 clients, b
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of new customers: </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span><span class="k">len</span>(unknown_behaviors))
@@ -13500,7 +13491,7 @@ We have all the characteristics of the new customers, as for the 2016 clients, b
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
@@ -13514,7 +13505,7 @@ We have all the characteristics of the new customers, as for the 2016 clients, b
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">predicted</span> <span class="o">=</span> <span class="p">[</span><span class="n">classifiers</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">to_predict</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">products</span><span class="p">))]</span>
@@ -13538,7 +13529,7 @@ We have all the characteristics of the new customers, as for the 2016 clients, b
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">offers</span> <span class="o">=</span> <span class="n">to_predict</span>
@@ -13555,7 +13546,7 @@ We have all the characteristics of the new customers, as for the 2016 clients, b
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[21]:</div>
+<div class="prompt output_prompt">Out[22]:</div>
 
 
 
@@ -13659,13 +13650,13 @@ We have all the characteristics of the new customers, as for the 2016 clients, b
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="Do-some-visual-analysis-of-the-predicted-data">Do some visual analysis of the predicted data<a class="anchor-link" href="#Do-some-visual-analysis-of-the-predicted-data">&#182;</a></h5>
+<h5 id="Perform-some-visual-analysis-of-the-predicted-data">Perform some visual analysis of the predicted data<a class="anchor-link" href="#Perform-some-visual-analysis-of-the-predicted-data">&#182;</a></h5>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">plot_cloud_points</span><span class="p">(</span><span class="n">offers</span><span class="p">)</span>
@@ -13722,7 +13713,7 @@ We have all the characteristics of the new customers, as for the 2016 clients, b
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">offers</span><span class="p">[</span><span class="n">offers</span><span class="o">.</span><span class="n">Mortgage</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
@@ -13762,15 +13753,15 @@ Number of customers predicted to buy savings: 713
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">to_predict</span><span class="p">[</span><span class="s2">&quot;nb_products&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_predict</span><span class="o">.</span><span class="n">Mortgage</span> <span class="o">+</span> <span class="n">to_predict</span><span class="o">.</span><span class="n">Pension</span> <span class="o">+</span> <span class="n">to_predict</span><span class="o">.</span><span class="n">Savings</span>
 
 <span class="n">abc</span> <span class="o">=</span> <span class="n">to_predict</span><span class="p">[</span><span class="n">to_predict</span><span class="o">.</span><span class="n">nb_products</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;We predicted that </span><span class="si">%d</span><span class="s2"> clients would buy more than one product&quot;</span> <span class="o">%</span><span class="k">len</span>(abc))
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;It&#39;s predicted that </span><span class="si">%d</span><span class="s2"> clients would buy more than one product&quot;</span> <span class="o">%</span><span class="k">len</span>(abc))
 <span class="n">abc</span> <span class="o">=</span> <span class="n">to_predict</span><span class="p">[</span><span class="n">to_predict</span><span class="o">.</span><span class="n">nb_products</span> <span class="o">==</span> <span class="mi">3</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;We predicted that </span><span class="si">%d</span><span class="s2"> clients would buy all three products&quot;</span> <span class="o">%</span><span class="k">len</span>(abc))
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;It&#39;s predicted that </span><span class="si">%d</span><span class="s2"> clients would buy all three products&quot;</span> <span class="o">%</span><span class="k">len</span>(abc))
 </pre></div>
 
 </div>
@@ -13787,8 +13778,8 @@ Number of customers predicted to buy savings: 713
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>We predicted that 112 clients would buy more than one product
-We predicted that 0 clients would buy all three products
+<pre>It&#39;s predicted that 112 clients would buy more than one product
+It&#39;s predicted that 0 clients would buy all three products
 </pre>
 </div>
 </div>
@@ -13801,9 +13792,9 @@ We predicted that 0 clients would buy all three products
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Remarks-on-the-prediction">Remarks on the prediction<a class="anchor-link" href="#Remarks-on-the-prediction">&#182;</a></h2><p>The goal is to contact the customers to sell them only one product, so we cannot select all of them.
-This increases the complexity of the problem: we need to determine the best contact channel, but also need to select which product will be sold to a given customer.<br>
-It may be hard to compute this. In order to check, we will use two techniques:</p>
+<h2 id="Remarks-on-the-prediction">Remarks on the prediction<a class="anchor-link" href="#Remarks-on-the-prediction">&#182;</a></h2><p>The goal is to contact the customers to sell them only one product, so you cannot select all of them.
+This increases the complexity of the problem: you need to determine the best contact channel, but also need to select which product will be sold to a given customer.<br>
+It might be hard to compute this. In order to check, you will use two techniques:</p>
 <ul>
 <li>a greedy algorithm</li>
 <li>CPLEX, the IBM leading optimization solver.</li>
@@ -13814,7 +13805,7 @@ It may be hard to compute this. In order to check, we will use two techniques:</
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">offers</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -13829,10 +13820,10 @@ It may be hard to compute this. In order to check, we will use two techniques:</
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Get-business-decisions-on-the-2017-data">Get business decisions on the 2017 data<a class="anchor-link" href="#Get-business-decisions-on-the-2017-data">&#182;</a></h1><h2 id="Assign-campaigns-to-customers">Assign campaigns to customers<a class="anchor-link" href="#Assign-campaigns-to-customers">&#182;</a></h2><ul>
-<li>We have predicted who will buy what in the list of new customers.</li>
-<li>However, we do not have the budget to contact all of them. We have various contact channels with different costs and effectiveness.</li>
-<li>Furthermore, if we contact somebody, we don't want to frustrate them by proposing multiple products; we want to propose only one product per customer.</li>
+<h1 id="Get-business-decisions-for-the-2017-data">Get business decisions for the 2017 data<a class="anchor-link" href="#Get-business-decisions-for-the-2017-data">&#182;</a></h1><h2 id="Assign-campaigns-to-customers">Assign campaigns to customers<a class="anchor-link" href="#Assign-campaigns-to-customers">&#182;</a></h2><ul>
+<li>You have a prediction of who will buy what in the list of new customers.</li>
+<li>However, you do not have the budget to contact all of them. You have various contact channels with different costs and effectiveness.</li>
+<li>Furthermore, if you contact a customer you want to propose only one product per customer.</li>
 </ul>
 <h5 id="Some-input-data-for-optimization">Some input data for optimization<a class="anchor-link" href="#Some-input-data-for-optimization">&#182;</a></h5>
 </div>
@@ -13840,7 +13831,7 @@ It may be hard to compute this. In order to check, we will use two techniques:</
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># How much revenue is earned when selling each product</span>
@@ -13870,7 +13861,7 @@ It may be hard to compute this. In order to check, we will use two techniques:</
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="Using-a-greedy-algorithm">Using a greedy algorithm<a class="anchor-link" href="#Using-a-greedy-algorithm">&#182;</a></h4><ul>
-<li>We create a custom algorithm that ensures 10% of offers are made per channel by choosing the most promising per channel. The algorithm then continues to add offers until the budget is reached.</li>
+<li>You are creating a custom algorithm that ensures 10% of offers are made per channel by choosing the most promising per channel. The algorithm then continues to add offers until the budget is reached.</li>
 </ul>
 
 </div>
@@ -13878,7 +13869,7 @@ It may be hard to compute this. In order to check, we will use two techniques:</
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">gsol</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
@@ -13934,7 +13925,7 @@ It may be hard to compute this. In order to check, we will use two techniques:</
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># add more to complete budget       </span>
@@ -14006,7 +13997,7 @@ It may be hard to compute this. In order to check, we will use two techniques:</
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">gsol</span><span class="p">[</span><span class="n">gsol</span><span class="o">.</span><span class="n">Mortgage</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
@@ -14064,14 +14055,14 @@ Total revenue: 50800
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Using-IBM-Decision-Optimization-CPLEX-Modeling-for-Python">Using IBM Decision Optimization CPLEX Modeling for Python<a class="anchor-link" href="#Using-IBM-Decision-Optimization-CPLEX-Modeling-for-Python">&#182;</a></h4><p>Let's create the optimization model to select the best ways to contact customers and stay within the limited budget.</p>
+<h4 id="Using-IBM-Decision-Optimization-CPLEX-Modeling-for-Python">Using IBM Decision Optimization CPLEX Modeling for Python<a class="anchor-link" href="#Using-IBM-Decision-Optimization-CPLEX-Modeling-for-Python">&#182;</a></h4><p>Create the optimization model to select the best ways to contact customers and stay within the limited budget.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
@@ -14087,14 +14078,14 @@ Total revenue: 50800
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="Set-up-the-prescriptive-model">Set up the prescriptive model<a class="anchor-link" href="#Set-up-the-prescriptive-model">&#182;</a></h5><p>The model from this example is too big to be solved using the Community Edition of CPLEX engines, so you will need touse the Commercial Edition available in the IBM Premium Libs Jupyter runtime.</p>
+<h5 id="Set-up-the-prescriptive-model">Set up the prescriptive model<a class="anchor-link" href="#Set-up-the-prescriptive-model">&#182;</a></h5><p>The model from this example is too big to be solved using the Community Edition of CPLEX engines, so you will need to use the Commercial Edition available in the IBM Premium Libs Jupyter runtime.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="k">import</span> <span class="n">Model</span>
@@ -14122,7 +14113,7 @@ Total revenue: 50800
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">channelVars</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">binary_var_cube</span><span class="p">(</span><span class="n">offersR</span><span class="p">,</span> <span class="n">productsR</span><span class="p">,</span> <span class="n">channelsR</span><span class="p">)</span>
@@ -14149,7 +14140,7 @@ Total revenue: 50800
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># At most 1 product is offered to each customer</span>
@@ -14201,14 +14192,14 @@ Total revenue: 50800
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="Express-the-objective">Express the objective<a class="anchor-link" href="#Express-the-objective">&#182;</a></h5><p>We want to maximize expected revenue, so we take into account the predicted behavior of each customer for each product.</p>
+<h5 id="Express-the-objective">Express the objective<a class="anchor-link" href="#Express-the-objective">&#182;</a></h5><p>You want to maximize expected revenue, so you take into account the predicted behavior of each customer for each product.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">obj</span> <span class="o">=</span> <span class="mi">0</span>
@@ -14237,7 +14228,7 @@ Total revenue: 50800
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">mdl</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">timelimit</span> <span class="o">=</span> <span class="mi">30</span>
@@ -14250,7 +14241,7 @@ Total revenue: 50800
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
@@ -14264,7 +14255,7 @@ Total revenue: 50800
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">get_solve_status</span><span class="p">())</span>
@@ -14287,7 +14278,7 @@ Total revenue: 50800
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>JobSolveStatus.OPTIMAL_SOLUTION
 status  = integer optimal solution
-time    = 0.776679 s.
+time    = 0.811998 s.
 problem = MILP
 gap     = 0%
 
@@ -14309,7 +14300,7 @@ gap     = 0%
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">totaloffers</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channelVars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span> 
@@ -14342,7 +14333,7 @@ gap     = 0%
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">mdl</span><span class="o">.</span><span class="n">report</span><span class="p">()</span>
@@ -14383,7 +14374,7 @@ gap     = 0%
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>With the mathematical optimization, we made a better selection of customers.</p>
+<p>With the mathematical optimization, you made a better selection of customers.</p>
 
 </div>
 </div>
@@ -14399,7 +14390,7 @@ gap     = 0%
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#get the hand on the budget constraint</span>
@@ -14422,7 +14413,7 @@ gap     = 0%
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
@@ -14440,7 +14431,7 @@ gap     = 0%
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">mdl</span><span class="o">.</span><span class="n">report</span><span class="p">()</span>
@@ -14479,11 +14470,10 @@ gap     = 0%
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_what_if</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;budget&quot;</span><span class="p">,</span> <span class="s2">&quot;revenue&quot;</span><span class="p">,</span> <span class="s2">&quot;nb_offers&quot;</span><span class="p">,</span> <span class="s2">&quot;budgetSpent&quot;</span><span class="p">])</span>
-<span class="n">df_what_if</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;budget&quot;</span><span class="p">,</span> <span class="s2">&quot;revenue&quot;</span><span class="p">,</span> <span class="s2">&quot;nb_offers&quot;</span><span class="p">,</span> <span class="s2">&quot;budgetSpent&quot;</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -14496,7 +14486,7 @@ gap     = 0%
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[43]:</div>
+<div class="prompt output_prompt">Out[44]:</div>
 
 
 
@@ -14688,380 +14678,12 @@ gap     = 0%
 </div>
 </div>
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[44]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">brunel</span> data(&#39;df_what_if&#39;) x(budget) y(revenue) line :: width=800, height=300
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-<div class="output_html rendered_html output_subarea ">
-<!--
-  ~ Copyright (c) 2015 IBM Corporation and others.
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ You may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-
-
-<link rel="stylesheet" type="text/css" href="/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.2.3.css">
-<link rel="stylesheet" type="text/css" href="/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/sumoselect.css">
-
-<style>
-    
-</style>
-
-<div id="controlsidee6a98b6-f333-11e8-9893-da9c914226fe" class="brunel"/>
-<svg id="visidee6a9618-f333-11e8-9893-da9c914226fe" width="800" height="300"></svg>
-</div>
-
-</div>
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[44]:</div>
-
-
-
-
-
-<div id="2ee3a3a7-3db9-4c25-b37f-2ce2ae9f8b23"></div>
-<div class="output_subarea output_javascript output_execute_result">
-<script type="text/javascript">
-var element = $('#2ee3a3a7-3db9-4c25-b37f-2ce2ae9f8b23');
-/*
- * Copyright (c) 2015 IBM Corporation and others.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-require.config({
-    waitSeconds: 60,
-    paths: {
-        'd3': '//cdnjs.cloudflare.com/ajax/libs/d3/4.2.1/d3.min',
-        'topojson': '//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.20/topojson.min',
-        'brunel' : '/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.2.3.min',
-        'brunelControls' : '/data/jupyter2/static-file-content-delivery-network/nbextensions/brunel_ext/brunel.controls.2.3.min'
-    },
-    shim: {
-       'brunel' : {
-            exports: 'BrunelD3',
-            deps: ['d3', 'topojson'],
-            init: function() {
-               return {
-                 BrunelD3 : BrunelD3,
-                 BrunelData : BrunelData
-              }
-            }
-        },
-       'brunelControls' : {
-            exports: 'BrunelEventHandlers',
-            init: function() {
-               return {
-                 BrunelEventHandlers: BrunelEventHandlers,
-                 BrunelJQueryControlFactory: BrunelJQueryControlFactory
-              }
-            }
-        }
-
-    }
-
-});
-
-require(["d3"], function(d3) {
-    require(["brunel", "brunelControls"], function(brunel, brunelControls) {
-        function  BrunelVis(visId) {
-  "use strict";                                                                       // strict mode
-  var datasets = [],                                      // array of datasets for the original data
-      pre = function(d, i) { return d },                         // default pre-process does nothing
-      post = function(d, i) { return d },                       // default post-process does nothing
-      transitionTime = 200,                                        // transition time for animations
-      charts = [],                                                       // the charts in the system
-      vis = d3.select('#' + visId).attr('class', 'brunel');                     // the SVG container
-
-  BrunelD3.addDefinitions(vis);                                   // ensure standard symbols present
-
-  // Define chart #1 in the visualization //////////////////////////////////////////////////////////
-
-  charts[0] = function(parentNode, filterRows) {
-    var geom = BrunelD3.geometry(parentNode || vis.node(), 0, 0, 1, 1, 5, 60, 37, 22),
-      elements = [];                                              // array of elements in this chart
-
-    // Define groups for the chart parts ///////////////////////////////////////////////////////////
-
-    var chart =  vis.append('g').attr('class', 'chart1')
-      .attr('transform','translate(' + geom.chart_left + ',' + geom.chart_top + ')');
-    var overlay = chart.append('g').attr('class', 'element').attr('class', 'overlay');
-    var zoom = d3.zoom().scaleExtent([1/3,3]);
-    var zoomNode = overlay.append('rect').attr('class', 'overlay')
-      .attr('x', geom.inner_left).attr('y', geom.inner_top)
-      .attr('width', geom.inner_rawWidth).attr('height', geom.inner_rawHeight)
-      .style('cursor', 'move').call(zoom)
-      .node();
-    zoomNode.__zoom = d3.zoomIdentity;
-    chart.append('rect').attr('class', 'background').attr('width', geom.chart_right-geom.chart_left).attr('height', geom.chart_bottom-geom.chart_top);
-    var interior = chart.append('g').attr('class', 'interior zoomNone')
-      .attr('transform','translate(' + geom.inner_left + ',' + geom.inner_top + ')')
-      .attr('clip-path', 'url(#clip_visidee6a9618-f333-11e8-9893-da9c914226fe_chart1_inner)');
-    interior.append('rect').attr('class', 'inner').attr('width', geom.inner_width).attr('height', geom.inner_height);
-    var gridGroup = interior.append('g').attr('class', 'grid');
-    var axes = chart.append('g').attr('class', 'axis')
-      .attr('transform','translate(' + geom.inner_left + ',' + geom.inner_top + ')');
-    vis.append('clipPath').attr('id', 'clip_visidee6a9618-f333-11e8-9893-da9c914226fe_chart1_inner').append('rect')
-      .attr('x', 0).attr('y', 0)
-      .attr('width', geom.inner_rawWidth+1).attr('height', geom.inner_rawHeight+1);
-
-    // Scales //////////////////////////////////////////////////////////////////////////////////////
-
-    var scale_x = d3.scaleLinear().domain([25000, 44000.002])
-      .range([0, geom.inner_width]);
-    var scale_inner = d3.scaleLinear().domain([0,1])
-      .range([-0.5, 0.5]);
-    var scale_y = d3.scaleLinear().domain([72000, 88000.002])
-      .range([geom.inner_height, 0]);
-    var base_scales = [scale_x, scale_y];                           // untransformed original scales
-
-    // Axes ////////////////////////////////////////////////////////////////////////////////////////
-
-    axes.append('g').attr('class', 'x axis')
-      .attr('transform','translate(0,' + geom.inner_rawHeight + ')')
-      .attr('clip-path', 'url(#clip_visidee6a9618-f333-11e8-9893-da9c914226fe_chart1_haxis)');
-    vis.append('clipPath').attr('id', 'clip_visidee6a9618-f333-11e8-9893-da9c914226fe_chart1_haxis').append('polyline')
-      .attr('points', '-1,-1000, -1,-1 -5,5, -1000,5, -100,1000, 10000,1000 10000,-1000');
-    axes.select('g.axis.x').append('text').attr('class', 'title').text('Budget').style('text-anchor', 'middle')
-      .attr('x',geom.inner_rawWidth/2)
-      .attr('y', geom.inner_bottom - 2.0).attr('dy','-0.27em');
-    axes.append('g').attr('class', 'y axis')
-      .attr('clip-path', 'url(#clip_visidee6a9618-f333-11e8-9893-da9c914226fe_chart1_vaxis)');
-    vis.append('clipPath').attr('id', 'clip_visidee6a9618-f333-11e8-9893-da9c914226fe_chart1_vaxis').append('polyline')
-      .attr('points', '-1000,-10000, 10000,-10000, 10000,' + (geom.inner_rawHeight+1) + ', -1,' + (geom.inner_rawHeight+1) + ', -1,' + (geom.inner_rawHeight+5) + ', -1000,' + (geom.inner_rawHeight+5) );
-    axes.select('g.axis.y').append('text').attr('class', 'title').text('Revenue').style('text-anchor', 'middle')
-      .attr('x',-geom.inner_rawHeight/2)
-      .attr('y', 4-geom.inner_left).attr('dy', '0.7em').attr('transform', 'rotate(270)');
-
-    var axis_bottom = d3.axisBottom(scale_x).ticks(Math.min(10, Math.round(geom.inner_width / 58.5)));
-    var axis_left = d3.axisLeft(scale_y).ticks(Math.min(10, Math.round(geom.inner_width / 20)));
-
-    function buildAxes(time) {
-      var axis_x = axes.select('g.axis.x');
-      BrunelD3.transition(axis_x, time).call(axis_bottom.scale(scale_x));
-      var axis_y = axes.select('g.axis.y');
-      BrunelD3.transition(axis_y, time).call(axis_left.scale(scale_y));
-    }
-    zoom.on('zoom', function(t, time) {
-        t = t ||BrunelD3.restrictZoom(d3.event.transform, geom, this);
-        scale_x = t.rescaleX(base_scales[0]);
-        scale_y = t.rescaleY(base_scales[1]);
-        zoomNode.__zoom = t;
-        interior.attr('class', 'interior ' + BrunelD3.zoomLabel(t.k));;
-        build(time || -1);
-    });
-
-    // Define element #1 ///////////////////////////////////////////////////////////////////////////
-
-    elements[0] = function() {
-      var original, processed,                           // data sets passed in and then transformed
-        element, data,                                 // brunel element information and brunel data
-        selection, merged;                                      // d3 selection and merged selection
-      var elementGroup = interior.append('g').attr('class', 'element1'),
-        main = elementGroup.append('g').attr('class', 'main'),
-        labels = BrunelD3.undoTransform(elementGroup.append('g').attr('class', 'labels').attr('aria-hidden', 'true'), elementGroup);
-
-      function makeData() {
-        original = datasets[0];
-        if (filterRows) original = original.retainRows(filterRows);
-        processed = pre(original, 0)
-          .sortRows('budget:ascending');
-        processed = post(processed, 0);
-        var f0 = processed.field('budget'),
-          f1 = processed.field('revenue'),
-          f2 = processed.field('#row'),
-          f3 = processed.field('#selection');
-        var keyFunc = function(d) { return 'ALL' };
-        data = {
-          budget:       function(d) { return f0.value(d.row) },
-          revenue:      function(d) { return f1.value(d.row) },
-          $row:         function(d) { return f2.value(d.row) },
-          $selection:   function(d) { return f3.value(d.row) },
-          budget_f:     function(d) { return f0.valueFormatted(d.row) },
-          revenue_f:    function(d) { return f1.valueFormatted(d.row) },
-          $row_f:       function(d) { return f2.valueFormatted(d.row) },
-          $selection_f: function(d) { return f3.valueFormatted(d.row) },
-          _split:       function(d) { return 'ALL' },
-          _key:         keyFunc,
-          _rows:        BrunelD3.makeRowsWithKeys(keyFunc, processed.rowCount())
-        };
-      }
-
-      // Build element from data ///////////////////////////////////////////////////////////////////
-
-      function build(transitionMillis) {
-        element = elements[0];
-        var w = Math.abs( scale_x(scale_x.domain()[0] + 1000.0) - scale_x.range()[0] );
-        var x = function(d) { return scale_x(data.budget(d))};
-        var h = Math.abs( scale_y(scale_y.domain()[0] + 400.0) - scale_y.range()[0] );
-        var y = function(d) { return scale_y(data.revenue(d))};
-        // Define paths
-        var path = d3.line().x(x).y(y);
-        var splits = BrunelD3.makePathSplits(data, path, x);
-
-        // Define selection entry operations
-        function initialState(selection) {
-          selection
-            .attr('class', 'element line')
-            .style('pointer-events', 'none')
-        }
-
-        // Define selection update operations on merged data
-        function updateState(selection) {
-          selection
-            .attr('d', function(d) { return d.path });
-        }
-
-        // Define labeling for the selection
-        function label(selection, transitionMillis) {
-        }
-        // Create selections, set the initial state and transition updates
-        selection = main.selectAll('.element').data(splits, function(d) { return d.key });
-        var added = selection.enter().append('path');
-        merged = selection.merge(added);
-        initialState(added);
-        selection.filter(BrunelD3.hasData)
-          .classed('selected', BrunelD3.isSelected(data))
-          .filter(BrunelD3.isSelected(data)).raise();
-        updateState(BrunelD3.transition(merged, transitionMillis));
-
-        BrunelD3.transition(selection.exit(), transitionMillis/3)
-          .style('opacity', 0.5).each( function() {
-            this.remove(); BrunelD3.removeLabels(this); 
-        });
-      }
-
-      return {
-        data:           function() { return processed },
-        original:       function() { return original },
-        internal:       function() { return data },
-        selection:      function() { return merged },
-        makeData:       makeData,
-        build:          build,
-        chart:          function() { return charts[0] },
-        group:          function() { return elementGroup },
-        fields: {
-          x:            ['budget'],
-          y:            ['revenue']
-        }
-      };
-    }();
-
-    function build(time, noData) {
-      var first = elements[0].data() == null;
-      if (first) time = 0;                                           // no transition for first call
-      buildAxes(time);
-      if ((first || time > -1) && !noData) {
-        elements[0].makeData();
-      }
-      elements[0].build(time);
-    }
-
-    // Expose the following components of the chart
-    return {
-      elements : elements,
-      interior : interior,
-      scales: {x:scale_x, y:scale_y},
-      zoom: function(params, time) {
-          if (params) zoom.on('zoom').call(zoomNode, params, time);
-          return d3.zoomTransform(zoomNode);
-      },
-      build : build
-    };
-    }();
-
-  function setData(rowData, i) { datasets[i||0] = BrunelD3.makeData(rowData) }
-  function updateAll(time) { charts.forEach(function(x) {x.build(time || 0)}) }
-  function buildAll() {
-    for (var i=0;i<arguments.length;i++) setData(arguments[i], i);
-    updateAll(transitionTime);
-  }
-
-  return {
-    dataPreProcess:     function(f) { if (f) pre = f; return pre },
-    dataPostProcess:    function(f) { if (f) post = f; return post },
-    data:               function(d,i) { if (d) setData(d,i); return datasets[i||0] },
-    visId:              visId,
-    build:              buildAll,
-    rebuild:            updateAll,
-    charts:             charts
-  }
-}
-
-// Data Tables /////////////////////////////////////////////////////////////////////////////////////
-
-var table1 = {
-   summarized: false,
-   names: ['budget', 'revenue'], 
-   options: ['numeric', 'numeric'], 
-   rows: [[25000, 72620], [26000, 74800], [27000, 76970], [28000, 79150], [29000, 81320],
-  [30000, 82360], [31000, 83240], [32000, 84100], [33000, 84980], [34000, 85840], [35000, 86720],
-  [36000, 87120], [37000, 87120], [38000, 87120], [39000, 87120], [40000, 87120], [41000, 87120],
-  [42000, 87120], [43000, 87120], [44000, 87120]]
-};
-
-// Call Code to Build the system ///////////////////////////////////////////////////////////////////
-
-var v  = new BrunelVis('visidee6a9618-f333-11e8-9893-da9c914226fe');
-v.build(table1);
-
-    });
-});
-</script>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Dealing-with-infeasibility">Dealing with infeasibility<a class="anchor-link" href="#Dealing-with-infeasibility">&#182;</a></h3><p>What about a context where we are in tight financial conditions, and our budget is very low?
-We need to determine the minimum amount of budget needed to adress 1/20 of our customers.</p>
+<h3 id="Dealing-with-infeasibility">Dealing with infeasibility<a class="anchor-link" href="#Dealing-with-infeasibility">&#182;</a></h3><p>What about the context where you have tight financial conditions, and your budget is very low?
+You need to determine the minimum amount of budget needed to address 1/20 of our customers.</p>
 
 </div>
 </div>
@@ -15103,7 +14725,7 @@ We need to determine the minimum amount of budget needed to adress 1/20 of our c
     <span class="c1">#setting all bool vars to 0 is an easy relaxation, so let&#39;s refuse it and force to offer something to 1/3 of the clients</span>
     <span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">totaloffers</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">offers</span><span class="p">)</span><span class="o">//</span><span class="mi">20</span><span class="p">,</span> <span class="n">ctname</span><span class="o">=</span><span class="s2">&quot;high&quot;</span><span class="p">)</span>
     
-    <span class="c1"># solve has failed, we try relaxation, based on constraint names</span>
+    <span class="c1"># solve has failed, trying relaxation, based on constraint names</span>
     <span class="c1"># constraints are prioritized according to their names</span>
     <span class="c1"># if a name contains &quot;low&quot;, it has priority LOW</span>
     <span class="c1"># if a ct name contains &quot;medium&quot; it has priority MEDIUM</span>
@@ -15182,7 +14804,7 @@ We need to determine the minimum amount of budget needed to adress 1/20 of our c
 *  KPI: Pension     = 142.000
 JobSolveStatus.INFEASIBLE_SOLUTION
 status  = optimal relaxed sum of infeasibilities
-time    = 0.769384 s.
+time    = 0.954937 s.
 problem = MILP
 gap     = 0%
 
@@ -15198,8 +14820,8 @@ gap     = 0%
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We need a minimum of 15950\$ to be able to start a marketing campaign.
-With this minimal budget, we will be able to adress 825 possible clients.</p>
+<p>You need a minimum of 15950\$ to be able to launch a marketing campaign.
+With this minimal budget, you will be able to address 825 possible clients.</p>
 
 </div>
 </div>
@@ -15242,9 +14864,9 @@ With this minimal budget, we will be able to adress 825 possible clients.</p>
 </tbody>
 </table>
 <ul>
-<li>As you can see, with Decision Optimization, we can safely do this marketing campaign to contact <b>1218 customers</b> out of the 2756 customers. </li>
-<li>This will lead to a <b>\$91.5K revenue</b>, significantly greater than the \$49.5K revenue given by a greedy algorithm.</li>
-<li>With a greedy algorithm, we will:<ul>
+<li>As you can see, with Decision Optimization, you can safely use this marketing campaign to contact <b>1218 customers</b> out of the 2756 customers. </li>
+<li>This will lead to a <b>\$72.6K revenue</b>, significantly greater than the \$50.8K revenue given by a greedy algorithm.</li>
+<li>With a greedy algorithm, you will:<ul>
 <li>be unable to focus on the correct customers (it will select fewer of them), </li>
 <li>spend less of the available budget for a smaller revenue.</li>
 <li>focus on selling savings accounts that have the biggest revenue</li>
@@ -15325,30 +14947,10 @@ With this minimal budget, we will be able to adress 825 possible clients.</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="References">References<a class="anchor-link" href="#References">&#182;</a></h2><ul>
 <li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">CPLEX Modeling for Python documentation</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/getting-started/welcome-main.html" target="_blank" rel="noopener noreferrer">Watson Studio documentation</a></li>
 </ul>
+<p>Copyright © 2017 IBM. Sample Materials.</p>
 
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Copyright © 2017-2018. This notebook and its source code are released under the terms of the MIT License.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
-<span style="font-size:18px;color:#152935;">Love this notebook? </span>
-<span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
-<span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
-<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
-</div>
 </div>
 </div>
 </div>
