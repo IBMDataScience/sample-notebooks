@@ -12696,8 +12696,8 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Benders decomposition is an approach to solve mathematical programming problems with a decomposable structure.</p>
-<p>Starting with 12.7, CPLEX can decompose the model into a single master and (possibly multiple) subproblems.</p>
-<p>To do so, CPLEX can use of annotations that you supply for your model or can automatically do the decomposition. 
+<p>Since V12.7, CPLEX can decompose the model into a single master and (possibly multiple) subproblems.</p>
+<p>To do so, CPLEX can use annotations that you supply for your model or can automatically do the decomposition. 
 This approach can be applied to mixed-integer linear programs (MILP). For certain types of problems, this approach can offer significant performance improvements.</p>
 <p><strong>Note</strong>:
 If your problem does not match such decomposition, CPLEX will raise an error at solve time.</p>
@@ -12726,7 +12726,7 @@ If your problem does not match such decomposition, CPLEX will raise an error at 
 <ul>
 <li><em>M. Fischetti, D. Salvagnin, A. Zanette</em>. <i>A note on the selection of Benders’ cuts in Mathematical Programming, series B, volume 124, pages 175-182, 2010</i></li>
 </ul>
-<p>Still others applied the practice to practical operations research. This technical report describes Benders algorithm in "modern" terms and offers implementation hints.</p>
+<p>Others applied the practice to practical operations research. This technical report describes Benders algorithm in "modern" terms and offers implementation hints.</p>
 <ul>
 <li><em>M. Fischetti, I. Ljubic, M. Sinnl</em>. <i>Benders decomposition without separability: a computational study for capacitated facility location problems in Technical Report University of Padova, 2016</i></li>
 </ul>
@@ -12778,9 +12778,9 @@ If your problem does not match such decomposition, CPLEX will raise an error at 
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We will write a toy model in order to show how to use the annotation api.</p>
-<p>This model is not important: it just matches a benders decomposition, that is CPLEX can apply its new algorithm without any error.</p>
-<p>The aim of this notebook is to discover and learn how to successfully apply Benders, not to see huge performance differences between a standard solve and a Benders based solve.</p>
+<p>Write a toy model to show how to use the annotation api.</p>
+<p>This model is not important: it just matches a Benders decomposition, that is CPLEX can apply its new algorithm without any error.</p>
+<p>The aim of this notebook is to discover and learn how to successfully apply Benders decomposition, not to see huge performance differences between a standard solve and a Benders-based solve.</p>
 
 </div>
 </div>
@@ -12855,7 +12855,7 @@ If your problem does not match such decomposition, CPLEX will raise an error at 
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create one model instance, with a name. We set the log output to true such that we can see when CPLEX enables the Benders algorithm.</p>
+<p>Create one model instance, with a name. Set the log output to true so that you can see when CPLEX enables the Benders algorithm.</p>
 
 </div>
 </div>
@@ -13750,8 +13750,8 @@ If your problem does not match such decomposition, CPLEX will raise an error at 
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Solve-with-Decision-Optimization">Solve with Decision Optimization<a class="anchor-link" href="#Solve-with-Decision-Optimization">&#182;</a></h4><p>If you're using a Community Edition of CPLEX runtimes, depending on the size of the problem, the solve stage might fail and you will need to switch to Watson Studio's premium environment.</p>
-<p>You will get the best solution found after <strong><em>n</em></strong> seconds, thanks to a time limit parameter.</p>
+<h4 id="Solve-with-Decision-Optimization">Solve with Decision Optimization<a class="anchor-link" href="#Solve-with-Decision-Optimization">&#182;</a></h4><p>Depending on the size of the problem, the solve stage might fail and require the Commercial Edition of CPLEX engines, which is included in the premium environments in Watson Studio.</p>
+<p>You will get the best solution found after <strong><em>n</em></strong> seconds, because of a time limit parameter.</p>
 
 </div>
 </div>
@@ -13993,7 +13993,7 @@ If there are no integer variables in your model, or if there are no continuous v
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We call cplex solve, but with the <i>clean_before_solve</i> flag because we want it to forget everything about previous solve and solution.</p>
+<p>Call cplex solve, but with the <i>clean_before_solve</i> flag to ignore everything about the previous solve and solution.</p>
 
 </div>
 </div>
@@ -14094,7 +14094,7 @@ Total (root+branch&amp;cut) =    0.22 sec. (7.38 ticks)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Inspect the CPLEX log: you can now see that the log are different and you can see the message
+<p>Inspect the CPLEX log: you can now see that the logs are different and you can see the message
 <code>
 Benders cuts applied:  3
 </code>
@@ -14142,7 +14142,7 @@ which proves CPLEX applied successfully</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Settings benders annotation in docplex is very simple.
+<p>Settings Benders annotation in docplex is very simple.
 You just need to use the <i>benders_annotation</i> property available on variables and constraints to state which worker they belong to.</p>
 
 </div>
@@ -14336,7 +14336,7 @@ If you look at the <i>Best Bound</i> column, you will also see that the listed s
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You learned how to set up and use the IBM Decision Optimization CPLEX Modeling for Python to formulate a Mathematical Programming model and apply a Benders decomposition.</p>
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You have learned how to set up and use the IBM Decision Optimization CPLEX Modeling for Python to formulate a Mathematical Programming model and apply a Benders decomposition.</p>
 
 </div>
 </div>
