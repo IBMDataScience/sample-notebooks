@@ -12672,7 +12672,8 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="The-Unit-Commitment-Problem-(UCP)">The Unit Commitment Problem (UCP)<a class="anchor-link" href="#The-Unit-Commitment-Problem-(UCP)">&#182;</a></h1><p>This tutorial includes everything you need to set up IBM Decision Optimization CPLEX Modeling for Python (DOcplex), build a Mathematical Programming model, and get its solution by solving the model with IBM ILOG CPLEX Optimizer.</p>
+<h1 id="The-Unit-Commitment-Problem-(UCP)">The Unit Commitment Problem (UCP)<a class="anchor-link" href="#The-Unit-Commitment-Problem-(UCP)">&#182;</a></h1><p>This sample is concerned with how an electricity provider can decide which power generators to run and at what levels in order to satisfy demand for electricity.<br>
+This tutorial includes everything you need to set up IBM Decision Optimization CPLEX Modeling for Python (DOcplex), build a Mathematical Programming model, and solve the model with IBM ILOG CPLEX Optimizer.</p>
 <p>Table of contents:</p>
 <ul>
 <li><a href="#Describe-the-business-problem">Describe the business problem</a></li>
@@ -12702,10 +12703,10 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Describe-the-business-problem">Describe the business problem<a class="anchor-link" href="#Describe-the-business-problem">&#182;</a></h2><ul>
-<li><p>The Model estimates the lower cost of generating electricity within a given plan. 
-Depending on the demand for electricity, we turn on or off units that generate power and which have operational properties and costs.</p>
+<li><p>The model estimates the lowest cost of generating electricity within a given plan. 
+Depending on the demand for electricity, units that generate power and which have operational properties and costs can be turned on or off.</p>
 </li>
-<li><p>The Unit Commitment Problem answers the question "Which power generators should I run at which times and at what level in order to satisfy the demand for electricity?". This  model  helps users to find not only a feasible answer to the question, but one that also optimizes its solution to meet as many of the electricity company's overall goals as possible.</p>
+<li><p>The Unit Commitment Problem answers the question "Which power generators should I run at which times and at what level in order to satisfy the demand for electricity?" This  model helps users to find not only a feasible answer to the question, but one that also optimizes its solution to meet as many of the electricity company's overall goals as possible.</p>
 </li>
 </ul>
 
@@ -12721,7 +12722,7 @@ Depending on the demand for electricity, we turn on or off units that generate p
 </li>
 <li><p>Prescriptive analytics is the next step on the path to insight-based actions. It creates value through synergy with predictive analytics, which analyzes data to predict future outcomes.</p>
 </li>
-<li><p>Prescriptive analytics takes that insight to the next level by suggesting the optimal way to handle that future situation. Organizations that can act fast in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.<br>
+<li><p>Prescriptive analytics takes predictive insight to the next level by suggesting the optimal way to handle a future situation. Organizations that can act quickly in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.<br>
 <br/></p>
 </li>
 </ul>
@@ -12777,7 +12778,7 @@ Depending on the demand for electricity, we turn on or off units that generate p
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Step-1:-Model-the-data">Step 1: Model the data<a class="anchor-link" href="#Step-1:-Model-the-data">&#182;</a></h3><h4 id="Load-data-from-a-pandas-DataFrame">Load data from a <em>pandas</em> DataFrame<a class="anchor-link" href="#Load-data-from-a-pandas-DataFrame">&#182;</a></h4><p>Data for the Unit Commitment Problem is provided as a <em>pandas</em> DataFrame.
-For a standalone notebook, we provide the raw data as Python collections,
+For a standalone notebook, the raw data is provided as Python collections,
 but real data could be loaded
 from an Excel sheet, also using <em>pandas</em>.</p>
 
@@ -13578,7 +13579,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 <span class="c1"># production of energy for unit u at period t</span>
 <span class="n">production</span> <span class="o">=</span> <span class="n">ucpm</span><span class="o">.</span><span class="n">continuous_var_matrix</span><span class="p">(</span><span class="n">keys1</span><span class="o">=</span><span class="n">units</span><span class="p">,</span> <span class="n">keys2</span><span class="o">=</span><span class="n">periods</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;p&quot;</span><span class="p">)</span>
 
-<span class="c1"># at this stage we have defined the decision variables.</span>
+<span class="c1"># at this stage you have defined the decision variables.</span>
 <span class="n">ucpm</span><span class="o">.</span><span class="n">print_information</span><span class="p">()</span>
 </pre></div>
 
@@ -13724,7 +13725,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Express-the-business-constraints">Express the business constraints<a class="anchor-link" href="#Express-the-business-constraints">&#182;</a></h4><h5 id="Linking-in-use-status-to-production">Linking in-use status to production<a class="anchor-link" href="#Linking-in-use-status-to-production">&#182;</a></h5><p>Whenever the unit is in use, the production must be within the minimum and maximum generation.</p>
+<h4 id="Express-the-business-constraints">Express the business constraints<a class="anchor-link" href="#Express-the-business-constraints">&#182;</a></h4><h5 id="Linking-in-use-status-to-production">Linking in-use status to production<a class="anchor-link" href="#Linking-in-use-status-to-production">&#182;</a></h5><p>Whenever a unit is in use, the production must be within the unit's minimum and maximum generation.</p>
 
 </div>
 </div>
@@ -13904,7 +13905,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="Initial-state">Initial state<a class="anchor-link" href="#Initial-state">&#182;</a></h5><p>The solution must take into account the initial state. The initial state of use of the unit is determined by its initial production level.</p>
+<h5 id="Initial-state">Initial state<a class="anchor-link" href="#Initial-state">&#182;</a></h5><p>The solution must take into account the initial state. The initial state of use of a unit is determined by its initial production level.</p>
 
 </div>
 </div>
@@ -13965,7 +13966,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h5 id="Ramp-up-/-ramp-down-constraint">Ramp-up / ramp-down constraint<a class="anchor-link" href="#Ramp-up-/-ramp-down-constraint">&#182;</a></h5><p>Variations of the production level over time in a unit is constrained by a ramp-up / ramp-down process.</p>
-<p>We use the <em>pandas</em> <em>groupby</em> operation to collect all decision variables for each unit in separate series. Then, we iterate over units to post constraints enforcing the ramp-up / ramp-down process by setting upper bounds on the variation of the production level for consecutive periods.</p>
+<p>Use the <em>pandas</em> <em>groupby</em> operation to collect all decision variables for each unit in separate series. Then, iterate over units to post constraints enforcing the ramp-up / ramp-down process by setting upper bounds on the variation of the production level for consecutive periods.</p>
 
 </div>
 </div>
@@ -14024,7 +14025,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h5 id="Turn-on-/-turn-off">Turn on / turn off<a class="anchor-link" href="#Turn-on-/-turn-off">&#182;</a></h5><p>The following constraints determine when a unit is turned on or off.</p>
-<p>We use the same <em>pandas</em> <em>groupby</em> operation as in the previous constraint to iterate over the sequence of decision variables for each unit.</p>
+<p>Use the same <em>pandas</em> <em>groupby</em> operation as in the previous constraint to iterate over the sequence of decision variables for each unit.</p>
 
 </div>
 </div>
@@ -14115,8 +14116,8 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="Demand-constraint">Demand constraint<a class="anchor-link" href="#Demand-constraint">&#182;</a></h5><p>Total production level must be equal or higher than demand on any period.</p>
-<p>This time, the <em>pandas</em> operation <em>groupby</em> is performed on <em>"periods"</em> since we have to iterate over the list of all units for each period.</p>
+<h5 id="Demand-constraint">Demand constraint<a class="anchor-link" href="#Demand-constraint">&#182;</a></h5><p>Total production level must be equal to or higher than demand on any period.</p>
+<p>This time, the <em>pandas</em> operation <em>groupby</em> is performed on <em>"periods"</em> since you have to iterate over the list of all units for each period.</p>
 
 </div>
 </div>
@@ -14127,8 +14128,8 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Enforcing demand</span>
-<span class="c1"># we use a &gt;= here to be more robust, </span>
-<span class="c1"># objective will ensure  we produce efficiently</span>
+<span class="c1"># use a &gt;= here to be more robust, </span>
+<span class="c1"># objective will ensure efficient production</span>
 <span class="k">for</span> <span class="n">period</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">df_decision_vars</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s1">&#39;periods&#39;</span><span class="p">):</span>
     <span class="n">total_demand</span> <span class="o">=</span> <span class="n">demand</span><span class="p">[</span><span class="n">period</span><span class="p">]</span>
     <span class="n">ctname</span> <span class="o">=</span> <span class="s2">&quot;ct_meet_demand_</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">period</span>
@@ -14144,8 +14145,8 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Express-the-objective">Express the objective<a class="anchor-link" href="#Express-the-objective">&#182;</a></h4><p>Operating the different units incur different costs: fixed cost, variable cost, startup cost, co2 cost.</p>
-<p>In a first step, we define the objective as a non-weighted sum of all these costs.</p>
+<h4 id="Express-the-objective">Express the objective<a class="anchor-link" href="#Express-the-objective">&#182;</a></h4><p>Operating the different units incurs different costs: fixed cost, variable cost, startup cost, co2 cost.</p>
+<p>In a first step, define the objective as a non-weighted sum of all these costs.</p>
 <p>The following <em>pandas</em> <em>join</em> operation groups all the data to calculate the objective in a single DataFrame.</p>
 
 </div>
@@ -14326,7 +14327,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Solve-with-Decision-Optimization">Solve with Decision Optimization<a class="anchor-link" href="#Solve-with-Decision-Optimization">&#182;</a></h4><p>If you're using a Community Edition of CPLEX runtimes, depending on the size of the problem, the solve stage might fail and you will need to use a Waston Studio premium environment.</p>
+<h4 id="Solve-with-Decision-Optimization">Solve with Decision Optimization<a class="anchor-link" href="#Solve-with-Decision-Optimization">&#182;</a></h4><p>Depending on the size of the problem, the solve stage might fail and require the Commercial Edition of CPLEX engines, which is included in the premium environments in Watson Studio.</p>
 
 </div>
 </div>
@@ -14580,7 +14581,7 @@ from an Excel sheet, also using <em>pandas</em>.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>From these raw DataFrame results, we can compute <em>derived</em> results.
+<p>From these raw DataFrame results, you can compute <em>derived</em> results.
 For example, for a given unit and period, the <em>reserve</em> r(u,t) is defined as
 the unit's maximum generation minus the current production.</p>
 
@@ -14781,8 +14782,8 @@ the unit's maximum generation minus the current production.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we want to sum all unit reserves to compute the <em>global</em> spinning reserve.
-We need to sum all columns of the DataFrame to get an aggregated time series. We use the <em>pandas</em> <strong>sum</strong> method
+<p>Now sum all unit reserves to compute the <em>global</em> spinning reserve.
+Sum all columns of the DataFrame to get an aggregated time series. Use the <em>pandas</em> <strong>sum</strong> method
 with axis=1 (for rows).</p>
 
 </div>
@@ -14842,7 +14843,7 @@ with axis=1 (for rows).</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="Number-of-plants-online-by-period">Number of plants online by period<a class="anchor-link" href="#Number-of-plants-online-by-period">&#182;</a></h4><p>The total number of plants online at each period t is the sum of in_use variables for all units at this period.
-Again, we use the <em>pandas</em> sum with axis=1 (for rows) to sum over all units.</p>
+Again, use the <em>pandas</em> sum with axis=1 (for rows) to sum over all units.</p>
 
 </div>
 </div>
@@ -15036,9 +15037,9 @@ Again, we use the <em>pandas</em> sum with axis=1 (for rows) to sum over all uni
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Arbitration-between-CO2-cost-and-economic-cost">Arbitration between CO<sub>2</sub> cost and economic cost<a class="anchor-link" href="#Arbitration-between-CO2-cost-and-economic-cost">&#182;</a></h3><p>Economic cost and CO<sub>2</sub> cost usually push in opposite directions.
-In the above discussion, we have minimized the raw sum of economic cost and CO<sub>2</sub> cost, without weights.
-But how good could we be on CO<sub>2</sub>, regardless of economic constraints? 
-To know this, let's solve again with CO<sub>2</sub> cost as the only objective.</p>
+In the previous section, you minimized the raw sum of economic cost and CO<sub>2</sub> cost, without weights.
+But how much further could you reduce CO<sub>2</sub> emissions, if economic cost was not important? 
+To find this out, solve again with CO<sub>2</sub> cost as the only objective.</p>
 
 </div>
 </div>
@@ -15136,8 +15137,8 @@ To know this, let's solve again with CO<sub>2</sub> cost as the only objective.<
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As expected, we get a significantly lower CO<sub>2</sub> cost when minimized alone, at the price of a higher economic cost.</p>
-<p>We could do a similar analysis for economic cost to estimate the absolute minimum of
+<p>As expected, you get a significantly lower CO<sub>2</sub> cost when minimized alone, at the price of a higher economic cost.</p>
+<p>You can do a similar analysis for economic cost to estimate the absolute minimum of
 the economic cost, regardless of CO<sub>2</sub> cost.</p>
 
 </div>
@@ -15209,13 +15210,13 @@ the economic cost, regardless of CO<sub>2</sub> cost.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Again, the absolute minimum for economic cost is lower than the figure we obtained in the original model where we minimized the <em>sum</em> of economic and CO<sub>2</sub> costs, but here we significantly increase the CO<sub>2</sub>.</p>
+<p>Again, the absolute minimum for economic cost is lower than the figure you obtained in the original model where you minimized the <em>sum</em> of economic and CO<sub>2</sub> costs, but here the CO<sub>2</sub> is significantly increased.</p>
 <p>But what happens in between these two extreme points?</p>
-<p>To investigate, we will divide the interval of CO<sub>2</sub> cost values in smaller intervals, add an upper limit on CO<sub>2</sub>,
-and minimize economic cost with this constraint. This will give us a Pareto optimal point with at most this CO<sub>2</sub> value.</p>
-<p>To avoid adding many constraints, we add only one constraint with an extra variable, and we change only the upper bound
+<p>To investigate this, divide the interval of CO<sub>2</sub> cost values in smaller intervals, add an upper limit on CO<sub>2</sub>,
+and minimize economic cost with this constraint. This will give you a Pareto optimal point with at most this CO<sub>2</sub> value.</p>
+<p>To avoid adding many constraints, add only one constraint with an extra variable, and change only the upper bound
 of this CO<sub>2</sub> limit variable between successive solves.</p>
-<p>Then we iterate (with a fixed number of iterations) and collect the cost values.</p>
+<p>Then iterate (with a fixed number of iterations) and collect the cost values.</p>
 
 </div>
 </div>
@@ -15249,7 +15250,7 @@ of this CO<sub>2</sub> limit variable between successive solves.</p>
     <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">co2max</span><span class="o">-</span><span class="n">co2min</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">nb_iters</span><span class="p">)</span>
     <span class="n">co2_ubs</span> <span class="o">=</span> <span class="p">[</span><span class="n">co2min</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="n">step</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nb_iters</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
 
-    <span class="c1"># ensure we minimize eco</span>
+    <span class="c1"># ensure eco minimized</span>
     <span class="n">ucpm</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">eco_kpi</span><span class="o">.</span><span class="n">as_expression</span><span class="p">())</span>
     <span class="n">all_co2s</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">all_ecos</span> <span class="o">=</span> <span class="p">[]</span>
@@ -15411,7 +15412,7 @@ economic cost over CO<sub>2</sub> cost: CO<sub>2</sub> cost is well above 95% of
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You learned how to set up and use IBM Decision Optimization CPLEX Modeling for Python to formulate a Mathematical Programming model and solve it with IBM Decision Optimization.</p>
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You have learned how to set up and use IBM Decision Optimization CPLEX Modeling for Python to formulate a Mathematical Programming model and solve it with IBM Decision Optimization.</p>
 
 </div>
 </div>
@@ -15423,7 +15424,6 @@ economic cost over CO<sub>2</sub> cost: CO<sub>2</sub> cost is well above 95% of
 <h4 id="References">References<a class="anchor-link" href="#References">&#182;</a></h4><ul>
 <li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization CPLEX Modeling for Python documentation</a></li>
 <li><a href="https://dataplatform.cloud.ibm.com/docs/content/getting-started/welcome-main.html?audience=wdp&context=wdp" target="_blank" rel="noopener noreferrer">Watson Studio documentation</a></li>
-<li>Need help with DOcplex or to report a bug? Go to <a href="https://developer.ibm.com/answers/smartspace/docloud" target="_blank" rel="noopener noreferrer">https://developer.ibm.com/answers/smartspace/docloud</a></li>
 </ul>
 
 </div>

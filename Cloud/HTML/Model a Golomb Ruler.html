@@ -12706,17 +12706,16 @@ div#notebook {
 <li><p>In mathematics, a Golomb ruler is a set of marks at integer positions along an imaginary ruler such that no two pairs of marks are the same distance apart. The number of marks on the ruler is its order, and the largest distance between two of its marks is its length.</p>
 </li>
 </ul>
-<p>Following is an example of Golomb ruler of order 4 and length 6.
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Golomb_Ruler-4.svg/220px-Golomb_Ruler-4.svg.png">&lt;/center&gt;</p>
-<p><p>
-This problem is not only an intellectual problem. It has a lot of practical applications:</p>
-<p><ul></p>
-<p><li> within Information Theory related to error correcting codes,</p>
-<p><li> the selection of radio frequencies to reduce the effects of intermodulation interference,</p>
-<p><li> the design of conference rooms, to maximize the number of possible configurations with a minimum of partitions:
-&lt;/ul&gt;</p>
-<center>
-<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Golomb_ruler_conference_room.svg/300px-Golomb_ruler_conference_room.svg.png"></center>
+<p>Following is an example of Golomb ruler of order 4 and length 6.</p>
+<center><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Golomb_Ruler-4.svg/220px-Golomb_Ruler-4.svg.png"></center>
+<p>
+This problem is not only an intellectual problem. It has a lot of practical applications:
+<ul>
+<li> within Information Theory related to error correcting codes,
+<li> the selection of radio frequencies to reduce the effects of intermodulation interference,
+<li> the design of conference rooms, to maximize the number of possible configurations with a minimum of partitions:
+</ul>
+<center><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Golomb_ruler_conference_room.svg/300px-Golomb_ruler_conference_room.svg.png"></center>
 </div>
 </div>
 </div>
@@ -12753,11 +12752,11 @@ This problem is not only an intellectual problem. It has a lot of practical appl
 <p><h3>Modeling the problem</h3></p>
 <p><p>
 Constraint Programming is a programming paradigm that allows to express a problem using:</p>
-<p><ul></p>
-<p><li> the unknowns of the problem (the <i>variables</i>),</p>
-<p><li> the constraints/laws/rules of the problem, mathematical expressions linking variables together (the <i>constraints</i>),</p>
-<p><li> what is to be optimized (the <i>objective function</i>).
-&lt;/ul&gt;</p>
+<ul>
+<li>the unknowns of the problem (the <i>variables</i>),</li>
+<li>the constraints/laws/rules of the problem, mathematical expressions linking variables together (the <i>constraints</i>),</li>
+<li>what is to be optimized (the <i>objective function</i>).</li>
+</ul>
 <p><p>
 All this information, plus some configuration parameters, is aggregated into a single object called <i>model</i>.</p>
 <p><p>
@@ -12860,7 +12859,7 @@ The model is represented by a Python object that is filled with the different mo
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="Define-the-decision-variables">Define the decision variables<a class="anchor-link" href="#Define-the-decision-variables">&#182;</a></h4><ul>
-<li><p>Now, we need to define the variables of the problem. As the expected problem result is the list of mark positions, the simplest choice is to create one integer variable to represent the position of each mark on the ruler.</p>
+<li><p>Now, you need to define the variables of the problem. As the expected problem result is the list of mark positions, the simplest choice is to create one integer variable to represent the position of each mark on the ruler.</p>
 </li>
 <li><p>Each variable has a a set of possible values called his <i>domain</i>. To reduce the search space, it is important to reduce this domain as far as possible.</p>
 </li>
@@ -12892,7 +12891,7 @@ The model is represented by a Python object that is filled with the different mo
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="Express-the-business-constraints">Express the business constraints<a class="anchor-link" href="#Express-the-business-constraints">&#182;</a></h4><ul>
-<li>We need to express that all possible distances between two marks must be different. To do this, we create an array that contains all these distances:</li>
+<li>To express that all possible distances between two marks must be different, create an array that contains all these distances:</li>
 </ul>
 
 </div>
@@ -12916,9 +12915,9 @@ The model is represented by a Python object that is filled with the different mo
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We have used here the operator '-' to express the difference between variables. It may appear strange as the variables are not instanciated at that time, but the Python operator has been overloaded to construct a CP expression instead of attempting to compute the arithmetic difference. All other standard Python operators can be used to make operations between CP objects (&lt;, &gt;, &lt;=, &gt;=, ==, !=, +, -, /, *, &amp;, |, //, **,  ...). Have a look to documentation for details.</p>
+<p>The operator '-' is used to express the difference between variables. This might appear strange as the variables are not instantiated at that time, but the Python operator has been overloaded to construct a CP expression instead of attempting to compute the arithmetic difference. All other standard Python operators can be used to make operations between CP objects (&lt;, &gt;, &lt;=, &gt;=, ==, !=, +, -, /, *, &amp;, |, //, **,  ...). See documentation for details.</p>
 <p><p>
-To force all these distances to be different, we use the special <i>all_diff()</i> constraint as follows:</p>
+To force all these distances to be different, use the special <i>all_diff()</i> constraint as follows:</p>
 
 </div>
 </div>
@@ -12952,11 +12951,11 @@ To force all these distances to be different, we use the special <i>all_diff()</
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><h4>Remove symmetries</h4></p>
 <p><p>
-The constraint we have expressed above is theoritically enough, and the model can be solved as it is.</p>
+The constraint you have expressed above is theoretically sufficient, and the model can be solved as it is.</p>
 <p><p>
 However, it does not differentiate between all possible permutations of the different mark positions that are solutions to the problem, for example, 0-1-4-6, 4-6-1-0, 6-0-1-4, etc. As there are ORDER! (factorial of ORDER) such permutations, the search space would be drastically reduced by removing them.</p>
 <p><p>
-We can do that by forcing an order between marks, for example the order of their index:</p>
+You can do that by forcing an order between marks, for example the order of their index:</p>
 
 </div>
 </div>
@@ -12980,7 +12979,7 @@ We can do that by forcing an order between marks, for example the order of their
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We also know that first mark is at the beginning of the ruler:</p>
+<p>You also know that first mark is at the beginning of the ruler:</p>
 
 </div>
 </div>
@@ -13030,8 +13029,8 @@ The following constraint can be added to avoid this:</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h4 id="Express-the-objective">Express the objective<a class="anchor-link" href="#Express-the-objective">&#182;</a></h4><ul>
-<li>Finally, we want to get the shortest Golomb Ruler. This can be expressed by minimizing the position of the last mark.
-As we have ordered the marks, we can do this using:</li>
+<li>Finally, to get the shortest Golomb Ruler, this can be expressed by minimizing the position of the last mark.
+As you have ordered the marks, you can do this using:</li>
 </ul>
 
 </div>
@@ -13055,7 +13054,7 @@ As we have ordered the marks, we can do this using:</li>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>If the marks were not ordered, we should have use instead:<br>
+<p>If the marks were not ordered, you could have instead used:<br>
 <code>   mdl.add(mdl.minimize(mdl.max(marks)))</code><br></p>
 
 </div>
@@ -13065,9 +13064,9 @@ As we have ordered the marks, we can do this using:</li>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Solve-with-Decision-Optimization-solve-service">Solve with Decision Optimization solve service<a class="anchor-link" href="#Solve-with-Decision-Optimization-solve-service">&#182;</a></h4><p>By default, the modeling layer look for a local runtime, but other solving environments, such as <em>docloud</em>, are also available.
-Look at the documentation for a good understanding of the various solving/generation modes.</p>
-<p>If you're using a Community Edition of CPLEX runtimes, depending on the size of the problem, the solve stage may fail and will need a paying subscription or product installation.</p>
+<h4 id="Solve-with-Decision-Optimization-solve-service">Solve with Decision Optimization solve service<a class="anchor-link" href="#Solve-with-Decision-Optimization-solve-service">&#182;</a></h4><p>By default, the modeling layer looks for a local runtime, but other solving environments, such as <em>docloud</em>, are also available.
+Refer to the documentation for a good understanding of the various solving/generation modes.</p>
+<p>If you're using a Community Edition of CPLEX runtimes, depending on the size of the problem, the solve stage might fail and will need a paying subscription or product installation.</p>
 
 </div>
 </div>
@@ -13174,7 +13173,7 @@ M_6: 25
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This output is totally generic and simply prints the value of all model variables, the objective value, and some other solving information.</p>
+<p>This output is totally generic and simply prints the value of all model variables, the objective value, and some other solution information.</p>
 <p><p>
 A more specific output can be generated by writing more code. The following example illustrates how to access specific elements of the solution.</p>
 
@@ -13230,7 +13229,7 @@ Solve time: 5.13s
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Another possibility is for example to simulate real ruler using characters, as follows:</p>
+<p>Another possibility is for example to simulate a real ruler using characters, as follows:</p>
 
 </div>
 </div>
@@ -13285,7 +13284,7 @@ Solve time: 5.13s
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You learned how to set up and use the IBM Decision Optimization CPLEX Modeling for Python to build and solve a Constraint Programming model.</p>
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You have learned how to set up and use the IBM Decision Optimization CPLEX Modeling for Python to build and solve a Constraint Programming model.</p>
 
 </div>
 </div>
