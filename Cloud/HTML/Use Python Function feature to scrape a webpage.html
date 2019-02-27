@@ -12754,7 +12754,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># You can add any information needed to run the Python function, e.g., wml credentials</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># You can add any information needed to run the Python function, e.g., wml credentials.</span>
 <span class="n">py_params</span> <span class="o">=</span> <span class="p">{</span>
 
 <span class="p">}</span>
@@ -12782,7 +12782,7 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">py_funct</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">py_params</span><span class="p">):</span>  
-    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="n">payload</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Import the subprocess module.</span>
         <span class="kn">import</span> <span class="nn">subprocess</span>
         
@@ -12790,30 +12790,37 @@ div#notebook {
         <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s1">&#39;pip install --user lxml&#39;</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s1">&#39;pip install --user bs4&#39;</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s1">&#39;pip install --user sklearn&#39;</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        
-        <span class="c1"># Import required modules.</span>
-        <span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>
-        <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
-        <span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="k">import</span> <span class="n">CountVectorizer</span>
-        
-        <span class="n">urls</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span>
-        <span class="n">final_texts</span> <span class="o">=</span> <span class="p">[]</span>   <span class="c1"># An array that will have stripped clean text from html tag enclosed text.</span>
-        
-        <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>            
-            <span class="n">html</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
-            <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>        
+        <span class="n">install_err</span> <span class="o">=</span> <span class="s1">&#39;subprocess.CalledProcessError:</span><span class="se">\n\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;cmd:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="n">cmd</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">output:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span> <span class="s1">&#39;Installation failed:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">install_err</span> <span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="n">payload</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Import required modules.</span>
+            <span class="kn">from</span> <span class="nn">bs4</span> <span class="k">import</span> <span class="n">BeautifulSoup</span>
+            <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlopen</span>
+            <span class="kn">from</span> <span class="nn">sklearn.feature_extraction.text</span> <span class="k">import</span> <span class="n">CountVectorizer</span>
 
-            <span class="n">p_tags</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>    <span class="c1"># Text is enclosed in &lt;p&gt; tag.</span>
+            <span class="n">urls</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="s1">&#39;values&#39;</span><span class="p">]</span>
+            <span class="n">final_texts</span> <span class="o">=</span> <span class="p">[]</span>   <span class="c1"># An array that will have stripped clean text from html tag enclosed text.</span>
 
-            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">p_tags</span><span class="p">:</span>
-                <span class="n">str_p</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-                <span class="n">text</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">str_p</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
-                <span class="n">final_texts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
-        
-        <span class="n">vectorizer</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">()</span>
-        <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">final_texts</span><span class="p">)</span>
-        
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;tokens&#39;</span><span class="p">:</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">()}</span>
+            <span class="k">for</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="p">:</span>            
+                <span class="n">html</span> <span class="o">=</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+                <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span>
+
+                <span class="n">p_tags</span> <span class="o">=</span> <span class="n">soup</span><span class="o">.</span><span class="n">find_all</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>    <span class="c1"># Text is enclosed in &lt;p&gt; tag.</span>
+
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">p_tags</span><span class="p">:</span>
+                    <span class="n">str_p</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                    <span class="n">text</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">str_p</span><span class="p">,</span> <span class="s1">&#39;lxml&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span>
+                    <span class="n">final_texts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+            <span class="n">vectorizer</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">()</span>
+            <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">final_texts</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;tokens&#39;</span><span class="p">:</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">get_feature_names</span><span class="p">()}</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;error&#39;</span><span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
         
     <span class="k">return</span> <span class="n">score</span>
 </pre></div>
@@ -14011,26 +14018,6 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># @hidden_cell</span>
-
-<span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s2">&quot;instance_id&quot;</span><span class="p">:</span> <span class="s2">&quot;d0755448-6eb4-425a-b35b-479be91ff2d5&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;bd202fa8-b3ca-4548-abd2-848828caa100&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://us-south.ml.cloud.ibm.com&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;d06414fa-5d62-4a18-aaaa-970cdccaa08b&quot;</span>
-<span class="p">}</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
@@ -14063,6 +14050,7 @@ div#notebook {
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>/opt/conda/envs/DSX-Python35/lib/python3.5/site-packages/sklearn/cross_validation.py:41: DeprecationWarning: This module was deprecated in version 0.18 in favor of the model_selection module into which all the refactored classes and functions are moved. Also note that the interface of the new CV iterators are different from that of this module. This module will be removed in 0.20.
   &#34;This module will be removed in 0.20.&#34;, DeprecationWarning)
+2019-02-27 18:52:58,941 - watson_machine_learning_client.wml_client_error - WARNING - Artifact with artifact_uid: &#39;5720d008-f2f8-4db9-bd42-e2d5827f60fd&#39; does not exist.
 </pre>
 </div>
 </div>
@@ -14117,7 +14105,7 @@ First, store the <code>Python Function</code> with the meta data.</p>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">meta_data</span> <span class="o">=</span> <span class="p">{</span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">FunctionMetaNames</span><span class="o">.</span><span class="n">NAME</span> <span class="p">:</span> <span class="s1">&#39;Web scraping python function&#39;</span><span class="p">}</span>
-<span class="n">function_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_function</span><span class="p">(</span><span class="n">meta_props</span><span class="o">=</span><span class="n">meta_data</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">py_funct</span><span class="p">)</span> <span class="c1"># If the py_param dict is not empty, function=py_funct(py_param).</span>
+<span class="n">function_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_function</span><span class="p">(</span><span class="n">meta_props</span><span class="o">=</span><span class="n">meta_data</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">py_funct</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -14136,7 +14124,7 @@ First, store the <code>Python Function</code> with the meta data.</p>
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>No RUNTIME_UID passed. Creating default runtime... SUCCESS
 
-Successfully created default runtime with uid: a19d2ca3-4451-41f5-b919-1df0e1aa209b
+Successfully created default runtime with uid: 971c73c1-d033-4cf9-a494-8710af183a18
 </pre>
 </div>
 </div>
@@ -14181,18 +14169,18 @@ Successfully created default runtime with uid: a19d2ca3-4451-41f5-b919-1df0e1aa2
 
 #######################################################################################
 
-Synchronous deployment creation for uid: &#39;899f96b0-8023-48fd-9819-c260fba91d7d&#39; started
+Synchronous deployment creation for uid: &#39;dbfcd683-48ac-480c-ac9a-3f7e1044530f&#39; started
 
 #######################################################################################
 
 
 INITIALIZING
-DEPLOY_IN_PROGRESS.
+DEPLOY_IN_PROGRESS...
 DEPLOY_SUCCESS
 
 
 ------------------------------------------------------------------------------------------------
-Successfully finished deployment creation, deployment_uid=&#39;5720d008-f2f8-4db9-bd42-e2d5827f60fd&#39;
+Successfully finished deployment creation, deployment_uid=&#39;44269fee-b631-47a3-8db1-cb2268b1d82f&#39;
 ------------------------------------------------------------------------------------------------
 
 
@@ -14237,26 +14225,26 @@ Successfully finished deployment creation, deployment_uid=&#39;5720d008-f2f8-4db
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>{&#39;entity&#39;: {&#39;deployable_asset&#39;: {&#39;created_at&#39;: &#39;2019-02-27T15:57:35.755Z&#39;,
-   &#39;guid&#39;: &#39;899f96b0-8023-48fd-9819-c260fba91d7d&#39;,
+<pre>{&#39;entity&#39;: {&#39;deployable_asset&#39;: {&#39;created_at&#39;: &#39;2019-02-27T18:52:30.551Z&#39;,
+   &#39;guid&#39;: &#39;dbfcd683-48ac-480c-ac9a-3f7e1044530f&#39;,
    &#39;name&#39;: &#39;Web scraping python function&#39;,
    &#39;type&#39;: &#39;function&#39;,
-   &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v4/functions/899f96b0-8023-48fd-9819-c260fba91d7d&#39;},
-  &#39;deployed_version&#39;: {&#39;created_at&#39;: &#39;2019-02-27T15:57:35.755Z&#39;,
-   &#39;guid&#39;: &#39;9f8d80d4-edcd-4587-8caa-9062f5072ef5&#39;,
-   &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v4/functions/899f96b0-8023-48fd-9819-c260fba91d7d/revisions/9f8d80d4-edcd-4587-8caa-9062f5072ef5&#39;},
+   &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v4/functions/dbfcd683-48ac-480c-ac9a-3f7e1044530f&#39;},
+  &#39;deployed_version&#39;: {&#39;created_at&#39;: &#39;2019-02-27T18:52:30.551Z&#39;,
+   &#39;guid&#39;: &#39;04b212a9-6e68-4797-8f2a-ee5bf3392c95&#39;,
+   &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v4/functions/dbfcd683-48ac-480c-ac9a-3f7e1044530f/revisions/04b212a9-6e68-4797-8f2a-ee5bf3392c95&#39;},
   &#39;description&#39;: &#39;Description of deployment&#39;,
   &#39;model_type&#39;: &#39;n/a&#39;,
   &#39;name&#39;: &#39;Web scraping python function deployment&#39;,
   &#39;runtime_environment&#39;: &#39;python-3.5&#39;,
-  &#39;scoring_url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/deployments/5720d008-f2f8-4db9-bd42-e2d5827f60fd/online&#39;,
+  &#39;scoring_url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/deployments/44269fee-b631-47a3-8db1-cb2268b1d82f/online&#39;,
   &#39;status&#39;: &#39;DEPLOY_SUCCESS&#39;,
   &#39;status_details&#39;: {&#39;status&#39;: &#39;DEPLOY_SUCCESS&#39;},
   &#39;type&#39;: &#39;online&#39;},
- &#39;metadata&#39;: {&#39;created_at&#39;: &#39;2019-02-27T15:57:36.924Z&#39;,
-  &#39;guid&#39;: &#39;5720d008-f2f8-4db9-bd42-e2d5827f60fd&#39;,
-  &#39;modified_at&#39;: &#39;2019-02-27T15:57:37.141Z&#39;,
-  &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/deployments/5720d008-f2f8-4db9-bd42-e2d5827f60fd&#39;}}</pre>
+ &#39;metadata&#39;: {&#39;created_at&#39;: &#39;2019-02-27T18:52:32.047Z&#39;,
+  &#39;guid&#39;: &#39;44269fee-b631-47a3-8db1-cb2268b1d82f&#39;,
+  &#39;modified_at&#39;: &#39;2019-02-27T18:52:32.203Z&#39;,
+  &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/deployments/44269fee-b631-47a3-8db1-cb2268b1d82f&#39;}}</pre>
 </div>
 
 </div>
@@ -14298,7 +14286,7 @@ Successfully finished deployment creation, deployment_uid=&#39;5720d008-f2f8-4db
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>------------------------------------  ---------------------------------------  ------  --------------  ------------------------  ---------  -------------
 GUID                                  NAME                                     TYPE    STATE           CREATED                   FRAMEWORK  ARTIFACT TYPE
-5720d008-f2f8-4db9-bd42-e2d5827f60fd  Web scraping python function deployment  online  DEPLOY_SUCCESS  2019-02-27T15:57:36.924Z  n/a        function
+44269fee-b631-47a3-8db1-cb2268b1d82f  Web scraping python function deployment  online  DEPLOY_SUCCESS  2019-02-27T18:52:32.047Z  n/a        function
 ------------------------------------  ---------------------------------------  ------  --------------  ------------------------  ---------  -------------
 </pre>
 </div>
@@ -14371,7 +14359,7 @@ GUID                                  NAME                                     T
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/deployments/5720d008-f2f8-4db9-bd42-e2d5827f60fd/online&#39;</pre>
+<pre>&#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/deployments/44269fee-b631-47a3-8db1-cb2268b1d82f/online&#39;</pre>
 </div>
 
 </div>
