@@ -12674,7 +12674,7 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <table style="border: none" align="left">
    <tr style="border: none">
-      <th style="border: none"><font face="verdana" size="5" color="black"><b>Use PMML to predict Iris species with IBM Watson Machine Learning</b></th>
+      <th style="border: none"><font face="verdana" size="5" color="black"><b>Persist, Deploy, and Score a PMML model to Predict Iris Species</b></th>
       <th style="border: none"><img src="https://github.com/pmservice/customer-satisfaction-prediction/blob/master/app/static/images/ml_icon_gray.png?raw=true" alt="Watson Machine Learning icon" height="40" width="40"></th>
   <tr style="border: none">
        <th style="border: none"><img src="https://github.com/pmservice/wml-sample-models/blob/master/spark/customer-satisfaction-prediction/images/users_banner_2-03.png?raw=true" width="600" alt="Icon"> </th>
@@ -12687,19 +12687,18 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This notebook describes how to store a sample Predictive Model Markup Language (PMML) model and how to start scoring new data.</p>
-<p>Some familiarity with python is helpful. This notebook uses Python 3.</p>
+<p>This notebook demonstrates how to store a sample Predictive Model Markup Language (PMML) model and score test data.</p>
+<p>Some familiarity with python is helpful. This notebook is compatible with Python 3.5.</p>
 <p>You will use the <strong>Iris</strong> data set to predict the species of an iris flower. This data set contains measurements of the iris perianth flower.</p>
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>You will learn how to:</p>
 <ul>
-<li>Work with the Watson Machine Learning (WML) instance</li>
-<li>Deploy a PMML model</li>
-<li>Score data for the deployed model</li>
+<li>Set up the Watson Machine Learning (WML) instance.</li>
+<li>Deploy a PMML model.</li>
+<li>Score the deployed model.</li>
 </ul>
 <h2 id="Contents">Contents<a class="anchor-link" href="#Contents">&#182;</a></h2><ol>
 <li><a href="#setup">Set up the environment</a></li>
-<li><a href="#instance">Work with the WML service instance</a> </li>
-<li><a href="#scoring">Persist, deploy and score in an IBM Cloud</a></li>
+<li><a href="#scoring">Persist, deploy, and score a PMML model in the Watson Machine Learning (WML) repository</a></li>
 <li><a href="#summary">Summary and next steps</a></li>
 </ol>
 
@@ -12713,8 +12712,8 @@ div#notebook {
 <p><a id="setup"></a></p>
 <h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance is <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html">here</a>)</li>
-<li><strong>Not required on Watson Studio</strong>: Install the <a href="https://pypi.python.org/pypi?%3Aaction=search&amp;term=watson-machine-learning-client&amp;submit=search">watson-machine-learning-client</a></li>
+<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener no referrer">here</a>).</li>
+<li>Install the <a href="https://pypi.python.org/pypi?%3Aaction=search&term=watson-machine-learning-client&submit=search" target="_blank" rel="noopener no referrer">watson-machine-learning-client</a> (<strong>not required on Watson Studio</strong>).</li>
 </ul>
 
 </div>
@@ -12724,8 +12723,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="instance"></a></p>
-<h2 id="2.-Working-with-the-WML-service-instance">2. Working with the WML service instance<a class="anchor-link" href="#2.-Working-with-the-WML-service-instance">&#182;</a></h2>
+<h3 id="1.1-Set-up-the-WML-service-instance">1.1 Set up the WML service instance<a class="anchor-link" href="#1.1-Set-up-the-WML-service-instance">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -12733,7 +12731,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section you will learn how to get details about your WML service instance.</p>
+<p>In this subsection, you will learn how to set up and obtain details of your WML service instance.</p>
 
 </div>
 </div>
@@ -12742,7 +12740,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>First, install the Python API client from pypi.</p>
+<h4 id="Install-the-watson-machine-learning-client-package-from-pypi">Install the <code>watson-machine-learning-client</code> package from pypi<a class="anchor-link" href="#Install-the-watson-machine-learning-client-package-from-pypi">&#182;</a></h4><p><strong>Note:</strong> <code>watson-machine-learning-client</code> documentation can be found <a href="http://wml-api-pyclient.mybluemix.net/" target="_blank" rel="noopener no referrer">here</a>.</p>
 
 </div>
 </div>
@@ -12762,12 +12760,11 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Install the WML client if required.</span>
-<span class="o">!</span>pip install watson-machine-learning-client --upgrade
-<span class="o">!</span>pip install wget
+<span class="o">!</span>pip install --upgrade watson-machine-learning-client 
 </pre></div>
 
 </div>
@@ -12779,25 +12776,24 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Authenticate to the WML service on IBM Cloud.</p>
-<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://console.bluemix.net/docs/services/service_credentials.html#service_credentials">Service Credentials</a> tab of the service instance that you created on IBM Cloud. <BR>If you cannot see the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
-<p><strong>Action</strong>: Enter your WML service instance credentials here.</p>
+<p>Authenticate the WML service on the IBM Cloud.</p>
+<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://console.bluemix.net/docs/services/service_credentials.html#service_credentials" target="_blank" rel="noopener no referrer">Service Credentials</a> tab of the service instance that you created on the IBM Cloud. <BR>If you cannot find the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
+<p><strong>Action</strong>: Enter your WML service instance credentials in the following cell.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Enter your credentials here.</span>
 <span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm-watson-ml.mybluemix.net&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;access_key&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;instance_id&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span>
+    <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://ibm-watson-ml.mybluemix.net&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;***&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="s1">&#39;***&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;instance_id&#39;</span><span class="p">:</span> <span class="s1">&#39;***&#39;</span>
 <span class="p">}</span>
 </pre></div>
 
@@ -12808,7 +12804,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">watson_machine_learning_client</span> <span class="k">import</span> <span class="n">WatsonMachineLearningAPIClient</span>
@@ -12821,7 +12817,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">wml_client</span> <span class="o">=</span> <span class="n">WatsonMachineLearningAPIClient</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">)</span>
@@ -12836,14 +12832,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Details about your WML service instance are available in <code>service_instance.details</code>.</p>
+<p>You cand check the details of your Watson Machine Learning service by calling the <code>service_instance.details</code> attribute.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># List information about your WML service instance.</span>
@@ -12864,7 +12860,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;metadata&#39;: {&#39;created_at&#39;: &#39;2018-01-30T10:39:51.938Z&#39;, &#39;url&#39;: &#39;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/fd1db635-c9f3-4d83-afc7-32efec367e5e&#39;, &#39;modified_at&#39;: &#39;2018-01-30T14:16:00.601Z&#39;, &#39;guid&#39;: &#39;fd1db635-c9f3-4d83-afc7-32efec367e5e&#39;}, &#39;entity&#39;: {&#39;region&#39;: &#39;us-south&#39;, &#39;account&#39;: {&#39;id&#39;: &#39;8dba8395f5b8dc6fcab49d43161ab9f1&#39;, &#39;type&#39;: &#39;TRIAL&#39;, &#39;name&#39;: &#34;Wojciech Sobala&#39;s Account&#34;}, &#39;deployments&#39;: {&#39;url&#39;: &#39;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/fd1db635-c9f3-4d83-afc7-32efec367e5e/deployments&#39;}, &#39;source&#39;: &#39;Bluemix&#39;, &#39;status&#39;: &#39;Active&#39;, &#39;plan_id&#39;: &#39;0f2a3c2c-456b-40f3-9b19-726d2740b11c&#39;, &#39;published_models&#39;: {&#39;url&#39;: &#39;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/fd1db635-c9f3-4d83-afc7-32efec367e5e/published_models&#39;}, &#39;organization_guid&#39;: &#39;a7b3ef43-5dc2-41fc-8fa7-29b0846e5807&#39;, &#39;plan&#39;: &#39;standard&#39;, &#39;space_guid&#39;: &#39;a6b628f9-3f64-45c0-bf38-739876b63fec&#39;, &#39;usage&#39;: {&#39;deployment_count&#39;: {&#39;current&#39;: 1, &#39;limit&#39;: 1000}, &#39;expiration_date&#39;: &#39;2018-02-01T00:00:00.000Z&#39;, &#39;computation_time&#39;: {&#39;current&#39;: 0}, &#39;prediction_count&#39;: {&#39;current&#39;: 3}, &#39;model_count&#39;: {&#39;current&#39;: 0, &#39;limit&#39;: 1000}}, &#39;owner&#39;: {&#39;country_code&#39;: &#39;POL&#39;, &#39;ibm_id&#39;: &#39;3100020VJR&#39;, &#39;beta_user&#39;: True, &#39;user_id&#39;: &#39;1c54455e-c23b-4506-b184-27494b507536&#39;, &#39;email&#39;: &#39;wojciech.sobala@pl.ibm.com&#39;}}}
+<pre>{&#39;metadata&#39;: {&#39;created_at&#39;: &#39;2018-12-10T08:05:26.901Z&#39;, &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9&#39;, &#39;modified_at&#39;: &#39;2018-12-10T08:05:26.901Z&#39;, &#39;guid&#39;: &#39;b4b6c696-172c-4164-8049-c0b621dbf3c9&#39;}, &#39;entity&#39;: {&#39;deployments&#39;: {&#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/deployments&#39;}, &#39;status&#39;: &#39;Active&#39;, &#39;account&#39;: {&#39;name&#39;: &#34;Jihyoung Kim&#39;s Account&#34;, &#39;type&#39;: &#39;PAYG&#39;, &#39;id&#39;: &#39;4512e0f7a54c74e3c3742a68d5641ddb&#39;}, &#39;owner&#39;: {&#39;ibm_id&#39;: &#39;310000SXE7&#39;, &#39;country_code&#39;: &#39;USA&#39;, &#39;email&#39;: &#39;jihyoungkim@us.ibm.com&#39;, &#39;beta_user&#39;: True, &#39;user_id&#39;: &#39;b811bd0c-9771-4b3f-b86e-2d76bdd4105f&#39;}, &#39;source&#39;: &#39;Bluemix&#39;, &#39;published_models&#39;: {&#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models&#39;}, &#39;plan&#39;: &#39;standard&#39;, &#39;usage&#39;: {&#39;gpu_count_k80&#39;: {&#39;limit&#39;: 48, &#39;current&#39;: 0}, &#39;model_count&#39;: {&#39;limit&#39;: 1000, &#39;current&#39;: 25}, &#39;gpu_count_v100&#39;: {&#39;limit&#39;: 34, &#39;current&#39;: 0}, &#39;gpu_count_p100&#39;: {&#39;limit&#39;: 14, &#39;current&#39;: 0}, &#39;computation_time&#39;: {&#39;current&#39;: 0}, &#39;prediction_count&#39;: {&#39;current&#39;: 0}, &#39;capacity_units&#39;: {&#39;current&#39;: 0}, &#39;deployment_count&#39;: {&#39;limit&#39;: 1000, &#39;current&#39;: -2}, &#39;expiration_date&#39;: &#39;2019-04-01T00:00:00.000Z&#39;}, &#39;space_guid&#39;: &#39;N/A&#39;, &#39;organization_guid&#39;: &#39;N/A&#39;, &#39;region&#39;: &#39;us-south&#39;, &#39;tags&#39;: None, &#39;plan_id&#39;: &#39;0f2a3c2c-456b-40f3-9b19-726d2740b11c&#39;}}
 </pre>
 </div>
 </div>
@@ -12877,14 +12873,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Get information about the stored models for your WML instance.</p>
+<p>Obtain information about the stored models in your WML instance.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># List information about the stored models.</span>
@@ -12905,11 +12901,34 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>------------------------------------  ------------------------------  ------------------------  -----------------  -----
-GUID                                  NAME                            CREATED                   FRAMEWORK          TYPE
-51cdbdea-28ea-488d-9edd-dab2a8c44208  Sentiment Prediction            2018-01-30T14:15:06.339Z  mllib-2.0          model
-b7e9fc69-f0db-444f-89b4-fe7aa5e8a4f1  Handwritten Digits Recognition  2018-01-30T14:15:24.106Z  scikit-learn-0.17  model
-------------------------------------  ------------------------------  ------------------------  -----------------  -----
+<pre>------------------------------------  -------------------------------------------  ------------------------  -----------------
+GUID                                  NAME                                         CREATED                   FRAMEWORK
+c0e97a79-7db0-471e-afd8-f3e238fd16b6  XGBoost model for breast cancer              2019-02-28T19:11:24.484Z  scikit-learn-0.19
+8008b47c-0f07-482c-8d2f-0b6940c824e5  SMS Spam prediction model                    2019-02-28T00:57:59.713Z  scikit-learn-0.19
+f2ea0716-7d1f-484a-8468-14f4b6ec7333  WML Product Line Prediction Model            2019-02-27T13:50:04.628Z  mllib-2.3
+fe1f7f54-b66f-46ed-8785-9fa5d129e02e  SPSS model for Churn prediction              2019-02-27T11:53:10.672Z  spss-modeler-18.1
+7bd8d8b7-bb2b-4e71-95e6-502fec50657f  SPSS model for Churn prediction              2019-02-27T09:29:04.867Z  spss-modeler-18.1
+c4fbb8ff-0e1b-4c45-b155-85b07527ecc3  SPSS model for Churn prediction              2019-02-26T13:13:42.220Z  spss-modeler-18.1
+8a245de4-7907-44fe-b67f-3cf1746d9eb4  CHAID PMML model for Iris data               2019-02-25T13:09:14.752Z  pmml-4.2
+462931ef-bcf8-486c-8bcb-2b2c114cb20c  MNIST - compressed keras model               2019-02-25T12:29:43.085Z  tensorflow-1.5
+e349018e-a37c-4d26-bb86-01ce7f52bdaa  SMS Spam prediction model                    2019-02-13T15:52:39.175Z  scikit-learn-0.19
+0cc8a058-6b08-4ae5-84df-a62d49e0f4bf  SPSS XGBoost Tree Regression model_auto-opt  2019-02-12T19:00:25.864Z  spss-modeler-18.1
+67ee96bc-cb64-4ad0-8255-bf471df915bb  SMS Spam prediction model                    2019-02-12T02:48:36.430Z  scikit-learn-0.19
+9de866c9-bb52-4c19-b095-94c265530f46  Earthquake magnitude prediction model        2019-02-11T16:41:38.815Z  tensorflow-1.12
+f514ff10-8857-433c-89b0-280c708a6e26  Earthquake magnitude prediction model        2019-02-11T16:31:26.538Z  tensorflow-1.12
+e561751f-d7d9-4c6f-a7af-6677baf3d45f  Earthquake magnitude prediction model        2019-02-07T00:21:53.513Z  tensorflow-1.12
+f87ac4d9-7a05-435d-98eb-6eacd290e3cc  Earthquake magnitude prediction model        2019-02-07T00:08:13.678Z  tensorflow-1.12
+482e49ea-1207-45b8-bf57-89d57bc44678  SPSS XGBoost Regression Model - Car Price    2019-02-05T18:09:21.456Z  spss-modeler-18.1
+e0ef0258-ef7c-45f0-9466-3568e03fed65  SPSS (Auto) Regression Model - Car Price     2019-01-30T23:18:33.431Z  spss-modeler-18.1
+afb7a22e-1e6c-4e29-a1da-5305a2f5a16b  WML Product Line Prediction Model            2019-01-19T19:36:59.710Z  mllib-2.3
+61c9afb7-94ae-4c05-ad2b-dc734bb0f932  SPSS model for Churn prediction              2019-01-18T10:28:30.835Z  spss-modeler-18.1
+52e8d90f-482a-4358-8889-979ecb5f35c0  CHAID PMML model for Iris data               2019-01-18T09:36:11.392Z  pmml-4.2
+47b21e40-eba3-4cda-b7d2-cb9a2d31d12d  Customer churn Spark model                   2019-01-18T06:45:13.422Z  mllib-2.3
+f5eb38e5-2b04-4da0-bf14-3edafe554be8  Customer churn Spark model                   2019-01-18T02:18:45.291Z  mllib-2.3
+e772e16f-936f-4f20-849d-259ea80b1e87  Product line model                           2019-01-17T09:57:27.972Z  mllib-2.3
+afed5f15-80e0-4dce-8cac-d2bfcdab8a4d  Product line model                           2019-01-17T06:55:55.312Z  mllib-2.3
+95bfca55-0c53-43d2-86ed-5c770f403ee6  MNIST - compressed keras model               2019-01-15T14:49:42.639Z  tensorflow-1.5
+------------------------------------  -------------------------------------------  ------------------------  -----------------
 </pre>
 </div>
 </div>
@@ -12922,14 +12941,14 @@ b7e9fc69-f0db-444f-89b4-fe7aa5e8a4f1  Handwritten Digits Recognition  2018-01-30
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Get a list of the deployed models for your WML service instance.</p>
+<p>List deployed models in your WML service instance.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># List the deployed models.</span>
@@ -12950,10 +12969,31 @@ b7e9fc69-f0db-444f-89b4-fe7aa5e8a4f1  Handwritten Digits Recognition  2018-01-30
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>------------------------------------  ------------------  ------  ------------------------  -----------------
-GUID                                  NAME                TYPE    CREATED                   FRAMEWORK
-06faa2cd-e12b-4595-b96d-555d9fae6363  Digits recognition  online  2018-01-30T14:15:59.342Z  scikit-learn-0.17
-------------------------------------  ------------------  ------  ------------------------  -----------------
+<pre>------------------------------------  -------------------------------------------------------  ------  --------------  ------------------------  -----------------  -------------
+GUID                                  NAME                                                     TYPE    STATE           CREATED                   FRAMEWORK          ARTIFACT TYPE
+450f555b-1952-4ef1-90be-96a16f600345  Predict breast cancer                                    online  DEPLOY_SUCCESS  2019-02-28T19:11:28.862Z  scikit-learn-0.19  model
+dd987565-3e04-4179-9cf9-546710fbadcd  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-02-28T11:50:04.209Z  n/a                function
+984ffa92-1c82-4b54-bb56-f6f85e915227  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-02-27T17:50:16.907Z  n/a                function
+e5472c3f-c7d7-4a3e-9b20-44f03030373e  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-02-27T16:51:24.029Z  n/a                function
+304c671c-6a48-496d-b27b-3ad9888a0156  Online scoring                                           online  DEPLOY_SUCCESS  2019-02-27T13:50:39.730Z  mllib-2.3          model
+18298746-41ec-4bac-928c-fc34e3708ca9  Sample SPSS model deployment                             online  DEPLOY_SUCCESS  2019-02-27T11:53:13.523Z  spss-modeler-18.1  model
+375d050d-1e3b-49e5-9f1d-655f28734ec7  Sample SPSS model deployment                             online  DEPLOY_SUCCESS  2019-02-27T09:29:07.286Z  spss-modeler-18.1  model
+2924aaaf-bddf-4567-8206-6972c163dfa4  Sample SPSS model deployment                             online  DEPLOY_SUCCESS  2019-02-26T13:13:44.977Z  spss-modeler-18.1  model
+feb87375-fca8-4b0c-8f2f-5c83a6e26115  Iris species prediction                                  online  DEPLOY_SUCCESS  2019-02-25T13:09:17.454Z  pmml-4.2           model
+a0e16777-75ad-489a-a6db-5213619381a4  Keras MNIST model deployment through compressed file.    online  DEPLOY_SUCCESS  2019-02-25T12:29:47.265Z  tensorflow-1.5     model
+5c5ebf10-c47a-4224-b35d-3646b0348af1  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-02-21T14:58:00.141Z  n/a                function
+b9efb426-845a-45e7-b591-85c4bdb1417c  SMS Spam prediction model deployment.                    online  DEPLOY_SUCCESS  2019-02-13T15:52:48.108Z  scikit-learn-0.19  model
+569fb590-41aa-433e-aeb4-89a9688a4a7b  Keras earthquake magnitude prediction model deployment.  online  DEPLOY_SUCCESS  2019-02-11T16:41:49.568Z  tensorflow-1.12    model
+7b2ff02b-b6a7-4ef4-b0e6-6765b1c45766  Keras earthquake magnitude prediction model deployment.  online  DEPLOY_SUCCESS  2019-02-07T00:21:58.175Z  tensorflow-1.12    model
+a738de63-d74e-454a-9dd7-f377c65420bc  Online scoring                                           online  DEPLOY_SUCCESS  2019-01-19T19:49:21.391Z  mllib-2.3          model
+d8f43799-cf5c-499f-a9d3-42d2e398f337  Sample SPSS model deployment                             online  DEPLOY_SUCCESS  2019-01-18T10:28:38.134Z  spss-modeler-18.1  model
+12056c7c-6ff1-454d-b324-d1cf4b42c4fd  Iris species prediction                                  online  DEPLOY_SUCCESS  2019-01-18T09:36:17.097Z  pmml-4.2           model
+a375c7bc-963d-4a9b-9896-7dbcdcaed78d  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-01-17T10:11:40.324Z  n/a                function
+a8b47a68-060c-4474-a5c0-15da3304063a  Product line model deployment                            online  DEPLOY_SUCCESS  2019-01-17T10:02:44.991Z  mllib-2.3          model
+ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment                            online  DEPLOY_SUCCESS  2019-01-17T07:14:05.178Z  mllib-2.3          model
+902853d1-9ff6-40a7-8918-d6b7b39c3a4e  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-01-17T02:37:29.921Z  n/a                function
+3da0fb97-24b9-44d6-ac16-e97a0cf8dfcb  Keras MNIST model deployment through compressed file.    online  DEPLOY_SUCCESS  2019-01-15T14:49:46.285Z  tensorflow-1.5     model
+------------------------------------  -------------------------------------------------------  ------  --------------  ------------------------  -----------------  -------------
 </pre>
 </div>
 </div>
@@ -12967,7 +13007,7 @@ GUID                                  NAME                TYPE    CREATED       
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="scoring"></a></p>
-<h2 id="3.-Persist,-deploy-and-score-model-in-a-Cloud">3. Persist, deploy and score model in a Cloud<a class="anchor-link" href="#3.-Persist,-deploy-and-score-model-in-a-Cloud">&#182;</a></h2>
+<h2 id="2.-Persist,-deploy,-and-score-a-PMML-model-in-the-Watson-Machine-Learning-(WML)-repository">2. Persist, deploy, and score a PMML model in the Watson Machine Learning (WML) repository<a class="anchor-link" href="#2.-Persist,-deploy,-and-score-a-PMML-model-in-the-Watson-Machine-Learning-(WML)-repository">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12975,12 +13015,12 @@ GUID                                  NAME                TYPE    CREATED       
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section you will use the Python API client for the WML service to create an online deployment and score a new data record.</p>
-<p>For more information, see the <a href="http://wml-api-pyclient.mybluemix.net/" target="_blank" rel="noopener no referrer">Python API client documentation</a>.</p>
+<p>In this section, you will use the Python API client for the WML service to create an online deployment and score the PMML model with a new data record.</p>
+<p>For more information, please refer to the <a href="http://wml-api-pyclient.mybluemix.net/" target="_blank" rel="noopener no referrer">Python API client documentation</a>.</p>
 <ul>
-<li><a href="#persist">3.1. Persist model</a></li>
-<li><a href="#deploy">3.2. Create the online deployment</a></li>
-<li><a href="#score">3.3. Score data</a></li>
+<li><a href="#persist">2.1 Persist a PMML model</a></li>
+<li><a href="#deploy">2.2 Create an online deployment</a></li>
+<li><a href="#score">2.3 Score a test data record</a></li>
 </ul>
 
 </div>
@@ -12990,7 +13030,7 @@ GUID                                  NAME                TYPE    CREATED       
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.1.-Persist-model">3.1. Persist model<a id="persist" /><a class="anchor-link" href="#3.1.-Persist-model">&#182;</a></h3>
+<h3 id="2.1-Persist-a-PMML-model">2.1 Persist a PMML model<a id="persist" /><a class="anchor-link" href="#2.1-Persist-a-PMML-model">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -12998,18 +13038,33 @@ GUID                                  NAME                TYPE    CREATED       
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Action</strong>: Use <code>wget</code> to download the sample PMML model, <code>iris_chaid.xml</code> from the Git project.</p>
+<p><strong>Action</strong>: Use <code>wget</code> to download the sample PMML model, <code>iris_chaid.xml</code> from the <a href="https://github.com/pmservice/wml-sample-models" target="_blank" rel="noopener no referrer">Git repository</a>.<br>
+<strong>Note:</strong> You may need to install the <code>wget</code> package. To install the <code>wget</code> package, run the following command.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Download sample PMML model, iris_chaid.xml, from Git.</span>
-<span class="kn">import</span> <span class="nn">wget</span><span class="o">,</span> <span class="nn">os</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install --upgrade wget
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Download the sample PMML model and the &#39;iris_chaid.xml&#39; file from the Github repo.</span>
+<span class="kn">import</span> <span class="nn">wget</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 <span class="n">sample_dir</span> <span class="o">=</span> <span class="s1">&#39;pmml_sample_model&#39;</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">sample_dir</span><span class="p">):</span>
@@ -13017,7 +13072,7 @@ GUID                                  NAME                TYPE    CREATED       
     
 <span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sample_dir</span><span class="p">,</span> <span class="s1">&#39;iris_chaid.xml&#39;</span><span class="p">)</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="n">filename</span> <span class="o">=</span> <span class="n">wget</span><span class="p">(</span><span class="s1">&#39;https://github.com/pmservice/wml-sample-models/raw/master/pmml/iris-species/model/iris_chaid.xml&#39;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">sample_dir</span><span class="p">)</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;https://github.com/pmservice/wml-sample-models/raw/master/pmml/iris-species/model/iris_chaid.xml&#39;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">sample_dir</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13036,14 +13091,16 @@ GUID                                  NAME                TYPE    CREATED       
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Save the downloaded file to the WML repository.</span>
-<span class="n">props_pmml</span> <span class="o">=</span> <span class="p">{</span><span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s1">&#39;CHAID PMML model for Iris data&#39;</span><span class="p">,</span>
-              <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">AUTHOR_NAME</span><span class="p">:</span> <span class="s2">&quot;IBM&quot;</span><span class="p">,</span> 
-              <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_NAME</span><span class="p">:</span> <span class="s2">&quot;pmml&quot;</span><span class="p">,</span> 
-              <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_VERSION</span><span class="p">:</span> <span class="s2">&quot;4.2&quot;</span><span class="p">}</span>
+<span class="n">props_pmml</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s1">&#39;CHAID PMML model for Iris data&#39;</span><span class="p">,</span>
+    <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">AUTHOR_NAME</span><span class="p">:</span> <span class="s1">&#39;IBM&#39;</span><span class="p">,</span> 
+    <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_NAME</span><span class="p">:</span> <span class="s1">&#39;pmml&#39;</span><span class="p">,</span> 
+    <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_VERSION</span><span class="p">:</span> <span class="s1">&#39;4.2&#39;</span>
+<span class="p">}</span>
 
 <span class="n">model_details</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_model</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">props_pmml</span><span class="p">)</span>
 <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">list_models</span><span class="p">()</span>
@@ -13063,12 +13120,35 @@ GUID                                  NAME                TYPE    CREATED       
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>------------------------------------  ------------------------------  ------------------------  -----------------  -----
-GUID                                  NAME                            CREATED                   FRAMEWORK          TYPE
-51cdbdea-28ea-488d-9edd-dab2a8c44208  Sentiment Prediction            2018-01-30T14:15:06.339Z  mllib-2.0          model
-b7e9fc69-f0db-444f-89b4-fe7aa5e8a4f1  Handwritten Digits Recognition  2018-01-30T14:15:24.106Z  scikit-learn-0.17  model
-fae8e498-136e-4c35-81bd-a9a69a50b1c7  CHAID PMML model for Iris data  2018-01-30T14:17:19.921Z  pmml-4.2           model
-------------------------------------  ------------------------------  ------------------------  -----------------  -----
+<pre>------------------------------------  -------------------------------------------  ------------------------  -----------------
+GUID                                  NAME                                         CREATED                   FRAMEWORK
+c9dfebfa-0411-4e3e-a9c5-9a311444ed59  CHAID PMML model for Iris data               2019-03-04T12:59:21.351Z  pmml-4.2
+c0e97a79-7db0-471e-afd8-f3e238fd16b6  XGBoost model for breast cancer              2019-02-28T19:11:24.484Z  scikit-learn-0.19
+8008b47c-0f07-482c-8d2f-0b6940c824e5  SMS Spam prediction model                    2019-02-28T00:57:59.713Z  scikit-learn-0.19
+f2ea0716-7d1f-484a-8468-14f4b6ec7333  WML Product Line Prediction Model            2019-02-27T13:50:04.628Z  mllib-2.3
+fe1f7f54-b66f-46ed-8785-9fa5d129e02e  SPSS model for Churn prediction              2019-02-27T11:53:10.672Z  spss-modeler-18.1
+7bd8d8b7-bb2b-4e71-95e6-502fec50657f  SPSS model for Churn prediction              2019-02-27T09:29:04.867Z  spss-modeler-18.1
+c4fbb8ff-0e1b-4c45-b155-85b07527ecc3  SPSS model for Churn prediction              2019-02-26T13:13:42.220Z  spss-modeler-18.1
+8a245de4-7907-44fe-b67f-3cf1746d9eb4  CHAID PMML model for Iris data               2019-02-25T13:09:14.752Z  pmml-4.2
+462931ef-bcf8-486c-8bcb-2b2c114cb20c  MNIST - compressed keras model               2019-02-25T12:29:43.085Z  tensorflow-1.5
+e349018e-a37c-4d26-bb86-01ce7f52bdaa  SMS Spam prediction model                    2019-02-13T15:52:39.175Z  scikit-learn-0.19
+0cc8a058-6b08-4ae5-84df-a62d49e0f4bf  SPSS XGBoost Tree Regression model_auto-opt  2019-02-12T19:00:25.864Z  spss-modeler-18.1
+67ee96bc-cb64-4ad0-8255-bf471df915bb  SMS Spam prediction model                    2019-02-12T02:48:36.430Z  scikit-learn-0.19
+9de866c9-bb52-4c19-b095-94c265530f46  Earthquake magnitude prediction model        2019-02-11T16:41:38.815Z  tensorflow-1.12
+f514ff10-8857-433c-89b0-280c708a6e26  Earthquake magnitude prediction model        2019-02-11T16:31:26.538Z  tensorflow-1.12
+e561751f-d7d9-4c6f-a7af-6677baf3d45f  Earthquake magnitude prediction model        2019-02-07T00:21:53.513Z  tensorflow-1.12
+f87ac4d9-7a05-435d-98eb-6eacd290e3cc  Earthquake magnitude prediction model        2019-02-07T00:08:13.678Z  tensorflow-1.12
+482e49ea-1207-45b8-bf57-89d57bc44678  SPSS XGBoost Regression Model - Car Price    2019-02-05T18:09:21.456Z  spss-modeler-18.1
+e0ef0258-ef7c-45f0-9466-3568e03fed65  SPSS (Auto) Regression Model - Car Price     2019-01-30T23:18:33.431Z  spss-modeler-18.1
+afb7a22e-1e6c-4e29-a1da-5305a2f5a16b  WML Product Line Prediction Model            2019-01-19T19:36:59.710Z  mllib-2.3
+61c9afb7-94ae-4c05-ad2b-dc734bb0f932  SPSS model for Churn prediction              2019-01-18T10:28:30.835Z  spss-modeler-18.1
+52e8d90f-482a-4358-8889-979ecb5f35c0  CHAID PMML model for Iris data               2019-01-18T09:36:11.392Z  pmml-4.2
+47b21e40-eba3-4cda-b7d2-cb9a2d31d12d  Customer churn Spark model                   2019-01-18T06:45:13.422Z  mllib-2.3
+f5eb38e5-2b04-4da0-bf14-3edafe554be8  Customer churn Spark model                   2019-01-18T02:18:45.291Z  mllib-2.3
+e772e16f-936f-4f20-849d-259ea80b1e87  Product line model                           2019-01-17T09:57:27.972Z  mllib-2.3
+afed5f15-80e0-4dce-8cac-d2bfcdab8a4d  Product line model                           2019-01-17T06:55:55.312Z  mllib-2.3
+95bfca55-0c53-43d2-86ed-5c770f403ee6  MNIST - compressed keras model               2019-01-15T14:49:42.639Z  tensorflow-1.5
+------------------------------------  -------------------------------------------  ------------------------  -----------------
 </pre>
 </div>
 </div>
@@ -13081,7 +13161,7 @@ fae8e498-136e-4c35-81bd-a9a69a50b1c7  CHAID PMML model for Iris data  2018-01-30
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Note:</strong> From the list of downloaded files, you can see that model is successfully stored in the WML service repository.</p>
+<p><strong>Note:</strong> From the list of downloaded files, you can see that model is successfully stored in the WML repository.</p>
 
 </div>
 </div>
@@ -13090,7 +13170,7 @@ fae8e498-136e-4c35-81bd-a9a69a50b1c7  CHAID PMML model for Iris data  2018-01-30
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.2.-Create-the-online-deployment">3.2. Create the online deployment<a id="deploy" /><a class="anchor-link" href="#3.2.-Create-the-online-deployment">&#182;</a></h3>
+<h3 id="2.2-Create-an-online-deployment">2.2 Create an online deployment<a id="deploy" /><a class="anchor-link" href="#2.2-Create-an-online-deployment">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13098,19 +13178,19 @@ fae8e498-136e-4c35-81bd-a9a69a50b1c7  CHAID PMML model for Iris data  2018-01-30
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now create the online deployment, <em>Iris species prediction</em>, for the stored model, then list all the online deployments for the model.</p>
+<p>Now, create an online deployment, <em>Iris species prediction</em>, for the stored model, and list all the online deployments for the model.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create the online deployment.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create an online deployment.</span>
 <span class="n">model_uid</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_model_uid</span><span class="p">(</span><span class="n">model_details</span><span class="p">)</span>
-<span class="n">model_deployment</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model_uid</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Iris species prediction&#39;</span><span class="p">)</span>
+<span class="n">model_deployment</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model_uid</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Iris species prediction&#39;</span><span class="p">)</span>
 
 <span class="n">wml_client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
 </pre></div>
@@ -13129,11 +13209,50 @@ fae8e498-136e-4c35-81bd-a9a69a50b1c7  CHAID PMML model for Iris data  2018-01-30
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>------------------------------------  -----------------------  ------  ------------------------  -----------------
-GUID                                  NAME                     TYPE    CREATED                   FRAMEWORK
-06faa2cd-e12b-4595-b96d-555d9fae6363  Digits recognition       online  2018-01-30T14:15:59.342Z  scikit-learn-0.17
-56f3501f-844c-4cb7-9bbc-02131da8f6bf  Iris species prediction  online  2018-01-30T14:17:22.742Z  pmml-4.2
-------------------------------------  -----------------------  ------  ------------------------  -----------------
+<pre>
+
+#######################################################################################
+
+Synchronous deployment creation for uid: &#39;c9dfebfa-0411-4e3e-a9c5-9a311444ed59&#39; started
+
+#######################################################################################
+
+
+INITIALIZING
+DEPLOY_SUCCESS
+
+
+------------------------------------------------------------------------------------------------
+Successfully finished deployment creation, deployment_uid=&#39;ded4770f-c2fe-4653-9ce2-0c79ecfa10be&#39;
+------------------------------------------------------------------------------------------------
+
+
+------------------------------------  -------------------------------------------------------  ------  --------------  ------------------------  -----------------  -------------
+GUID                                  NAME                                                     TYPE    STATE           CREATED                   FRAMEWORK          ARTIFACT TYPE
+ded4770f-c2fe-4653-9ce2-0c79ecfa10be  Iris species prediction                                  online  DEPLOY_SUCCESS  2019-03-04T12:59:23.413Z  pmml-4.2           model
+450f555b-1952-4ef1-90be-96a16f600345  Predict breast cancer                                    online  DEPLOY_SUCCESS  2019-02-28T19:11:28.862Z  scikit-learn-0.19  model
+dd987565-3e04-4179-9cf9-546710fbadcd  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-02-28T11:50:04.209Z  n/a                function
+984ffa92-1c82-4b54-bb56-f6f85e915227  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-02-27T17:50:16.907Z  n/a                function
+e5472c3f-c7d7-4a3e-9b20-44f03030373e  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-02-27T16:51:24.029Z  n/a                function
+304c671c-6a48-496d-b27b-3ad9888a0156  Online scoring                                           online  DEPLOY_SUCCESS  2019-02-27T13:50:39.730Z  mllib-2.3          model
+18298746-41ec-4bac-928c-fc34e3708ca9  Sample SPSS model deployment                             online  DEPLOY_SUCCESS  2019-02-27T11:53:13.523Z  spss-modeler-18.1  model
+375d050d-1e3b-49e5-9f1d-655f28734ec7  Sample SPSS model deployment                             online  DEPLOY_SUCCESS  2019-02-27T09:29:07.286Z  spss-modeler-18.1  model
+2924aaaf-bddf-4567-8206-6972c163dfa4  Sample SPSS model deployment                             online  DEPLOY_SUCCESS  2019-02-26T13:13:44.977Z  spss-modeler-18.1  model
+feb87375-fca8-4b0c-8f2f-5c83a6e26115  Iris species prediction                                  online  DEPLOY_SUCCESS  2019-02-25T13:09:17.454Z  pmml-4.2           model
+a0e16777-75ad-489a-a6db-5213619381a4  Keras MNIST model deployment through compressed file.    online  DEPLOY_SUCCESS  2019-02-25T12:29:47.265Z  tensorflow-1.5     model
+5c5ebf10-c47a-4224-b35d-3646b0348af1  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-02-21T14:58:00.141Z  n/a                function
+b9efb426-845a-45e7-b591-85c4bdb1417c  SMS Spam prediction model deployment.                    online  DEPLOY_SUCCESS  2019-02-13T15:52:48.108Z  scikit-learn-0.19  model
+569fb590-41aa-433e-aeb4-89a9688a4a7b  Keras earthquake magnitude prediction model deployment.  online  DEPLOY_SUCCESS  2019-02-11T16:41:49.568Z  tensorflow-1.12    model
+7b2ff02b-b6a7-4ef4-b0e6-6765b1c45766  Keras earthquake magnitude prediction model deployment.  online  DEPLOY_SUCCESS  2019-02-07T00:21:58.175Z  tensorflow-1.12    model
+a738de63-d74e-454a-9dd7-f377c65420bc  Online scoring                                           online  DEPLOY_SUCCESS  2019-01-19T19:49:21.391Z  mllib-2.3          model
+d8f43799-cf5c-499f-a9d3-42d2e398f337  Sample SPSS model deployment                             online  DEPLOY_SUCCESS  2019-01-18T10:28:38.134Z  spss-modeler-18.1  model
+12056c7c-6ff1-454d-b324-d1cf4b42c4fd  Iris species prediction                                  online  DEPLOY_SUCCESS  2019-01-18T09:36:17.097Z  pmml-4.2           model
+a375c7bc-963d-4a9b-9896-7dbcdcaed78d  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-01-17T10:11:40.324Z  n/a                function
+a8b47a68-060c-4474-a5c0-15da3304063a  Product line model deployment                            online  DEPLOY_SUCCESS  2019-01-17T10:02:44.991Z  mllib-2.3          model
+ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment                            online  DEPLOY_SUCCESS  2019-01-17T07:14:05.178Z  mllib-2.3          model
+902853d1-9ff6-40a7-8918-d6b7b39c3a4e  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-01-17T02:37:29.921Z  n/a                function
+3da0fb97-24b9-44d6-ac16-e97a0cf8dfcb  Keras MNIST model deployment through compressed file.    online  DEPLOY_SUCCESS  2019-01-15T14:49:46.285Z  tensorflow-1.5     model
+------------------------------------  -------------------------------------------------------  ------  --------------  ------------------------  -----------------  -------------
 </pre>
 </div>
 </div>
@@ -13155,7 +13274,7 @@ GUID                                  NAME                     TYPE    CREATED  
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.3.-Score-data">3.3. Score data<a id="score" /><a class="anchor-link" href="#3.3.-Score-data">&#182;</a></h3>
+<h3 id="2.3-Score-a-test-data-record">2.3 Score a test data record<a id="score" /><a class="anchor-link" href="#2.3-Score-a-test-data-record">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13163,14 +13282,14 @@ GUID                                  NAME                     TYPE    CREATED  
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Send a sample record using the Python API client to check that the online scoring endpoint is available.</p>
+<p>Send a sample record using the Python API client to check if the online scoring endpoint is available.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Verify the online scoring endpoint.</span>
@@ -13180,24 +13299,6 @@ GUID                                  NAME                     TYPE    CREATED  
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>https://ibm-watson-ml.mybluemix.net/v3/wml_instances/fd1db635-c9f3-4d83-afc7-32efec367e5e/published_models/fae8e498-136e-4c35-81bd-a9a69a50b1c7/deployments/56f3501f-844c-4cb7-9bbc-02131da8f6bf/online
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -13214,11 +13315,14 @@ GUID                                  NAME                     TYPE    CREATED  
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Score data and predict species of flower.</span>
-<span class="n">scoring_data</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sepal.Length&#39;</span><span class="p">,</span> <span class="s1">&#39;Sepal.Width&#39;</span><span class="p">,</span> <span class="s1">&#39;Petal.Length&#39;</span><span class="p">,</span> <span class="s1">&#39;Petal.Width&#39;</span><span class="p">],</span> <span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mf">5.1</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]]}</span>
+<span class="n">scoring_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sepal.Length&#39;</span><span class="p">,</span> <span class="s1">&#39;Sepal.Width&#39;</span><span class="p">,</span> <span class="s1">&#39;Petal.Length&#39;</span><span class="p">,</span> <span class="s1">&#39;Petal.Width&#39;</span><span class="p">],</span> 
+    <span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mf">5.1</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]]</span>
+<span class="p">}</span>
 <span class="n">predictions</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">model_scoring_url</span><span class="p">,</span> <span class="n">scoring_data</span><span class="p">)</span> 
 
 <span class="nb">print</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
@@ -13238,7 +13342,7 @@ GUID                                  NAME                     TYPE    CREATED  
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;fields&#39;: [&#39;PredictedValue&#39;, &#39;Confidence&#39;], &#39;values&#39;: [[&#39;setosa&#39;, 1.0]]}
+<pre>{&#39;fields&#39;: [[&#39;$R-Species&#39;, &#39;$RC-Species&#39;, &#39;$RP-Species&#39;, &#39;$RP-setosa&#39;, &#39;$RP-versicolor&#39;, &#39;$RP-virginica&#39;, &#39;$RI-Species&#39;]], &#39;values&#39;: [[&#39;setosa&#39;, 1.0, 1.0, 1.0, 0.0, 0.0, &#39;1&#39;]]}
 </pre>
 </div>
 </div>
@@ -13261,7 +13365,7 @@ GUID                                  NAME                     TYPE    CREATED  
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="summary"></a></p>
-<h2 id="4.-Summary-and-next-steps">4. Summary and next steps<a class="anchor-link" href="#4.-Summary-and-next-steps">&#182;</a></h2>
+<h2 id="3.-Summary-and-next-steps">3. Summary and next steps<a class="anchor-link" href="#3.-Summary-and-next-steps">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -13270,7 +13374,7 @@ GUID                                  NAME                     TYPE    CREATED  
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>You successfully completed this notebook! You learned how to use Watson Machine Learning for PMML model deployment and scoring.</p>
-<p>Check out our <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html">documentation</a> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
+<p>Check out our <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener no referrer">documentation</a> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
 
 </div>
 </div>
@@ -13279,7 +13383,7 @@ GUID                                  NAME                     TYPE    CREATED  
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Citations">Citations<a class="anchor-link" href="#Citations">&#182;</a></h3><p>Dua, D. and Karra Taniskidou, E. (2017). <a href="http://archive.ics.uci.edu/ml">UCI Machine Learning Repository</a>. Irvine, CA: University of California, School of Information and Computer Science.</p>
+<h3 id="Citation">Citation<a class="anchor-link" href="#Citation">&#182;</a></h3><p>Dua, D. and Karra Taniskidou, E. (2017). <a href="http://archive.ics.uci.edu/ml">UCI Machine Learning Repository</a>. Irvine, CA: University of California, School of Information and Computer Science.</p>
 
 </div>
 </div>
@@ -13288,7 +13392,8 @@ GUID                                  NAME                     TYPE    CREATED  
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Wojciech Sobala</strong> is a Data Scientist in IBM.</p>
+<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Wojciech Sobala</strong> is a Data Scientist at IBM.<br>
+<strong>Jihyoung Kim</strong>, Ph.D., is a Data Scientist at IBM who strives to make data science easy for everyone through Watson Studio.</p>
 
 </div>
 </div>
@@ -13297,7 +13402,7 @@ GUID                                  NAME                     TYPE    CREATED  
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Copyright © 2018 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright © 2018, 2019 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
