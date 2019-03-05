@@ -12675,7 +12675,7 @@ div#notebook {
 <h1 id="Small-Steps-to-TensorFlow">Small Steps to <code>TensorFlow</code><a class="anchor-link" href="#Small-Steps-to-TensorFlow">&#182;</a></h1><h2 id="Solve-problems-with-matrices,-linear-regression,-and-gradient-descent">Solve problems with matrices, linear regression, and gradient descent<a class="anchor-link" href="#Solve-problems-with-matrices,-linear-regression,-and-gradient-descent">&#182;</a></h2><p>This guide is part one of a light introduction to <a href="https://www.tensorflow.org/versions/r0.12/get_started" target="_blank" rel="noopener no referrer">TensorFlow</a> on Watson Studio.
 <code>TensorFlow</code> is a popular and powerful framework used to specify computations as <code>graphs</code> which data <code>flow</code> through. These data are represented as <code>tensors</code>. By the end of this guide, we'll have developed an intuition for how this all fits together.</p>
 <p>We will not build any neural networks. Instead, we'll use <code>TensorFlow</code> to solve toy problems. This way, we will develop some familiarity with the APIs and best practices.</p>
-<p>This notebook runs on Python with Spark.</p>
+<p>This notebook runs on Python 3.5 with Spark.</p>
 
 </div>
 </div>
@@ -12741,8 +12741,8 @@ $$ 3x + 2y = 1 $$</p>
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># numpy for matrix math and generating data </span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># numpy for matrix math and generating data </span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="c1"># create the x data </span>
@@ -12753,11 +12753,11 @@ $$ 3x + 2y = 1 $$</p>
 <span class="n">y1</span> <span class="o">=</span> <span class="p">[((</span><span class="mi">1</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">7</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">]</span>
 <span class="n">y2</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="p">(</span><span class="mf">3.0</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">]</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Some points from the first line: &quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">y1</span><span class="p">[:</span><span class="mi">3</span><span class="p">])])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Some points from the first line: &quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">y1</span><span class="p">[:</span><span class="mi">3</span><span class="p">])])</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> Some points from the second line: &quot;</span><span class="p">)</span>
-<span class="k">print</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">y2</span><span class="p">[:</span><span class="mi">3</span><span class="p">])])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2"> Some points from the second line: &quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">y2</span><span class="p">[:</span><span class="mi">3</span><span class="p">])])</span>
 </pre></div>
 
 </div>
@@ -12775,7 +12775,8 @@ $$ 3x + 2y = 1 $$</p>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Waiting for a Spark session to start...
-Spark Initialization Done! ApplicationId = app-20180925084601-0000
+Spark Initialization Done! ApplicationId = app-20190305204858-0000
+KERNEL_ID = c3c4c48c-7d7c-4601-9164-745df21d1685
 Some points from the first line: 
 [(-2.5, 1.5000000000000002), (-2.4494949494949494, 1.5168350168350171), (-2.3989898989898988, 1.533670033670034)]
 
@@ -12794,8 +12795,8 @@ Some points from the first line:
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># plot</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># plot</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;seaborn-darkgrid&#39;</span><span class="p">)</span>
 
@@ -12823,7 +12824,7 @@ Some points from the first line:
 
 
 <div class="output_text output_subarea ">
-<pre>&lt;matplotlib.figure.Figure at 0x7f4213042090&gt;</pre>
+<pre>&lt;matplotlib.figure.Figure at 0x2af4906f2710&gt;</pre>
 </div>
 
 </div>
@@ -12894,8 +12895,8 @@ $$A^{-1}B = X$$</p>
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># import tensorflow</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import tensorflow</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 
 <span class="c1"># make the matrices in numpy</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">([</span>
@@ -12937,7 +12938,7 @@ $$A^{-1}B = X$$</p>
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">X</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X</span>
 </pre></div>
 
 </div>
@@ -12979,14 +12980,14 @@ $$A^{-1}B = X$$</p>
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># Let&#39;s start a session </span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Let&#39;s start a session </span>
 <span class="c1"># initialize the variables</span>
 
 <span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
 
 <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
     <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -13044,8 +13045,8 @@ And suppose further that there are three facilities, <code>Bangalore</code> $B$,
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># pandas for DataFrame tabular representation </span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># pandas for DataFrame tabular representation </span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Bangalore&quot;</span><span class="p">,</span> <span class="s2">&quot;Poughkeepsie&quot;</span><span class="p">,</span> <span class="s2">&quot;Rome&quot;</span><span class="p">],</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="s2">&quot;Resources&quot;</span><span class="p">])</span>
 <span class="n">df</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
 <span class="n">df</span><span class="o">.</span><span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">]</span>
@@ -13165,8 +13166,8 @@ $$ 5x + 7y + 6z = 44 $$</p>
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># import tensorflow</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import tensorflow</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 
 <span class="c1"># make the matrices in numpy</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">([</span>
@@ -13196,7 +13197,7 @@ $$ 5x + 7y + 6z = 44 $$</p>
 
 <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
     <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -13249,7 +13250,7 @@ In this part, we're going to model a noisy sine curve. First, let's generate and
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-.</span><span class="mi">6</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="o">.</span><span class="mi">6</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">xs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-.</span><span class="mi">6</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="o">.</span><span class="mi">6</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
 <span class="n">y1</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="o">.</span><span class="mi">15</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">]</span>
 <span class="n">y2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="n">alpha</span><span class="o">=.</span><span class="mi">65</span><span class="p">)</span>
@@ -13300,7 +13301,7 @@ In this part, we're going to model a noisy sine curve. First, let's generate and
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;x_data&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;x_data&quot;</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;y_data&quot;</span><span class="p">)</span>
 </pre></div>
 
@@ -13323,7 +13324,7 @@ In this part, we're going to model a noisy sine curve. First, let's generate and
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;values&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;values&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13350,7 +13351,7 @@ In this part, we're going to model a noisy sine curve. First, let's generate and
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="c1"># linear model of the form y = wx + b</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># linear model of the form y = wx + b</span>
 <span class="n">predicted_y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">V</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 
@@ -13373,7 +13374,7 @@ In this part, we're going to model a noisy sine curve. First, let's generate and
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">err</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">squared_difference</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">predicted_y</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">err</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">squared_difference</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">predicted_y</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13395,7 +13396,7 @@ In this part, we're going to model a noisy sine curve. First, let's generate and
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
 <span class="n">train</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
 </pre></div>
 
@@ -13418,7 +13419,7 @@ In this part, we're going to model a noisy sine curve. First, let's generate and
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -13440,7 +13441,7 @@ In this part, we're going to model a noisy sine curve. First, let's generate and
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">sess</span><span class="p">:</span>
     <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">init</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2500</span><span class="p">):</span>
         <span class="n">x_data</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="o">%</span><span class="k">len</span>(xs)]
@@ -13450,7 +13451,7 @@ In this part, we're going to model a noisy sine curve. First, let's generate and
         
         <span class="c1"># check the weights every 100 iterations</span>
         <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="k">500</span>==0: 
-            <span class="k">print</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
             <span class="c1"># periodically assign to a normal python variable for use in the graph</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">sess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
             
@@ -13470,16 +13471,16 @@ In this part, we're going to model a noisy sine curve. First, let's generate and
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[[ 0.42402871]
- [-1.11512736]]
-[[ 0.68757521]
- [-0.08681212]]
-[[ 0.60548874]
- [-0.02199814]]
-[[ 0.70187729]
- [-0.07768039]]
+<pre>[[ 1.33137317]
+ [-1.06517974]]
+[[ 0.69544569]
+ [-0.08178691]]
+[[ 0.60551997]
+ [-0.02204926]]
+[[ 0.70187694]
+ [-0.07768061]]
 [[ 0.60554548]
- [-0.02209103]]
+ [-0.02209102]]
 </pre>
 </div>
 </div>
@@ -13502,7 +13503,7 @@ In this part, we're going to model a noisy sine curve. First, let's generate and
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span><span class="n">model_values</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_values</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">]</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Linear model&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">model_values</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">)</span>
@@ -13575,7 +13576,7 @@ ${[2]}$ <a href="https://www.tensorflow.org/versions/r0.12/get_started/basic_usa
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Copyright &copy; IBM Corp. 2018. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright &copy; IBM Corp. 2018-2019. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
