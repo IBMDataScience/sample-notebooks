@@ -11611,8 +11611,10 @@ ul.typeahead-list > li > a {
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
 .highlight .o { color: #666666 } /* Operator */
+.highlight .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
 .highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
 .highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
 .highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
 .highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
 .highlight .gd { color: #A00000 } /* Generic.Deleted */
@@ -11652,8 +11654,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11664,9 +11668,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style type="text/css">
@@ -11863,20 +11869,37 @@ padding-left: 0;
 }
 
 .notebook_app .btn-group button {
-margin-right: 0.675rem;
-border: none;
-border-radius: 0;
-background-color: transparent;
-padding: 0;
-border-width: 0;
-fill: #3d70b2;
+  margin-right: 0.675rem;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  padding: 0;
+  border-width: 0;
+  font: inherit;
+  fill: #3d70b2;
+  color: #5a6872;
 }
 
 .notebook_app .btn-group button:hover,
 .notebook_app .btn-group button:active,
 .notebook_app .btn-group button:focus {
-fill: #5596e6;
-background-color: transparent;
+  fill: #5596e6;
+  background-color: transparent;
+}
+
+.notebook_app .btn .toolbar-btn-label {
+  vertical-align: middle;
+}
+
+.notebook_app .toolbar .btn-group .btn .fa {
+  color: #3d70b2;
+  font-size: 1rem;
+}
+
+.notebook_app .toolbar .btn-group .btn:hover .fa,
+.notebook_app .toolbar .btn-group .btn:active .fa,
+.notebook_app .toolbar .btn-group .btn:focus .fa {
+  color: #5596e6;
 }
 
 /*ICONS*/
@@ -12075,6 +12098,26 @@ cursor: pointer;
 color: #5596e6;
 }
 
+.notebook_app #notebook-container .input .run_this_cell {
+  padding: 0;
+  padding-top: 0.125rem;
+  width: initial;
+  align-self: flex-start;
+  fill: #3d70b2;
+}
+
+.notebook_app #notebook-container .input .run_this_cell:hover {
+  fill: #5596e6;
+}
+
+.notebook_app #notebook-container .input .prompt {
+  min-width: 13ex;
+}
+
+.notebook_app #notebook-container .prompt {
+  min-width: 16.125ex;
+}
+
 /*DIALOGS*/
 .notebook_app .modal-dialog {
 color: #5a6872;
@@ -12245,6 +12288,12 @@ line-height: normal;
 font-size: 0.875rem;
 color: #3d70b2;
 border: none;
+}
+
+#notification_trusted:hover,
+#notification_trusted:active,
+#notification_trusted:focus {
+  color: #5596e6;
 }
 
 /*
@@ -12623,31 +12672,12 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div style="background:#F5F7FA; height:100px; padding: 2em; font-size:14px;">
-<span style="font-size:18px;color:#152935;">Want to do more?</span><span style="border: 1px solid #3d70b2;padding: 15px;float:right;margin-right:40px; color:#3d70b2; "><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
-<span style="color:#5A6872;"> Try out this notebook with your free trial of IBM Watson Studio.</span>
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Develop-a-Scala-Spark-Model-on-Chicago-Building-Violations">Develop a Scala Spark Model on Chicago Building Violations<a class="anchor-link" href="#Develop-a-Scala-Spark-Model-on-Chicago-Building-Violations">&#182;</a></h1><!--[comment]:This notebook is the first of a series of three notebooks which combine the strengths of Data Science Experience (DSX) Cloud and DSX Local to model building violations in Chicago.
-The notebooks in this series are:-->
-
-<!--1. This notebook, runs on Scala on DSX Cloud
-2. *Score data with R4WML and R*, runs on R on DSX Local
-3. *Spam-N-Bayes*, runs on Python on DSX Local-->   
-
-<p>This notebook models building violations in Chicago.</p>
+<h1 id="Develop-a-Scala-Spark-Model-on-Chicago-Building-Violations">Develop a Scala Spark Model on Chicago Building Violations<a class="anchor-link" href="#Develop-a-Scala-Spark-Model-on-Chicago-Building-Violations">&#182;</a></h1><p>This notebook models building violations in Chicago.</p>
 <hr>
 <p>The data are <a href="https://data.cityofchicago.org/Buildings/Building-Violations/22u3-xenr"  target="_blank" rel="noopener noreferrer">Violations issued by the Chicago Department of Buildings</a>
  over the period from 2006 until present. The dataset contains instances of <code>violations</code>. Each violation is associated with an <code>inspection</code> and an <code>inspection status</code>.</p>
 <p>Using Spark Machine Learning, we're going to develop a model for the data from 2006-2016 which provides a score in the interval $[0,1]$ for how likely we believe an individual building is to <code>Pass</code> or <code>Fail</code> an inspection.</p>
-<p>This notebook can be used as a companion to another <a href="https://medium.com/@adammassachi/dsx-hybrid-mode-91b580450c5b"  target="_blank" rel="noopener noreferrer">tutorial on our blog</a>.</p>
-<p>This notebook runs on Scala 2.11 with Spark 2.1.</p>
+<p>This notebook runs on Scala 2.11 with Spark.</p>
 <hr>
 
 </div>
@@ -12663,7 +12693,7 @@ The notebooks in this series are:-->
 <li><a href="#train">Train the model</a></li>
 <li><a href="#save">Save the model</a></li>
 <li><a href="#deploy">Deploy the model</a></li>
-<li><a href="#summary">Next steps</a></li>
+<li><a href="#summary">Summary</a></li>
 </ol>
 <hr>
 
@@ -12699,7 +12729,7 @@ The notebooks in this series are:-->
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// Import top level</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// Import top level</span>
 <span class="k">import</span> <span class="nn">scala.sys.process._</span>
 <span class="k">import</span> <span class="nn">org.apache.spark.sql.functions._</span>
 <span class="k">import</span> <span class="nn">org.apache.spark.sql.util._</span>
@@ -12722,7 +12752,7 @@ To load our credentials and the data set:</p>
 <ol>
 <li>Go to the <a href="https://data.cityofchicago.org/Buildings/Building-Violations/22u3-xenr" target="_blank" rel="noopener noreferrer">Violations issued by the Chicago Department of Buildings</a>. </li>
 <li>Click export, then download and save the data set <code>Building_Violations</code> as a.csv file to your computer.  </li>
-<li>Load the .csv file into your notebook. Click the <strong>Data</strong> icon on the notebook action bar. Drop the file into the box or browse to select the file. The file is loaded to your COS and appears in the Data Assets section of the project. For more information, see <a href="https://datascience.ibm.com/docs/content/analyze-data/load-and-access-data.html" target="_blank" rel="noopener noreferrer">Load and access data</a>.</li>
+<li>Load the .csv file into your notebook. Click the <strong>Data</strong> icon on the notebook action bar. Drop the file into the box or browse to select the file. The file is loaded to your COS and appears in the Data Assets section of the project. For more information, see <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/load-and-access-data.html" target="_blank" rel="noopener noreferrer">Load and access data</a>.</li>
 <li>Load the credentials for the <code>Building_Violations.csv</code> file. Click in the next code cell and select <strong>Insert to code &gt; Insert credentials</strong>.</li>
 <li>Run the cell.</li>
 </ol>
@@ -12735,8 +12765,7 @@ To load our credentials and the data set:</p>
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// @hidden_cell</span>
-<span class="c1">// Put your credentials here</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// Insert to code &gt; Insert credentials.</span>
 <span class="c1">// @hidden_cell</span>
 </pre></div>
 
@@ -12752,7 +12781,6 @@ To load our credentials and the data set:</p>
 <h3 id="1.3-Load-the-data-set">1.3 Load the data set<a id="dataset" /><a class="anchor-link" href="#1.3-Load-the-data-set">&#182;</a></h3><ol>
 <li>Load the data from the <code>Building_Violations.csv</code> file into a SparkSession DataFrame. Click in the next code cell and select <strong>Insert to code &gt; Insert SparkSession DataFrame</strong> under the file name.</li>
 <li>Replace <code>dfData1</code> with <code>violations</code>.</li>
-<li>Replace <code>dfData1.show(5)</code> with <code>violations.printSchema(5)</code>.</li>
 <li>Run the cell.</li>
 </ol>
 
@@ -12764,7 +12792,7 @@ To load our credentials and the data set:</p>
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// @hidden_cell</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// @hidden_cell</span>
 <span class="c1">// SparkSession DataFrame goes here</span>
 </pre></div>
 
@@ -12788,13 +12816,47 @@ To load our credentials and the data set:</p>
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// Create datetime column</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// Create datetime column</span>
 <span class="k">val</span> <span class="n">dated</span> <span class="k">=</span> <span class="n">violations</span><span class="o">.</span><span class="n">withColumn</span><span class="o">(</span><span class="s">&quot;timeStamp&quot;</span><span class="o">,</span> <span class="n">to_date</span><span class="o">(</span><span class="n">unix_timestamp</span><span class="o">(</span>
   <span class="n">$</span><span class="s">&quot;VIOLATION DATE&quot;</span><span class="o">,</span> <span class="s">&quot;MM/dd/yyyy&quot;</span>
 <span class="o">).</span><span class="n">cast</span><span class="o">(</span><span class="s">&quot;timestamp&quot;</span><span class="o">)))</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>dated = [ID: int, VIOLATION LAST MODIFIED DATE: string ... 31 more fields]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[4]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[ID: int, VIOLATION LAST MODIFIED DATE: string ... 31 more fields]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -12817,7 +12879,7 @@ To load our credentials and the data set:</p>
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// sub whitespace for `_`</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// sub whitespace for `_`</span>
 <span class="k">var</span> <span class="n">cleanDf</span> <span class="k">=</span> <span class="n">dated</span>
 <span class="k">for</span><span class="o">(</span><span class="n">col</span> <span class="k">&lt;-</span> <span class="n">dated</span><span class="o">.</span><span class="n">columns</span><span class="o">){</span>
     <span class="n">cleanDf</span> <span class="k">=</span> <span class="n">cleanDf</span><span class="o">.</span><span class="n">withColumnRenamed</span><span class="o">(</span><span class="n">col</span><span class="o">,</span><span class="n">col</span><span class="o">.</span><span class="n">replaceAll</span><span class="o">(</span><span class="s">&quot;\\s&quot;</span><span class="o">,</span> <span class="s">&quot;_&quot;</span><span class="o">))</span>
@@ -12825,6 +12887,40 @@ To load our credentials and the data set:</p>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>cleanDf = [ID: int, VIOLATION_LAST_MODIFIED_DATE: string ... 31 more fields]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[ID: int, VIOLATION_LAST_MODIFIED_DATE: string ... 31 more fields]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -12847,13 +12943,48 @@ To load our credentials and the data set:</p>
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">import</span> <span class="nn">org.apache.spark.ml.feature.SQLTransformer</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.feature.SQLTransformer</span>
 <span class="k">val</span> <span class="n">df</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SQLTransformer</span><span class="o">().</span><span class="n">setStatement</span><span class="o">(</span><span class="s">&quot;SELECT * FROM __THIS__ WHERE INSPECTION_STATUS IN (&#39;FAILED&#39;, &#39;PASSED&#39;)&quot;</span><span class="o">).</span><span class="n">transform</span><span class="o">(</span><span class="n">cleanDf</span><span class="o">)</span>
 <span class="k">val</span> <span class="n">preppedFrame</span> <span class="k">=</span> <span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="o">(</span><span class="s">&quot;LATITUDE&quot;</span><span class="o">,</span> <span class="n">df</span><span class="o">(</span><span class="s">&quot;LATITUDE&quot;</span><span class="o">).</span><span class="n">cast</span><span class="o">(</span><span class="nc">DoubleType</span><span class="o">)).</span>
                     <span class="n">withColumn</span><span class="o">(</span><span class="s">&quot;LONGITUDE&quot;</span><span class="o">,</span> <span class="n">df</span><span class="o">(</span><span class="s">&quot;LONGITUDE&quot;</span><span class="o">).</span><span class="n">cast</span><span class="o">(</span><span class="nc">DoubleType</span><span class="o">))</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>df = [ID: int, VIOLATION_LAST_MODIFIED_DATE: string ... 31 more fields]
+preppedFrame = [ID: int, VIOLATION_LAST_MODIFIED_DATE: string ... 31 more fields]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[6]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[ID: int, VIOLATION_LAST_MODIFIED_DATE: string ... 31 more fields]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -12872,12 +13003,47 @@ To load our credentials and the data set:</p>
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// Filter by date. Train on  year &lt; 2017, test on 2017 data</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// Filter by date. Train on  year &lt; 2017, test on 2017 data</span>
 <span class="k">val</span> <span class="n">trainingData2016</span> <span class="k">=</span> <span class="n">preppedFrame</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">year</span><span class="o">(</span><span class="n">$</span><span class="s">&quot;timestamp&quot;</span><span class="o">).</span><span class="n">leq</span><span class="o">(</span><span class="n">lit</span><span class="o">(</span><span class="mi">2016</span><span class="o">)))</span> 
 <span class="k">val</span> <span class="n">testingData2017</span> <span class="k">=</span> <span class="n">preppedFrame</span><span class="o">.</span><span class="n">filter</span><span class="o">(</span><span class="n">year</span><span class="o">(</span><span class="n">$</span><span class="s">&quot;timestamp&quot;</span><span class="o">).</span><span class="n">gt</span><span class="o">(</span><span class="n">lit</span><span class="o">(</span><span class="mi">2016</span><span class="o">)))</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>trainingData2016 = [ID: int, VIOLATION_LAST_MODIFIED_DATE: string ... 31 more fields]
+testingData2017 = [ID: int, VIOLATION_LAST_MODIFIED_DATE: string ... 31 more fields]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[ID: int, VIOLATION_LAST_MODIFIED_DATE: string ... 31 more fields]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -12897,7 +13063,7 @@ To load our credentials and the data set:</p>
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// Take a peek</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// Take a peek</span>
 <span class="n">testingData2017</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;VIOLATION_DATE&quot;</span><span class="o">).</span><span class="n">show</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
 </pre></div>
 
@@ -12918,9 +13084,9 @@ To load our credentials and the data set:</p>
 <pre>+--------------+
 |VIOLATION_DATE|
 +--------------+
-|    05/16/2017|
-|    05/16/2017|
-|    08/27/2017|
+|    06/12/2019|
+|    06/12/2019|
+|    06/12/2019|
 +--------------+
 only showing top 3 rows
 
@@ -12937,7 +13103,7 @@ only showing top 3 rows
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// at the training data too</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// at the training data too</span>
 <span class="n">trainingData2016</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;VIOLATION_DATE&quot;</span><span class="o">).</span><span class="n">show</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
 </pre></div>
 
@@ -12958,9 +13124,9 @@ only showing top 3 rows
 <pre>+--------------+
 |VIOLATION_DATE|
 +--------------+
-|    03/15/2007|
-|    03/15/2007|
-|    04/27/2009|
+|    12/30/2016|
+|    12/30/2016|
+|    12/30/2016|
 +--------------+
 only showing top 3 rows
 
@@ -12991,7 +13157,7 @@ Many of the other fields have missing values, which is beyond the scope of this 
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">keepCols</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="s">&quot;VIOLATION_CODE&quot;</span><span class="o">,</span> <span class="s">&quot;VIOLATION_DESCRIPTION&quot;</span><span class="o">,</span> 
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">keepCols</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">(</span><span class="s">&quot;VIOLATION_CODE&quot;</span><span class="o">,</span> <span class="s">&quot;VIOLATION_DESCRIPTION&quot;</span><span class="o">,</span> 
                    <span class="s">&quot;INSPECTION_STATUS&quot;</span><span class="o">,</span> <span class="s">&quot;INSPECTOR_ID&quot;</span><span class="o">,</span> 
                    <span class="s">&quot;INSPECTION_CATEGORY&quot;</span><span class="o">,</span> <span class="s">&quot;DEPARTMENT_BUREAU&quot;</span><span class="o">,</span> 
                    <span class="s">&quot;LATITUDE&quot;</span><span class="o">,</span> <span class="s">&quot;LONGITUDE&quot;</span><span class="o">)</span>
@@ -13003,13 +13169,49 @@ Many of the other fields have missing values, which is beyond the scope of this 
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>keepCols = Array(VIOLATION_CODE, VIOLATION_DESCRIPTION, INSPECTION_STATUS, INSPECTOR_ID, INSPECTION_CATEGORY, DEPARTMENT_BUREAU, LATITUDE, LONGITUDE)
+dfTrain = [VIOLATION_CODE: string, VIOLATION_DESCRIPTION: string ... 6 more fields]
+dfTest = [VIOLATION_CODE: string, VIOLATION_DESCRIPTION: string ... 6 more fields]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[VIOLATION_CODE: string, VIOLATION_DESCRIPTION: string ... 6 more fields]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">dfTrain</span><span class="o">.</span><span class="n">printSchema</span><span class="o">()</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">dfTrain</span><span class="o">.</span><span class="n">printSchema</span><span class="o">()</span>
 </pre></div>
 
 </div>
@@ -13072,7 +13274,7 @@ Pipelines typically include a series of transformers and terminate with a model 
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="cm">/* Import transformers to build a pipeline  */</span> 
+<div class=" highlight hl-scala"><pre><span></span><span class="cm">/* Import transformers to build a pipeline  */</span> 
 <span class="k">import</span> <span class="nn">org.apache.spark.ml.feature.</span><span class="o">{</span><span class="nc">StringIndexer</span><span class="o">,</span> <span class="nc">IndexToString</span><span class="o">,</span> <span class="nc">VectorAssembler</span><span class="o">}</span>
 <span class="k">import</span> <span class="nn">org.apache.spark.ml.feature.</span><span class="o">{</span><span class="nc">RegexTokenizer</span><span class="o">,</span> <span class="nc">Tokenizer</span><span class="o">}</span>
 <span class="k">import</span> <span class="nn">org.apache.spark.ml.feature.</span><span class="o">{</span><span class="nc">HashingTF</span><span class="o">,</span> <span class="nc">IDF</span><span class="o">}</span>
@@ -13112,7 +13314,7 @@ But what about string data that is not categorical? Sure, we can index all of th
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// Label colum</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// Label colum</span>
 <span class="k">val</span> <span class="n">labelCol</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">().</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;INSPECTION_STATUS&quot;</span><span class="o">).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;STATUS_LABEL&quot;</span><span class="o">).</span><span class="n">fit</span><span class="o">(</span><span class="n">df</span><span class="o">)</span>
 
 <span class="c1">// Feature cols with String Indexer =&gt; Vector Assembler //</span>
@@ -13158,9 +13360,33 @@ But what about string data that is not categorical? Sure, we can index all of th
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[Stage 6:=======================================&gt;                   (4 + 2) / 6]</pre>
+
+
+<div class="output_text output_subarea ">
+<pre>labelCol = strIdx_8bf88cee6cfd
+interCodeCol = strIdx_b11fc7033811
+interSpector = strIdx_6f8f64a112ab
+interCatSpector = strIdx_6a5e0b76aa91
+interBureau = strIdx_1efc1c3bf7c4
+regexTokenizer = regexTok_a69f069bd9ac
+hashingTF = hashingTF_05c11333fe97
+vecAssembler = vecAssembler_db4f136b8425
+</pre>
 </div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[13]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>vecAssembler_db4f136b8425</pre>
+</div>
+
 </div>
 
 </div>
@@ -13181,7 +13407,7 @@ But what about string data that is not categorical? Sure, we can index all of th
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">import</span> <span class="nn">org.apache.spark.ml.</span><span class="o">{</span><span class="nc">Model</span><span class="o">,</span> <span class="nc">Pipeline</span><span class="o">,</span> <span class="nc">PipelineStage</span><span class="o">,</span> <span class="nc">PipelineModel</span><span class="o">}</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.</span><span class="o">{</span><span class="nc">Model</span><span class="o">,</span> <span class="nc">Pipeline</span><span class="o">,</span> <span class="nc">PipelineStage</span><span class="o">,</span> <span class="nc">PipelineModel</span><span class="o">}</span>
 <span class="k">import</span> <span class="nn">org.apache.spark.ml.classification.LogisticRegression</span>
 
 <span class="c1">//** Logistic Regression **//</span>
@@ -13193,6 +13419,41 @@ But what about string data that is not categorical? Sure, we can index all of th
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>logitModel = logreg_ab0b684fb5e6
+labelConverter = idxToStr_b4faaf46f318
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[14]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>idxToStr_b4faaf46f318</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13211,7 +13472,7 @@ But what about string data that is not categorical? Sure, we can index all of th
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="cm">/* Logitic Regression Pipeline */</span> 
+<div class=" highlight hl-scala"><pre><span></span><span class="cm">/* Logitic Regression Pipeline */</span> 
 <span class="k">val</span> <span class="n">logisticPipe</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Pipeline</span><span class="o">().</span><span class="n">setStages</span><span class="o">(</span>
                                     <span class="nc">Array</span><span class="o">(</span>
                                         <span class="n">labelCol</span><span class="o">,</span> 
@@ -13227,6 +13488,40 @@ But what about string data that is not categorical? Sure, we can index all of th
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>logisticPipe = pipeline_2c6504b03396
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[15]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>pipeline_2c6504b03396</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13246,7 +13541,7 @@ But what about string data that is not categorical? Sure, we can index all of th
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">trainedLogit</span> <span class="k">=</span> <span class="n">logisticPipe</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">dfTrain</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">trainedLogit</span> <span class="k">=</span> <span class="n">logisticPipe</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">dfTrain</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -13262,9 +13557,26 @@ But what about string data that is not categorical? Sure, we can index all of th
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[Stage 16:================================================&gt;         (5 + 1) / 6]</pre>
+
+
+<div class="output_text output_subarea ">
+<pre>trainedLogit = pipeline_2c6504b03396
+</pre>
 </div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[16]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>pipeline_2c6504b03396</pre>
+</div>
+
 </div>
 
 </div>
@@ -13285,7 +13597,7 @@ But what about string data that is not categorical? Sure, we can index all of th
 <div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// predict</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// predict</span>
 <span class="k">val</span> <span class="n">predictionsLogisitc</span> <span class="k">=</span> <span class="n">trainedLogit</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">dfTest</span><span class="o">)</span>
 
 
@@ -13297,6 +13609,42 @@ But what about string data that is not categorical? Sure, we can index all of th
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>predictionsLogisitc = [VIOLATION_CODE: string, VIOLATION_DESCRIPTION: string ... 17 more fields]
+predictionAndLabels = MapPartitionsRDD[746] at map at &lt;console&gt;:90
+metrics = org.apache.spark.mllib.evaluation.BinaryClassificationMetrics@33039935
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[17]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>org.apache.spark.mllib.evaluation.BinaryClassificationMetrics@33039935</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13315,7 +13663,7 @@ But what about string data that is not categorical? Sure, we can index all of th
 <div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// AUC</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// AUC</span>
 <span class="n">metrics</span><span class="o">.</span><span class="n">areaUnderROC</span>
 </pre></div>
 
@@ -13329,23 +13677,13 @@ But what about string data that is not categorical? Sure, we can index all of th
 
 <div class="output_area">
 
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[Stage 318:===============================================&gt;         (5 + 1) / 6]</pre>
-</div>
-</div>
-
-<div class="output_area">
-
 <div class="prompt output_prompt">Out[18]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>0.6642114614642596</pre>
+<pre>0.6090319971611869</pre>
 </div>
 
 </div>
@@ -13378,7 +13716,7 @@ But what about string data that is not categorical? Sure, we can index all of th
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Import the <a href="hhttps://watson-ml-libs.mybluemix.net/repository-scalaV3/#com.ibm.analytics.ngp.repository_v3.package"  target="_blank" rel="noopener noreferrer">IBM Scala Repository API Client for Watson Machine Learning</a> and other helpful libraries.</p>
+<p>Import the <a href="https://watson-ml-libs.mybluemix.net/repository-scalaV3/#com.ibm.analytics.ngp.repository_v3.package"  target="_blank" rel="noopener noreferrer">IBM Scala Repository API Client for Watson Machine Learning</a> and other helpful libraries.</p>
 
 </div>
 </div>
@@ -13388,7 +13726,7 @@ But what about string data that is not categorical? Sure, we can index all of th
 <div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">import</span> <span class="nn">com.ibm.analytics.ngp.repository._</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">com.ibm.analytics.ngp.repository_v3._</span>
 
 <span class="c1">// Helper libraries</span>
 
@@ -13409,21 +13747,39 @@ But what about string data that is not categorical? Sure, we can index all of th
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now, fetch your credentials. The WML credentials enable you to communicate with your repository via the internet. 
-Watch the <a href="https://developer.ibm.com/clouddataservices/docs/ibm-watson-machine-learning/get-started/"  target="_blank" rel="noopener noreferrer">Getting started</a> video to find out how to create your credentials, then copy the credentials to the cell below.</p>
+Learn more about <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-setup.html?audience=wdp&context=wdp&linkInPage=true"  target="_blank" rel="noopener noreferrer">retrieving service credentials</a> in the Watson Studio documentation.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">//val service_path = &quot;service_path&quot;</span>
-<span class="c1">//val access_key = &quot;access_key&quot;</span>
-<span class="c1">//val username = &quot;username&quot;</span>
-<span class="c1">//val password = &quot;password&quot;</span>
-<span class="c1">//val instance_id = &quot;instance_id&quot;</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">scala.collection.mutable.HashMap</span>
+<span class="k">val</span> <span class="n">wmlCredentials</span><span class="k">:</span> <span class="kt">HashMap</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">HashMap</span><span class="o">(</span>
+    <span class="s">&quot;url&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;username&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;password&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;instance_id&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;apikey&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span>
+<span class="o">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">service_path</span> <span class="k">=</span> <span class="n">wmlCredentials</span><span class="o">(</span><span class="s">&quot;url&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">username</span> <span class="k">=</span> <span class="n">wmlCredentials</span><span class="o">(</span><span class="s">&quot;username&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">password</span> <span class="k">=</span> <span class="n">wmlCredentials</span><span class="o">(</span><span class="s">&quot;password&quot;</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -13442,35 +13798,15 @@ Watch the <a href="https://developer.ibm.com/clouddataservices/docs/ibm-watson-m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// Authorize</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// Authorize</span>
 <span class="k">val</span> <span class="n">client</span> <span class="k">=</span> <span class="nc">MLRepositoryClient</span><span class="o">(</span><span class="n">service_path</span><span class="o">)</span>
 <span class="n">client</span><span class="o">.</span><span class="n">authorize</span><span class="o">(</span><span class="n">username</span><span class="o">,</span> <span class="n">password</span><span class="o">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[21]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Success(())</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -13491,10 +13827,10 @@ Watch the <a href="https://developer.ibm.com/clouddataservices/docs/ibm-watson-m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// model artifact</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// model artifact</span>
 <span class="k">val</span> <span class="n">model_artifact</span> <span class="k">=</span> <span class="nc">MLRepositoryArtifact</span><span class="o">(</span><span class="n">trainedLogit</span><span class="o">,</span> <span class="n">dfTrain</span><span class="o">,</span> <span class="s">&quot;VIOLATIONS_SCALA211_SPARK20&quot;</span><span class="o">)</span>
 <span class="k">val</span> <span class="n">saved</span> <span class="k">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">save</span><span class="o">(</span><span class="n">model_artifact</span><span class="o">)</span>
 </pre></div>
@@ -13515,16 +13851,15 @@ Watch the <a href="https://developer.ibm.com/clouddataservices/docs/ibm-watson-m
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">println</span><span class="o">(</span><span class="s">&quot;modelType: &quot;</span> <span class="o">+</span> <span class="n">saved</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;modelType&quot;</span><span class="o">))</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">println</span><span class="o">(</span><span class="s">&quot;modelType: &quot;</span> <span class="o">+</span> <span class="n">saved</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;modelType&quot;</span><span class="o">))</span>
 <span class="n">println</span><span class="o">(</span><span class="s">&quot;trainingDataSchema: &quot;</span> <span class="o">+</span> <span class="n">saved</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;trainingDataSchema&quot;</span><span class="o">))</span>
 <span class="n">println</span><span class="o">(</span><span class="s">&quot;creationTime: &quot;</span> <span class="o">+</span> <span class="n">saved</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;creationTime&quot;</span><span class="o">))</span>
 <span class="n">println</span><span class="o">(</span><span class="s">&quot;modelVersionHref: &quot;</span> <span class="o">+</span> <span class="n">saved</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;modelVersionHref&quot;</span><span class="o">))</span>
 <span class="n">println</span><span class="o">(</span><span class="s">&quot;label: &quot;</span> <span class="o">+</span> <span class="n">saved</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">))</span>
 <span class="n">println</span><span class="o">(</span><span class="s">&quot;runtime: &quot;</span><span class="o">+</span> <span class="n">saved</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;runtime&quot;</span><span class="o">))</span>
-<span class="mi">0</span>
 </pre></div>
 
 </div>
@@ -13541,27 +13876,14 @@ Watch the <a href="https://developer.ibm.com/clouddataservices/docs/ibm-watson-m
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>modelType: Some(sparkml-model-2.1)
-trainingDataSchema: Some({&#34;type&#34;:&#34;struct&#34;,&#34;fields&#34;:[{&#34;name&#34;:&#34;VIOLATION_CODE&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;VIOLATION_DESCRIPTION&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;INSPECTION_STATUS&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;INSPECTOR_ID&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;INSPECTION_CATEGORY&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;DEPARTMENT_BUREAU&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;LATITUDE&#34;,&#34;type&#34;:&#34;double&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;LONGITUDE&#34;,&#34;type&#34;:&#34;double&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}}]})
-creationTime: Some(2018-02-20T13:25:01.431Z)
-modelVersionHref: Some(https://ibm-watson-ml.mybluemix.net/v2/artifacts/models/1698755c-ae01-4ab9-80b3-4f5d4d92bcc3/versions/bbb9b4be-fd56-425c-9772-84293c53f5d1)
+<pre>modelType: Some(standard)
+trainingDataSchema: Some({&#34;type&#34;:&#34;struct&#34;,&#34;fields&#34;:[{&#34;name&#34;:&#34;VIOLATION_CODE&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;VIOLATION_DESCRIPTION&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;INSPECTION_STATUS&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{&#34;modeling_role&#34;:&#34;target&#34;}},{&#34;name&#34;:&#34;INSPECTOR_ID&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;INSPECTION_CATEGORY&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;DEPARTMENT_BUREAU&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;LATITUDE&#34;,&#34;type&#34;:&#34;double&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;LONGITUDE&#34;,&#34;type&#34;:&#34;double&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}}]})
+creationTime: Some(2019-06-14T15:01:17.729Z)
+modelVersionHref: None
 label: Some(INSPECTION_STATUS)
-runtime: Some(spark-2.1)
+runtime: Some(spark-2.3)
 </pre>
 </div>
-</div>
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[23]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0</pre>
-</div>
-
 </div>
 
 </div>
@@ -13582,14 +13904,13 @@ runtime: Some(spark-2.1)
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now that we’ve saved the model, we can deploy and create an API endpoint to score records.</p>
-<p>If you're following along in the <a href="https://medium.com/@adammassachi/dsx-hybrid-mode-91b580450c5b"  target="_blank" rel="noopener noreferrer">blog</a>, this is where we'll deploy through the UI.</p>
 <ol>
-<li>Go to <strong>Assets</strong> in your Project, then find your model under <strong>Models</strong>. We named ours <code>VIOLATIONS_SCALA211_SPARK20</code>.</li>
+<li>Go to <strong>Assets</strong> in your Project, then find your model under <strong>Models</strong> and click on it. We named ours <code>VIOLATIONS_SCALA211_SPARK20</code>.</li>
 <li>Select <strong>Deployment &gt; Add Deployment</strong>.</li>
 <li>Enter a name and description for the deployment, click <strong>Save</strong>.</li>
 <li>Select the model, click <strong>Test</strong> to test the API. </li>
 </ol>
-<p>See <a href="https://dataplatform.ibm.com/docs/content/analyze-data/ml-deploy-project.html?context=analytics">here</a> for more information about how to deploy a model within a project.</p>
+<p>See the Watson Studio <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-deploy_new.html" target="_blank" rel="noopener noreferrer">documentation</a> for more information about how to deploy a model within a project.</p>
 <hr>
 
 </div>
@@ -13599,9 +13920,7 @@ runtime: Some(spark-2.1)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="6.-Next-steps">6. Next steps<a id="summary" /><a class="anchor-link" href="#6.-Next-steps">&#182;</a></h2><p>That's awesome! We built a model with Scala and Spark on Watson Studio Cloud.</p>
-<p>For the next step, we will expose the model as an API endpoint and score new records from R Studio using Watson Studio Local.</p>
-<p>How to do this is described in the <a href="https://medium.com/@adammassachi/dsx-hybrid-mode-91b580450c5b"  target="_blank" rel="noopener noreferrer">blog</a>.</p>
+<h2 id="6.-Summary">6. Summary<a id="summary" /><a class="anchor-link" href="#6.-Summary">&#182;</a></h2><p>That's awesome! We built a model with Scala and Spark on Watson Studio Cloud.</p>
 
 </div>
 </div>
@@ -13628,8 +13947,21 @@ runtime: Some(spark-2.1)
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Copyright © IBM Corp. 2018. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright © IBM Corp. 2018, 2019. This notebook and its source code are released under the terms of the MIT License.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
+<span style="font-size:18px;color:#152935;">Love this notebook? </span>
+<span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
+<span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+</div>
 </div>
 </div>
 </div>
