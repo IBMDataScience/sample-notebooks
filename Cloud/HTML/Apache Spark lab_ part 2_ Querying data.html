@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Apache Spark lab_ part 1_ Basic concepts</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Apache Spark lab_ part 2_ Querying data</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11611,8 +11611,10 @@ ul.typeahead-list > li > a {
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
 .highlight .o { color: #666666 } /* Operator */
+.highlight .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
 .highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
 .highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
 .highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
 .highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
 .highlight .gd { color: #A00000 } /* Generic.Deleted */
@@ -11652,8 +11654,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11664,9 +11668,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style type="text/css">
@@ -11761,6 +11767,7 @@ font-family: 'ibm-plex-sans', 'Helvetica Neue for IBM', 'Helvetica Neue', Helvet
 
 .notebook_app {
 font-size: 0.875rem;
+background-color: transparent;
 }
 
 .notebook_app .container {
@@ -11822,6 +11829,7 @@ background-color: transparent;
 color: #5a6872;
 text-align: right;
 margin-right: 3em;
+line-height: normal;
 }
 
 .notebook_app .navbar-btn.btn-xs {
@@ -11861,20 +11869,37 @@ padding-left: 0;
 }
 
 .notebook_app .btn-group button {
-margin-right: 0.675rem;
-border: none;
-border-radius: 0;
-background-color: transparent;
-padding: 0;
-border-width: 0;
-fill: #3d70b2;
+  margin-right: 0.675rem;
+  border: none;
+  border-radius: 0;
+  background-color: transparent;
+  padding: 0;
+  border-width: 0;
+  font: inherit;
+  fill: #3d70b2;
+  color: #5a6872;
 }
 
 .notebook_app .btn-group button:hover,
 .notebook_app .btn-group button:active,
 .notebook_app .btn-group button:focus {
-fill: #5596e6;
-background-color: transparent;
+  fill: #5596e6;
+  background-color: transparent;
+}
+
+.notebook_app .btn .toolbar-btn-label {
+  vertical-align: middle;
+}
+
+.notebook_app .toolbar .btn-group .btn .fa {
+  color: #3d70b2;
+  font-size: 1rem;
+}
+
+.notebook_app .toolbar .btn-group .btn:hover .fa,
+.notebook_app .toolbar .btn-group .btn:active .fa,
+.notebook_app .toolbar .btn-group .btn:focus .fa {
+  color: #5596e6;
 }
 
 /*ICONS*/
@@ -11902,7 +11927,7 @@ position: relative;
 .notebook_app .toolbar_select::after {
 position: absolute;
 display: block;
-bottom: 0.725rem;
+bottom: 0.575rem;
 right: 1rem;
 width: 0; 
 height: 0; 
@@ -11931,7 +11956,7 @@ margin: 0;
 padding: 0;
 padding-left: 0.5rem;
 padding-right: 2rem;
-height: 2rem;
+height: 1.68rem;
 text-overflow: ellipsis;
 cursor: pointer;
 }
@@ -12012,6 +12037,19 @@ align-items: center;
 align-items: center;
 }
 
+.notebook_app #notebook-container .celltoolbar .tags-input input {
+border: 0;
+background-color: rgba(60, 112, 178, .1);
+font-size: 0.875rem;
+height: 1.68rem;
+border: 1px solid transparent;
+box-sizing: border-box;
+}
+
+.notebook_app #notebook-container .celltoolbar .tags-input input:focus {
+border-color: #3d70b2;
+}
+
 .notebook_app #notebook-container .btn-xs {
 padding: 0 0.5rem;
 line-height: 1;
@@ -12020,7 +12058,7 @@ font-weight: 600;
 text-decoration: none;
 transition: all .2s ease-in-out;
 cursor: pointer;
-height: 2rem;
+height: 1.68rem;
 border: 0.125rem solid #3d70b2;
 background-color: transparent;
 }
@@ -12047,6 +12085,10 @@ background-color: #dfe3e6;
 border-radius: 0.9375rem;
 }
 
+.notebook_app #notebook-container .cell-tag:last-child::after {
+display: none;
+}
+
 .notebook_app #notebook-container .cell-tag .remove-tag-btn {
 color: #3d70b2;
 cursor: pointer;
@@ -12054,6 +12096,26 @@ cursor: pointer;
 
 .notebook_app #notebook-container .cell-tag .remove-tag-btn:hover {
 color: #5596e6;
+}
+
+.notebook_app #notebook-container .input .run_this_cell {
+  padding: 0;
+  padding-top: 0.125rem;
+  width: initial;
+  align-self: flex-start;
+  fill: #3d70b2;
+}
+
+.notebook_app #notebook-container .input .run_this_cell:hover {
+  fill: #5596e6;
+}
+
+.notebook_app #notebook-container .input .prompt {
+  min-width: 13ex;
+}
+
+.notebook_app #notebook-container .prompt {
+  min-width: 16.125ex;
 }
 
 /*DIALOGS*/
@@ -12208,6 +12270,13 @@ color: #5aa700;
 border: none;
 }
 
+#notification_area,
+#notification_notebook,
+#notification_kernel,
+#notification_trusted {
+line-height: normal;
+}
+
 #notification_trusted {
 background-color: transparent;
 padding: 0;
@@ -12219,6 +12288,12 @@ line-height: normal;
 font-size: 0.875rem;
 color: #3d70b2;
 border: none;
+}
+
+#notification_trusted:hover,
+#notification_trusted:active,
+#notification_trusted:focus {
+  color: #5596e6;
 }
 
 /*
@@ -12597,20 +12672,9 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div style="background:#F5F7FA; height:100px; padding: 2em; font-size:14px;">
-<span style="font-size:18px;color:#152935;">Want to do more?</span><span style="border: 1px solid #3d70b2;padding: 15px;float:right;margin-right:40px; color:#3d70b2; "><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
-<span style="color:#5A6872;"> Try out this notebook with your free trial of IBM Watson Studio.</span>
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Introduction-to-Apache-Spark-lab,-part-1:-Basic-concepts">Introduction to Apache Spark lab, part 1: Basic concepts<a class="anchor-link" href="#Introduction-to-Apache-Spark-lab,-part-1:-Basic-concepts">&#182;</a></h1><p>This notebook guides you through the basic concepts to start working with Apache Spark, including how to set up your environment, create and analyze data sets, and work with data files.</p>
-<p>This notebook uses pySpark, the Python API for Spark. Some knowledge of Python is recommended. This notebook runs on Python 2 with Spark 2.1.</p>
-<p>If you are new to notebooks, here's how the user interface works: <a href="http://datascience.ibm.com/docs/content/analyze-data/parts-of-a-notebook.html">Parts of a notebook</a>.</p>
+<h1 id="Introduction-to-Spark-lab,-part-2:-Querying-data">Introduction to Spark lab, part 2: Querying data<a class="anchor-link" href="#Introduction-to-Spark-lab,-part-2:-Querying-data">&#182;</a></h1><p>This notebook guides you through querying data with Spark, including how to create and use DataFrames, run SQL queries, apply functions to the results of SQL queries, join data from different data sources, and visualize data in graphs.</p>
+<p>This notebook uses pySpark, the Python API for Spark. Some knowledge of Python is recommended. This notebook runs on Python 3.6 with Spark.</p>
+<p>If you are new to Spark, see the first module in this series: <a href="https://dataplatform.cloud.ibm.com/exchange/public/entry/view/95811fca38af4ccbea8acf8658bedcfc" target="_blank" rel="noopener noreferrer">Introduction to Apache Spark, part 1: Basic Concepts</a>.</p>
 
 </div>
 </div>
@@ -12619,42 +12683,33 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="About-Apache-Spark">About Apache Spark<a class="anchor-link" href="#About-Apache-Spark">&#182;</a></h2><p>Apache Spark is a fast and general-purpose cluster computing system. It provides high-level APIs in Java, Scala, Python and R, and an optimized engine that supports general execution graphs. It also supports a rich set of higher-level tools including Spark SQL for processing structured data, MLlib for machine learning, GraphX for graph processing, and Spark Streaming.</p>
-<p><img src='https://github.com/carloapp2/SparkPOT/blob/master/spark.png?raw=true' width="50%" height="50%"></img></p>
-<p>A Spark program has a driver program and worker programs. Worker programs run on cluster nodes or in local threads. Data sets are distributed across workers.</p>
-<p><img src='https://github.com/carloapp2/SparkPOT/blob/master/Spark%20Architecture.png?raw=true' width="50%" height="50%"></img></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Table-of-Contents">Table of Contents<a class="anchor-link" href="#Table-of-Contents">&#182;</a></h2><p>In the first four sections of this notebook, you'll learn about Spark with very simple examples. In the last two sections, you'll use what you learned to analyze data files that have more realistic data sets.</p>
-<ol>
-<li><a href="#sparkcontext">Work with the SparkContext</a><br>
- 1.1 <a href="#sparkcontext1">Invoke the SparkContext</a><br>
- 1.2 <a href="#sparkcontext2">Check the Spark version</a><br></li>
-<li><a href="#rdd">Work with RDDs</a><br>
- 2.1 <a href="#rdd1">Create a collection</a><br>
- 2.2 <a href="#rdd2">Create an RDD</a><br>
- 2.3 <a href="#rdd3">View the data</a><br>
- 2.4 <a href="#rdd4">Create another RDD</a><br></li>
-<li><a href="#trans">Manipulate data in RDDs</a><br>
- 3.1 <a href="#trans1">Update numeric values</a><br>
- 3.2 <a href="#trans2">Add numbers in an array</a><br>
- 3.3 <a href="#trans3">Split and count strings</a><br>
- 3.4 <a href="#trans4">Counts words with a pair RDD</a><br></li>
-<li><a href="#filter">Filter data</a><br></li>
-<li><a href="#wordfile">Analyze text data from a file</a><br>
- 5.1 <a href="#wordfile1">Get the data from a URL</a><br>
- 5.2 <a href="#wordfile2">Create an RDD from the file</a><br>
- 5.3 <a href="#wordfile3">Filter for a word</a><br>
- 5.4 <a href="#wordfile4">Count instances of a string at the beginning of words</a><br>
- 5.5 <a href="#wordfile5">Count instances of a string within words</a><br></li>
-<li><a href="#numfile">Analyze numeric data from a file</a><br></li>
-<li><a href="#summary">Summary and next steps</a></li>
+<h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><ol>
+<li><a href="#getstarted">Prepare the environment and the data</a><br>
+  1.1 <a href="#sqlprocessing">Enable SQL processing</a><br>
+  1.2 <a href="#download">Download the data</a><br>
+  1.3 <a href="#createdf">Create a DataFrame</a><br>
+  1.4 <a href="#createtab">Create a table</a><br></li>
+<li><a href="#runsql">Run SQL queries</a><br>
+ 2.1 <a href="#pandas">Display query results with a pandas DataFrame</a><br>
+ 2.2 <a href="#groupby">Run a group by query</a><br>
+ 2.3 <a href="#subselect">Run a subselect query</a><br>
+ 2.4 <a href="#nested">Return nested JSON field values</a><br></li>
+<li><a href="#convertrdd">Convert RDDs to DataFrames</a><br>
+ 3.1 <a href="#simplerdd">Create a simple RDD</a><br>
+ 3.2 <a href="#apply">Apply a schema</a><br>
+ 3.3 <a href="#namedcol">Create rows with named columns</a><br>
+ 3.4 <a href="#join">Join tables</a><br></li>
+<li><a href="#sqlfuncs">Create SQL functions</a><br></li>
+<li><a href="#sparkdf">Convert a pandas DataFrame to a Spark DataFrame</a><br>
+ 5.1 <a href="#ufo">Get a new data set</a><br>
+ 5.2 <a href="#ufopandas">Create a pandas DataFrame</a><br>
+ 5.3 <a href="#sparkufo">Convert to a Spark DataFrame</a><br>
+ 5.4 <a href="#runufo">Run an SQL statement</a><br></li>
+<li><a href="#viz">Visualize data</a><br>
+ 6.1 <a href="#vizchart">Create a chart using Pandas</a><br>
+ 6.2 <a href="#vizagg">Aggregate the data</a><br>
+ 6.3 <a href="#vizchart2">Create a chart using Spark SQL</a><br></li>
+<li><a href="#nextsteps">Summary and next steps</a></li>
 </ol>
 
 </div>
@@ -12664,16 +12719,19 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="sparkcontext"></a></p>
-<h2 id="1.-Work-with-the-SparkContext-object">1. Work with the SparkContext object<a class="anchor-link" href="#1.-Work-with-the-SparkContext-object">&#182;</a></h2><p>The Apache Spark driver application uses the SparkContext object to allow a programming interface to interact with the driver application. The SparkContext object tells Spark how and where to access a cluster.</p>
-<p>The Watson Studio notebook environment predefines the Spark context for you.</p>
-<p>In other environments, you need to pick an interpreter (for example, pyspark for Python) and create a SparkConf object to initialize a SparkContext object. For example:
-<br>
-<code>from pyspark import SparkContext, SparkConf</code><br>
-<code>conf = SparkConf().setAppName(appName).setMaster(master)</code><br>
-<code>sc = SparkContext(conf=conf)</code><br></p>
-<p><a id="sparkcontext1"></a></p>
-<h3 id="1.1-Invoke-the-SparkContext">1.1 Invoke the SparkContext<a class="anchor-link" href="#1.1-Invoke-the-SparkContext">&#182;</a></h3><p>Run the following cell to invoke the SparkContext:</p>
+<p><a id="getstarted"></a></p>
+<h2 id="1.-Prepare-the-environment-and-the-data">1. Prepare the environment and the data<a class="anchor-link" href="#1.-Prepare-the-environment-and-the-data">&#182;</a></h2><p>Before you can run SQL queries on data in an Apache Spark environment, you need to enable SQL processing and then move the data to the structured format of a DataFrame.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="sqlprocessing"></a></p>
+<h3 id="1.1-Enable-SQL-processing">1.1 Enable SQL processing<a class="anchor-link" href="#1.1-Enable-SQL-processing">&#182;</a></h3><p>The preferred method to enable SQL processing with Spark 2.0 is to use the new SparkSession object, but you can also create a SQLContext object.</p>
+<p>Use the predefined Spark Context, <code>sc</code>, which contains the connection information for Spark, to create an SQLContext:</p>
 
 </div>
 </div>
@@ -12683,7 +12741,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">sc</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="k">import</span> <span class="n">SQLContext</span>
+<span class="n">sqlContext</span> <span class="o">=</span> <span class="n">SQLContext</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12696,15 +12755,15 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[1]:</div>
+<div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;pyspark.context.SparkContext at 0x7fd1efd547d0&gt;</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Waiting for a Spark session to start...
+Spark Initialization Done! ApplicationId = app-20190629195823-0001
+KERNEL_ID = 4af820ce-5eb1-4825-86a2-5a56edcc7572
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -12715,8 +12774,9 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="sparkcontext2"></a></p>
-<h3 id="1.2-Check-the-Spark-version">1.2 Check the Spark version<a class="anchor-link" href="#1.2-Check-the-Spark-version">&#182;</a></h3><p>Check the version of the Spark driver application:</p>
+<p><a id="download"></a></p>
+<h3 id="1.2-Download-the-data-file">1.2 Download the data file<a class="anchor-link" href="#1.2-Download-the-data-file">&#182;</a></h3><p>You'll download a JSON file with data about world banks from GitHub. The data is adapted from this data set: <a href="http://data.worldbank.org/data-catalog/projects-portfolio" target="_blank" rel="noopener noreferrer">http://data.worldbank.org/data-catalog/projects-portfolio</a>.</p>
+<p>Remove any files with the same name as the file that you're going to download and then download the file from a URL:</p>
 
 </div>
 </div>
@@ -12726,7 +12786,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">sc</span><span class="o">.</span><span class="n">version</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>rm world_bank.json.gz -f
+<span class="o">!</span>wget https://raw.githubusercontent.com/bradenrc/sparksql_pot/master/world_bank.json.gz
 </pre></div>
 
 </div>
@@ -12739,15 +12800,23 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[2]:</div>
+<div class="prompt"></div>
 
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>--2019-06-29 19:58:33--  https://raw.githubusercontent.com/bradenrc/sparksql_pot/master/world_bank.json.gz
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 199.232.8.133
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|199.232.8.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 446287 (436K) [application/octet-stream]
+Saving to: &#39;world_bank.json.gz&#39;
 
+world_bank.json.gz  100%[===================&gt;] 435.83K  --.-KB/s    in 0.02s   
 
-<div class="output_text output_subarea output_execute_result">
-<pre>u&#39;2.1.2&#39;</pre>
+2019-06-29 19:58:33 (21.7 MB/s) - &#39;world_bank.json.gz&#39; saved [446287/446287]
+
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -12758,26 +12827,9 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Watson Studio also supports other versions of Spark.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="rdd"></a></p>
-<h2 id="2.-Work-with-Resilient-Distributed-Datasets">2. Work with Resilient Distributed Datasets<a class="anchor-link" href="#2.-Work-with-Resilient-Distributed-Datasets">&#182;</a></h2><p>Apache Spark uses an abstraction for working with data called a Resilient Distributed Dataset (RDD). An RDD is a collection of elements that can be operated on in parallel. RDDs are immutable, so you can't update the data in them. To update data in an RDD, you must create a new RDD. In Apache Spark, all work is done by creating new RDDs, transforming existing RDDs, or using RDDs to compute results. When working with RDDs, the Spark driver application automatically distributes the work across the cluster.</p>
-<p>You can construct RDDs by parallelizing existing Python collections (lists), by manipulating RDDs, or by manipulating files in HDFS or any other storage system.</p>
-<p>You can run these types of methods on RDDs:</p>
-<ul>
-<li>Actions: query the data and return values</li>
-<li>Transformations: manipulate data values and return pointers to new RDDs. </li>
-</ul>
-<p>Find more information on Python methods in the <a href="http://spark.apache.org/docs/latest/api/python/pyspark.html" target="_blank" rel="noopener noreferrer">PySpark documentation</a>.</p>
-<p><a id="rdd1"></a></p>
-<h3 id="2.1-Create-a-collection">2.1 Create a collection<a class="anchor-link" href="#2.1-Create-a-collection">&#182;</a></h3><p>Create a Python collection of the numbers 1 - 10:</p>
+<p><a id="createdf"></a></p>
+<h3 id="1.3-Create-a-DataFrame">1.3 Create a DataFrame<a class="anchor-link" href="#1.3-Create-a-DataFrame">&#182;</a></h3><p>Instead of creating an RDD to read the file, you'll create a Spark DataFrame. Unlike an RDD, a DataFrame creates a schema around the data, which supplies the necessary structure for SQL queries. A self-describing format like JSON is ideal for DataFrames, but many other file types are supported, including text (CSV) and Parquet.</p>
+<p>Create a DataFrame:</p>
 
 </div>
 </div>
@@ -12787,7 +12839,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">example1_df</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="s2">&quot;world_bank.json.gz&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12799,8 +12851,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="rdd2"></a></p>
-<h3 id="2.2-Create-an-RDD">2.2 Create an RDD<a class="anchor-link" href="#2.2-Create-an-RDD">&#182;</a></h3><p>Put the collection into an RDD named <code>x_nbr_rdd</code> using the <code>parallelize</code> method:</p>
+<p>Print the schema to see how Spark SQL inferred the shape of the data:</p>
 
 </div>
 </div>
@@ -12810,29 +12861,126 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">x_nbr_rdd</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span> <span class="p">(</span><span class="n">example1_df</span><span class="o">.</span><span class="n">printSchema</span><span class="p">())</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>root
+ |-- _id: struct (nullable = true)
+ |    |-- $oid: string (nullable = true)
+ |-- approvalfy: string (nullable = true)
+ |-- board_approval_month: string (nullable = true)
+ |-- boardapprovaldate: string (nullable = true)
+ |-- borrower: string (nullable = true)
+ |-- closingdate: string (nullable = true)
+ |-- country_namecode: string (nullable = true)
+ |-- countrycode: string (nullable = true)
+ |-- countryname: string (nullable = true)
+ |-- countryshortname: string (nullable = true)
+ |-- docty: string (nullable = true)
+ |-- envassesmentcategorycode: string (nullable = true)
+ |-- grantamt: long (nullable = true)
+ |-- ibrdcommamt: long (nullable = true)
+ |-- id: string (nullable = true)
+ |-- idacommamt: long (nullable = true)
+ |-- impagency: string (nullable = true)
+ |-- lendinginstr: string (nullable = true)
+ |-- lendinginstrtype: string (nullable = true)
+ |-- lendprojectcost: long (nullable = true)
+ |-- majorsector_percent: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- Name: string (nullable = true)
+ |    |    |-- Percent: long (nullable = true)
+ |-- mjsector_namecode: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- code: string (nullable = true)
+ |    |    |-- name: string (nullable = true)
+ |-- mjtheme: array (nullable = true)
+ |    |-- element: string (containsNull = true)
+ |-- mjtheme_namecode: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- code: string (nullable = true)
+ |    |    |-- name: string (nullable = true)
+ |-- mjthemecode: string (nullable = true)
+ |-- prodline: string (nullable = true)
+ |-- prodlinetext: string (nullable = true)
+ |-- productlinetype: string (nullable = true)
+ |-- project_abstract: struct (nullable = true)
+ |    |-- cdata: string (nullable = true)
+ |-- project_name: string (nullable = true)
+ |-- projectdocs: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- DocDate: string (nullable = true)
+ |    |    |-- DocType: string (nullable = true)
+ |    |    |-- DocTypeDesc: string (nullable = true)
+ |    |    |-- DocURL: string (nullable = true)
+ |    |    |-- EntityID: string (nullable = true)
+ |-- projectfinancialtype: string (nullable = true)
+ |-- projectstatusdisplay: string (nullable = true)
+ |-- regionname: string (nullable = true)
+ |-- sector: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- Name: string (nullable = true)
+ |-- sector1: struct (nullable = true)
+ |    |-- Name: string (nullable = true)
+ |    |-- Percent: long (nullable = true)
+ |-- sector2: struct (nullable = true)
+ |    |-- Name: string (nullable = true)
+ |    |-- Percent: long (nullable = true)
+ |-- sector3: struct (nullable = true)
+ |    |-- Name: string (nullable = true)
+ |    |-- Percent: long (nullable = true)
+ |-- sector4: struct (nullable = true)
+ |    |-- Name: string (nullable = true)
+ |    |-- Percent: long (nullable = true)
+ |-- sector_namecode: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- code: string (nullable = true)
+ |    |    |-- name: string (nullable = true)
+ |-- sectorcode: string (nullable = true)
+ |-- source: string (nullable = true)
+ |-- status: string (nullable = true)
+ |-- supplementprojectflg: string (nullable = true)
+ |-- theme1: struct (nullable = true)
+ |    |-- Name: string (nullable = true)
+ |    |-- Percent: long (nullable = true)
+ |-- theme_namecode: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- code: string (nullable = true)
+ |    |    |-- name: string (nullable = true)
+ |-- themecode: string (nullable = true)
+ |-- totalamt: long (nullable = true)
+ |-- totalcommamt: long (nullable = true)
+ |-- url: string (nullable = true)
+
+None
+</pre>
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Notice that there's no return value. The <code>parallelize</code> method didn't compute a result, which means it's a transformation. Spark just recorded how to create the RDD.</p>
 
 </div>
 </div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="rdd3"></a></p>
-<h3 id="2.3-View-the-data">2.3 View the data<a class="anchor-link" href="#2.3-View-the-data">&#182;</a></h3><p>View the first element in the RDD:</p>
+<p>Now look at the first two rows of data.</p>
+<p>You can run the simple command <code>print example1_df.take(2)</code>, however, for readability, run the following command to include a row of asterisks in between the data rows:</p>
 
 </div>
 </div>
@@ -12842,7 +12990,9 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">x_nbr_rdd</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">example1_df</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="n">row</span><span class="p">)</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12855,15 +13005,16 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[5]:</div>
+<div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>1</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Row(_id=Row($oid=&#39;52b213b38594d8a2be17c780&#39;), approvalfy=&#39;1999&#39;, board_approval_month=&#39;November&#39;, boardapprovaldate=&#39;2013-11-12T00:00:00Z&#39;, borrower=&#39;FEDERAL DEMOCRATIC REPUBLIC OF ETHIOPIA&#39;, closingdate=&#39;2018-07-07T00:00:00Z&#39;, country_namecode=&#39;Federal Democratic Republic of Ethiopia!$!ET&#39;, countrycode=&#39;ET&#39;, countryname=&#39;Federal Democratic Republic of Ethiopia&#39;, countryshortname=&#39;Ethiopia&#39;, docty=&#39;Project Information Document,Indigenous Peoples Plan,Project Information Document&#39;, envassesmentcategorycode=&#39;C&#39;, grantamt=0, ibrdcommamt=0, id=&#39;P129828&#39;, idacommamt=130000000, impagency=&#39;MINISTRY OF EDUCATION&#39;, lendinginstr=&#39;Investment Project Financing&#39;, lendinginstrtype=&#39;IN&#39;, lendprojectcost=550000000, majorsector_percent=[Row(Name=&#39;Education&#39;, Percent=46), Row(Name=&#39;Education&#39;, Percent=26), Row(Name=&#39;Public Administration, Law, and Justice&#39;, Percent=16), Row(Name=&#39;Education&#39;, Percent=12)], mjsector_namecode=[Row(code=&#39;EX&#39;, name=&#39;Education&#39;), Row(code=&#39;EX&#39;, name=&#39;Education&#39;), Row(code=&#39;BX&#39;, name=&#39;Public Administration, Law, and Justice&#39;), Row(code=&#39;EX&#39;, name=&#39;Education&#39;)], mjtheme=[&#39;Human development&#39;], mjtheme_namecode=[Row(code=&#39;8&#39;, name=&#39;Human development&#39;), Row(code=&#39;11&#39;, name=&#39;&#39;)], mjthemecode=&#39;8,11&#39;, prodline=&#39;PE&#39;, prodlinetext=&#39;IBRD/IDA&#39;, productlinetype=&#39;L&#39;, project_abstract=Row(cdata=&#39;The development objective of the Second Phase of General Education Quality Improvement Project for Ethiopia is to improve learning conditions in primary and secondary schools and strengthen institutions at different levels of educational administration. The project has six components. The first component is curriculum, textbooks, assessment, examinations, and inspection. This component will support improvement of learning conditions in grades KG-12 by providing increased access to teaching and learning materials and through improvements to the curriculum by assessing the strengths and weaknesses of the current curriculum. This component has following four sub-components: (i) curriculum reform and implementation; (ii) teaching and learning materials; (iii) assessment and examinations; and (iv) inspection. The second component is teacher development program (TDP). This component will support improvements in learning conditions in both primary and secondary schools by advancing the quality of teaching in general education through: (a) enhancing the training of pre-service teachers in teacher education institutions; and (b) improving the quality of in-service teacher training. This component has following three sub-components: (i) pre-service teacher training; (ii) in-service teacher training; and (iii) licensing and relicensing of teachers and school leaders. The third component is school improvement plan. This component will support the strengthening of school planning in order to improve learning outcomes, and to partly fund the school improvement plans through school grants. It has following two sub-components: (i) school improvement plan; and (ii) school grants. The fourth component is management and capacity building, including education management information systems (EMIS). This component will support management and capacity building aspect of the project. This component has following three sub-components: (i) capacity building for education planning and management; (ii) capacity building for school planning and management; and (iii) EMIS. The fifth component is improving the quality of learning and teaching in secondary schools and universities through the use of information and communications technology (ICT). It has following five sub-components: (i) national policy and institution for ICT in general education; (ii) national ICT infrastructure improvement plan for general education; (iii) develop an integrated monitoring, evaluation, and learning system specifically for the ICT component; (iv) teacher professional development in the use of ICT; and (v) provision of limited number of e-Braille display readers with the possibility to scale up to all secondary education schools based on the successful implementation and usage of the readers. The sixth component is program coordination, monitoring and evaluation, and communication. It will support institutional strengthening by developing capacities in all aspects of program coordination, monitoring and evaluation; a new sub-component on communications will support information sharing for better management and accountability. It has following three sub-components: (i) program coordination; (ii) monitoring and evaluation (M and E); and (iii) communication.&#39;), project_name=&#39;Ethiopia General Education Quality Improvement Project II&#39;, projectdocs=[Row(DocDate=&#39;28-AUG-2013&#39;, DocType=&#39;PID&#39;, DocTypeDesc=&#39;Project Information Document (PID),  Vol.&#39;, DocURL=&#39;http://www-wds.worldbank.org/servlet/WDSServlet?pcont=details&amp;eid=090224b081e545fb_1_0&#39;, EntityID=&#39;090224b081e545fb_1_0&#39;), Row(DocDate=&#39;01-JUL-2013&#39;, DocType=&#39;IP&#39;, DocTypeDesc=&#39;Indigenous Peoples Plan (IP),  Vol.1 of 1&#39;, DocURL=&#39;http://www-wds.worldbank.org/servlet/WDSServlet?pcont=details&amp;eid=000442464_20130920111729&#39;, EntityID=&#39;000442464_20130920111729&#39;), Row(DocDate=&#39;22-NOV-2012&#39;, DocType=&#39;PID&#39;, DocTypeDesc=&#39;Project Information Document (PID),  Vol.&#39;, DocURL=&#39;http://www-wds.worldbank.org/servlet/WDSServlet?pcont=details&amp;eid=090224b0817b19e2_1_0&#39;, EntityID=&#39;090224b0817b19e2_1_0&#39;)], projectfinancialtype=&#39;IDA&#39;, projectstatusdisplay=&#39;Active&#39;, regionname=&#39;Africa&#39;, sector=[Row(Name=&#39;Primary education&#39;), Row(Name=&#39;Secondary education&#39;), Row(Name=&#39;Public administration- Other social services&#39;), Row(Name=&#39;Tertiary education&#39;)], sector1=Row(Name=&#39;Primary education&#39;, Percent=46), sector2=Row(Name=&#39;Secondary education&#39;, Percent=26), sector3=Row(Name=&#39;Public administration- Other social services&#39;, Percent=16), sector4=Row(Name=&#39;Tertiary education&#39;, Percent=12), sector_namecode=[Row(code=&#39;EP&#39;, name=&#39;Primary education&#39;), Row(code=&#39;ES&#39;, name=&#39;Secondary education&#39;), Row(code=&#39;BS&#39;, name=&#39;Public administration- Other social services&#39;), Row(code=&#39;ET&#39;, name=&#39;Tertiary education&#39;)], sectorcode=&#39;ET,BS,ES,EP&#39;, source=&#39;IBRD&#39;, status=&#39;Active&#39;, supplementprojectflg=&#39;N&#39;, theme1=Row(Name=&#39;Education for all&#39;, Percent=100), theme_namecode=[Row(code=&#39;65&#39;, name=&#39;Education for all&#39;)], themecode=&#39;65&#39;, totalamt=130000000, totalcommamt=130000000, url=&#39;http://www.worldbank.org/projects/P129828/ethiopia-general-education-quality-improvement-project-ii?lang=en&#39;)
+********************
+Row(_id=Row($oid=&#39;52b213b38594d8a2be17c781&#39;), approvalfy=&#39;2015&#39;, board_approval_month=&#39;November&#39;, boardapprovaldate=&#39;2013-11-04T00:00:00Z&#39;, borrower=&#39;GOVERNMENT OF TUNISIA&#39;, closingdate=None, country_namecode=&#39;Republic of Tunisia!$!TN&#39;, countrycode=&#39;TN&#39;, countryname=&#39;Republic of Tunisia&#39;, countryshortname=&#39;Tunisia&#39;, docty=&#39;Project Information Document,Integrated Safeguards Data Sheet,Integrated Safeguards Data Sheet,Project Information Document,Integrated Safeguards Data Sheet,Project Information Document&#39;, envassesmentcategorycode=&#39;C&#39;, grantamt=4700000, ibrdcommamt=0, id=&#39;P144674&#39;, idacommamt=0, impagency=&#39;MINISTRY OF FINANCE&#39;, lendinginstr=&#39;Specific Investment Loan&#39;, lendinginstrtype=&#39;IN&#39;, lendprojectcost=5700000, majorsector_percent=[Row(Name=&#39;Public Administration, Law, and Justice&#39;, Percent=70), Row(Name=&#39;Public Administration, Law, and Justice&#39;, Percent=30)], mjsector_namecode=[Row(code=&#39;BX&#39;, name=&#39;Public Administration, Law, and Justice&#39;), Row(code=&#39;BX&#39;, name=&#39;Public Administration, Law, and Justice&#39;)], mjtheme=[&#39;Economic management&#39;, &#39;Social protection and risk management&#39;], mjtheme_namecode=[Row(code=&#39;1&#39;, name=&#39;Economic management&#39;), Row(code=&#39;6&#39;, name=&#39;Social protection and risk management&#39;)], mjthemecode=&#39;1,6&#39;, prodline=&#39;RE&#39;, prodlinetext=&#39;Recipient Executed Activities&#39;, productlinetype=&#39;L&#39;, project_abstract=None, project_name=&#39;TN: DTF Social Protection Reforms Support&#39;, projectdocs=[Row(DocDate=&#39;29-MAR-2013&#39;, DocType=&#39;PID&#39;, DocTypeDesc=&#39;Project Information Document (PID),  Vol.1 of 1&#39;, DocURL=&#39;http://www-wds.worldbank.org/servlet/WDSServlet?pcont=details&amp;eid=000333037_20131024115616&#39;, EntityID=&#39;000333037_20131024115616&#39;), Row(DocDate=&#39;29-MAR-2013&#39;, DocType=&#39;ISDS&#39;, DocTypeDesc=&#39;Integrated Safeguards Data Sheet (ISDS),  Vol.1 of 1&#39;, DocURL=&#39;http://www-wds.worldbank.org/servlet/WDSServlet?pcont=details&amp;eid=000356161_20131024151611&#39;, EntityID=&#39;000356161_20131024151611&#39;), Row(DocDate=&#39;29-MAR-2013&#39;, DocType=&#39;ISDS&#39;, DocTypeDesc=&#39;Integrated Safeguards Data Sheet (ISDS),  Vol.1 of 1&#39;, DocURL=&#39;http://www-wds.worldbank.org/servlet/WDSServlet?pcont=details&amp;eid=000442464_20131031112136&#39;, EntityID=&#39;000442464_20131031112136&#39;), Row(DocDate=&#39;29-MAR-2013&#39;, DocType=&#39;PID&#39;, DocTypeDesc=&#39;Project Information Document (PID),  Vol.1 of 1&#39;, DocURL=&#39;http://www-wds.worldbank.org/servlet/WDSServlet?pcont=details&amp;eid=000333037_20131031105716&#39;, EntityID=&#39;000333037_20131031105716&#39;), Row(DocDate=&#39;16-JAN-2013&#39;, DocType=&#39;ISDS&#39;, DocTypeDesc=&#39;Integrated Safeguards Data Sheet (ISDS),  Vol.1 of 1&#39;, DocURL=&#39;http://www-wds.worldbank.org/servlet/WDSServlet?pcont=details&amp;eid=000356161_20130305113209&#39;, EntityID=&#39;000356161_20130305113209&#39;), Row(DocDate=&#39;16-JAN-2013&#39;, DocType=&#39;PID&#39;, DocTypeDesc=&#39;Project Information Document (PID),  Vol.1 of 1&#39;, DocURL=&#39;http://www-wds.worldbank.org/servlet/WDSServlet?pcont=details&amp;eid=000356161_20130305113716&#39;, EntityID=&#39;000356161_20130305113716&#39;)], projectfinancialtype=&#39;OTHER&#39;, projectstatusdisplay=&#39;Active&#39;, regionname=&#39;Middle East and North Africa&#39;, sector=[Row(Name=&#39;Public administration- Other social services&#39;), Row(Name=&#39;General public administration sector&#39;)], sector1=Row(Name=&#39;Public administration- Other social services&#39;, Percent=70), sector2=Row(Name=&#39;General public administration sector&#39;, Percent=30), sector3=None, sector4=None, sector_namecode=[Row(code=&#39;BS&#39;, name=&#39;Public administration- Other social services&#39;), Row(code=&#39;BZ&#39;, name=&#39;General public administration sector&#39;)], sectorcode=&#39;BZ,BS&#39;, source=&#39;IBRD&#39;, status=&#39;Active&#39;, supplementprojectflg=&#39;N&#39;, theme1=Row(Name=&#39;Other economic management&#39;, Percent=30), theme_namecode=[Row(code=&#39;24&#39;, name=&#39;Other economic management&#39;), Row(code=&#39;54&#39;, name=&#39;Social safety nets&#39;)], themecode=&#39;54,24&#39;, totalamt=0, totalcommamt=4700000, url=&#39;http://www.worldbank.org/projects/P144674?lang=en&#39;)
+********************
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -12874,8 +13025,8 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Each number in the collection is in a different element in the RDD. Because the <code>first()</code> method returned a value, it is an action.</p>
-<p>Now view the first five elements in the RDD:</p>
+<p><a id="createtab"></a></p>
+<h3 id="1.4-Create-a-table">1.4 Create a table<a class="anchor-link" href="#1.4-Create-a-table">&#182;</a></h3><p>SQL statements must be run against a table. Create a table that's a pointer to the DataFrame:</p>
 
 </div>
 </div>
@@ -12885,7 +13036,35 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">x_nbr_rdd</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">example1_df</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s2">&quot;world_bank&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="runsql"></a></p>
+<h2 id="2.-Run-SQL-queries">2. Run SQL queries<a class="anchor-link" href="#2.-Run-SQL-queries">&#182;</a></h2><p>You must define a new DataFrame for the results of the SQL query and put the SQL statement inside the <code>sqlContext.sql()</code> method.</p>
+<p>Run the following cell to select all columns from the table and print information about the resulting DataFrame and schema of the data:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">temp_df</span> <span class="o">=</span>  <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select * from world_bank&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">temp_df</span><span class="p">))</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="n">temp_df</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12898,40 +13077,17 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[6]:</div>
+<div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[1, 2, 3, 4, 5]</pre>
-</div>
-
-</div>
-
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class &#39;pyspark.sql.dataframe.DataFrame&#39;&gt;
+********************
+DataFrame[_id: struct&lt;$oid:string&gt;, approvalfy: string, board_approval_month: string, boardapprovaldate: string, borrower: string, closingdate: string, country_namecode: string, countrycode: string, countryname: string, countryshortname: string, docty: string, envassesmentcategorycode: string, grantamt: bigint, ibrdcommamt: bigint, id: string, idacommamt: bigint, impagency: string, lendinginstr: string, lendinginstrtype: string, lendprojectcost: bigint, majorsector_percent: array&lt;struct&lt;Name:string,Percent:bigint&gt;&gt;, mjsector_namecode: array&lt;struct&lt;code:string,name:string&gt;&gt;, mjtheme: array&lt;string&gt;, mjtheme_namecode: array&lt;struct&lt;code:string,name:string&gt;&gt;, mjthemecode: string, prodline: string, prodlinetext: string, productlinetype: string, project_abstract: struct&lt;cdata:string&gt;, project_name: string, projectdocs: array&lt;struct&lt;DocDate:string,DocType:string,DocTypeDesc:string,DocURL:string,EntityID:string&gt;&gt;, projectfinancialtype: string, projectstatusdisplay: string, regionname: string, sector: array&lt;struct&lt;Name:string&gt;&gt;, sector1: struct&lt;Name:string,Percent:bigint&gt;, sector2: struct&lt;Name:string,Percent:bigint&gt;, sector3: struct&lt;Name:string,Percent:bigint&gt;, sector4: struct&lt;Name:string,Percent:bigint&gt;, sector_namecode: array&lt;struct&lt;code:string,name:string&gt;&gt;, sectorcode: string, source: string, status: string, supplementprojectflg: string, theme1: struct&lt;Name:string,Percent:bigint&gt;, theme_namecode: array&lt;struct&lt;code:string,name:string&gt;&gt;, themecode: string, totalamt: bigint, totalcommamt: bigint, url: string]
+</pre>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="rdd4"></a></p>
-<h3 id="2.4-Create-another-RDD">2.4 Create another RDD<a class="anchor-link" href="#2.4-Create-another-RDD">&#182;</a></h3><p>Create a Python collection that contains strings:</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Hello Human&quot;</span><span class="p">,</span> <span class="s">&quot;My Name is Spark&quot;</span><span class="p">]</span>
-</pre></div>
-
-</div>
 </div>
 </div>
 
@@ -12940,7 +13096,18 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Put the collection into an RDD:</p>
+<p>The first <code>print</code> command shows that the DataFrame is a Spark DataFrame. The last <code>print</code> command shows the column names and data types of the DataFrame.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="pandas"></a></p>
+<h3 id="2.1-Display-query-results-with-a-pandas-DataFrame">2.1 Display query results with a pandas DataFrame<a class="anchor-link" href="#2.1-Display-query-results-with-a-pandas-DataFrame">&#182;</a></h3><p>The <code>print</code> command doesn't show the data in a useful format. Instead of creating a Spark DataFrame, use the pandas open-source data analytics library to create a pandas DataFrame that shows the data in a table.</p>
+<p>Import the pandas library and use the <code>.toPandas()</code> method to show the query results:</p>
 
 </div>
 </div>
@@ -12950,10 +13117,65 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">y_str_rdd</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select id, borrower from world_bank limit 2&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[8]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>borrower</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>P129828</td>
+      <td>FEDERAL DEMOCRATIC REPUBLIC OF ETHIOPIA</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>P144674</td>
+      <td>GOVERNMENT OF TUNISIA</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -12962,7 +13184,9 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>View the first element in the RDD:</p>
+<p><a id="groupby"></a></p>
+<h3 id="2.2-Run-a-group-by-query">2.2 Run a group by query<a class="anchor-link" href="#2.2-Run-a-group-by-query">&#182;</a></h3><p>You can make your SQL queries easier to read by using the <code>query</code> keyword and surrounding the SQL query with <code>"""</code> on separate lines.</p>
+<p>Calculate a count of projects by region:</p>
 
 </div>
 </div>
@@ -12972,7 +13196,16 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">y_str_rdd</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">select</span>
+<span class="s2">    regionname ,</span>
+<span class="s2">    count(*) as project_count</span>
+<span class="s2">from world_bank</span>
+<span class="s2">group by regionname </span>
+<span class="s2">order by count(*) desc</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12989,9 +13222,68 @@ div#notebook {
 
 
 
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;Hello Human&#39;]</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>regionname</th>
+      <th>project_count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Africa</td>
+      <td>152</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>East Asia and Pacific</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Europe and Central Asia</td>
+      <td>74</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>South Asia</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Middle East and North Africa</td>
+      <td>54</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Latin America and Caribbean</td>
+      <td>53</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Other</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 </div>
@@ -13004,27 +13296,9 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You created the string "Hello Human" and you returned it as the first element of the RDD. To analyze a set of words, you can map each word into an RDD element.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="trans"></a></p>
-<h2 id="3.-Manipulate-data-in-RDDs">3. Manipulate data in RDDs<a class="anchor-link" href="#3.-Manipulate-data-in-RDDs">&#182;</a></h2><p>Remember that to manipulate data, you use transformation functions.</p>
-<p>Here are some common Python transformation functions that you'll be using in this notebook:</p>
-<ul>
-<li><code>map(func)</code>: returns a new RDD with the results of running the specified function on each element  </li>
-<li><code>filter(func)</code>: returns a new RDD with the elements for which the specified function returns true   </li>
-<li><code>distinct([numTasks]))</code>: returns a new RDD that contains the distinct elements of the source RDD</li>
-<li><code>flatMap(func)</code>: returns a new RDD by first running the specified function on all elements, returning 0 or more results for each original element, and then flattening the results into individual elements</li>
-</ul>
-<p>You can also create functions that run a single expression and don't have a name with the Python <code>lambda</code> keyword. For example, this function returns the sum of its arguments: <code>lambda a , b : a + b</code>.</p>
-<p><a id="trans1"></a></p>
-<h3 id="3.1-Update-numeric-values">3.1 Update numeric values<a class="anchor-link" href="#3.1-Update-numeric-values">&#182;</a></h3><p>Run the <code>map()</code> function with the <code>lambda</code> keyword to replace each element, X, in your first RDD (the one that has numeric values) with X+1. Because RDDs are immutable, you need to specify a new RDD name.</p>
+<p><a id="subselect"></a></p>
+<h3 id="2.3-Run-a-subselect-query">2.3 Run a subselect query<a class="anchor-link" href="#2.3-Run-a-subselect-query">&#182;</a></h3><p>You can run subselect queries.</p>
+<p>Calculate a count of projects by region again, but this time using a subselect:</p>
 
 </div>
 </div>
@@ -13034,10 +13308,76 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">x_nbr_rdd_2</span> <span class="o">=</span> <span class="n">x_nbr_rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">select * from</span>
+<span class="s2">    (select</span>
+<span class="s2">        regionname ,</span>
+<span class="s2">        count(*) as project_count</span>
+<span class="s2">    from world_bank</span>
+<span class="s2">    group by regionname </span>
+<span class="s2">    order by count(*) desc) table_alias</span>
+<span class="s2">limit 2</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>regionname</th>
+      <th>project_count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Africa</td>
+      <td>152</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>East Asia and Pacific</td>
+      <td>100</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13046,7 +13386,9 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now look at the elements of the new RDD:</p>
+<p><a id="nested"></a></p>
+<h3 id="2.4-Return-nested-JSON-field-values">2.4 Return nested JSON field values<a class="anchor-link" href="#2.4-Return-nested-JSON-field-values">&#182;</a></h3><p>With JSON data, you can select the values of nested fields with dot notation.</p>
+<p>Print the schema so that you can see that <code>sector.Name</code> is a nested field and then select its first two values:</p>
 
 </div>
 </div>
@@ -13056,7 +13398,10 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">x_nbr_rdd_2</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">example1_df</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+
+<span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;select sector.Name from world_bank limit 2&quot;</span>
+<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -13069,15 +13414,107 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[11]:</div>
+<div class="prompt"></div>
 
 
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>root
+ |-- _id: struct (nullable = true)
+ |    |-- $oid: string (nullable = true)
+ |-- approvalfy: string (nullable = true)
+ |-- board_approval_month: string (nullable = true)
+ |-- boardapprovaldate: string (nullable = true)
+ |-- borrower: string (nullable = true)
+ |-- closingdate: string (nullable = true)
+ |-- country_namecode: string (nullable = true)
+ |-- countrycode: string (nullable = true)
+ |-- countryname: string (nullable = true)
+ |-- countryshortname: string (nullable = true)
+ |-- docty: string (nullable = true)
+ |-- envassesmentcategorycode: string (nullable = true)
+ |-- grantamt: long (nullable = true)
+ |-- ibrdcommamt: long (nullable = true)
+ |-- id: string (nullable = true)
+ |-- idacommamt: long (nullable = true)
+ |-- impagency: string (nullable = true)
+ |-- lendinginstr: string (nullable = true)
+ |-- lendinginstrtype: string (nullable = true)
+ |-- lendprojectcost: long (nullable = true)
+ |-- majorsector_percent: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- Name: string (nullable = true)
+ |    |    |-- Percent: long (nullable = true)
+ |-- mjsector_namecode: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- code: string (nullable = true)
+ |    |    |-- name: string (nullable = true)
+ |-- mjtheme: array (nullable = true)
+ |    |-- element: string (containsNull = true)
+ |-- mjtheme_namecode: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- code: string (nullable = true)
+ |    |    |-- name: string (nullable = true)
+ |-- mjthemecode: string (nullable = true)
+ |-- prodline: string (nullable = true)
+ |-- prodlinetext: string (nullable = true)
+ |-- productlinetype: string (nullable = true)
+ |-- project_abstract: struct (nullable = true)
+ |    |-- cdata: string (nullable = true)
+ |-- project_name: string (nullable = true)
+ |-- projectdocs: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- DocDate: string (nullable = true)
+ |    |    |-- DocType: string (nullable = true)
+ |    |    |-- DocTypeDesc: string (nullable = true)
+ |    |    |-- DocURL: string (nullable = true)
+ |    |    |-- EntityID: string (nullable = true)
+ |-- projectfinancialtype: string (nullable = true)
+ |-- projectstatusdisplay: string (nullable = true)
+ |-- regionname: string (nullable = true)
+ |-- sector: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- Name: string (nullable = true)
+ |-- sector1: struct (nullable = true)
+ |    |-- Name: string (nullable = true)
+ |    |-- Percent: long (nullable = true)
+ |-- sector2: struct (nullable = true)
+ |    |-- Name: string (nullable = true)
+ |    |-- Percent: long (nullable = true)
+ |-- sector3: struct (nullable = true)
+ |    |-- Name: string (nullable = true)
+ |    |-- Percent: long (nullable = true)
+ |-- sector4: struct (nullable = true)
+ |    |-- Name: string (nullable = true)
+ |    |-- Percent: long (nullable = true)
+ |-- sector_namecode: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- code: string (nullable = true)
+ |    |    |-- name: string (nullable = true)
+ |-- sectorcode: string (nullable = true)
+ |-- source: string (nullable = true)
+ |-- status: string (nullable = true)
+ |-- supplementprojectflg: string (nullable = true)
+ |-- theme1: struct (nullable = true)
+ |    |-- Name: string (nullable = true)
+ |    |-- Percent: long (nullable = true)
+ |-- theme_namecode: array (nullable = true)
+ |    |-- element: struct (containsNull = true)
+ |    |    |-- code: string (nullable = true)
+ |    |    |-- name: string (nullable = true)
+ |-- themecode: string (nullable = true)
+ |-- totalamt: long (nullable = true)
+ |-- totalcommamt: long (nullable = true)
+ |-- url: string (nullable = true)
 
++--------------------+
+|                Name|
++--------------------+
+|[Primary educatio...|
+|[Public administr...|
++--------------------+
 
-<div class="output_text output_subarea output_execute_result">
-<pre>[2, 3, 4, 5, 6, 7, 8, 9, 10, 11]</pre>
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -13088,7 +13525,13 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Be careful with the <code>collect</code> method! It returns <strong>all</strong> elements of the RDD to the driver. Returning a large data set might be not be very useful. No-one wants to scroll through a million rows!</p>
+<p><a id="convertrdd"></a></p>
+<h2 id="3.-Convert-RDDs-to-DataFrames">3. Convert RDDs to DataFrames<a class="anchor-link" href="#3.-Convert-RDDs-to-DataFrames">&#182;</a></h2><p>If you want to run SQL queries on an existing RDD, you must convert the RDD to a DataFrame. The main difference between RDDs and DataFrames is whether the columns are named.</p>
+<p>You'll create an RDD and then convert it to a DataFrame in two different ways:</p>
+<ul>
+<li><a href="#apply">Apply a schema</a></li>
+<li><a href="#namedcol">Create rows with named columns</a></li>
+</ul>
 
 </div>
 </div>
@@ -13097,9 +13540,9 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="trans2"></a></p>
-<h3 id="3.2-Add-numbers-in-an-array">3.2 Add numbers in an array<a class="anchor-link" href="#3.2-Add-numbers-in-an-array">&#182;</a></h3><p>An array of values is a common data format where multiple values are contained in one element. You can manipulate the individual values if you split them up into separate elements.</p>
-<p>Create an array of numbers by including quotation marks around the whole set of numbers. If you omit the quotation marks, you get a collection of numbers instead of an array.</p>
+<p><a id="simplerdd"></a></p>
+<h3 id="3.1-Create-a-simple-RDD">3.1 Create a simple RDD<a class="anchor-link" href="#3.1-Create-a-simple-RDD">&#182;</a></h3><p>You'll create a simple RDD with an ID column and two columns of random numbers.</p>
+<p>First create a Python list of lists:</p>
 
 </div>
 </div>
@@ -13109,7 +13552,12 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;1,2,3,4,5,6,7,8,9,10&quot;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
+
+<span class="n">data_e2</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">):</span>
+    <span class="n">random_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">data_e2</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">random_int</span><span class="p">,</span> <span class="n">random_int</span><span class="o">^</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -13121,7 +13569,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Create an RDD for the array:</p>
+<p>Now create the RDD:</p>
 
 </div>
 </div>
@@ -13131,10 +13579,29 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">y_rd</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rdd_example2</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">data_e2</span><span class="p">)</span>
+<span class="nb">print</span> <span class="p">(</span><span class="n">rdd_example2</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[[1, 1, 3], [2, 3, 1], [3, 1, 3], [4, 8, 10], [5, 0, 2]]
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13143,7 +13610,9 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Split the values at commas and add values in the positions 2 and 9 in the array. Keep in mind that an array starts with position 0. Use a backslash character, \, to break the line of code for clarity.</p>
+<p><a id="apply"></a></p>
+<h3 id="3.2-Apply-a-schema">3.2 Apply a schema<a class="anchor-link" href="#3.2-Apply-a-schema">&#182;</a></h3><p>You'll use the <code>StructField</code> method to create a schema object that's based on a string, apply the schema to the RDD to create a DataFrame, and then create a table to run SQL queries on.</p>
+<p>Define your schema columns as a string:</p>
 
 </div>
 </div>
@@ -13153,8 +13622,9 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">Sum_rd</span> <span class="o">=</span> <span class="n">y_rd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="n">y</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">))</span><span class="o">.</span>\
-<span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">y</span><span class="p">:</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">9</span><span class="p">])))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.types</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">schemaString</span> <span class="o">=</span> <span class="s2">&quot;ID VAL1 VAL2&quot;</span>
 </pre></div>
 
 </div>
@@ -13166,7 +13636,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now return the value of the sum:</p>
+<p>Assign header information with the <code>StructField</code> method and create the schema with the <code>StructType</code> method:</p>
 
 </div>
 </div>
@@ -13176,30 +13646,11 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">Sum_rd</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="n">StructField</span><span class="p">(</span><span class="n">field_name</span><span class="p">,</span> <span class="n">StringType</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">field_name</span> <span class="ow">in</span> <span class="n">schemaString</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="n">StructType</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[15]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>13</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -13208,8 +13659,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="trans3"></a></p>
-<h3 id="3.3-Split-and-count-text-strings">3.3 Split and count text strings<a class="anchor-link" href="#3.3-Split-and-count-text-strings">&#182;</a></h3><p>Create an RDD with a text string and show the first element:</p>
+<p>Apply the schema to the RDD with the <code>createDataFrame</code> method:</p>
 
 </div>
 </div>
@@ -13219,32 +13669,10 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">Words</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Hello Human. I&#39;m Apache Spark and I love running analysis on data.&quot;</span><span class="p">]</span>
-<span class="n">words_rd</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">Words</span><span class="p">)</span>
-<span class="n">words_rd</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">schemaExample</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">rdd_example2</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[16]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#34;Hello Human. I&#39;m Apache Spark and I love running analysis on data.&#34;</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -13253,7 +13681,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Split the string into separate lines at the space characters and look at the first element:</p>
+<p>Register the DataFrame as a table:</p>
 
 </div>
 </div>
@@ -13263,42 +13691,10 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">Words_rd2</span> <span class="o">=</span> <span class="n">words_rd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">))</span>
-<span class="n">Words_rd2</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">schemaExample</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s2">&quot;example2&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[17]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;Hello&#39;,
- &#39;Human.&#39;,
- &#34;I&#39;m&#34;,
- &#39;Apache&#39;,
- &#39;Spark&#39;,
- &#39;and&#39;,
- &#39;I&#39;,
- &#39;love&#39;,
- &#39;running&#39;,
- &#39;analysis&#39;,
- &#39;on&#39;,
- &#39;data.&#39;]</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -13307,7 +13703,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Count the number of elements in this RDD with the <code>count()</code> method:</p>
+<p>View the data:</p>
 
 </div>
 </div>
@@ -13317,7 +13713,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">Words_rd2</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span> <span class="p">(</span><span class="n">schemaExample</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
 </pre></div>
 
 </div>
@@ -13330,15 +13726,13 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[18]:</div>
+<div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>1</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[Row(ID=&#39;1&#39;, VAL1=&#39;1&#39;, VAL2=&#39;3&#39;), Row(ID=&#39;2&#39;, VAL1=&#39;3&#39;, VAL2=&#39;1&#39;), Row(ID=&#39;3&#39;, VAL1=&#39;1&#39;, VAL2=&#39;3&#39;), Row(ID=&#39;4&#39;, VAL1=&#39;8&#39;, VAL2=&#39;10&#39;), Row(ID=&#39;5&#39;, VAL1=&#39;0&#39;, VAL2=&#39;2&#39;)]
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -13349,16 +13743,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Of course, you already knew that there was only one element because you ran the <code>first()</code> method and it returned the whole string. Splitting the string into multiple lines did not create multiple elements.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Now split the string again, but this time with the <code>flatmap()</code> method, and look at the first three elements:</p>
+<p>You can reference the columns names in DataFrames:</p>
 
 </div>
 </div>
@@ -13368,8 +13753,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">words_rd2</span> <span class="o">=</span> <span class="n">words_rd</span><span class="o">.</span><span class="n">flatMap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">))</span>
-<span class="n">words_rd2</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">schemaExample</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">ID</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">VAL1</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">VAL2</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13382,15 +13767,14 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[19]:</div>
+<div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;Hello&#39;, &#39;Human.&#39;, &#34;I&#39;m&#34;]</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1 1 3
+2 3 1
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -13401,18 +13785,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This time each word is separated into its own element.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="trans4"></a></p>
-<h3 id="3.4-Count-words-with-a-pair-RDD">3.4 Count words with a pair RDD<a class="anchor-link" href="#3.4-Count-words-with-a-pair-RDD">&#182;</a></h3><p>A common way to count the number of instances of words in an RDD is to create a pair RDD. A pair RDD converts each word into a key-value pair: the word is the key and the number 1 is the value. Because the values are all 1, when you add the  values for a particular word, you get the number of instances of that word.</p>
-<p>Create an RDD:</p>
+<p>Run a simple SQL query:</p>
 
 </div>
 </div>
@@ -13422,9 +13795,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;First,Line&quot;</span><span class="p">,</span> <span class="s">&quot;Second,Line&quot;</span><span class="p">,</span> <span class="s">&quot;and,Third,Line&quot;</span><span class="p">]</span>
-<span class="n">z_str_rdd</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">parallelize</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-<span class="n">z_str_rdd</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select * from example2&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -13441,9 +13812,64 @@ div#notebook {
 
 
 
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;First,Line&#39;</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ID</th>
+      <th>VAL1</th>
+      <th>VAL2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>3</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>8</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 </div>
@@ -13456,7 +13882,9 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Split the elements into individual words with the <code>flatmap()</code> method:</p>
+<p><a id="namedcol"></a></p>
+<h3 id="3.3-Create-rows-with-named-columns">3.3 Create rows with named columns<a class="anchor-link" href="#3.3-Create-rows-with-named-columns">&#182;</a></h3><p>You'll create an RDD with named columns and then convert it to a DataFrame and a table.</p>
+<p>Create a new RDD and specify the names of the columns with the <code>map</code> method:</p>
 
 </div>
 </div>
@@ -13466,8 +13894,11 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">z_str_rdd_split_flatmap</span> <span class="o">=</span> <span class="n">z_str_rdd</span><span class="o">.</span><span class="n">flatMap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">))</span>
-<span class="n">z_str_rdd_split_flatmap</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="k">import</span> <span class="n">Row</span>
+
+<span class="n">rdd_example3</span> <span class="o">=</span> <span class="n">rdd_example2</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Row</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">val1</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">val2</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="n">rdd_example3</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>                                                         
 </pre></div>
 
 </div>
@@ -13480,15 +13911,13 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[21]:</div>
+<div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;First&#39;, &#39;Line&#39;, &#39;Second&#39;, &#39;Line&#39;, &#39;and&#39;, &#39;Third&#39;, &#39;Line&#39;]</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[Row(id=1, val1=1, val2=3), Row(id=2, val1=3, val2=1), Row(id=3, val1=1, val2=3), Row(id=4, val1=8, val2=10), Row(id=5, val1=0, val2=2)]
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -13499,7 +13928,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Convert the elements into key-value pairs:</p>
+<p>Convert <code>rdd_example3</code> to a DataFrame and register an associated table:</p>
 
 </div>
 </div>
@@ -13509,37 +13938,11 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">countWords</span> <span class="o">=</span> <span class="n">z_str_rdd_split_flatmap</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">word</span><span class="p">:(</span><span class="n">word</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
-<span class="n">countWords</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_example3</span> <span class="o">=</span> <span class="n">rdd_example3</span><span class="o">.</span><span class="n">toDF</span><span class="p">()</span>
+<span class="n">df_example3</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s2">&quot;example3&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[22]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[(&#39;First&#39;, 1),
- (&#39;Line&#39;, 1),
- (&#39;Second&#39;, 1),
- (&#39;Line&#39;, 1),
- (&#39;and&#39;, 1),
- (&#39;Third&#39;, 1),
- (&#39;Line&#39;, 1)]</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -13548,7 +13951,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now sum all the values by key to find the number of instances for each word:</p>
+<p>Run a simple SQL query:</p>
 
 </div>
 </div>
@@ -13558,9 +13961,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">add</span>
-<span class="n">countWords2</span> <span class="o">=</span> <span class="n">countWords</span><span class="o">.</span><span class="n">reduceByKey</span><span class="p">(</span><span class="n">add</span><span class="p">)</span>
-<span class="n">countWords2</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select * from example3&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -13577,9 +13978,64 @@ div#notebook {
 
 
 
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="output_text output_subarea output_execute_result">
-<pre>[(&#39;and&#39;, 1), (&#39;Line&#39;, 3), (&#39;Second&#39;, 1), (&#39;Third&#39;, 1), (&#39;First&#39;, 1)]</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>val1</th>
+      <th>val2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>3</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>8</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 </div>
@@ -13592,21 +14048,9 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Notice that the word <code>Line</code> has a count of 3.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="filter"></a></p>
-<h2 id="4.-Filter-data">4. Filter data<a class="anchor-link" href="#4.-Filter-data">&#182;</a></h2><p>The filter command creates a new RDD from another RDD based on a filter criteria.
-The filter syntax is:</p>
-<p><code>.filter(lambda line: "Filter Criteria Value" in line)</code></p>
-<p>Hint: Use a simple python <code>print</code> command to add a string to your Spark results and to run multiple actions in single cell.</p>
-<p>Find the number of instances of the word <code>Line</code> in the <code>z_str_rdd_split_flatmap</code> RDD:</p>
+<p><a id="join"></a></p>
+<h3 id="3.4-Join-tables">3.4 Join tables<a class="anchor-link" href="#3.4-Join-tables">&#182;</a></h3><p>You can join tables.</p>
+<p>Join tables <code>example2</code> and <code>example3</code> on the ID column:</p>
 
 </div>
 </div>
@@ -13616,10 +14060,16 @@ The filter syntax is:</p>
 <div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">words_rd3</span> <span class="o">=</span> <span class="n">z_str_rdd_split_flatmap</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="s">&quot;Second&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">select</span>
+<span class="s2">    *</span>
+<span class="s2">from</span>
+<span class="s2">    example2 e2</span>
+<span class="s2">inner join example3 e3 on</span>
+<span class="s2">    e2.ID = e3.id</span>
+<span class="s2">&quot;&quot;&quot;</span>
 
-<span class="k">print</span> <span class="p">(</span><span class="s">&quot;The count of words &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">words_rd3</span><span class="o">.</span><span class="n">first</span><span class="p">()))</span>
-<span class="k">print</span> <span class="p">(</span><span class="s">&quot;Is: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">words_rd3</span><span class="o">.</span><span class="n">count</span><span class="p">()))</span>
+<span class="nb">print</span> <span class="p">(</span><span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">())</span>
 </pre></div>
 
 </div>
@@ -13636,8 +14086,12 @@ The filter syntax is:</p>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>The count of words Second
-Is: 1
+<pre>  ID VAL1 VAL2  id  val1  val2
+0  5    0    2   5     0     2
+1  1    1    3   1     1     3
+2  3    1    3   3     1     3
+3  2    3    1   2     3     1
+4  4    8   10   4     8    10
 </pre>
 </div>
 </div>
@@ -13650,11 +14104,7 @@ Is: 1
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="wordfile"></a></p>
-<h2 id="5.-Analyze-text-data-from-a-file">5. Analyze text data from a file<a class="anchor-link" href="#5.-Analyze-text-data-from-a-file">&#182;</a></h2><p>In this section, you'll download a file from a URL, create an RDD from it, and analyze the text in it.</p>
-<p><a id="wordfile1"></a></p>
-<h3 id="5.1-Get-the-file-from-a-URL">5.1 Get the file from a URL<a class="anchor-link" href="#5.1-Get-the-file-from-a-URL">&#182;</a></h3><p>You can run shell commands by prefacing them with an exclamation point (!).</p>
-<p>Remove any files with the same name as the file that you're going to download and then load a file named <code>README.md</code> from a URL into the filesystem for Spark:</p>
+<p>Alternatively, you can join DataFrames with a Python command instead of an SQL query:</p>
 
 </div>
 </div>
@@ -13664,8 +14114,10 @@ Is: 1
 <div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">!</span>rm README.md* -f
-<span class="o">!</span>wget https://raw.githubusercontent.com/carloapp2/SparkPOT/master/README.md
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_example4</span> <span class="o">=</span> <span class="n">df_example3</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">schemaExample</span><span class="p">,</span> <span class="n">schemaExample</span><span class="p">[</span><span class="s2">&quot;ID&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">df_example3</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="p">)</span>
+
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df_example4</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="n">row</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13682,17 +14134,11 @@ Is: 1
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>--2018-03-02 08:35:40--  https://raw.githubusercontent.com/carloapp2/SparkPOT/master/README.md
-Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.48.133
-Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.48.133|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 3624 (3.5K) [text/plain]
-Saving to: ‘README.md’
-
-100%[======================================&gt;] 3,624       --.-K/s   in 0s      
-
-2018-03-02 08:35:40 (24.9 MB/s) - ‘README.md’ saved [3624/3624]
-
+<pre>Row(id=5, val1=0, val2=2, ID=&#39;5&#39;, VAL1=&#39;0&#39;, VAL2=&#39;2&#39;)
+Row(id=1, val1=1, val2=3, ID=&#39;1&#39;, VAL1=&#39;1&#39;, VAL2=&#39;3&#39;)
+Row(id=3, val1=1, val2=3, ID=&#39;3&#39;, VAL1=&#39;1&#39;, VAL2=&#39;3&#39;)
+Row(id=2, val1=3, val2=1, ID=&#39;2&#39;, VAL1=&#39;3&#39;, VAL2=&#39;1&#39;)
+Row(id=4, val1=8, val2=10, ID=&#39;4&#39;, VAL1=&#39;8&#39;, VAL2=&#39;10&#39;)
 </pre>
 </div>
 </div>
@@ -13705,9 +14151,9 @@ Saving to: ‘README.md’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="wordfile2"></a></p>
-<h3 id="5.2-Create-an-RDD-from-the-file">5.2 Create an RDD from the file<a class="anchor-link" href="#5.2-Create-an-RDD-from-the-file">&#182;</a></h3><p>Use the <code>textFile</code> method to create an RDD named <code>textfile_rdd</code> based on the <code>README.md</code> file. The RDD will contain one element for each line in the <code>README.md</code> file.
-Also, count the number of lines in the RDD, which is the same as the number of lines in the text file.</p>
+<p><a id="sqlfuncs"></a></p>
+<h2 id="4.-Create-SQL-functions">4. Create SQL functions<a class="anchor-link" href="#4.-Create-SQL-functions">&#182;</a></h2><p>You can create functions that run in SQL queries.</p>
+<p>First, create a Python function and test it:</p>
 
 </div>
 </div>
@@ -13717,8 +14163,11 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 <div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">textfile_rdd</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s">&quot;README.md&quot;</span><span class="p">)</span>
-<span class="n">textfile_rdd</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">simple_function</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="c1">#test the function</span>
+<span class="nb">print</span> <span class="p">(</span><span class="n">simple_function</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -13731,15 +14180,13 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[26]:</div>
+<div class="prompt"></div>
 
 
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>98</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>30
+</pre>
 </div>
-
 </div>
 
 </div>
@@ -13750,8 +14197,7 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="wordfile3"></a></p>
-<h3 id="5.3-Filter-for-a-word">5.3 Filter for a word<a class="anchor-link" href="#5.3-Filter-for-a-word">&#182;</a></h3><p>Filter the RDD to keep only the elements that contain the word "Spark" with the <code>filter</code> transformation:</p>
+<p>Next, register the function as an SQL function with the <code>registerFunction</code> method:</p>
 
 </div>
 </div>
@@ -13761,8 +14207,7 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 <div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">Spark_lines</span> <span class="o">=</span> <span class="n">textfile_rdd</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="s">&quot;Spark&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span>
-<span class="n">Spark_lines</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sqlContext</span><span class="o">.</span><span class="n">registerFunction</span><span class="p">(</span><span class="s2">&quot;simple_function&quot;</span><span class="p">,</span> <span class="n">simple_function</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13781,7 +14226,7 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>u&#39;# Apache Spark&#39;</pre>
+<pre>&lt;function __main__.simple_function&gt;</pre>
 </div>
 
 </div>
@@ -13794,7 +14239,7 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Count the number of elements in this filtered RDD and present the result as a concatenated string:</p>
+<p>Now run the function in an SQL Statement:</p>
 
 </div>
 </div>
@@ -13804,9 +14249,17 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 <div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">print</span> <span class="p">(</span><span class="s">&quot;The file README.md has &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">Spark_lines</span><span class="o">.</span><span class="n">count</span><span class="p">())</span> <span class="o">+</span> \
-<span class="s">&quot; of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">textfile_rdd</span><span class="o">.</span><span class="n">count</span><span class="p">())</span> <span class="o">+</span> \
-<span class="s">&quot; Lines with word Spark in it.&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">select</span>
+<span class="s2">    ID,</span>
+<span class="s2">    VAL1,</span>
+<span class="s2">    VAL2,</span>
+<span class="s2">    simple_function(VAL1) as s_VAL1,</span>
+<span class="s2">    simple_function(VAL2) as s_VAL2</span>
+<span class="s2">from</span>
+<span class="s2"> example2</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -13819,13 +14272,82 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 
 <div class="output_area">
 
-<div class="prompt"></div>
+<div class="prompt output_prompt">Out[28]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>The file README.md has 19 of 98 Lines with word Spark in it.
-</pre>
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ID</th>
+      <th>VAL1</th>
+      <th>VAL2</th>
+      <th>s_VAL1</th>
+      <th>s_VAL2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1111111111</td>
+      <td>3333333333</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>3</td>
+      <td>1</td>
+      <td>3333333333</td>
+      <td>1111111111</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>1111111111</td>
+      <td>3333333333</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>8</td>
+      <td>10</td>
+      <td>8888888888</td>
+      <td>10101010101010101010</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>2222222222</td>
+    </tr>
+  </tbody>
+</table>
 </div>
+</div>
+
 </div>
 
 </div>
@@ -13836,16 +14358,8 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="wordfile4"></a></p>
-<h3 id="5.4-Count-the-instances-of-a-string-at-the-beginning-of-words">5.4 Count the instances of a string at the beginning of words<a class="anchor-link" href="#5.4-Count-the-instances-of-a-string-at-the-beginning-of-words">&#182;</a></h3><p>Count the number of times the substring "Spark" appears at the beginning of a word in the original text.</p>
-<p>Here's what you need to do:</p>
-<ol>
-<li>Run a <code>flatMap</code> transformation on the Spark_lines RDD and split on white spaces.</li>
-<li>Create an RDD with key-value pairs where the first element of the tuple is the word and the second element is the number 1.</li>
-<li>Run a <code>reduceByKey</code> method with the <code>add</code> function to count the number of instances of each word.<br></li>
-<li>Filter the resulting RDD to keep only the elements that start with the word "Spark". In Python, the syntax to determine whether a string starts with a token is: <code>string.startswith("token")</code> </li>
-<li>Display the resulting list of elements that start with "Spark".</li>
-</ol>
+<p>The values in the VAL1 and VAL2 columns look like strings (10 characters instead of a number multiplied by 10). That's because string is the default data type for columns in Spark DataFrames.</p>
+<p>Cast the values in the VAL1 and VAL2 columns to integers:</p>
 
 </div>
 </div>
@@ -13855,8 +14369,17 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 <div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">temp</span> <span class="o">=</span> <span class="n">Spark_lines</span><span class="o">.</span><span class="n">flatMap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">))</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:(</span><span class="n">x</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">reduceByKey</span><span class="p">(</span><span class="n">add</span><span class="p">)</span>
-<span class="n">temp</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">):</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;Spark&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">select</span>
+<span class="s2">    ID,</span>
+<span class="s2">    VAL1,</span>
+<span class="s2">    VAL2,</span>
+<span class="s2">    simple_function(cast(VAL1 as int)) as s_VAL1,</span>
+<span class="s2">    simple_function(cast(VAL2 as int)) as s_VAL2</span>
+<span class="s2">from</span>
+<span class="s2"> example2</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -13873,13 +14396,76 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 
 
 
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="output_text output_subarea output_execute_result">
-<pre>[(u&#39;Spark](#building-spark).&#39;, 1),
- (u&#39;Spark&#39;, 14),
- (u&#39;SparkPi&#39;, 2),
- (u&#39;Spark.&#39;, 1),
- (u&#39;Spark&#34;](http://spark.apache.org/docs/latest/building-spark.html).&#39;, 1)]</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ID</th>
+      <th>VAL1</th>
+      <th>VAL2</th>
+      <th>s_VAL1</th>
+      <th>s_VAL2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>1</td>
+      <td>3</td>
+      <td>10</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>3</td>
+      <td>1</td>
+      <td>30</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>1</td>
+      <td>3</td>
+      <td>10</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4</td>
+      <td>8</td>
+      <td>10</td>
+      <td>80</td>
+      <td>100</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>5</td>
+      <td>0</td>
+      <td>2</td>
+      <td>0</td>
+      <td>20</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 </div>
@@ -13892,9 +14478,28 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="wordfile5"></a></p>
-<h3 id="5.5-Count-instances-of-a-string-within-words">5.5 Count instances of a string within words<a class="anchor-link" href="#5.5-Count-instances-of-a-string-within-words">&#182;</a></h3><p>Now filter and display the elements that contain the substring "Spark" anywhere in the word, instead of just at the beginning of words like the last section. Your result should be a superset of the previous result.</p>
-<p>The Python syntax to determine whether a string contains a particular token is: <code>"token" in string</code></p>
+<p>That looks better!</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="sparkdf"></a></p>
+<h2 id="5.-Convert-a-pandas-DataFrame-to-a-Spark-DataFrame">5. Convert a pandas DataFrame to a Spark DataFrame<a class="anchor-link" href="#5.-Convert-a-pandas-DataFrame-to-a-Spark-DataFrame">&#182;</a></h2><p>Although pandas DataFrames display data in a friendlier format, Spark DataFrames can be faster and more scalable.</p>
+<p>You'll get a new data set, create a pandas DataFrame for it, and then convert the pandas DataFrame to a Spark DataFrame.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="ufo"></a></p>
+<h3 id="5.1-Get-a-new-data-set">5.1 Get a new data set<a class="anchor-link" href="#5.1-Get-a-new-data-set">&#182;</a></h3><p>Get a data set about anonymous outdoor equipment purchase data:</p>
 
 </div>
 </div>
@@ -13904,75 +14509,8 @@ Also, count the number of lines in the RDD, which is the same as the number of l
 <div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">temp</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">):</span> <span class="s">&quot;Spark&quot;</span> <span class="ow">in</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[30]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[(u&#39;Spark](#building-spark).&#39;, 1),
- (u&#39;Spark&#39;, 14),
- (u&#39;SparkPi&#39;, 2),
- (u&#39;tests](https://cwiki.apache.org/confluence/display/SPARK/Contributing+to+Spark#ContributingtoSpark-AutomatedTesting).&#39;,
-  1),
- (u&#39;Spark.&#39;, 1),
- (u&#39;Spark&#34;](http://spark.apache.org/docs/latest/building-spark.html).&#39;, 1)]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="numfile"></a></p>
-<h2 id="6.-Analyze-numeric-data-from-a-file">6. Analyze numeric data from a file<a class="anchor-link" href="#6.-Analyze-numeric-data-from-a-file">&#182;</a></h2><p>You'll analyze a sample file that contains instructor names and scores. The file has the following format: Instructor Name,Score1,Score2,Score3,Score4. 
-Here is an example line from the text file: "Carlo,5,3,3,4"</p>
-<p>Add all scores and report on results:</p>
-<ol>
-<li>Download the file.</li>
-<li>Load the text file into an RDD.</li>
-<li>Run a transformation to create an RDD with the instructor names and the sum of the 4 scores per instructor.</li>
-<li>Run a second transformation to compute the average score for each instructor.</li>
-<li>Display the first 5 results.</li>
-</ol>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">!</span>rm Scores.txt* -f
-<span class="o">!</span>wget https://raw.githubusercontent.com/carloapp2/SparkPOT/master/Scores.txt
- 
-<span class="n">Raw_Rdd</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s">&quot;Scores.txt&quot;</span><span class="p">)</span>
-
-<span class="n">SumScores</span> <span class="o">=</span> <span class="n">Raw_Rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">))</span><span class="o">.</span>\
-<span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span> <span class="p">:</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span><span class="o">+</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">])))</span>
-
-<span class="n">Final</span> <span class="o">=</span> <span class="n">SumScores</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">avg</span><span class="p">:</span> <span class="p">(</span><span class="n">avg</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">avg</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">avg</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">4.0</span><span class="p">))</span>
-
-<span class="n">Final</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>rm GoSales_Tx.csv -f
+<span class="o">!</span>wget https://raw.githubusercontent.com/pmservice/wml-sample-models/master/spark/product-line-prediction/data/GoSales_Tx.csv
 </pre></div>
 
 </div>
@@ -13989,20 +14527,51 @@ Here is an example line from the text file: "Carlo,5,3,3,4"</p>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>--2018-03-02 08:35:41--  https://raw.githubusercontent.com/carloapp2/SparkPOT/master/Scores.txt
+<pre>--2019-06-29 20:02:01--  https://raw.githubusercontent.com/pmservice/wml-sample-models/master/spark/product-line-prediction/data/GoSales_Tx.csv
 Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.48.133
 Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.48.133|:443... connected.
 HTTP request sent, awaiting response... 200 OK
-Length: 75 [text/plain]
-Saving to: ‘Scores.txt’
+Length: 2470333 (2.4M) [text/plain]
+Saving to: &#39;GoSales_Tx.csv&#39;
 
-100%[======================================&gt;] 75          --.-K/s   in 0s      
+GoSales_Tx.csv      100%[===================&gt;]   2.36M  --.-KB/s    in 0.05s   
 
-2018-03-02 08:35:42 (9.47 MB/s) - ‘Scores.txt’ saved [75/75]
+2019-06-29 20:02:02 (47.6 MB/s) - &#39;GoSales_Tx.csv&#39; saved [2470333/2470333]
 
 </pre>
 </div>
 </div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="ufopandas"></a></p>
+<h3 id="5.2-Create-a-pandas-DataFrame">5.2 Create a pandas DataFrame<a class="anchor-link" href="#5.2-Create-a-pandas-DataFrame">&#182;</a></h3><p>Create a pandas DataFrame of the data set with the <code>read_csv</code> method:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pandas_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;./GoSales_Tx.csv&quot;</span><span class="p">)</span>
+<span class="n">pandas_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
 
 <div class="output_area">
 
@@ -14010,13 +14579,76 @@ Saving to: ‘Scores.txt’
 
 
 
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
 
-<div class="output_text output_subarea output_execute_result">
-<pre>[(u&#39;Carlo&#39;, 15, 3.75),
- (u&#39;Mokhtar&#39;, 15, 3.75),
- (u&#39;Jacques&#39;, 15, 3.75),
- (u&#39;Braden&#39;, 15, 3.75),
- (u&#39;Chris&#39;, 15, 3.75)]</pre>
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>GENDER</th>
+      <th>AGE</th>
+      <th>MARITAL_STATUS</th>
+      <th>PROFESSION</th>
+      <th>PRODUCT_LINE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>M</td>
+      <td>27</td>
+      <td>Single</td>
+      <td>Professional</td>
+      <td>Personal Accessories</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>F</td>
+      <td>39</td>
+      <td>Single</td>
+      <td>Executive</td>
+      <td>Personal Accessories</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>M</td>
+      <td>39</td>
+      <td>Married</td>
+      <td>Student</td>
+      <td>Mountaineering Equipment</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>F</td>
+      <td>56</td>
+      <td>Single</td>
+      <td>Hospitality</td>
+      <td>Personal Accessories</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>M</td>
+      <td>45</td>
+      <td>Married</td>
+      <td>Retired</td>
+      <td>Golf Equipment</td>
+    </tr>
+  </tbody>
+</table>
+</div>
 </div>
 
 </div>
@@ -14029,17 +14661,567 @@ Saving to: ‘Scores.txt’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="summary"></a></p>
-<h2 id="7.-Summary-and-next-steps">7. Summary and next steps<a class="anchor-link" href="#7.-Summary-and-next-steps">&#182;</a></h2><p>You've learned how to work with data in RDDs to discover useful information.</p>
-<p>Look for the other notebooks in this series:</p>
+<p><a id="sparkufo"></a></p>
+<h3 id="5.3-Convert-to-a-Spark-DataFrame">5.3 Convert to a Spark DataFrame<a class="anchor-link" href="#5.3-Convert-to-a-Spark-DataFrame">&#182;</a></h3><p>Convert the pandas DataFrame to a Spark DataFrame with the <code>createDataFrame</code> method. Remember using the <code>createDataFrame</code> method to convert an RDD to a Spark DataFrame?</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark_df</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">pandas_df</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Print the first two rows:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark_df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+------+---+--------------+------------+--------------------+
+|GENDER|AGE|MARITAL_STATUS|  PROFESSION|        PRODUCT_LINE|
++------+---+--------------+------------+--------------------+
+|     M| 27|        Single|Professional|Personal Accessories|
+|     F| 39|        Single|   Executive|Personal Accessories|
++------+---+--------------+------------+--------------------+
+only showing top 2 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Register the Spark DataFrame as a table:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark_df</span><span class="o">.</span><span class="n">registerTempTable</span><span class="p">(</span><span class="s2">&quot;gosales_tx&quot;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="runufo"></a></p>
+<h3 id="5.4-Run-an-SQL-statement">5.4 Run an SQL statement<a class="anchor-link" href="#5.4-Run-an-SQL-statement">&#182;</a></h3><p>Now run an SQL statement to print the first 10 rows of the table:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;select * from gosales_tx limit 10&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span><span class="p">())</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[Row(GENDER=&#39;M&#39;, AGE=27, MARITAL_STATUS=&#39;Single&#39;, PROFESSION=&#39;Professional&#39;, PRODUCT_LINE=&#39;Personal Accessories&#39;), Row(GENDER=&#39;F&#39;, AGE=39, MARITAL_STATUS=&#39;Single&#39;, PROFESSION=&#39;Executive&#39;, PRODUCT_LINE=&#39;Personal Accessories&#39;), Row(GENDER=&#39;M&#39;, AGE=39, MARITAL_STATUS=&#39;Married&#39;, PROFESSION=&#39;Student&#39;, PRODUCT_LINE=&#39;Mountaineering Equipment&#39;), Row(GENDER=&#39;F&#39;, AGE=56, MARITAL_STATUS=&#39;Single&#39;, PROFESSION=&#39;Hospitality&#39;, PRODUCT_LINE=&#39;Personal Accessories&#39;), Row(GENDER=&#39;M&#39;, AGE=45, MARITAL_STATUS=&#39;Married&#39;, PROFESSION=&#39;Retired&#39;, PRODUCT_LINE=&#39;Golf Equipment&#39;), Row(GENDER=&#39;M&#39;, AGE=45, MARITAL_STATUS=&#39;Married&#39;, PROFESSION=&#39;Retired&#39;, PRODUCT_LINE=&#39;Golf Equipment&#39;), Row(GENDER=&#39;M&#39;, AGE=39, MARITAL_STATUS=&#39;Married&#39;, PROFESSION=&#39;Student&#39;, PRODUCT_LINE=&#39;Camping Equipment&#39;), Row(GENDER=&#39;M&#39;, AGE=49, MARITAL_STATUS=&#39;Married&#39;, PROFESSION=&#39;Student&#39;, PRODUCT_LINE=&#39;Camping Equipment&#39;), Row(GENDER=&#39;F&#39;, AGE=49, MARITAL_STATUS=&#39;Married&#39;, PROFESSION=&#39;Retired&#39;, PRODUCT_LINE=&#39;Outdoor Protection&#39;), Row(GENDER=&#39;M&#39;, AGE=47, MARITAL_STATUS=&#39;Married&#39;, PROFESSION=&#39;Retired&#39;, PRODUCT_LINE=&#39;Golf Equipment&#39;)]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="viz"></a></p>
+<h2 id="6.-Visualize-data">6. Visualize data<a class="anchor-link" href="#6.-Visualize-data">&#182;</a></h2><p>It's easy to create charts from pandas DataFrames. You'll use the matplotlib library to create graphs and the NumPy package for computing.</p>
+<p>Import the libraries and specify to show graphs inline:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline 
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Convert the Spark DataFrame with outdoor equipment purchase data to a pandas DataFrame:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sales_df</span> <span class="o">=</span> <span class="n">spark_df</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="vizchart"></a></p>
+<h3 id="6.1-Create-a-chart-using-Pandas">6.1 Create a chart using Pandas<a class="anchor-link" href="#6.1-Create-a-chart-using-Pandas">&#182;</a></h3><p>To create a chart, you call the <code>plot()</code> method and specify the type of chart, the columns for the X and Y axes, and, optionally, the size of the chart.</p>
+<p>For more information about plotting pandas DataFrames, see <a href="http://pandas.pydata.org/pandas-docs/stable/visualization.html" target="_blank" rel="noopener noreferrer">Visualization</a>.</p>
+<p>Create a bar chart 12" wide by 5" high that shows the number of each gender:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sales_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[38]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>GENDER</th>
+      <th>AGE</th>
+      <th>MARITAL_STATUS</th>
+      <th>PROFESSION</th>
+      <th>PRODUCT_LINE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>M</td>
+      <td>27</td>
+      <td>Single</td>
+      <td>Professional</td>
+      <td>Personal Accessories</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>F</td>
+      <td>39</td>
+      <td>Single</td>
+      <td>Executive</td>
+      <td>Personal Accessories</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>M</td>
+      <td>39</td>
+      <td>Married</td>
+      <td>Student</td>
+      <td>Mountaineering Equipment</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>F</td>
+      <td>56</td>
+      <td>Single</td>
+      <td>Hospitality</td>
+      <td>Personal Accessories</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>M</td>
+      <td>45</td>
+      <td>Married</td>
+      <td>Retired</td>
+      <td>Golf Equipment</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sales_df_plot</span> <span class="o">=</span> <span class="p">(</span><span class="n">sales_df</span><span class="p">[</span><span class="s2">&quot;GENDER&quot;</span><span class="p">]</span>     <span class="c1"># Select the &quot;GENDER&quot; column.</span>
+                <span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>         <span class="c1"># Count the number of each gender.</span>
+                <span class="o">.</span><span class="n">to_frame</span><span class="p">(</span><span class="s2">&quot;Count&quot;</span><span class="p">)</span>      <span class="c1"># Since value_counts() returns a Pandas Series, convert it into a Pandas DataFrame. Also, rename the &quot;GENDER&quot; column as &quot;Count&quot;.</span>
+                <span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="s2">&quot;GENDER&quot;</span><span class="p">)</span>  <span class="c1"># Rename the &quot;index&quot; of the DataFrame - M/F - as &quot;GENDER&quot;.</span>
+                <span class="o">.</span><span class="n">reset_index</span><span class="p">())</span>         <span class="c1"># Create the &quot;GENDER&quot; column.</span>
+<span class="n">sales_df_plot</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[39]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>GENDER</th>
+      <th>Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>M</td>
+      <td>35748</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>F</td>
+      <td>24504</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sales_df_plot</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;GENDER&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Count&quot;</span><span class="p">,</span> <span class="n">rot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>  <span class="c1"># Set the rot as 0 if you don&#39;t want the x ticks be 90 degrees rotated.</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[40]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;matplotlib.axes._subplots.AxesSubplot at 0x7f4961bc86d8&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAtYAAAFACAYAAACYxzsFAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDMuMC4yLCBodHRwOi8vbWF0cGxvdGxpYi5vcmcvOIA7rQAAGrxJREFUeJzt3XuwZlV5J+Dfm+bSTjQBoSUUjWmSdCYiagstMolGBh1sjCnQwQxMJlIWNR0tqAmZaImpmsJ4SWlGg6PlZTAyQCoRKKMDZXAIQSi14qUbg8hFixYxthBoQQmOigHf+ePsNmea05xD9+o+feB5qnZ9e797rfWtzR+HH5u191fdHQAAYOf81GJPAAAAHgsEawAAGECwBgCAAQRrAAAYQLAGAIABBGsAABhAsAYAgAEEawAAGECwBgCAAfZa7AnsqAMPPLBXrVq12NMAAOAx7Lrrrvt2d69YSNslG6xXrVqVjRs3LvY0AAB4DKuqbyy0raUgAAAwgGANAAADCNYAADDAkl1jDQDAOP/8z/+czZs354c//OFiT2VRLF++PCtXrszee++9w2MI1gAAZPPmzXnSk56UVatWpaoWezq7VXfnnnvuyebNm3PYYYft8DiWggAAkB/+8Ic54IADHnehOkmqKgcccMBO360XrAEASJLHZajeasS1C9YAADCANdYAADzMqrP/euh4t7/tN+Zt84//+I8566yzsmHDhuy7775ZtWpV3vWud+WXf/mXh8zh2muvzT777JNf/dVfHTLettyxBgBg0XV3Xvayl+XYY4/N1772tdx888354z/+49x1113DvuPaa6/N3/3d3w0bb1uCNQAAi+6aa67J3nvvnVe/+tU/qa1ZsybPe97z8rrXvS5HHHFEnvGMZ+SSSy5JMhOSX/rSl/6k7ZlnnpkLLrggSbJq1aqcc845OfLII/OMZzwjX/nKV3L77bfnAx/4QM4999ysWbMmn/70p4dfg6UgDP9fPTDSQv7XIQBL34033pijjjrqYfWPfvSjuf766/OlL30p3/72t/Oc5zwnv/7rvz7veAceeGC++MUv5n3ve1/e8Y535M/+7M/y6le/Ok984hPz2te+dldcgjvWAADsuT7zmc/k1FNPzbJly3LQQQflBS94QTZs2DBvv5e//OVJkqOOOiq33377Lp7ljHmD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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="vizagg"></a></p>
+<h3 id="6.2-Aggregate-the-data">6.2 Aggregate the data<a class="anchor-link" href="#6.2-Aggregate-the-data">&#182;</a></h3><p>You can do the equivalent job in the previous subsection in Spark by aggregating the data by <code>GENDER</code>. Here are a few of the ways that you can do that:</p>
 <ul>
-<li><a href="https://apsportal.ibm.com/exchange/public/entry/view/5ad1c820f57809ddec9a040e37b2bd55">Introduction to Apache Spark lab, part 2: Querying data</a></li>
-<li><a href="https://apsportal.ibm.com/exchange/public/entry/view/5ad1c820f57809ddec9a040e37b4af08">Introduction to Apache Spark lab, part 3: Machine learning</a> </li>
+<li>Run an SQL query on the GENDER column to output the count of the GENDER, and then run a group by operation on the GENDER.</li>
+<li>Create a simple Python function to aggregate by GENDER, and then run the function in an SQL query.</li>
+<li>Run the <code>map()</code> method on the Spark Dataframe to append a new column that contains the aggregated count by GENDER. </li>
+<li>Run the <code>groupBy()</code> and <code>count()</code> methods on the Spark Dataframe. This is the method you'll use.</li>
 </ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gender_df</span> <span class="o">=</span> <span class="n">spark_df</span><span class="o">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s2">&quot;GENDER&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Check to verify that you get the expected results:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">gender_df</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+------+-----+
+|GENDER|count|
++------+-----+
+|     F|24504|
+|     M|35748|
++------+-----+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="vizchart2"></a></p>
+<h3 id="6.3-Create-a-chart-using-Spark-SQL">6.3 Create a chart using Spark SQL<a class="anchor-link" href="#6.3-Create-a-chart-using-Spark-SQL">&#182;</a></h3><p>Now, run an SQL query to group by <code>GENDER</code> and order by <code>GENDER</code>. Then, create a pandas DataFrame for the results and create a chart of the count of each gender.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">select</span>
+<span class="s2">    GENDER,</span>
+<span class="s2">    count(GENDER) as Count</span>
+<span class="s2">from gosales_tx</span>
+<span class="s2">group by GENDER</span>
+<span class="s2">order by GENDER desc</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">spark_gender_df</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="n">query</span><span class="p">)</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+<span class="n">spark_gender_df</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;GENDER&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;Count&quot;</span><span class="p">,</span> <span class="n">rot</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">));</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAtYAAAFACAYAAACYxzsFAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDMuMC4yLCBodHRwOi8vbWF0cGxvdGxpYi5vcmcvOIA7rQAAGrxJREFUeJzt3XuwZlV5J+Dfm+bSTjQBoSUUjWmSdCYiagstMolGBh1sjCnQwQxMJlIWNR0tqAmZaImpmsJ4SWlGg6PlZTAyQCoRKKMDZXAIQSi14qUbg8hFixYxthBoQQmOigHf+ePsNmea05xD9+o+feB5qnZ9e797rfWtzR+HH5u191fdHQAAYOf81GJPAAAAHgsEawAAGECwBgCAAQRrAAAYQLAGAIABBGsAABhAsAYAgAEEawAAGECwBgCAAfZa7AnsqAMPPLBXrVq12NMAAOAx7Lrrrvt2d69YSNslG6xXrVqVjRs3LvY0AAB4DKuqbyy0raUgAAAwgGANAAADCNYAADDAkl1jDQDAOP/8z/+czZs354c//OFiT2VRLF++PCtXrszee++9w2MI1gAAZPPmzXnSk56UVatWpaoWezq7VXfnnnvuyebNm3PYYYft8DiWggAAkB/+8Ic54IADHnehOkmqKgcccMBO360XrAEASJLHZajeasS1C9YAADCANdYAADzMqrP/euh4t7/tN+Zt84//+I8566yzsmHDhuy7775ZtWpV3vWud+WXf/mXh8zh2muvzT777JNf/dVfHTLettyxBgBg0XV3Xvayl+XYY4/N1772tdx888354z/+49x1113DvuPaa6/N3/3d3w0bb1uCNQAAi+6aa67J3nvvnVe/+tU/qa1ZsybPe97z8rrXvS5HHHFEnvGMZ+SSSy5JMhOSX/rSl/6k7ZlnnpkLLrggSbJq1aqcc845OfLII/OMZzwjX/nKV3L77bfnAx/4QM4999ysWbMmn/70p4dfg6UgDP9fPTDSQv7XIQBL34033pijjjrqYfWPfvSjuf766/OlL30p3/72t/Oc5zwnv/7rvz7veAceeGC++MUv5n3ve1/e8Y535M/+7M/y6le/Ok984hPz2te+dldcgjvWAADsuT7zmc/k1FNPzbJly3LQQQflBS94QTZs2DBvv5e//OVJkqOOOiq33377Lp7ljHmD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
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now you have a chart that is equivalent of the one in section <a href="#vizchart">6.1 Create a chart</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="nextsteps"></a></p>
+<h2 id="7.-Summary-and-next-steps">7. Summary and next steps<a class="anchor-link" href="#7.-Summary-and-next-steps">&#182;</a></h2><p>You've learned how to create DataFrames, convert between DataFrame types, and convert from RDDs. You know how to run SQL queries and create SQL functions. And you can visualize the data in charts.</p>
+<p>Go to the next notebook in this series: <a href="https://dataplatform.cloud.ibm.com/exchange/public/entry/view/5ad1c820f57809ddec9a040e37b4af08" target="_blank" rel="noopener noreferrer">Introduction to Apache Spark lab, part 3: Machine learning</a>.</p>
 <p>Dig deeper:</p>
 <ul>
 <li><a href="http://spark.apache.org/documentation.html" target="_blank" rel="noopener noreferrer">Apache Spark documentation</a></li>
 <li><a href="http://spark.apache.org/docs/latest/api/python/pyspark.html" target="_blank" rel="noopener noreferrer">PySpark documentation</a></li>
+<li><a href="http://pandas.pydata.org/pandas-docs/stable/index.html" target="_blank" rel="noopener noreferrer">pandas</a></li>
+<li><a href="http://matplotlib.org/" target="_blank" rel="noopener noreferrer">matplotlib</a></li>
+<li><a href="http://www.numpy.org/" target="_blank" rel="noopener noreferrer">NumPy</a></li>
 </ul>
 
 </div>
@@ -14049,10 +15231,11 @@ Saving to: ‘Scores.txt’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Carlo Appugliese</strong> is a Spark and Hadoop evangelist at IBM.<br>
-<strong>Braden Callahan</strong> is a Big Data Technical Specialist for IBM.<br>
-<strong>Ross Lewis</strong> is a Big Data Technical Sales Specialist for IBM.<br>
-<strong>Mokhtar Kandil</strong> is a World Wide Big Data Technical Specialist for IBM.</p>
+<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p>Carlo Appugliese is a Spark and Hadoop evangelist at IBM.<br>
+Braden Callahan is a Big Data Technical Specialist for IBM.<br>
+Ross Lewis is a Big Data Technical Sales Specialist for IBM.<br>
+Mokhtar Kandil is a World Wide Big Data Technical Specialist for IBM.</p>
+<h3 id="Data-citation">Data citation<a class="anchor-link" href="#Data-citation">&#182;</a></h3><p>The World Bank: Projects &amp; Operations</p>
 
 </div>
 </div>
@@ -14062,8 +15245,21 @@ Saving to: ‘Scores.txt’
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><hr>
-Copyright &copy; IBM Corp. 2017, 2018. This notebook and its source code are released under the terms of the MIT License.</p>
+Copyright &copy; IBM Corp. 2017-2019. This notebook and its source code are released under the terms of the MIT License.</p>
 
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
+<span style="font-size:18px;color:#152935;">Love this notebook? </span>
+<span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
+<span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+</div>
 </div>
 </div>
 </div>
