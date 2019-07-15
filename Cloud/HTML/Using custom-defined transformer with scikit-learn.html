@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Using custom-defined transformer with scikit-learn</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Using custom-defined transformer in a scikit-learn model with Watson Machine Learning</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -12684,7 +12684,7 @@ div#notebook {
 <p>Building models with standard components is straightforward, but to use any custom component with your models in Watson Machine Learning, you need to package your custom component code in a source distribution package and store that package in your Watson Machine Learning repository with your model.</p>
 <p>Learn how to train a scikit-learn model that uses a custom-defined transformer and then use it with the Watson Machine Learning service. After the model is trained, persist the model and the custom-defined transformer to the Watson Machine Learning Repository, deploy and score it using the Watson Machine Learning python client.</p>
 <p>In this notebook, you will use the GNFUV data set that contains mobile sensor readings data about humidity and temperature from Unmanned Surface Vehicles in a test-bed in Athens to train a Scikit-Learn model to predict the temperature.</p>
-<p>Some familiarity with Python is helpful. This notebook uses Python 3.5 and scikit-learn-0.19.1. Learn more about custom components <a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-custom_libs_overview.html" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<p>Some familiarity with Python is helpful. This notebook uses Python 3.6 and scikit-learn-0.19.1. Learn more about custom components <a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-custom_libs_overview.html" target="_blank" rel="noopener noreferrer">here</a>.</p>
 
 </div>
 </div>
@@ -12720,13 +12720,13 @@ div#notebook {
 <p><a id="setup"></a></p>
 <h2 id="1.-Set-up">1. Set up<a class="anchor-link" href="#1.-Set-up">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
-<li><p>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener noreferrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance is <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener noreferrer">here</a>.</p>
+<li><p>Create a <a href="https://cloud.ibm.com/catalog/services/machine-learning" target="_blank" rel="noopener noreferrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance is <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener noreferrer">here</a>.</p>
 </li>
 <li><p>Configure your local python environment:</p>
 <ul>
-<li>Python 3.5</li>
+<li>Python 3.6</li>
 <li>scikit-learn 0.19.1</li>
-<li>watson-machine-learning-client, version: 1.0.293 or above</li>
+<li>watson-machine-learning-client</li>
 </ul>
 </li>
 </ul>
@@ -12808,7 +12808,7 @@ Any 3rd party libraries that are required for the custom transformer must be def
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># download the library</span>
@@ -12816,39 +12816,6 @@ Any 3rd party libraries that are required for the custom transformer must be def
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>--2018-11-27 19:06:53--  https://github.com/pmservice/wml-sample-models/raw/master/scikit-learn/custom-transformer-temperature-prediction/libraries/linalgnorm-0.1.zip
-Resolving github.com (github.com)... 192.30.253.112, 192.30.253.113
-Connecting to github.com (github.com)|192.30.253.112|:443... connected.
-HTTP request sent, awaiting response... 302 Found
-Location: https://raw.githubusercontent.com/pmservice/wml-sample-models/master/scikit-learn/custom-transformer-temperature-prediction/libraries/linalgnorm-0.1.zip [following]
---2018-11-27 19:06:54--  https://raw.githubusercontent.com/pmservice/wml-sample-models/master/scikit-learn/custom-transformer-temperature-prediction/libraries/linalgnorm-0.1.zip
-Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 151.101.48.133
-Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|151.101.48.133|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 2550 (2.5K) [application/zip]
-Saving to: ‘linalgnorm-0.1.zip’
-
-100%[======================================&gt;] 2,550       --.-K/s   in 0s      
-
-2018-11-27 19:06:54 (33.6 MB/s) - ‘linalgnorm-0.1.zip’ saved [2550/2550]
-
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -12875,9 +12842,8 @@ Saving to: ‘linalgnorm-0.1.zip’
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>total 8
-drwxr-x--- 3 dsxuser dsxuser 4096 Nov 27 18:38 <span class="ansi-blue-intense-fg ansi-bold">data</span>/
--rw-r----- 1 dsxuser dsxuser 2550 Nov 27 19:06 linalgnorm-0.1.zip
+<pre>total 4
+-rw-r----- 1 dsxuser dsxuser 2550 Jul  9 17:28 linalgnorm-0.1.zip
 </pre>
 </div>
 </div>
@@ -12942,41 +12908,13 @@ drwxr-x--- 3 dsxuser dsxuser 4096 Nov 27 18:38 <span class="ansi-blue-intense-fg
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>wget https://archive.ics.uci.edu/ml/machine-learning-databases/00452/GNFUV%20USV%20Dataset.zip --output-document<span class="o">=</span>dataset/gnfuv_dataset.zip
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>--2018-11-27 19:07:14--  https://archive.ics.uci.edu/ml/machine-learning-databases/00452/GNFUV%20USV%20Dataset.zip
-Resolving archive.ics.uci.edu (archive.ics.uci.edu)... 128.195.10.249
-Connecting to archive.ics.uci.edu (archive.ics.uci.edu)|128.195.10.249|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 501978 (490K) [application/zip]
-Saving to: ‘dataset/gnfuv_dataset.zip’
-
-100%[======================================&gt;] 501,978     1.24MB/s   in 0.4s   
-
-2018-11-27 19:07:15 (1.24 MB/s) - ‘dataset/gnfuv_dataset.zip’ saved [501978/501978]
-
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -13003,7 +12941,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>/home/dsxuser/work/dataset
+<pre>/home/dsxuser/work/data/libs/dataset
 </pre>
 </div>
 </div>
@@ -13158,53 +13096,53 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>experiment</th>
+      <th>device</th>
       <th>humidity</th>
       <th>temperature</th>
+      <th>experiment</th>
       <th>time</th>
-      <th>device</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>0</th>
+      <td>gnfuv-temp-exp1-55d487b85b-xcl97</td>
+      <td>59.0</td>
+      <td>20.0</td>
       <td>1.0</td>
-      <td>21.0</td>
-      <td>40.0</td>
-      <td>62357</td>
-      <td>gnfuv-temp-exp1-55d487b85b-5g2xh</td>
+      <td>59247</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>1.0</td>
+      <td>gnfuv-temp-exp1-55d487b85b-xcl97</td>
+      <td>58.0</td>
       <td>21.0</td>
-      <td>40.0</td>
-      <td>62371</td>
-      <td>gnfuv-temp-exp1-55d487b85b-5g2xh</td>
+      <td>1.0</td>
+      <td>59252</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>1.0</td>
+      <td>gnfuv-temp-exp1-55d487b85b-xcl97</td>
+      <td>57.0</td>
       <td>21.0</td>
-      <td>40.0</td>
-      <td>62377</td>
-      <td>gnfuv-temp-exp1-55d487b85b-5g2xh</td>
+      <td>1.0</td>
+      <td>59259</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>1.0</td>
+      <td>gnfuv-temp-exp1-55d487b85b-xcl97</td>
+      <td>57.0</td>
       <td>21.0</td>
-      <td>40.0</td>
-      <td>62383</td>
-      <td>gnfuv-temp-exp1-55d487b85b-5g2xh</td>
+      <td>1.0</td>
+      <td>59267</td>
     </tr>
     <tr>
       <th>4</th>
+      <td>gnfuv-temp-exp1-55d487b85b-xcl97</td>
+      <td>57.0</td>
+      <td>21.0</td>
       <td>1.0</td>
-      <td>22.0</td>
-      <td>40.0</td>
-      <td>62389</td>
-      <td>gnfuv-temp-exp1-55d487b85b-5g2xh</td>
+      <td>59271</td>
     </tr>
   </tbody>
 </table>
@@ -13228,11 +13166,24 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install scikit-learn<span class="o">==</span><span class="m">0</span>.19.1
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">MinMaxScaler</span>
-<span class="kn">from</span> <span class="nn">sklearn.cross_validation</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
 
 <span class="n">Y</span> <span class="o">=</span> <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;temperature&#39;</span><span class="p">]</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">data_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;temperature&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -13241,25 +13192,6 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/envs/DSX-Python35/lib/python3.5/site-packages/sklearn/cross_validation.py:41: DeprecationWarning: This module was deprecated in version 0.18 in favor of the model_selection module into which all the refactored classes and functions are moved. Also note that the interface of the new CV iterators are different from that of this module. This module will be removed in 0.20.
-  &#34;This module will be removed in 0.20.&#34;, DeprecationWarning)
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -13285,7 +13217,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">linalg_norm.sklearn_transformers</span> <span class="k">import</span> <span class="n">LNormalizer</span>
@@ -13298,7 +13230,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">lnorm_transf</span> <span class="o">=</span> <span class="n">LNormalizer</span><span class="p">()</span>
@@ -13319,7 +13251,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.pipeline</span> <span class="k">import</span> <span class="n">Pipeline</span>
@@ -13342,7 +13274,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">skl_pipeline</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">(</span><span class="n">steps</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;normalizer&#39;</span><span class="p">,</span> <span class="n">lnorm_transf</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;regression_estimator&#39;</span><span class="p">,</span> <span class="n">LinearRegression</span><span class="p">())])</span>
@@ -13359,7 +13291,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[18]:</div>
+<div class="prompt output_prompt">Out[19]:</div>
 
 
 
@@ -13377,7 +13309,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">skl_pipeline</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;humidity&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
@@ -13399,7 +13331,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>RMSE: 2.25278950030571
+<pre>RMSE: 2.226301072382404
 </pre>
 </div>
 </div>
@@ -13433,7 +13365,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">watson_machine_learning_client</span> <span class="k">import</span> <span class="n">WatsonMachineLearningAPIClient</span>
@@ -13449,7 +13381,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Authenticate to the Watson Machine Learning service on IBM Cloud.</p>
-<p>Authentication information (your credentials) can be found in the <a href="https://console.bluemix.net/docs/services/service_credentials.html#service_credentials" target="_blank" rel="noopener noreferrer">Service Credentials</a> tab of the service instance that you created on IBM Cloud. <BR>If you cannot see the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
+<p>Authentication information (your credentials) can be found in the <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-get-wml-credentials.html" target="_blank" rel="noopener noreferrer">Service Credentials</a> tab of the service instance that you created on IBM Cloud. <BR>If you cannot see the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
 <p><strong>Action</strong>: Enter your Watson Machine Learning service instance credentials here.</p>
 
 </div>
@@ -13457,11 +13389,15 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">wml_credentials</span><span class="o">=</span><span class="p">{</span>
-  <span class="n">ADD</span> <span class="n">YOUR</span> <span class="n">CREDENTIALS</span> <span class="n">HERE</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;apikey&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;instance_id&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://ibm-watson-ml.mybluemix.net&quot;</span>
 <span class="p">}</span>
 </pre></div>
 
@@ -13481,7 +13417,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">WatsonMachineLearningAPIClient</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">)</span>
@@ -13502,7 +13438,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">cd</span> <span class="o">~/</span><span class="n">work</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">libs</span> 
@@ -13543,7 +13479,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">lib_meta</span> <span class="o">=</span> <span class="p">{</span>
@@ -13572,7 +13508,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Custom Library UID: affcf4f9-a054-4a40-bcd3-537aa0550224
+<pre>Custom Library UID: 76fe4244-1d2c-46e9-b97b-30401543df33
 </pre>
 </div>
 </div>
@@ -13592,7 +13528,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">custom_library_details</span>
@@ -13608,20 +13544,20 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[25]:</div>
+<div class="prompt output_prompt">Out[27]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>{&#39;entity&#39;: {&#39;description&#39;: &#39;K_Linag_norm_skl&#39;,
-  &#39;name&#39;: &#39;K_Linag_norm_skl&#39;,
-  &#39;platform&#39;: {&#39;name&#39;: &#39;python&#39;, &#39;versions&#39;: [&#39;3.5&#39;]},
-  &#39;version&#39;: &#39;1.3&#39;},
- &#39;metadata&#39;: {&#39;created_at&#39;: &#39;2018-11-27T19:08:30Z&#39;,
-  &#39;guid&#39;: &#39;affcf4f9-a054-4a40-bcd3-537aa0550224&#39;,
-  &#39;modified_at&#39;: &#39;2018-11-27T19:08:31Z&#39;,
-  &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v4/libraries/affcf4f9-a054-4a40-bcd3-537aa0550224&#39;}}</pre>
+<pre>{&#39;metadata&#39;: {&#39;guid&#39;: &#39;76fe4244-1d2c-46e9-b97b-30401543df33&#39;,
+  &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v4/libraries/76fe4244-1d2c-46e9-b97b-30401543df33&#39;,
+  &#39;created_at&#39;: &#39;2019-07-09T17:28:29.319Z&#39;,
+  &#39;modified_at&#39;: &#39;2019-07-09T17:28:30.077Z&#39;},
+ &#39;entity&#39;: {&#39;name&#39;: &#39;K_Linag_norm_skl&#39;,
+  &#39;description&#39;: &#39;K_Linag_norm_skl&#39;,
+  &#39;version&#39;: &#39;1.3&#39;,
+  &#39;platform&#39;: {&#39;name&#39;: &#39;python&#39;, &#39;versions&#39;: [&#39;3.5&#39;]}}}</pre>
 </div>
 
 </div>
@@ -13650,7 +13586,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">runtimes_meta</span> <span class="o">=</span> <span class="p">{</span>
@@ -13690,7 +13626,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">runtime_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">runtimes</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">runtimes_meta</span><span class="p">)</span>
@@ -13707,22 +13643,22 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[27]:</div>
+<div class="prompt output_prompt">Out[29]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>{&#39;entity&#39;: {&#39;content_url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v4/runtimes/eb5723bf-be98-43d0-92fc-78a8eda93587/content&#39;,
-  &#39;custom_libraries&#39;: [{&#39;name&#39;: &#39;K_Linag_norm_skl&#39;,
-    &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v4/libraries/affcf4f9-a054-4a40-bcd3-537aa0550224&#39;,
-    &#39;version&#39;: &#39;1.3&#39;}],
+<pre>{&#39;metadata&#39;: {&#39;guid&#39;: &#39;883b5d39-6b10-4143-9064-e282d16b1888&#39;,
+  &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v4/runtimes/883b5d39-6b10-4143-9064-e282d16b1888&#39;,
+  &#39;created_at&#39;: &#39;2019-07-09T17:28:30.255Z&#39;},
+ &#39;entity&#39;: {&#39;name&#39;: &#39;K_linalg_gnfuv1&#39;,
   &#39;description&#39;: &#39;skl linalg gnfuv model&#39;,
-  &#39;name&#39;: &#39;K_linalg_gnfuv1&#39;,
-  &#39;platform&#39;: {&#39;name&#39;: &#39;python&#39;, &#39;version&#39;: &#39;3.5&#39;}},
- &#39;metadata&#39;: {&#39;created_at&#39;: &#39;2018-11-27T19:08:48.132Z&#39;,
-  &#39;guid&#39;: &#39;eb5723bf-be98-43d0-92fc-78a8eda93587&#39;,
-  &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v4/runtimes/eb5723bf-be98-43d0-92fc-78a8eda93587&#39;}}</pre>
+  &#39;custom_libraries&#39;: [{&#39;name&#39;: &#39;K_Linag_norm_skl&#39;,
+    &#39;version&#39;: &#39;1.3&#39;,
+    &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v4/libraries/76fe4244-1d2c-46e9-b97b-30401543df33&#39;}],
+  &#39;content_url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v4/runtimes/883b5d39-6b10-4143-9064-e282d16b1888/content&#39;,
+  &#39;platform&#39;: {&#39;name&#39;: &#39;python&#39;, &#39;version&#39;: &#39;3.5&#39;}}}</pre>
 </div>
 
 </div>
@@ -13742,7 +13678,7 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">runtime_url</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">runtimes</span><span class="o">.</span><span class="n">get_url</span><span class="p">(</span><span class="n">runtime_details</span><span class="p">)</span>
@@ -13765,8 +13701,8 @@ Saving to: ‘dataset/gnfuv_dataset.zip’
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Runtimes URL: https://us-south.ml.cloud.ibm.com/v4/runtimes/eb5723bf-be98-43d0-92fc-78a8eda93587
-Runtimes UID: eb5723bf-be98-43d0-92fc-78a8eda93587
+<pre>Runtimes URL: https://us-south.ml.cloud.ibm.com/v4/runtimes/883b5d39-6b10-4143-9064-e282d16b1888
+Runtimes UID: 883b5d39-6b10-4143-9064-e282d16b1888
 </pre>
 </div>
 </div>
@@ -13795,7 +13731,7 @@ Runtimes UID: eb5723bf-be98-43d0-92fc-78a8eda93587
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_props</span> <span class="o">=</span> <span class="p">{</span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s2">&quot;cust norm linalg_norm gnfuv1&quot;</span><span class="p">,</span>
@@ -13819,7 +13755,7 @@ Runtimes UID: eb5723bf-be98-43d0-92fc-78a8eda93587
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">published_model</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_model</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">skl_pipeline</span><span class="p">,</span> <span class="n">meta_props</span><span class="o">=</span><span class="n">model_props</span><span class="p">)</span>
@@ -13832,7 +13768,7 @@ Runtimes UID: eb5723bf-be98-43d0-92fc-78a8eda93587
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">published_model_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_model_uid</span><span class="p">(</span><span class="n">published_model</span><span class="p">)</span>
@@ -13855,33 +13791,32 @@ Runtimes UID: eb5723bf-be98-43d0-92fc-78a8eda93587
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>{
+  &#34;metadata&#34;: {
+    &#34;guid&#34;: &#34;e3031439-7cf2-4ebb-aca6-6d69962d703f&#34;,
+    &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models/e3031439-7cf2-4ebb-aca6-6d69962d703f&#34;,
+    &#34;created_at&#34;: &#34;2019-07-09T17:28:31.174Z&#34;,
+    &#34;modified_at&#34;: &#34;2019-07-09T17:28:31.246Z&#34;
+  },
   &#34;entity&#34;: {
-    &#34;learning_iterations_url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/published_models/a02808e9-450f-431f-9eee-161c3750e338/learning_iterations&#34;,
-    &#34;tags&#34;: [],
+    &#34;runtime_environment&#34;: &#34;python-3.6&#34;,
+    &#34;learning_configuration_url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models/e3031439-7cf2-4ebb-aca6-6d69962d703f/learning_configuration&#34;,
     &#34;name&#34;: &#34;cust norm linalg_norm gnfuv1&#34;,
-    &#34;runtime&#34;: {
-      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v4/runtimes/eb5723bf-be98-43d0-92fc-78a8eda93587&#34;
+    &#34;learning_iterations_url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models/e3031439-7cf2-4ebb-aca6-6d69962d703f/learning_iterations&#34;,
+    &#34;feedback_url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models/e3031439-7cf2-4ebb-aca6-6d69962d703f/feedback&#34;,
+    &#34;latest_version&#34;: {
+      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/ml_assets/models/e3031439-7cf2-4ebb-aca6-6d69962d703f/versions/b8852285-668d-4f76-bec9-7074ff9ad81b&#34;,
+      &#34;guid&#34;: &#34;b8852285-668d-4f76-bec9-7074ff9ad81b&#34;,
+      &#34;created_at&#34;: &#34;2019-07-09T17:28:31.246Z&#34;
     },
     &#34;model_type&#34;: &#34;scikit-learn-0.19&#34;,
-    &#34;runtime_environment&#34;: &#34;python-3.5&#34;,
     &#34;deployments&#34;: {
-      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/published_models/a02808e9-450f-431f-9eee-161c3750e338/deployments&#34;,
-      &#34;count&#34;: 0
+      &#34;count&#34;: 0,
+      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models/e3031439-7cf2-4ebb-aca6-6d69962d703f/deployments&#34;
     },
-    &#34;evaluation_metrics_url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/published_models/a02808e9-450f-431f-9eee-161c3750e338/evaluation_metrics&#34;,
-    &#34;latest_version&#34;: {
-      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/ml_assets/models/a02808e9-450f-431f-9eee-161c3750e338/versions/eca8f83d-c0a9-4543-9391-9485b4c40fa7&#34;,
-      &#34;guid&#34;: &#34;eca8f83d-c0a9-4543-9391-9485b4c40fa7&#34;,
-      &#34;created_at&#34;: &#34;2018-11-27T19:08:57.064Z&#34;
-    },
-    &#34;learning_configuration_url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/published_models/a02808e9-450f-431f-9eee-161c3750e338/learning_configuration&#34;,
-    &#34;feedback_url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/published_models/a02808e9-450f-431f-9eee-161c3750e338/feedback&#34;
-  },
-  &#34;metadata&#34;: {
-    &#34;modified_at&#34;: &#34;2018-11-27T19:08:57.064Z&#34;,
-    &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/published_models/a02808e9-450f-431f-9eee-161c3750e338&#34;,
-    &#34;guid&#34;: &#34;a02808e9-450f-431f-9eee-161c3750e338&#34;,
-    &#34;created_at&#34;: &#34;2018-11-27T19:08:57.003Z&#34;
+    &#34;evaluation_metrics_url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models/e3031439-7cf2-4ebb-aca6-6d69962d703f/evaluation_metrics&#34;,
+    &#34;runtime&#34;: {
+      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v4/runtimes/883b5d39-6b10-4143-9064-e282d16b1888&#34;
+    }
   }
 }
 </pre>
@@ -13912,7 +13847,7 @@ Runtimes UID: eb5723bf-be98-43d0-92fc-78a8eda93587
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">created_deployment</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">published_model_uid</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;k_linalg_gnfuv1_skl&quot;</span><span class="p">)</span>
@@ -13936,18 +13871,18 @@ Runtimes UID: eb5723bf-be98-43d0-92fc-78a8eda93587
 
 #######################################################################################
 
-Synchronous deployment creation for uid: &#39;a02808e9-450f-431f-9eee-161c3750e338&#39; started
+Synchronous deployment creation for uid: &#39;e3031439-7cf2-4ebb-aca6-6d69962d703f&#39; started
 
 #######################################################################################
 
 
 INITIALIZING
-DEPLOY_IN_PROGRESS..
+DEPLOY_IN_PROGRESS................
 DEPLOY_SUCCESS
 
 
 ------------------------------------------------------------------------------------------------
-Successfully finished deployment creation, deployment_uid=&#39;b9fe6b28-7cbb-4ae0-867e-829592537414&#39;
+Successfully finished deployment creation, deployment_uid=&#39;0ca6545c-a075-4281-a744-3257e3f62ad3&#39;
 ------------------------------------------------------------------------------------------------
 
 
@@ -13978,7 +13913,7 @@ Successfully finished deployment creation, deployment_uid=&#39;b9fe6b28-7cbb-4ae
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">scoring_endpoint</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_scoring_url</span><span class="p">(</span><span class="n">created_deployment</span><span class="p">)</span>
@@ -13986,24 +13921,6 @@ Successfully finished deployment creation, deployment_uid=&#39;b9fe6b28-7cbb-4ae
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>https://us-south.ml.cloud.ibm.com/v3/wml_instances/d0755448-6eb4-425a-b35b-479be91ff2d5/deployments/b9fe6b28-7cbb-4ae0-867e-829592537414/online
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -14019,7 +13936,7 @@ Successfully finished deployment creation, deployment_uid=&#39;b9fe6b28-7cbb-4ae
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">scoring_payload</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;humidity&quot;</span><span class="p">],</span> 
@@ -14042,7 +13959,7 @@ Successfully finished deployment creation, deployment_uid=&#39;b9fe6b28-7cbb-4ae
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">predictions</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">scoring_endpoint</span><span class="p">,</span> <span class="n">scoring_payload</span><span class="p">)</span>
@@ -14055,7 +13972,7 @@ Successfully finished deployment creation, deployment_uid=&#39;b9fe6b28-7cbb-4ae
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
@@ -14076,13 +13993,13 @@ Successfully finished deployment creation, deployment_uid=&#39;b9fe6b28-7cbb-4ae
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>{
-  &#34;values&#34;: [
-    [
-      7.255360520393637
-    ]
-  ],
   &#34;fields&#34;: [
     &#34;prediction&#34;
+  ],
+  &#34;values&#34;: [
+    [
+      7.276982664417417
+    ]
   ]
 }
 </pre>
@@ -14112,13 +14029,33 @@ Successfully finished deployment creation, deployment_uid=&#39;b9fe6b28-7cbb-4ae
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_uid</span><span class="p">(</span><span class="n">created_deployment</span><span class="p">))</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[39]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;SUCCESS&#39;</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -14134,7 +14071,7 @@ Successfully finished deployment creation, deployment_uid=&#39;b9fe6b28-7cbb-4ae
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
@@ -14144,25 +14081,68 @@ Successfully finished deployment creation, deployment_uid=&#39;b9fe6b28-7cbb-4ae
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>To delete the libraries, models and runtimes, get the GUID information using:</p>
+<div class="output_wrapper">
+<div class="output">
 
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
-</pre></div>
 
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>------------------------------------  -------------------------------------------------------  -------  ------------------  ------------------------  -----------------  -------------
+GUID                                  NAME                                                     TYPE     STATE               CREATED                   FRAMEWORK          ARTIFACT TYPE
+7985e484-4192-400e-82e5-3756d4600668  ARIMA model python function deployment                   online   DEPLOY_SUCCESS      2019-07-03T20:33:40.817Z  n/a                function
+6aedb5b7-638a-4388-ab0d-45fecb3b7081  Customer Churn Prediction                                online   DEPLOY_SUCCESS      2019-07-03T15:51:34.166Z  mllib-2.3          model
+cfcd5f9e-5b07-4bea-b57d-304c12254add  sklearn_pipeline_arima                                   online   DEPLOY_SUCCESS      2019-07-03T01:06:29.302Z  scikit-learn-0.19  model
+7b045679-07c9-4225-9116-c153c6359588  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-20T18:20:14.124Z  scikit-learn-0.19  model
+2b9a344c-2dbf-4568-920d-bb5b598d8273  Online scoring                                           online   DEPLOY_SUCCESS      2019-05-17T17:34:23.382Z  mllib-2.3          model
+69aa4267-dc8c-4243-bc33-3ee7571c0ca4  Online scoring                                           online   DEPLOY_SUCCESS      2019-05-17T17:29:35.859Z  mllib-2.3          model
+81911f93-50bb-4fec-a146-eb6f8519b79e  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-13T21:11:07.340Z  scikit-learn-0.19  model
+4431988f-678b-4f40-92b4-2dbe63ea54e2  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-13T19:16:19.731Z  scikit-learn-0.19  model
+31fdffd5-6a0a-459f-a160-7c4be26ddf15  ML Contest - Label Prediction Model deployment           online   DEPLOY_SUCCESS      2019-05-07T16:48:56.694Z  scikit-learn-0.19  model
+18fe2647-55e0-451a-8f51-0c3195223981  ML Contest - Issue ETA Prediction Model deployment       online   DEPLOY_SUCCESS      2019-05-07T16:48:51.102Z  scikit-learn-0.19  model
+5649340d-248b-4d34-a2d8-ed3e0316ea9b  ML Contest - Assignee Prediction Model deployment        online   DEPLOY_SUCCESS      2019-05-07T16:48:45.286Z  scikit-learn-0.19  model
+49055fc5-88f4-46ea-b17a-517d75f120ba  Online scoring                                           online   DEPLOY_SUCCESS      2019-04-26T17:19:40.703Z  mllib-2.3          model
+7eb9b874-53b8-463c-bd19-058ee52e3e3d  Online scoring                                           online   DEPLOY_SUCCESS      2019-04-26T17:07:07.833Z  mllib-2.3          model
+8b95a4dd-4b3f-4b36-bd3e-b58b59f100e2  Mnist model deployment                                   online   DEPLOY_SUCCESS      2019-04-02T16:09:27.875Z  tensorflow-1.5     model
+451f5f1a-d1f5-4a90-a441-b2953053ae6f  Time Series model (SPSS) deployment                      online   DEPLOY_SUCCESS      2019-03-28T19:00:49.524Z  spss-modeler-18.1  model
+486a79af-ea0b-4e8e-8166-dc2bb43b6c98  TensorFlow MNIST model deployment                        online   DEPLOY_SUCCESS      2019-03-15T18:27:34.468Z  tensorflow-1.5     model
+92991643-a229-4f9e-a70a-3e9de612942e  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-03-12T12:59:15.857Z  spss-modeler-18.1  model
+dce80b25-3d32-4005-b96b-9d9c80a7239a  MNIST keras deployment                                   online   DEPLOY_FAILURE      2019-03-07T13:37:41.529Z  tensorflow-1.5     model
+00edc46c-5df5-482e-936a-4d9f2e5fbc06  Product line model deployment                            online   DEPLOY_SUCCESS      2019-03-06T14:30:35.086Z  mllib-2.3          model
+86da6500-18ff-4970-b3e4-7e335d4a08f9  Mnist model deployment                                   online   DEPLOY_SUCCESS      2019-03-06T12:52:13.175Z  tensorflow-1.5     model
+d250df1b-6e43-4c69-98d2-10ff25b5d63d  Virtual deployment of Boston model                       virtual  DEPLOY_SUCCESS      2019-03-06T11:45:33.176Z  scikit-learn-0.19  model
+6d3cf6bb-db92-427c-8b52-9d050d7bfec8  Virtual deployment of Boston model                       virtual  DEPLOY_SUCCESS      2019-03-06T11:32:59.110Z  scikit-learn-0.19  model
+ded4770f-c2fe-4653-9ce2-0c79ecfa10be  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-03-04T12:59:23.413Z  pmml-4.2           model
+450f555b-1952-4ef1-90be-96a16f600345  Predict breast cancer                                    online   DEPLOY_SUCCESS      2019-02-28T19:11:28.862Z  scikit-learn-0.19  model
+dd987565-3e04-4179-9cf9-546710fbadcd  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-28T11:50:04.209Z  n/a                function
+984ffa92-1c82-4b54-bb56-f6f85e915227  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-27T17:50:16.907Z  n/a                function
+e5472c3f-c7d7-4a3e-9b20-44f03030373e  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-27T16:51:24.029Z  n/a                function
+304c671c-6a48-496d-b27b-3ad9888a0156  Online scoring                                           online   DEPLOY_SUCCESS      2019-02-27T13:50:39.730Z  mllib-2.3          model
+18298746-41ec-4bac-928c-fc34e3708ca9  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-27T11:53:13.523Z  spss-modeler-18.1  model
+375d050d-1e3b-49e5-9f1d-655f28734ec7  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-27T09:29:07.286Z  spss-modeler-18.1  model
+2924aaaf-bddf-4567-8206-6972c163dfa4  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-26T13:13:44.977Z  spss-modeler-18.1  model
+feb87375-fca8-4b0c-8f2f-5c83a6e26115  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-02-25T13:09:17.454Z  pmml-4.2           model
+a0e16777-75ad-489a-a6db-5213619381a4  Keras MNIST model deployment through compressed file.    online   DEPLOY_SUCCESS      2019-02-25T12:29:47.265Z  tensorflow-1.5     model
+5c5ebf10-c47a-4224-b35d-3646b0348af1  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-21T14:58:00.141Z  n/a                function
+b9efb426-845a-45e7-b591-85c4bdb1417c  SMS Spam prediction model deployment.                    online   DEPLOY_SUCCESS      2019-02-13T15:52:48.108Z  scikit-learn-0.19  model
+569fb590-41aa-433e-aeb4-89a9688a4a7b  Keras earthquake magnitude prediction model deployment.  online   DEPLOY_SUCCESS      2019-02-11T16:41:49.568Z  tensorflow-1.12    model
+7b2ff02b-b6a7-4ef4-b0e6-6765b1c45766  Keras earthquake magnitude prediction model deployment.  online   DEPLOY_SUCCESS      2019-02-07T00:21:58.175Z  tensorflow-1.12    model
+a738de63-d74e-454a-9dd7-f377c65420bc  Online scoring                                           online   DEPLOY_SUCCESS      2019-01-19T19:49:21.391Z  mllib-2.3          model
+d8f43799-cf5c-499f-a9d3-42d2e398f337  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-01-18T10:28:38.134Z  spss-modeler-18.1  model
+12056c7c-6ff1-454d-b324-d1cf4b42c4fd  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-01-18T09:36:17.097Z  pmml-4.2           model
+a375c7bc-963d-4a9b-9896-7dbcdcaed78d  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-01-17T10:11:40.324Z  n/a                function
+a8b47a68-060c-4474-a5c0-15da3304063a  Product line model deployment                            online   DEPLOY_SUCCESS      2019-01-17T10:02:44.991Z  mllib-2.3          model
+ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment                            online   DEPLOY_SUCCESS      2019-01-17T07:14:05.178Z  mllib-2.3          model
+902853d1-9ff6-40a7-8918-d6b7b39c3a4e  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-01-17T02:37:29.921Z  n/a                function
+3da0fb97-24b9-44d6-ac16-e97a0cf8dfcb  Keras MNIST model deployment through compressed file.    online   DEPLOY_SUCCESS      2019-01-15T14:49:46.285Z  tensorflow-1.5     model
+------------------------------------  -------------------------------------------------------  -------  ------------------  ------------------------  -----------------  -------------
+</pre>
 </div>
+</div>
+
 </div>
 </div>
 
@@ -14178,13 +14158,183 @@ Successfully finished deployment creation, deployment_uid=&#39;b9fe6b28-7cbb-4ae
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s1">&#39;YOUR_GUID&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">published_model_uid</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[41]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;SUCCESS&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">custom_library_uid</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[42]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;SUCCESS&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">runtime_uid</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[43]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;SUCCESS&#39;</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>------------------------------------  -------------------------------------------  ------------------------  ------------------  ----------
+GUID                                  NAME                                         CREATED                   FRAMEWORK           TYPE
+0af2fb87-ab96-4493-9064-ea3f9b516600  RF_AttackDetection_PySpark                   2019-07-08T23:06:46.358Z  mllib               definition
+e7bdf9ff-0ae5-42e1-a8fa-f65ef1297cfc  Product line model                           2019-07-08T21:39:37.805Z  mllib               definition
+763445e7-ff63-456f-bb12-f235e520ece1  My definition name                           2019-07-08T21:33:49.284Z  tensorflow          definition
+86cec0cd-1dd0-404d-98c9-aee5d6c859ca  Customer churn Spark model                   2019-07-03T15:47:47.262Z  mllib               definition
+3417726e-bf1b-417a-813a-1bddab36fca9  Customer churn Spark model                   2019-06-28T18:53:02.483Z  mllib               definition
+cbe6295f-651b-491a-81bb-3d95aa348d41  Customer churn Spark model                   2019-06-28T18:17:50.169Z  mllib               definition
+c5a953e5-ab1e-4b50-8e2c-1993fa501d53  Customer churn Spark model                   2019-06-27T20:37:21.477Z  mllib               definition
+e03f86ad-bb84-4283-8690-6cdbeffb5fb0  Customer churn Spark model                   2019-06-26T22:53:18.435Z  mllib               definition
+abda7d10-2d2a-4947-b665-ae76e6db837e  Customer churn Spark model                   2019-06-26T21:56:44.479Z  mllib               definition
+359ffe37-cb92-4b2c-9e64-856e1d4e83e0  WML Product Line Prediction Model            2019-05-17T17:33:48.562Z  mllib               definition
+33c4d156-c2c7-4d29-8e4a-883f96970262  WML Product Line Prediction Model            2019-05-17T17:28:31.436Z  mllib               definition
+7aa6633a-c98e-497c-bd62-97a596e959e4  style transfer kandinsky                     2019-05-13T19:02:29.781Z  tensorflow          definition
+ac1994ee-8991-4e2b-a053-10e856cbd8a1  style transfer van gogh                      2019-05-13T19:02:28.273Z  tensorflow          definition
+525b207c-107d-47b2-851f-fd0c523f252d  Product line model                           2019-05-10T18:51:12.230Z  mllib               definition
+23ca7c3b-024e-494b-893f-f7db907ae862  WML Product Line Prediction Model            2019-04-26T17:19:04.938Z  mllib               definition
+9b0d62f4-0723-48bf-992a-4b1363be15d9  WML Product Line Prediction Model            2019-04-26T16:57:03.125Z  mllib               definition
+f8e05a50-3199-466c-9cc1-541acdb5003b  WML Product Line Prediction Model            2019-04-25T22:15:32.151Z  mllib               definition
+0acb4e2f-57d4-4278-be32-49255107fdd2  python-client-tutorial_training              2019-03-15T18:20:47.034Z  tensorflow          definition
+18281c77-e443-4535-8be7-fd7850b745a9  Best Heart Drug Selection                    2019-03-12T23:47:13.332Z  mllib               definition
+14ca82b6-d983-44e6-9ecb-d7a33d9f1298  Sentiment Prediction Model                   2019-03-12T23:01:04.855Z  mllib               definition
+435e60f6-f727-4c53-9a10-1bddf8768073  Customer churn Spark model                   2019-03-11T15:27:03.946Z  mllib               definition
+4a2d1c30-7db1-4874-8bf2-3e9db5bba975  MNIST-CNN                                    2019-03-07T13:32:56.180Z  tensorflow          definition
+5f549d43-486d-4e75-a56a-252136c0a2e7  MNIST-MLP                                    2019-03-07T13:32:54.458Z  tensorflow          definition
+85529f7f-8502-4f3c-a779-750e145afe47  Tensorflow - ddl                             2019-03-07T13:24:33.546Z  tensorflow-ddl      definition
+862c5253-b0c6-4a81-b473-776a5b09dd1b  Tensorflow - horovod                         2019-03-07T13:24:31.841Z  tensorflow-horovod  definition
+4f4b08bb-ad9b-4ffb-ad5b-a64b96fe6244  Tensorflow - distributed                     2019-03-07T13:24:30.171Z  tensorflow          definition
+40f8f10b-35e3-4ec6-b958-5753fbd04fa9  Customer churn Spark model                   2019-03-07T13:14:11.754Z  mllib               definition
+9fc001eb-2167-47f5-948e-b643bd7676d5  Product line model                           2019-03-06T14:24:23.552Z  mllib               definition
+607e8219-48ca-4546-9e5f-482c4c502433  My definition name                           2019-03-06T12:17:53.957Z  tensorflow          definition
+12775c05-fce6-415b-83aa-248c074a32f3  WML Product Line Prediction Model            2019-02-27T13:49:59.261Z  mllib               definition
+736f3ea3-a14d-447d-a879-63bdbc997473  WML Product Line Prediction Model            2019-01-19T19:36:54.621Z  mllib               definition
+1e694819-bf79-4e89-b399-a327131c731c  Customer churn Spark model                   2019-01-18T06:45:10.502Z  mllib               definition
+03fe960f-d10d-4f0e-a706-0f5d32a7abae  Customer churn Spark model                   2019-01-18T02:18:42.483Z  mllib               definition
+01140107-c1b2-47f1-ad6d-6bfc19ac19c8  Product line model                           2019-01-17T09:57:21.602Z  mllib               definition
+d2d2b5f0-a24c-4f2c-b6c8-e5e91164be24  Product line model                           2019-01-17T06:55:49.501Z  mllib               definition
+0a4a58f8-6a47-4581-a0a3-b421ebe48836  STYLE experiment                             2019-05-13T19:02:31.705Z  -                   experiment
+b4a46b63-9d47-49d3-8a9a-642e470f4fa9  MNIST experiment                             2019-03-07T13:32:57.968Z  -                   experiment
+c499b36a-2e15-4846-85db-4c5d8f17122d  Distributed MNIST experiment                 2019-03-07T13:24:35.372Z  -                   experiment
+53b90fb3-0d12-4d66-96c8-b4e4cf96a0ae  Customer churn Spark model                   2019-07-03T15:47:49.776Z  mllib-2.3           model
+ad24c140-f97a-49f2-b02c-f8ce44a58c27  Custom ARIMA estimator for sklearn pipeline  2019-07-03T01:04:33.998Z  scikit-learn-0.19   model
+471b39cc-9c3b-4ff9-a8ea-0297efe0ca5d  Boston house price prediction                2019-05-20T18:19:55.433Z  scikit-learn-0.19   model
+fc5462c8-7eb9-4dda-8b0a-947e2faa30da  WML Product Line Prediction Model            2019-05-17T17:33:53.278Z  mllib-2.3           model
+a57e82a9-076e-4236-8bd2-7465e726c419  WML Product Line Prediction Model            2019-05-17T17:28:36.434Z  mllib-2.3           model
+914b598b-f52e-4a87-bfed-2f4163eba25e  Boston house price prediction                2019-05-13T21:11:04.132Z  scikit-learn-0.19   model
+43dbda1f-34f4-4396-9b57-942d96389440  Boston house price prediction                2019-05-13T19:16:12.783Z  scikit-learn-0.19   model
+20da8eb9-36d3-4230-bf0c-ba4f7434080c  ML Contest - Label Prediction Model          2019-05-07T16:43:17.658Z  scikit-learn-0.19   model
+6ee6777d-b716-49e8-acf0-1913fec902f3  ML Contest - ETA Prediction Model            2019-05-07T16:43:16.065Z  scikit-learn-0.19   model
+3bb7e3ab-836a-4331-9676-7bcc07cc2d63  ML Contest - Assignee Prediction Model       2019-05-07T16:43:14.430Z  scikit-learn-0.19   model
+0ffb0000-511b-443d-a4fe-3e076ce2381c  WML Product Line Prediction Model            2019-04-26T17:19:09.804Z  mllib-2.3           model
+eecf9e06-24cc-4675-a84e-adcf863b0ec6  WML Product Line Prediction Model            2019-04-26T16:57:07.468Z  mllib-2.3           model
+------------------------------------  -------------------------------------------  ------------------------  ------------------  ----------
+Note: Only first 50 records were displayed. To display more use more specific list functions.
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -14225,7 +14375,7 @@ Successfully finished deployment creation, deployment_uid=&#39;b9fe6b28-7cbb-4ae
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><hr>
-Copyright © 2018 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+Copyright © 2018, 2019 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
