@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Deploy a Python function to IBM Watson Machine Learning _MNIST tutorial_</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Deploy a Python function to IBM Watson Machine Learning (MNIST tutorial)</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -12673,7 +12673,7 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Deploy-a-Python-function-to-IBM-Watson-Machine-Learning-(MNIST-tutorial)">Deploy a Python function to IBM Watson Machine Learning (MNIST tutorial)<a class="anchor-link" href="#Deploy-a-Python-function-to-IBM-Watson-Machine-Learning-(MNIST-tutorial)">&#182;</a></h1><p>Create and deploy a function that receives HTML canvas image data from a web app and then processes and sends that data to a model trained to recognize handwritten digits.</p>
-<p>This notebook runs on Python 3.5.</p>
+<p>This notebook runs on Python 3.6.</p>
 <p>See: <a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-deployed-func-mnist-tutorial.html" target="_blank">MNIST function deployment tutorial</a></p>
 <ol>
 <li><a href="#step1">Install and import required packages and libraries</a></li>
@@ -12711,7 +12711,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">wget</span><span class="o">,</span> <span class="nn">json</span>
@@ -12738,17 +12738,29 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;apikey&quot;</span>      <span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;instance_id&quot;</span> <span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;password&quot;</span>    <span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;url&quot;</span>         <span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;username&quot;</span>    <span class="p">:</span> <span class="s2">&quot;&quot;</span>
+    <span class="s2">&quot;apikey&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;instance_id&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span>
 <span class="p">}</span>
-<span class="n">client</span> <span class="o">=</span> <span class="n">WatsonMachineLearningAPIClient</span><span class="p">(</span> <span class="n">wml_credentials</span> <span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">WatsonMachineLearningAPIClient</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12785,7 +12797,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_deployment_endpoint_url</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -12807,14 +12819,14 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Download a sample model to the notebook working directory</span>
 <span class="c1">#</span>
 <span class="n">sample_saved_model_filename</span> <span class="o">=</span> <span class="s1">&#39;mnist-tf-hpo-saved-model.tar.gz&#39;</span>
 <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://github.com/pmservice/wml-sample-models/raw/master/tensorflow/function-deployments-samples/&#39;</span> <span class="o">+</span> <span class="n">sample_saved_model_filename</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span> <span class="n">sample_saved_model_filename</span> <span class="p">):</span> <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span> <span class="n">url</span> <span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">sample_saved_model_filename</span><span class="p">):</span> <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12824,7 +12836,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Store the sample model in your Watson Machine Learning repository</span>
@@ -12834,9 +12846,9 @@ div#notebook {
     <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_NAME</span>    <span class="p">:</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">,</span>
     <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_VERSION</span> <span class="p">:</span> <span class="s1">&#39;1.5&#39;</span><span class="p">,</span>
     <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">RUNTIME_NAME</span>      <span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">RUNTIME_VERSION</span>   <span class="p">:</span> <span class="s1">&#39;3.5&#39;</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">RUNTIME_VERSION</span>   <span class="p">:</span> <span class="s1">&#39;3.6&#39;</span>
 <span class="p">}</span>
-<span class="n">model_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_model</span><span class="p">(</span> <span class="n">sample_saved_model_filename</span><span class="p">,</span> <span class="n">meta_props</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span> <span class="n">training_data</span><span class="o">=</span><span class="kc">None</span> <span class="p">)</span>
+<span class="n">model_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_model</span><span class="p">(</span><span class="n">sample_saved_model_filename</span><span class="p">,</span> <span class="n">meta_props</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span> <span class="n">training_data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12846,16 +12858,51 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Deploy the stored model</span>
 <span class="c1">#</span>
 <span class="n">model_id</span> <span class="o">=</span> <span class="n">model_details</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;guid&quot;</span><span class="p">]</span>
-<span class="n">model_deployment_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span> <span class="n">artifact_uid</span><span class="o">=</span><span class="n">model_id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MNIST saved model deployment&quot;</span> <span class="p">)</span>
+<span class="n">model_deployment_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">artifact_uid</span><span class="o">=</span><span class="n">model_id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MNIST saved model deployment&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+
+#######################################################################################
+
+Synchronous deployment creation for uid: &#39;583435cc-97db-4a27-86df-96622b663e66&#39; started
+
+#######################################################################################
+
+
+INITIALIZING
+DEPLOY_SUCCESS
+
+
+------------------------------------------------------------------------------------------------
+Successfully finished deployment creation, deployment_uid=&#39;eec0a129-0061-48dd-babc-d1636baf3473&#39;
+------------------------------------------------------------------------------------------------
+
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -12867,7 +12914,7 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get the endpoint URL of the model deployment just created</span>
 <span class="c1">#</span>
-<span class="n">model_deployment_endpoint_url</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_scoring_url</span><span class="p">(</span> <span class="n">model_deployment_details</span> <span class="p">)</span>
+<span class="n">model_deployment_endpoint_url</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_scoring_url</span><span class="p">(</span><span class="n">model_deployment_details</span><span class="p">)</span>
 <span class="n">model_deployment_endpoint_url</span>
 </pre></div>
 
@@ -12900,14 +12947,14 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Download the file containing the sample data</span>
 <span class="c1">#</span>
 <span class="n">sample_canvas_data_filename</span> <span class="o">=</span> <span class="s1">&#39;mnist-html-canvas-image-data.json&#39;</span>
 <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/pmservice/wml-sample-models/master/tensorflow/function-deployments-samples/&#39;</span> <span class="o">+</span> <span class="n">sample_canvas_data_filename</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span> <span class="n">sample_canvas_data_filename</span> <span class="p">):</span> <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span> <span class="n">url</span> <span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">sample_canvas_data_filename</span><span class="p">):</span> <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12917,13 +12964,13 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load the sample data from the file into a variable</span>
 <span class="c1">#</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span> <span class="n">sample_canvas_data_filename</span> <span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
-    <span class="n">sample_cavas_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span> <span class="n">data_file</span> <span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sample_canvas_data_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
+    <span class="n">sample_cavas_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12941,14 +12988,14 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># View the raw contents of the sample data</span>
 <span class="c1">#</span>
-<span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;Height (n): &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span> <span class="n">sample_cavas_data</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; pixels</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;Num image data entries: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span> <span class="n">sample_cavas_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; - (n * n * 4) elements - RGBA values</span><span class="se">\n</span><span class="s2">&quot;</span>  <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span> <span class="n">sample_cavas_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">3</span> <span class="p">)[:</span><span class="mi">75</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span> <span class="n">sample_cavas_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">3</span> <span class="p">)[</span><span class="o">-</span><span class="mi">50</span><span class="p">:]</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Height (n): &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sample_cavas_data</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; pixels</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Num image data entries: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span> <span class="n">sample_cavas_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]))</span> <span class="o">+</span> <span class="s2">&quot; - (n * n * 4) elements - RGBA values</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">sample_cavas_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">3</span><span class="p">)[:</span><span class="mi">75</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">sample_cavas_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="o">-</span><span class="mi">50</span><span class="p">:])</span>
 </pre></div>
 
 </div>
@@ -12994,15 +13041,15 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># See what hand-drawn digit the sample data represents</span>
 <span class="c1">#</span>
-<span class="n">rgba_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span> <span class="n">sample_cavas_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+<span class="n">rgba_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sample_cavas_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
 <span class="n">n</span> <span class="o">=</span> <span class="n">sample_cavas_data</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span> <span class="n">rgba_arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">4</span> <span class="p">)</span> <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span> <span class="n">rgba_arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -13024,7 +13071,7 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,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
+<img src="data:image/png;base64,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
 "
 >
 </div>
@@ -13065,62 +13112,62 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ai_parms</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;wml_credentials&quot;</span> <span class="p">:</span> <span class="n">wml_credentials</span><span class="p">,</span> <span class="s2">&quot;model_deployment_endpoint_url&quot;</span> <span class="p">:</span> <span class="n">model_deployment_endpoint_url</span> <span class="p">}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ai_parms</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;wml_credentials&quot;</span><span class="p">:</span> <span class="n">wml_credentials</span><span class="p">,</span> <span class="s2">&quot;model_deployment_endpoint_url&quot;</span><span class="p">:</span> <span class="n">model_deployment_endpoint_url</span><span class="p">}</span>
 
 <span class="k">def</span> <span class="nf">my_deployable_function</span><span class="p">(</span> <span class="n">parms</span><span class="o">=</span><span class="n">ai_parms</span> <span class="p">):</span>
     
     <span class="k">try</span><span class="p">:</span>
         
         <span class="kn">import</span> <span class="nn">subprocess</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span> <span class="s2">&quot;pip install Pillow --user&quot;</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span> <span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s2">&quot;pip install Pillow --user&quot;</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         
     <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>        
         <span class="n">install_err</span> <span class="o">=</span> <span class="s2">&quot;subprocess.CalledProcessError:</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;cmd:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="n">cmd</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">output:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span> <span class="s2">&quot;Installing failed:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">install_err</span> <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Installing failed:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">install_err</span><span class="p">)</span>
     
         
-    <span class="k">def</span> <span class="nf">getRGBAArr</span><span class="p">(</span> <span class="n">canvas_data</span> <span class="p">):</span>
+    <span class="k">def</span> <span class="nf">getRGBAArr</span><span class="p">(</span><span class="n">canvas_data</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
         <span class="n">dimension</span> <span class="o">=</span> <span class="n">canvas_data</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]</span>
         <span class="n">rgba_data</span> <span class="o">=</span> <span class="n">canvas_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
-        <span class="n">rgba_arr</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span> <span class="n">rgba_data</span> <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">rgba_arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span> <span class="n">dimension</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="mi">4</span> <span class="p">)</span>
+        <span class="n">rgba_arr</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">rgba_data</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rgba_arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dimension</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
         
-    <span class="k">def</span> <span class="nf">getNormAlphaList</span><span class="p">(</span> <span class="n">img</span> <span class="p">):</span>
+    <span class="k">def</span> <span class="nf">getNormAlphaList</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-        <span class="n">alpha_arr</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="n">img</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
+        <span class="n">alpha_arr</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">norm_alpha_arr</span>  <span class="o">=</span> <span class="n">alpha_arr</span> <span class="o">/</span> <span class="mi">255</span>
-        <span class="n">norm_alpha_list</span> <span class="o">=</span> <span class="n">norm_alpha_arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">784</span> <span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">norm_alpha_list</span> <span class="o">=</span> <span class="n">norm_alpha_arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">norm_alpha_list</span>
         
-    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span> <span class="n">function_payload</span> <span class="p">):</span>
+    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="n">function_payload</span><span class="p">):</span>
             
         <span class="k">try</span><span class="p">:</span>
             
             <span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
             <span class="n">canvas_data</span>   <span class="o">=</span> <span class="n">function_payload</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>           <span class="c1"># Read the payload received by the function</span>
-            <span class="n">rgba_arr</span>      <span class="o">=</span> <span class="n">getRGBAArr</span><span class="p">(</span> <span class="n">canvas_data</span> <span class="p">)</span>               <span class="c1"># Create an array object with the required shape</span>
-            <span class="n">img</span>           <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span> <span class="n">rgba_arr</span><span class="p">,</span> <span class="s1">&#39;RGBA&#39;</span> <span class="p">)</span>     <span class="c1"># Create an image object that can be resized</span>
-            <span class="n">sm_img</span>        <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span> <span class="p">(</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span> <span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">LANCZOS</span> <span class="p">)</span> <span class="c1"># Resize the image to 28 x 28 pixels</span>
-            <span class="n">alpha_list</span>    <span class="o">=</span> <span class="n">getNormAlphaList</span><span class="p">(</span> <span class="n">sm_img</span> <span class="p">)</span>              <span class="c1"># Create a 1 x 784 array of values between 0 and 1</span>
-            <span class="n">model_payload</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;values&quot;</span> <span class="p">:</span> <span class="n">alpha_list</span> <span class="p">}</span>               <span class="c1"># Create a payload to be sent to the model</span>
+            <span class="n">rgba_arr</span>      <span class="o">=</span> <span class="n">getRGBAArr</span><span class="p">(</span><span class="n">canvas_data</span><span class="p">)</span>               <span class="c1"># Create an array object with the required shape</span>
+            <span class="n">img</span>           <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">rgba_arr</span><span class="p">,</span> <span class="s1">&#39;RGBA&#39;</span><span class="p">)</span>     <span class="c1"># Create an image object that can be resized</span>
+            <span class="n">sm_img</span>        <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">LANCZOS</span><span class="p">)</span> <span class="c1"># Resize the image to 28 x 28 pixels</span>
+            <span class="n">alpha_list</span>    <span class="o">=</span> <span class="n">getNormAlphaList</span><span class="p">(</span><span class="n">sm_img</span><span class="p">)</span>              <span class="c1"># Create a 1 x 784 array of values between 0 and 1</span>
+            <span class="n">model_payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;values&quot;</span> <span class="p">:</span> <span class="n">alpha_list</span><span class="p">}</span>               <span class="c1"># Create a payload to be sent to the model</span>
                     
             <span class="c1">#print( &quot;Payload for model:&quot; ) # For debugging purposes</span>
             <span class="c1">#print( model_payload )        # For debugging purposes</span>
                     
             <span class="kn">from</span> <span class="nn">watson_machine_learning_client</span> <span class="k">import</span> <span class="n">WatsonMachineLearningAPIClient</span>
-            <span class="n">client</span>       <span class="o">=</span> <span class="n">WatsonMachineLearningAPIClient</span><span class="p">(</span> <span class="n">parms</span><span class="p">[</span><span class="s2">&quot;wml_credentials&quot;</span><span class="p">]</span> <span class="p">)</span>
-            <span class="n">model_result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">score</span><span class="p">(</span> <span class="n">parms</span><span class="p">[</span><span class="s2">&quot;model_deployment_endpoint_url&quot;</span><span class="p">],</span> <span class="n">model_payload</span> <span class="p">)</span>
+            <span class="n">client</span>       <span class="o">=</span> <span class="n">WatsonMachineLearningAPIClient</span><span class="p">(</span><span class="n">parms</span><span class="p">[</span><span class="s2">&quot;wml_credentials&quot;</span><span class="p">])</span>
+            <span class="n">model_result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">parms</span><span class="p">[</span><span class="s2">&quot;model_deployment_endpoint_url&quot;</span><span class="p">],</span> <span class="n">model_payload</span><span class="p">)</span>
             <span class="n">digit_class</span>  <span class="o">=</span> <span class="n">model_result</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
                     
-            <span class="k">return</span> <span class="p">{</span> <span class="s2">&quot;digit_class&quot;</span> <span class="p">:</span> <span class="n">digit_class</span> <span class="p">}</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;digit_class&quot;</span> <span class="p">:</span> <span class="n">digit_class</span><span class="p">}</span>
             
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             
-            <span class="k">return</span> <span class="p">{</span> <span class="s2">&quot;error&quot;</span> <span class="p">:</span> <span class="nb">repr</span><span class="p">(</span> <span class="n">e</span> <span class="p">)</span> <span class="p">}</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span> <span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
 
 
     <span class="k">return</span> <span class="n">score</span>
@@ -13148,13 +13195,13 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Pass the sample canvas data to the function as a test</span>
 <span class="c1">#</span>
-<span class="n">func_result</span> <span class="o">=</span> <span class="n">my_deployable_function</span><span class="p">()(</span> <span class="p">{</span> <span class="s2">&quot;values&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">sample_cavas_data</span> <span class="p">]</span> <span class="p">}</span> <span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span> <span class="n">func_result</span> <span class="p">)</span>
+<span class="n">func_result</span> <span class="o">=</span> <span class="n">my_deployable_function</span><span class="p">()({</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">sample_cavas_data</span><span class="p">]})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">func_result</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13191,32 +13238,88 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Store the deployable function in your Watson Machine Learning repository</span>
 <span class="c1">#</span>
-<span class="n">meta_data</span> <span class="o">=</span> <span class="p">{</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">FunctionMetaNames</span><span class="o">.</span><span class="n">NAME</span> <span class="p">:</span> <span class="s1">&#39;MNIST deployable function&#39;</span> <span class="p">}</span>
-<span class="n">function_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_function</span><span class="p">(</span> <span class="n">meta_props</span><span class="o">=</span><span class="n">meta_data</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">my_deployable_function</span> <span class="p">)</span>
+<span class="n">meta_data</span> <span class="o">=</span> <span class="p">{</span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">FunctionMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s1">&#39;MNIST deployable function&#39;</span><span class="p">}</span>
+<span class="n">function_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_function</span><span class="p">(</span><span class="n">meta_props</span><span class="o">=</span><span class="n">meta_data</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">my_deployable_function</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>No matching default runtime found. Creating one...SUCCESS
+
+Successfully created runtime with uid: a109158b-bff9-4099-bfca-e7def771aaed
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Deploy the stored function</span>
 <span class="c1">#</span>
 <span class="n">function_id</span> <span class="o">=</span> <span class="n">function_details</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;guid&quot;</span><span class="p">]</span>
-<span class="n">function_deployment_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span> <span class="n">artifact_uid</span><span class="o">=</span><span class="n">function_id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MNIST function deployment&quot;</span> <span class="p">)</span>
+<span class="n">function_deployment_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">artifact_uid</span><span class="o">=</span><span class="n">function_id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MNIST function deployment&quot;</span><span class="p">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+
+#######################################################################################
+
+Synchronous deployment creation for uid: &#39;58af7985-d429-45b1-a193-8c0f7c108cc6&#39; started
+
+#######################################################################################
+
+
+INITIALIZING
+DEPLOY_IN_PROGRESS.
+DEPLOY_SUCCESS
+
+
+------------------------------------------------------------------------------------------------
+Successfully finished deployment creation, deployment_uid=&#39;e5e52649-3972-496b-8264-a313d26e9911&#39;
+------------------------------------------------------------------------------------------------
+
+
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13237,7 +13340,7 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get the endpoint URL of the function deployment just created</span>
 <span class="c1">#</span>
-<span class="n">function_deployment_endpoint_url</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_scoring_url</span><span class="p">(</span> <span class="n">function_deployment_details</span> <span class="p">)</span>
+<span class="n">function_deployment_endpoint_url</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_scoring_url</span><span class="p">(</span><span class="n">function_deployment_details</span><span class="p">)</span>
 <span class="n">function_deployment_endpoint_url</span>
 </pre></div>
 
@@ -13248,10 +13351,10 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">payload</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;values&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="n">sample_cavas_data</span> <span class="p">]</span> <span class="p">}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">sample_cavas_data</span><span class="p">]}</span>
 </pre></div>
 
 </div>
@@ -13269,14 +13372,14 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">score</span><span class="p">(</span> <span class="n">function_deployment_endpoint_url</span><span class="p">,</span> <span class="n">payload</span> <span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">function_deployment_endpoint_url</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
 <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">])</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span> <span class="n">result</span> <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13312,18 +13415,18 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get a bearer token</span>
 <span class="n">url</span> <span class="o">=</span> <span class="n">wml_credentials</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;/v3/identity/token&quot;</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span> <span class="n">wml_credentials</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">],</span> <span class="n">wml_credentials</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span>
-<span class="n">mltoken</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="p">)[</span><span class="s2">&quot;token&quot;</span><span class="p">]</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">],</span> <span class="n">wml_credentials</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]))</span>
+<span class="n">mltoken</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)[</span><span class="s2">&quot;token&quot;</span><span class="p">]</span>
 
 <span class="c1"># Send sample canvas data to function deployment for processing</span>
-<span class="n">header</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">mltoken</span> <span class="p">}</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span> <span class="n">function_deployment_endpoint_url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">header</span> <span class="p">)</span>
-<span class="nb">print</span> <span class="p">(</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="p">)</span>
+<span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span> <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="s1">&#39;Bearer &#39;</span> <span class="o">+</span> <span class="n">mltoken</span><span class="p">}</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">function_deployment_endpoint_url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13340,8 +13443,7 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#34;digit_class&#34;: 4}
-
+<pre>no healthy upstream
 </pre>
 </div>
 </div>
@@ -13352,29 +13454,29 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get an IAM token from IBM Cloud</span>
 <span class="n">url</span>     <span class="o">=</span> <span class="s2">&quot;https://iam.bluemix.net/oidc/token&quot;</span>
-<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;Content-Type&quot;</span> <span class="p">:</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span> <span class="p">}</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span><span class="p">}</span>
 <span class="n">data</span>    <span class="o">=</span> <span class="s2">&quot;apikey=&quot;</span> <span class="o">+</span> <span class="n">wml_credentials</span><span class="p">[</span><span class="s2">&quot;apikey&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&amp;grant_type=urn:ibm:params:oauth:grant-type:apikey&quot;</span>
 <span class="n">IBM_cloud_iam_uid</span> <span class="o">=</span> <span class="s2">&quot;bx&quot;</span>
 <span class="n">IBM_cloud_iam_pwd</span> <span class="o">=</span> <span class="s2">&quot;bx&quot;</span>
-<span class="n">response</span>  <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span> <span class="n">IBM_cloud_iam_uid</span><span class="p">,</span> <span class="n">IBM_cloud_iam_pwd</span> <span class="p">)</span> <span class="p">)</span>
+<span class="n">response</span>  <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="n">IBM_cloud_iam_uid</span><span class="p">,</span> <span class="n">IBM_cloud_iam_pwd</span><span class="p">))</span>
 
 <span class="k">if</span> <span class="mi">200</span> <span class="o">!=</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span> <span class="n">response</span><span class="o">.</span><span class="n">reason</span> <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">iam_token</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;access_token&quot;</span><span class="p">]</span>
     
     <span class="c1"># Send data to deployment for processing</span>
-    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;Content-Type&quot;</span>   <span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span> 
-                <span class="s2">&quot;Authorization&quot;</span>  <span class="p">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">iam_token</span><span class="p">,</span>
-                <span class="s2">&quot;ML-Instance-ID&quot;</span> <span class="p">:</span> <span class="n">wml_credentials</span><span class="p">[</span><span class="s2">&quot;instance_id&quot;</span><span class="p">]</span> <span class="p">}</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span> <span class="n">function_deployment_endpoint_url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span> <span class="p">)</span>
-    <span class="nb">print</span> <span class="p">(</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span> <span class="p">)</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span>   <span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;Authorization&quot;</span>  <span class="p">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">iam_token</span><span class="p">,</span>
+               <span class="s2">&quot;ML-Instance-ID&quot;</span> <span class="p">:</span> <span class="n">wml_credentials</span><span class="p">[</span><span class="s2">&quot;instance_id&quot;</span><span class="p">]}</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">function_deployment_endpoint_url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13391,8 +13493,9 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#34;digit_class&#34;: 4}
-
+<pre>{
+  &#34;digit_class&#34;: 4
+}
 </pre>
 </div>
 </div>
@@ -13429,7 +13532,7 @@ Num image data entries: 139876 - (n * n * 4) elements - RGBA values
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><hr>
-Copyright &copy; IBM Corp. 2018. This notebook and its source code are released under the terms of the MIT License.</p>
+Copyright &copy; IBM Corp. 2018, 2019. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
