@@ -12689,15 +12689,15 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This notebook how to perform data analysis on classification problem using <a href="http://spark.apache.org/docs/2.3.0/ml-guide.html" target="_blank" rel="noopener no referrer">Spark ML package</a>.</p>
-<p>Some familiarity with Scala is helpful. This notebook uses Scala 2.11 and Apache® Spark 2.x.</p>
+<p>Some familiarity with Scala is helpful. This notebook uses Scala 2.11 with Spark.</p>
 <p>You will use a publicly available data set, <strong>GoSales Transactions for Naive Bayes Model</strong>, which details anonymous outdoor equipment purchases. This data set will be used to predict clients' interests in terms of product line, such as golf accessories, camping equipment, and so forth.</p>
-<p><strong>Note</strong>: In this notebook, we use the GoSales data available to the <a  href="https://apsportal.ibm.com/exchange-api/v1/entries/8044492073eb964f46597b4be06ff5ea/data?accessKey=9561295fa407698694b1e254d0099600" target="_blank" rel="noopener no referrer">Watson Studio Community</a>.</p>
+<p><strong>Note</strong>: In this notebook, we use the GoSales data available to the <a  href="https://dataplatform.cloud.ibm.com/exchange/public/entry/view/8044492073eb964f46597b4be06ff5ea" target="_blank" rel="noopener no referrer">Watson Studio Community</a>.</p>
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>The learning goals of this notebook are:</p>
 <ul>
-<li>Load a CSV file into an Apache® Spark DataFrame.</li>
+<li>Load a CSV file into a Spark DataFrame.</li>
 <li>Explore data.</li>
 <li>Prepare data for training and evaluation.</li>
-<li>Create an Apache® Spark machine learning pipeline.</li>
+<li>Create a Spark machine learning pipeline.</li>
 <li>Train and evaluate a model.</li>
 <li>Store a pipeline and model in the Watson Machine Learning (WML) repository.</li>
 <li>Deploy a model for online scoring via the Watson Machine Learning (WML) API.</li>
@@ -12707,7 +12707,7 @@ div#notebook {
 <ol>
 <li><a href="#setup">Set up the environment</a></li>
 <li><a href="#load">Load and explore the data</a></li>
-<li><a href="#model">Build an Apache® Spark machine learning model</a></li>
+<li><a href="#model">Build a Spark machine learning model</a></li>
 <li><a href="#persistence">Store the model in the WML repository</a></li>
 <li><a href="#scoring">Deploy and score in the WML repository</a></li>
 <li><a href="#summary">Summary and next steps</a></li>
@@ -12723,9 +12723,9 @@ div#notebook {
 <p><a id="setup"></a></p>
 <h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener no referrer">here</a>)</li>
+<li>Create a <a href="https://cloud.ibm.com/catalog/services/machine-learning" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener no referrer">here</a>)</li>
 <li>Make sure that you are using a Spark 2.x kernel.</li>
-<li>Download <strong>GoSales Transactions</strong> from the Watson Studio Community (code provided below).</li>
+<li>Download <strong>GoSales Transactions</strong> from the Watson Studio Community (steps provided below).</li>
 </ul>
 
 </div>
@@ -12736,17 +12736,14 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="load"></a></p>
-<h2 id="2.-Load-and-explore-data">2. Load and explore data<a class="anchor-link" href="#2.-Load-and-explore-data">&#182;</a></h2><p>In this section, you will load the data as an Apache® Spark DataFrame and perform basic exploratory data analysis.</p>
-<p>Use <code>wget</code> to upload the data to the IBM General Parallel File System (GPFS), load the data to the Spark DataFrame, and use Spark <code>read</code> method to read the data.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The csv file, <strong>GoSales_Tx_NaiveBayes.csv</strong>, is availble in the IBM General Parallel File System (GPFS) - your local file system - now. Load the file into an Apache® Spark DataFrame using the code below.</p>
+<h2 id="2.-Load-and-explore-data">2. Load and explore data<a class="anchor-link" href="#2.-Load-and-explore-data">&#182;</a></h2><p>In this section, you will load the data into a SparkSession DataFrame and perform basic exploratory data analysis.</p>
+<ul>
+<li>Download <a href="https://dataplatform.cloud.ibm.com/data/exchange-api/v1/entries/8044492073eb964f46597b4be06ff5ea/data?accessKey=d1bec8d606656afaa378d73205093b10" target="_blank" rel="noopener no referrer">GoSales_Tx_NaiveBayes.csv</a> from the Watson Studio community. </li>
+<li>Load the .csv file into your notebook. Click the Data icon on the notebook action bar. Drop the file into the box or browse to select the file. The file is loaded to your object storage and appears in the Data Assets section of the project.</li>
+<li>To load the data into a Spark DataFrame, click in the next code cell and select <strong>Insert to code &gt; Insert SparkSession DataFrame</strong> under the file name.</li>
+<li>Rename <code>dfDatax</code> to <code>dfData</code> if needed.</li>
+<li>Run the cell.</li>
+</ul>
 
 </div>
 </div>
@@ -12756,9 +12753,30 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">com.ibm.ibmos2spark.CloudObjectStorage</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// The code was removed by Watson Studio for sharing.</span>
+<span class="k">import</span> <span class="nn">com.ibm.ibmos2spark.CloudObjectStorage</span>
 
 <span class="c1">// @hidden_cell</span>
+<span class="k">var</span> <span class="n">credentials</span> <span class="k">=</span> <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="nc">HashMap</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">](</span>
+    <span class="s">&quot;endPoint&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;apiKey&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;serviceId&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;iamServiceEndpoint&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;***&quot;</span><span class="o">)</span>
+
+<span class="k">var</span> <span class="n">configurationName</span> <span class="k">=</span> <span class="s">&quot;os_985f24d93a7243aeb65f8aba59f75706_configs&quot;</span>
+<span class="k">var</span> <span class="n">cos</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">CloudObjectStorage</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="n">credentials</span><span class="o">,</span> <span class="n">configurationName</span><span class="o">,</span> <span class="s">&quot;bluemix_cos&quot;</span><span class="o">)</span>
+
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.SparkSession</span>
+
+<span class="k">val</span> <span class="n">spark</span> <span class="k">=</span> <span class="nc">SparkSession</span><span class="o">.</span>
+    <span class="n">builder</span><span class="o">().</span>
+    <span class="n">getOrCreate</span><span class="o">()</span>
+<span class="k">val</span> <span class="n">dfData</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span>
+    <span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&quot;org.apache.spark.sql.execution.datasources.csv.CSVFileFormat&quot;</span><span class="o">).</span>
+    <span class="n">option</span><span class="o">(</span><span class="s">&quot;header&quot;</span><span class="o">,</span> <span class="s">&quot;true&quot;</span><span class="o">).</span>
+    <span class="n">option</span><span class="o">(</span><span class="s">&quot;inferSchema&quot;</span><span class="o">,</span> <span class="s">&quot;true&quot;</span><span class="o">).</span>
+    <span class="n">load</span><span class="o">(</span><span class="n">cos</span><span class="o">.</span><span class="n">url</span><span class="o">(</span><span class="s">&quot;wastonmachinelearningcommunitynot-donotdelete-pr-pnbylejs5jpqwu&quot;</span><span class="o">,</span> <span class="s">&quot;GoSales_Tx_NaiveBayes.csv&quot;</span><span class="o">))</span>
+<span class="n">dfData</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -12770,7 +12788,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Explore the loaded data by using the following Apache® Spark DataFrame methods:</p>
+<p>Explore the loaded data by using the following Spark DataFrame methods:</p>
 <ul>
 <li>print schema</li>
 <li>print top ten records</li>
@@ -12916,10 +12934,10 @@ only showing top 10 rows
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="model"></a></p>
-<h2 id="3.-Build-an-Apache&#174;-Spark-machine-learning-model">3. Build an Apache&#174; Spark machine learning model<a class="anchor-link" href="#3.-Build-an-Apache&#174;-Spark-machine-learning-model">&#182;</a></h2><p>In this section, you will learn how to:</p>
+<h2 id="3.-Build-a-Spark-machine-learning-model">3. Build a Spark machine learning model<a class="anchor-link" href="#3.-Build-a-Spark-machine-learning-model">&#182;</a></h2><p>In this section, you will learn how to:</p>
 <ul>
 <li><a href="#prep">3.1 Split data</a></li>
-<li><a href="#pipe">3.2 Create an Apache® Spark machine learning pipeline</a></li>
+<li><a href="#pipe">3.2 Create a Spark machine learning pipeline</a></li>
 <li><a href="#train">3.3 Train a model</a></li>
 </ul>
 
@@ -13028,7 +13046,7 @@ predictionData = [PRODUCT_LINE: string, GENDER: string ... 3 more fields]
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.2-Create-an-Apache-Spark-machine-learning-pipeline">3.2 Create an Apache Spark machine learning pipeline<a id="pipe" /><a class="anchor-link" href="#3.2-Create-an-Apache-Spark-machine-learning-pipeline">&#182;</a></h3>
+<h3 id="3.2-Create-a-Spark-machine-learning-pipeline">3.2 Create a Spark machine learning pipeline<a id="pipe" /><a class="anchor-link" href="#3.2-Create-a-Spark-machine-learning-pipeline">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13036,8 +13054,8 @@ predictionData = [PRODUCT_LINE: string, GENDER: string ... 3 more fields]
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section, you will create an Apache® Spark machine learning pipeline and train the model.</p>
-<p>First, you need to import Apache® Spark machine learning packages that will be needed in the subsequent steps.</p>
+<p>In this section, you will create a Spark machine learning pipeline and train the model.</p>
+<p>First, you need to import Spark machine learning packages that will be needed in the subsequent steps.</p>
 
 </div>
 </div>
@@ -13095,10 +13113,10 @@ predictionData = [PRODUCT_LINE: string, GENDER: string ... 3 more fields]
 
 
 <div class="output_text output_subarea ">
-<pre>stringIndexerLabel = strIdx_d2bd5876009b
-stringIndexerProf = strIdx_68abd5d5ad04
-stringIndexerGend = strIdx_d3abfcba5aef
-stringIndexerMar = strIdx_7f5270668fb3
+<pre>stringIndexerLabel = strIdx_001dfe13aa6f
+stringIndexerProf = strIdx_4aa8c2de7416
+stringIndexerGend = strIdx_243db3762e73
+stringIndexerMar = strIdx_c12bee13515e
 </pre>
 </div>
 
@@ -13112,7 +13130,7 @@ stringIndexerMar = strIdx_7f5270668fb3
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>strIdx_7f5270668fb3</pre>
+<pre>strIdx_c12bee13515e</pre>
 </div>
 
 </div>
@@ -13154,7 +13172,7 @@ stringIndexerMar = strIdx_7f5270668fb3
 
 
 <div class="output_text output_subarea ">
-<pre>vectorAssemblerFeatures = vecAssembler_21c456a01984
+<pre>vectorAssemblerFeatures = vecAssembler_cc7f2a432eeb
 </pre>
 </div>
 
@@ -13168,7 +13186,7 @@ stringIndexerMar = strIdx_7f5270668fb3
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>vecAssembler_21c456a01984</pre>
+<pre>vecAssembler_cc7f2a432eeb</pre>
 </div>
 
 </div>
@@ -13210,7 +13228,7 @@ stringIndexerMar = strIdx_7f5270668fb3
 
 
 <div class="output_text output_subarea ">
-<pre>rf = rfc_94f7237f87bd
+<pre>rf = rfc_36e8569c94a6
 </pre>
 </div>
 
@@ -13224,7 +13242,7 @@ stringIndexerMar = strIdx_7f5270668fb3
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>rfc_94f7237f87bd</pre>
+<pre>rfc_36e8569c94a6</pre>
 </div>
 
 </div>
@@ -13266,7 +13284,7 @@ stringIndexerMar = strIdx_7f5270668fb3
 
 
 <div class="output_text output_subarea ">
-<pre>labelConverter = idxToStr_8f8cf30e4dd3
+<pre>labelConverter = idxToStr_57ae1bc4e090
 </pre>
 </div>
 
@@ -13280,7 +13298,7 @@ stringIndexerMar = strIdx_7f5270668fb3
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>idxToStr_8f8cf30e4dd3</pre>
+<pre>idxToStr_57ae1bc4e090</pre>
 </div>
 
 </div>
@@ -13322,7 +13340,7 @@ stringIndexerMar = strIdx_7f5270668fb3
 
 
 <div class="output_text output_subarea ">
-<pre>pipelineRf = pipeline_9736d401be61
+<pre>pipelineRf = pipeline_89e65091252c
 </pre>
 </div>
 
@@ -13336,7 +13354,7 @@ stringIndexerMar = strIdx_7f5270668fb3
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>pipeline_9736d401be61</pre>
+<pre>pipeline_89e65091252c</pre>
 </div>
 
 </div>
@@ -13423,7 +13441,7 @@ stringIndexerMar = strIdx_7f5270668fb3
 
 
 <div class="output_text output_subarea ">
-<pre>modelRf = pipeline_9736d401be61
+<pre>modelRf = pipeline_89e65091252c
 </pre>
 </div>
 
@@ -13437,7 +13455,7 @@ stringIndexerMar = strIdx_7f5270668fb3
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>pipeline_9736d401be61</pre>
+<pre>pipeline_89e65091252c</pre>
 </div>
 
 </div>
@@ -13495,7 +13513,7 @@ stringIndexerMar = strIdx_7f5270668fb3
 
 <div class="output_text output_subarea ">
 <pre>predictions = [PRODUCT_LINE: string, GENDER: string ... 12 more fields]
-evaluatorRF = mcEval_affc64abff81
+evaluatorRF = mcEval_ad3ef501c6bd
 accuracy = 0.5821362799263352
 </pre>
 </div>
@@ -13557,7 +13575,7 @@ accuracy = 0.5821362799263352
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>First, you must import required libraries.</p>
-<p><strong>Note</strong>: Apache® Spark 2.1 or higher is required.</p>
+<p><strong>Note</strong>: Spark 2.3 or higher is required.</p>
 
 </div>
 </div>
@@ -13589,7 +13607,7 @@ accuracy = 0.5821362799263352
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Authenticate the Watson Machine Learning service on the IBM Cloud.</p>
-<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://console.bluemix.net/docs/services/service_credentials.html#service_credentials" target="_blank" rel="noopener no referrer">Service credentials</a> tab of the service instance that you created on the IBM Cloud. <BR>If you cannot find the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
+<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-get-wml-credentials.html" target="_blank" rel="noopener no referrer">Service credentials</a> tab of the service instance that you created on the IBM Cloud. <BR>If you cannot find the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
 <p><strong>Action</strong>: Enter your Watson Machine Learning service instance credentials here.</p>
 
 </div>
@@ -13600,12 +13618,14 @@ accuracy = 0.5821362799263352
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">wmlCredentials</span> <span class="k">=</span> <span class="s">&quot;&quot;&quot;scala.collection.mutable.HashMap[String, String](</span>
-<span class="s">    &quot;url&quot;-&gt;&quot;https://ibm-watson-ml.mybluemix.net&quot;,</span>
-<span class="s">    &quot;username&quot;-&gt;&quot;***&quot;,</span>
-<span class="s">    &quot;password&quot;-&gt;&quot;***&quot;,</span>
-<span class="s">    &quot;instance_id&quot;-&gt;&quot;***&quot;</span>
-<span class="s">)&quot;&quot;&quot;</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">scala.collection.mutable.HashMap</span>
+<span class="k">val</span> <span class="n">wmlCredentials</span><span class="k">:</span> <span class="kt">HashMap</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">HashMap</span><span class="o">(</span>
+    <span class="s">&quot;url&quot;</span><span class="o">-&gt;</span><span class="s">&quot;https://ibm-watson-ml.mybluemix.net&quot;</span><span class="o">,</span>
+    <span class="s">&quot;username&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;password&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;instance_id&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;apikey&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span>
+<span class="o">)</span>
 </pre></div>
 
 </div>
@@ -13624,7 +13644,7 @@ accuracy = 0.5821362799263352
 
 
 <div class="output_text output_subarea ">
-<pre>wmlCredentials = 
+<pre>wmlCredentials = Map(instance_id -&gt; ***, username -&gt; ***, apikey -&gt; ***, url -&gt; https://ibm-watson-ml.mybluemix.net, password -&gt; ***)
 </pre>
 </div>
 
@@ -13632,19 +13652,13 @@ accuracy = 0.5821362799263352
 
 <div class="output_area">
 
-<div class="prompt"></div>
+<div class="prompt output_prompt">Out[16]:</div>
 
 
 
 
-<div class="output_text output_subarea ">
-<pre>scala.collection.mutable.HashMap[String, String](
-    &#34;url&#34;-&gt;&#34;https://ibm-watson-ml.mybluemix.net&#34;,
-    &#34;username&#34;-&gt;&#34;***&#34;,
-    &#34;password&#34;-&gt;&#34;***&#34;,
-    &#34;instance_id&#34;-&gt;&#34;***&#34;
-)
-</pre>
+<div class="output_text output_subarea output_execute_result">
+<pre>Map(instance_id -&gt; ***, username -&gt; ***, apikey -&gt; ***, url -&gt; https://ibm-watson-ml.mybluemix.net, password -&gt; ***)</pre>
 </div>
 
 </div>
@@ -13662,6 +13676,7 @@ accuracy = 0.5821362799263352
 <span class="k">val</span> <span class="n">wmlInstanceId</span> <span class="k">=</span> <span class="n">wmlCredentials</span><span class="o">(</span><span class="s">&quot;instance_id&quot;</span><span class="o">)</span>
 <span class="k">val</span> <span class="n">wmlUsername</span> <span class="k">=</span> <span class="n">wmlCredentials</span><span class="o">(</span><span class="s">&quot;username&quot;</span><span class="o">)</span>
 <span class="k">val</span> <span class="n">wmlPassword</span> <span class="k">=</span> <span class="n">wmlCredentials</span><span class="o">(</span><span class="s">&quot;password&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">wmlAPI</span> <span class="k">=</span> <span class="n">wmlCredentials</span><span class="o">(</span><span class="s">&quot;apikey&quot;</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -13694,7 +13709,7 @@ accuracy = 0.5821362799263352
 
 
 <div class="output_text output_subarea ">
-<pre>client = com.ibm.analytics.ngp.repository_v3.MLRepositoryClient@177b93b5
+<pre>client = com.ibm.analytics.ngp.repository_v3.MLRepositoryClient@d3332a5
 </pre>
 </div>
 
@@ -13750,7 +13765,7 @@ accuracy = 0.5821362799263352
 
 
 <div class="output_text output_subarea ">
-<pre>modelArtifact = com.ibm.analytics.ngp.repository_v3.SparkPipelineModelArtifact@5bf4af10
+<pre>modelArtifact = com.ibm.analytics.ngp.repository_v3.SparkPipelineModelArtifact@73aa5f1c
 </pre>
 </div>
 
@@ -13764,7 +13779,7 @@ accuracy = 0.5821362799263352
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>com.ibm.analytics.ngp.repository_v3.SparkPipelineModelArtifact@5bf4af10</pre>
+<pre>com.ibm.analytics.ngp.repository_v3.SparkPipelineModelArtifact@73aa5f1c</pre>
 </div>
 
 </div>
@@ -13815,7 +13830,7 @@ accuracy = 0.5821362799263352
 
 
 <div class="output_text output_subarea ">
-<pre>savedModel = com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$ModelAdapter$$anon$14@45b1d53
+<pre>savedModel = com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$ModelAdapter$$anon$14@24b63292
 </pre>
 </div>
 
@@ -13829,7 +13844,7 @@ accuracy = 0.5821362799263352
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$ModelAdapter$$anon$14@45b1d53</pre>
+<pre>com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$ModelAdapter$$anon$14@24b63292</pre>
 </div>
 
 </div>
@@ -13909,8 +13924,8 @@ accuracy = 0.5821362799263352
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>modelType: standard
 trainingDataSchema: {&#34;type&#34;:&#34;struct&#34;,&#34;fields&#34;:[{&#34;name&#34;:&#34;PRODUCT_LINE&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{&#34;modeling_role&#34;:&#34;target&#34;}},{&#34;name&#34;:&#34;GENDER&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;AGE&#34;,&#34;type&#34;:&#34;integer&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;MARITAL_STATUS&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;PROFESSION&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}}]}
-creationTime: 2019-02-27T13:50:04.628Z
-modelVersionUrl: https://us-south.ml.cloud.ibm.com/v3/ml_assets/models/f2ea0716-7d1f-484a-8468-14f4b6ec7333/versions/8343488e-c304-419a-9bcc-23b3895c0446
+creationTime: 2019-07-16T16:04:33.080Z
+modelVersionUrl: https://us-south.ml.cloud.ibm.com/v3/ml_assets/models/4f5c3428-3983-4463-bd0a-86a3480124e7/versions/346ee803-2519-4323-a4ea-bf68b057f1b0
 label: PRODUCT_LINE
 </pre>
 </div>
@@ -13963,8 +13978,8 @@ label: PRODUCT_LINE
 
 
 <div class="output_text output_subarea ">
-<pre>modelVersionUrl = https://us-south.ml.cloud.ibm.com/v3/ml_assets/models/f2ea0716-7d1f-484a-8468-14f4b6ec7333/versions/8343488e-c304-419a-9bcc-23b3895c0446
-loadedModelArtifact = com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$ModelAdapter$$anon$14@3c421f05
+<pre>modelVersionUrl = https://us-south.ml.cloud.ibm.com/v3/ml_assets/models/4f5c3428-3983-4463-bd0a-86a3480124e7/versions/346ee803-2519-4323-a4ea-bf68b057f1b0
+loadedModelArtifact = com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$ModelAdapter$$anon$14@195ca98f
 </pre>
 </div>
 
@@ -13978,7 +13993,7 @@ loadedModelArtifact = com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$Mod
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$ModelAdapter$$anon$14@3c421f05</pre>
+<pre>com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$ModelAdapter$$anon$14@195ca98f</pre>
 </div>
 
 </div>
@@ -14163,7 +14178,7 @@ only showing top 10 rows
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="scoring"></a></p>
 <h2 id="5.-Deploy-and-score-in-the-WML-repository">5. Deploy and score in the WML repository<a class="anchor-link" href="#5.-Deploy-and-score-in-the-WML-repository">&#182;</a></h2><p>In this section, you will learn how to create online scoring and to score a test data record by using the WML REST API. 
-For more information about REST APIs, see the <a href="http://watson-ml-api.mybluemix.net/">Swagger Documentation</a>.</p>
+For more information about REST APIs, see the <a href="http://watson-ml-api.mybluemix.net/" target="_blank" rel="noopener no referrer">Swagger Documentation</a>.</p>
 <p>To work with the WML REST API you must generate an access token. To do this, use the following code:</p>
 
 </div>
@@ -14174,17 +14189,15 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="c1">// Get WML service instance token</span>
-
-<span class="k">val</span> <span class="n">wmlAuthHeader</span> <span class="k">=</span> <span class="s">&quot;Basic &quot;</span> <span class="o">+</span> <span class="nc">Base64</span><span class="o">.</span><span class="n">getEncoder</span><span class="o">.</span><span class="n">encodeToString</span><span class="o">((</span><span class="n">wmlUsername</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="n">wmlPassword</span><span class="o">).</span><span class="n">getBytes</span><span class="o">(</span><span class="nc">StandardCharsets</span><span class="o">.</span><span class="nc">UTF_8</span><span class="o">))</span>
-<span class="k">val</span> <span class="n">wmlUrl</span> <span class="k">=</span> <span class="n">wmlServicePath</span> <span class="o">+</span> <span class="s">&quot;/v3/identity/token&quot;</span>
-<span class="k">val</span> <span class="n">wmlResponse</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">wmlUrl</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="n">wmlAuthHeader</span><span class="o">).</span><span class="n">asString</span>
-<span class="k">val</span> <span class="n">wmlTokenJson</span><span class="k">:</span><span class="kt">JsValue</span> <span class="o">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">wmlResponse</span><span class="o">.</span><span class="n">body</span><span class="o">)</span>
-
-<span class="k">val</span> <span class="n">wmlToken</span> <span class="k">=</span> <span class="o">(</span><span class="n">wmlTokenJson</span> <span class="o">\</span> <span class="s">&quot;token&quot;</span><span class="o">).</span><span class="n">asOpt</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">match</span> <span class="o">{</span>
-    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">x</span>
-    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="s">&quot;&quot;</span>
-<span class="o">}</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// Get IAM token</span>
+<span class="k">val</span> <span class="n">wmlUrl</span> <span class="k">=</span> <span class="s">&quot;https://iam.bluemix.net/oidc/token&quot;</span>
+<span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="s">&quot;apikey=&quot;</span> <span class="o">+</span> <span class="n">wmlAPI</span> <span class="o">+</span> <span class="s">&quot;&amp;grant_type=urn:ibm:params:oauth:grant-type:apikey&quot;</span>
+<span class="k">val</span> <span class="nc">IBM_cloud_IAM_uid</span> <span class="k">=</span> <span class="s">&quot;bx&quot;</span>
+<span class="k">val</span> <span class="nc">IBM_cloud_IAM_pwd</span> <span class="k">=</span> <span class="s">&quot;bx&quot;</span>
+<span class="k">val</span> <span class="n">wmlAuthHeader</span> <span class="k">=</span> <span class="s">&quot;Basic &quot;</span> <span class="o">+</span> <span class="nc">Base64</span><span class="o">.</span><span class="n">getEncoder</span><span class="o">.</span><span class="n">encodeToString</span><span class="o">((</span><span class="nc">IBM_cloud_IAM_uid</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="nc">IBM_cloud_IAM_pwd</span><span class="o">).</span><span class="n">getBytes</span><span class="o">(</span><span class="nc">StandardCharsets</span><span class="o">.</span><span class="nc">UTF_8</span><span class="o">))</span>
+<span class="k">val</span> <span class="n">wmlResponse</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">wmlUrl</span><span class="o">).</span><span class="n">postData</span><span class="o">(</span><span class="n">data</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/x-www-form-urlencoded&quot;</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="n">wmlAuthHeader</span><span class="o">).</span><span class="n">asString</span>
+<span class="k">val</span> <span class="n">iamTokenJson</span> <span class="k">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">wmlResponse</span><span class="o">.</span><span class="n">body</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">iamToken</span> <span class="k">=</span> <span class="o">(</span><span class="n">iamTokenJson</span> <span class="o">\</span> <span class="s">&quot;access_token&quot;</span><span class="o">).</span><span class="n">as</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span>
 </pre></div>
 
 </div>
@@ -14202,13 +14215,13 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">endpointInstance</span> <span class="k">=</span> <span class="n">wmlServicePath</span> <span class="o">+</span> <span class="s">&quot;/v3/wml_instances/&quot;</span> <span class="o">+</span> <span class="n">wmlInstanceId</span>
 <span class="k">val</span> <span class="n">wmlResponseInstance</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">endpointInstance</span><span class="o">).</span>
                           <span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">).</span>
-                          <span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">wmlToken</span><span class="o">).</span>
+                          <span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">iamToken</span><span class="o">).</span>
                           <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">connTimeout</span><span class="o">(</span><span class="mi">10000</span><span class="o">)).</span>
                           <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">readTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">asString</span>
 </pre></div>
@@ -14217,16 +14230,114 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>endpointInstance = https://ibm-watson-ml.mybluemix.net/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9
+wmlResponseInstance = 
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>HttpResponse({
+  &#34;metadata&#34;: {
+    &#34;guid&#34;: &#34;b4b6c696-172c-4164-8049-c0b621dbf3c9&#34;,
+    &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9&#34;,
+    &#34;created_at&#34;: &#34;2018-12-10T08:05:26.901Z&#34;,
+    &#34;modified_at&#34;: &#34;2019-07-16T16:04:33.975Z&#34;
+  },
+  &#34;entity&#34;: {
+    &#34;source&#34;: &#34;Bluemix&#34;,
+    &#34;published_models&#34;: {
+      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models&#34;
+    },
+    &#34;usage&#34;: {
+      &#34;expiration_date&#34;: &#34;2019-08-01T00:00:00.000Z&#34;,
+      &#34;computation_time&#34;: {
+        &#34;current&#34;: 0
+      },
+      &#34;gpu_count_k80&#34;:...
+</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-scala"><pre><span></span><span class="n">wmlResponseInstance</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>HttpResponse({
+  &#34;metadata&#34;: {
+    &#34;guid&#34;: &#34;b4b6c696-172c-4164-8049-c0b621dbf3c9&#34;,
+    &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9&#34;,
+    &#34;created_at&#34;: &#34;2018-12-10T08:05:26.901Z&#34;,
+    &#34;modified_at&#34;: &#34;2019-07-16T16:04:33.975Z&#34;
+  },
+  &#34;entity&#34;: {
+    &#34;source&#34;: &#34;Bluemix&#34;,
+    &#34;published_models&#34;: {
+      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models&#34;
+    },
+    &#34;usage&#34;: {
+      &#34;expiration_date&#34;: &#34;2019-08-01T00:00:00.000Z&#34;,
+      &#34;computation_time&#34;: {
+        &#34;current&#34;: 0
+      },
+      &#34;gpu_count_k80&#34;: {
+        &#34;limit&#34;: 48,
+        &#34;current&#34;: 0
+      },
+      &#34;model_count&#34;: {
+        &#34;limit&#34;: 1000,
+        &#34;current&#34;: 68
+      },...
+</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -14270,7 +14381,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
     <div class="input_area">
 <div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">wmlModels</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">publishedModelsUrl</span><span class="o">).</span>
                 <span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">).</span>
-                <span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">wmlToken</span><span class="o">).</span>
+                <span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">iamToken</span><span class="o">).</span>
                 <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">connTimeout</span><span class="o">(</span><span class="mi">10000</span><span class="o">)).</span>
                 <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">readTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">asString</span>
 <span class="n">wmlModels</span>
@@ -14310,16 +14421,18 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
   &#34;limit&#34;: 1000,
   &#34;resources&#34;: [{
     &#34;metadata&#34;: {
-      &#34;guid&#34;: &#34;95bfca55-0c53-43d2-86ed-5c770f403ee6&#34;,
-      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models/95bfca55-0c53-43d2-86ed-5c770f403ee6&#34;,
-      &#34;created_at&#34;: &#34;2019-01-15T14:49:42.639Z&#34;,
-      &#34;modified_at&#34;: &#34;2019-01-15T14:49:46.465Z&#34;
+      &#34;guid&#34;: &#34;f5eb38e5-2b04-4da0-bf14-3edafe554be8&#34;,
+      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models/f5eb38e5-2b04-4da0-bf14-3edafe554be8&#34;,
+      &#34;created_at&#34;: &#34;2019-01-18T02:18:45.291Z&#34;,
+      &#34;modified_at&#34;: &#34;2019-01-18T02:18:45.351Z&#34;
     },
     &#34;entity&#34;: {
-      &#34;runtime_environment&#34;: &#34;python-3.5&#34;,
-      &#34;learning_configuration_url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models/95bfca55-0c53-43d2-86ed-5c770f403ee6/learning_configuration&#34;,
-      &#34;name&#34;: &#34;MNIST - compressed keras model&#34;,
-      &#34;learning_iterations_url&#34;: &#34;https://us-south.ml.clo...
+      &#34;runtime_environment&#34;: &#34;spark-2.3&#34;,
+      &#34;learning_configuration_url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models/f5eb38e5-2b04-4da0-bf14-3edafe554be8/learning_configuration&#34;,
+      &#34;name&#34;: &#34;Customer churn Spark model&#34;,
+      &#34;label_col&#34;: &#34;Churn&#34;,
+      &#34;tags&#34;: [],
+      &#34;learning_...
 </pre>
 </div>
 
@@ -14417,7 +14530,7 @@ payloadDataOnline = {&#34;type&#34;:&#34;online&#34;,&#34;name&#34;:&#34;Online 
 <div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">responseOnline</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">deploymentEndpoint</span><span class="o">).</span>
                      <span class="n">postData</span><span class="o">(</span><span class="n">payloadDataOnline</span><span class="o">).</span>
                      <span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">).</span>
-                     <span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">wmlToken</span><span class="o">).</span>
+                     <span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">iamToken</span><span class="o">).</span>
                      <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">connTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span>
                      <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">readTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">asString</span>
 </pre></div>
@@ -14561,7 +14674,7 @@ payloadDataOnline = {&#34;type&#34;:&#34;online&#34;,&#34;name&#34;:&#34;Online 
 <div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">responseScoring</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">scoringUrl</span><span class="o">).</span>
                       <span class="n">postData</span><span class="o">(</span><span class="n">payloadScoring</span><span class="o">).</span>
                       <span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">).</span>
-                      <span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">wmlToken</span><span class="o">).</span>
+                      <span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">iamToken</span><span class="o">).</span>
                       <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">method</span><span class="o">(</span><span class="s">&quot;POST&quot;</span><span class="o">)).</span>
                       <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">connTimeout</span><span class="o">(</span><span class="mi">10000</span><span class="o">)).</span>
                       <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">readTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">asString</span>
@@ -14598,9 +14711,9 @@ payloadDataOnline = {&#34;type&#34;:&#34;online&#34;,&#34;name&#34;:&#34;Online 
 
 <div class="output_text output_subarea ">
 <pre>HttpResponse({
-  &#34;fields&#34;: [&#34;GENDER&#34;, &#34;AGE&#34;, &#34;MARITAL_STATUS&#34;, &#34;PROFESSION&#34;, &#34;PROFESSION_IX&#34;, &#34;GENDER_IX&#34;, &#34;MARITAL_STATUS_IX&#34;, &#34;features&#34;, &#34;rawPrediction&#34;, &#34;probability&#34;, &#34;prediction&#34;, &#34;predictedLabel&#34;],
-  &#34;values&#34;: [[&#34;M&#34;, 55, &#34;Single&#34;, &#34;Executive&#34;, 3.0, 0.0, 1.0, [0.0, 55.0, 1.0, 3.0], [2.5050408694752604, 1.8771700964659068, 2.338808434620882, 3.1481331680893025, 0.13084743134864898], [0.250504086947526, 0.1877170096465907, 0.2338808434620882, 0.31481331680893027, 0.013084743134864898], 3.0, &#34;Golf Equipment&#34;]]
-},200,Map(cache-control -&gt; Vector(private, no-cache, no-store, must-revalidate), Connection -&gt; Vector(keep-alive), Content-Length -&gt; Vector(507), Content-Type -&gt; Vector(application/json), Date -&gt; Vector(Wed, 27 Feb 2019 13:50:...
+  &#34;fields&#34;: [&#34;GENDER&#34;, &#34;AGE&#34;, &#34;MARITAL_STATUS&#34;, &#34;PROFESSION&#34;, &#34;PRODUCT_LINE&#34;, &#34;label&#34;, &#34;PROFESSION_IX&#34;, &#34;GENDER_IX&#34;, &#34;MARITAL_STATUS_IX&#34;, &#34;features&#34;, &#34;rawPrediction&#34;, &#34;probability&#34;, &#34;prediction&#34;, &#34;predictedLabel&#34;],
+  &#34;values&#34;: [[&#34;M&#34;, 55, &#34;Single&#34;, &#34;Executive&#34;, &#34;Camping Equipment&#34;, 0.0, 3.0, 0.0, 1.0, [0.0, 55.0, 1.0, 3.0], [2.5050408694752604, 1.8771700964659068, 2.338808434620882, 3.1481331680893025, 0.13084743134864898], [0.250504086947526, 0.1877170096465907, 0.2338808434620882, 0.31481331680893027, 0.013084743134864898], 3.0, &#34;Golf Equipment&#34;]]
+},200,Map(cache-control -&gt; Vector(private, no-cache, no-store, must-revalidate), Connection -&gt; Vector(keep-alive), Content-Length -&gt; Vector(558), Content-Type -&gt; Vector(applic...
 </pre>
 </div>
 
@@ -14633,9 +14746,9 @@ payloadDataOnline = {&#34;type&#34;:&#34;online&#34;,&#34;name&#34;:&#34;Online 
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>HttpResponse({
-  &#34;fields&#34;: [&#34;GENDER&#34;, &#34;AGE&#34;, &#34;MARITAL_STATUS&#34;, &#34;PROFESSION&#34;, &#34;PROFESSION_IX&#34;, &#34;GENDER_IX&#34;, &#34;MARITAL_STATUS_IX&#34;, &#34;features&#34;, &#34;rawPrediction&#34;, &#34;probability&#34;, &#34;prediction&#34;, &#34;predictedLabel&#34;],
-  &#34;values&#34;: [[&#34;M&#34;, 55, &#34;Single&#34;, &#34;Executive&#34;, 3.0, 0.0, 1.0, [0.0, 55.0, 1.0, 3.0], [2.5050408694752604, 1.8771700964659068, 2.338808434620882, 3.1481331680893025, 0.13084743134864898], [0.250504086947526, 0.1877170096465907, 0.2338808434620882, 0.31481331680893027, 0.013084743134864898], 3.0, &#34;Golf Equipment&#34;]]
-},200,Map(cache-control -&gt; Vector(private, no-cache, no-store, must-revalidate), Connection -&gt; Vector(keep-alive), Content-Length -&gt; Vector(507), Content-Type -&gt; Vector(application/json), Date -&gt; Vector(Wed, 27 Feb 2019 13:50:44 GMT), pragma -&gt; Vector(no-cache), Server -&gt; Vector(nginx), Status -&gt; Vector(HTTP/1.1 200 OK), Strict-Transport-Security -&gt; Vector(max-age=31536000; includeSubDomains), x-content-type-options -&gt; Vector(nosniff), x-envoy-upstream-service-time -&gt; Vector(104), x-frame-options -&gt; Vector(DENY), x-xss-protection -&gt; Vector(1)))</pre>
+  &#34;fields&#34;: [&#34;GENDER&#34;, &#34;AGE&#34;, &#34;MARITAL_STATUS&#34;, &#34;PROFESSION&#34;, &#34;PRODUCT_LINE&#34;, &#34;label&#34;, &#34;PROFESSION_IX&#34;, &#34;GENDER_IX&#34;, &#34;MARITAL_STATUS_IX&#34;, &#34;features&#34;, &#34;rawPrediction&#34;, &#34;probability&#34;, &#34;prediction&#34;, &#34;predictedLabel&#34;],
+  &#34;values&#34;: [[&#34;M&#34;, 55, &#34;Single&#34;, &#34;Executive&#34;, &#34;Camping Equipment&#34;, 0.0, 3.0, 0.0, 1.0, [0.0, 55.0, 1.0, 3.0], [2.5050408694752604, 1.8771700964659068, 2.338808434620882, 3.1481331680893025, 0.13084743134864898], [0.250504086947526, 0.1877170096465907, 0.2338808434620882, 0.31481331680893027, 0.013084743134864898], 3.0, &#34;Golf Equipment&#34;]]
+},200,Map(cache-control -&gt; Vector(private, no-cache, no-store, must-revalidate), Connection -&gt; Vector(keep-alive), Content-Length -&gt; Vector(558), Content-Type -&gt; Vector(application/json), Date -&gt; Vector(Tue, 16 Jul 2019 16:05:13 GMT), pragma -&gt; Vector(no-cache), Server -&gt; Vector(nginx), Status -&gt; Vector(HTTP/1.1 200 OK), Strict-Transport-Security -&gt; Vector(max-age=31536000; includeSubDomains), x-content-type-options -&gt; Vector(nosniff), x-envoy-upstream-service-time -&gt; Vector(431), x-frame-options -&gt; Vector(DENY), x-xss-protection -&gt; Vector(1)))</pre>
 </div>
 </div>
 
@@ -14647,7 +14760,7 @@ payloadDataOnline = {&#34;type&#34;:&#34;online&#34;,&#34;name&#34;:&#34;Online 
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As you can see, you can predict that a 55-year-old single male executive is interested in Mountaineering Equipment (prediction: 2.0).</p>
+<p>As you can see, you can predict that a 55-year-old single male executive is interested in Golf Equipment (prediction: 3.0).</p>
 
 </div>
 </div>
@@ -14658,7 +14771,7 @@ payloadDataOnline = {&#34;type&#34;:&#34;online&#34;,&#34;name&#34;:&#34;Online 
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="summary"></a></p>
 <h2 id="6.-Summary-and-next-steps">6. Summary and next steps<a class="anchor-link" href="#6.-Summary-and-next-steps">&#182;</a></h2><p>You successfully completed this notebook!</p>
-<p>You learned how to use Apache® Spark machine learning as well as Watson Machine Learning for model creation and deployment.</p>
+<p>You learned how to use Spark machine learning as well as Watson Machine Learning for model creation and deployment.</p>
 <p>Check out our <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener noreferrer">Online Documentation</a> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
 <h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Umit Mert Cakmak</strong> is a Data Scientist at IBM with a track record of developing enterprise-level applications that substantially increases clients' ability to turn data into actionable insights.<br>
 <strong>Jihyoung Kim</strong>, Ph.D., is a Data Scientist at IBM who strives to make data science easy for everyone through Watson Studio.</p>
