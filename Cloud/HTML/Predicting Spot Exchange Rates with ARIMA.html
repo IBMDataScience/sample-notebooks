@@ -12792,28 +12792,6 @@ KERNEL_ID = abf01582-3d3d-407f-bce0-e231c0f7a6ba
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="c1"># @hidden_cell</span>
-<span class="kn">import</span> <span class="nn">types</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">botocore.client</span> <span class="k">import</span> <span class="n">Config</span>
-<span class="kn">import</span> <span class="nn">ibm_boto3</span>
-
-<span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="mi">0</span>
-
-<span class="c1"># @hidden_cell</span>
-<span class="c1"># The following code accesses a file in your IBM Cloud Object Storage. It includes your credentials.</span>
-<span class="c1"># You might want to remove those credentials before you share your notebook.</span>
-<span class="n">client_985f24d93a7243aeb65f8aba59f75706</span> <span class="o">=</span> <span class="n">ibm_boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="n">service_name</span><span class="o">=</span><span class="s1">&#39;s3&#39;</span><span class="p">,</span>
-    <span class="n">ibm_api_key_id</span><span class="o">=</span><span class="s1">&#39;AiNR0LBOak3_HA8ygX1wKJw7gDNfkksC0m2uf_2OaXxv&#39;</span><span class="p">,</span>
-    <span class="n">ibm_auth_endpoint</span><span class="o">=</span><span class="s2">&quot;https://iam.ng.bluemix.net/oidc/token&quot;</span><span class="p">,</span>
-    <span class="n">config</span><span class="o">=</span><span class="n">Config</span><span class="p">(</span><span class="n">signature_version</span><span class="o">=</span><span class="s1">&#39;oauth&#39;</span><span class="p">),</span>
-    <span class="n">endpoint_url</span><span class="o">=</span><span class="s1">&#39;https://s3-api.us-geo.objectstorage.service.networklayer.com&#39;</span><span class="p">)</span>
-
-<span class="n">body</span> <span class="o">=</span> <span class="n">client_985f24d93a7243aeb65f8aba59f75706</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="s1">&#39;communitycopytesting-donotdelete-pr-4zfgsfcvxgg4x0&#39;</span><span class="p">,</span><span class="n">Key</span><span class="o">=</span><span class="s1">&#39;BOE-XUDLERD.csv&#39;</span><span class="p">)[</span><span class="s1">&#39;Body&#39;</span><span class="p">]</span>
-<span class="c1"># add missing __iter__ method, so pandas accepts body as file-like object</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span> <span class="n">body</span><span class="o">.</span><span class="fm">__iter__</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span> <span class="fm">__iter__</span><span class="p">,</span> <span class="n">body</span> <span class="p">)</span>
-
-<span class="n">df_fx_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-<span class="n">df_fx_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 
 </div>
