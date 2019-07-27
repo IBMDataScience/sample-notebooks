@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Use PMML to predict iris species</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Using the Progress Listeners with CPLEX Optimizer</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -12672,35 +12672,21 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<table style="border: none" align="left">
-   <tr style="border: none">
-      <th style="border: none"><font face="verdana" size="5" color="black"><b>Persist, Deploy, and Score a PMML model to Predict Iris Species</b></th>
-      <th style="border: none"><img src="https://github.com/pmservice/customer-satisfaction-prediction/blob/master/app/static/images/ml_icon_gray.png?raw=true" alt="Watson Machine Learning icon" height="40" width="40"></th>
-  <tr style="border: none">
-       <th style="border: none"><img src="https://github.com/pmservice/wml-sample-models/blob/master/spark/customer-satisfaction-prediction/images/users_banner_2-03.png?raw=true" width="600" alt="Icon"> </th>
-   </tr>
-</table>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This notebook demonstrates how to store a sample Predictive Model Markup Language (PMML) model and score test data.</p>
-<p>Some familiarity with python is helpful. This notebook is compatible with Python 3.6.</p>
-<p>You will use the <strong>Iris</strong> data set to predict the species of an iris flower. This data set contains measurements of the iris perianth flower.</p>
-<h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>You will learn how to:</p>
+<h1 id="Using-the-Progress-Listeners-with-CPLEX-Optimizer">Using the Progress Listeners with CPLEX Optimizer<a class="anchor-link" href="#Using-the-Progress-Listeners-with-CPLEX-Optimizer">&#182;</a></h1><p>This tutorial includes everything you need to set up decision optimization engines, build a mathematical programming model, then use the progress listeners to monitor progress, capture intermediate solutions and stop the solve on your own criteria.</p>
+<p>Table of contents:</p>
 <ul>
-<li>Set up the Watson Machine Learning (WML) instance.</li>
-<li>Deploy a PMML model.</li>
-<li>Score the deployed model.</li>
+<li><a href="#Describe-the-business-problem:--Games-Scheduling-in-the-National-Football-League">Describe the business problem</a></li>
+<li><a href="#How--decision-optimization-can-help">How decision optimization (prescriptive analytics) can help</a></li>
+<li><a href="#Use-decision-optimization">Use decision optimization</a><ul>
+<li><a href="#Step-1:-Set-up-the-prescriptive-model">Step 1: Set up the prescriptive model</a></li>
+<li><a href="#Step-2:-Monitoring-CPLEX-progress">Step 2: Monitoring CPLEX progress</a></li>
+<li><a href="#Step-3:-Aborting-the-search-with-a-custom-progress-listener">Step 3: Aborting the search with a custom progress listener</a></li>
+<li><a href="#Variant:-using-matplotlib-to-plot-a-chart-of-gap-vs.-time">Variant: using matplotlib to plot a chart of gap vs. time</a></li>
 </ul>
-<h2 id="Contents">Contents<a class="anchor-link" href="#Contents">&#182;</a></h2><ol>
-<li><a href="#setup">Set up the environment</a></li>
-<li><a href="#scoring">Persist, deploy, and score a PMML model in the Watson Machine Learning (WML) repository</a></li>
-<li><a href="#summary">Summary and next steps</a></li>
-</ol>
+</li>
+<li><a href="#Summary">Summary</a></li>
+</ul>
+<hr>
 
 </div>
 </div>
@@ -12709,11 +12695,21 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="setup"></a></p>
-<h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
+<h2 id="How--decision-optimization-can-help">How  decision optimization can help<a class="anchor-link" href="#How--decision-optimization-can-help">&#182;</a></h2><ul>
+<li><p>Prescriptive analytics (decision optimization) technology recommends actions that are based on desired outcomes.  It takes into account specific scenarios, resources, and knowledge of past and current events. With this insight, your organization can make better decisions and have greater control of business outcomes.</p>
+</li>
+<li><p>Prescriptive analytics is the next step on the path to insight-based actions. It creates value through synergy with predictive analytics, which analyzes data to predict future outcomes.</p>
+</li>
+<li><p>Prescriptive analytics takes that insight to the next level by suggesting the optimal way to handle that future situation. Organizations that can act fast in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.<br>
+<br/></p>
+</li>
+</ul>
+<p><u>With prescriptive analytics, you can:</u></p>
 <ul>
-<li>Create a <a href="https://cloud.ibm.com/catalog/services/machine-learning" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener no referrer">here</a>).</li>
-<li>Install the <a href="https://pypi.python.org/pypi?%3Aaction=search&term=watson-machine-learning-client&submit=search" target="_blank" rel="noopener no referrer">watson-machine-learning-client</a> (<strong>not required on Watson Studio</strong>).</li>
+<li>Automate the complex decisions and trade-offs to better manage your limited resources.</li>
+<li>Take advantage of a future opportunity or mitigate a future risk.</li>
+<li>Proactively update recommendations based on changing events.</li>
+<li>Meet operational goals, increase customer loyalty, prevent threats and fraud, and optimize business processes.</li>
 </ul>
 
 </div>
@@ -12723,7 +12719,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="1.1-Set-up-the-WML-service-instance">1.1 Set up the WML service instance<a class="anchor-link" href="#1.1-Set-up-the-WML-service-instance">&#182;</a></h3>
+<h2 id="Use-decision-optimization">Use decision optimization<a class="anchor-link" href="#Use-decision-optimization">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -12731,8 +12727,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this subsection, you will learn how to set up and obtain details of your WML service instance.</p>
-
+<h3 id="Step-1:-Set-up-the-prescriptive-model">Step 1: Set up the prescriptive model<a class="anchor-link" href="#Step-1:-Set-up-the-prescriptive-model">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -12740,7 +12735,10 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Install-the-watson-machine-learning-client-package-from-pypi">Install the <code>watson-machine-learning-client</code> package from pypi<a class="anchor-link" href="#Install-the-watson-machine-learning-client-package-from-pypi">&#182;</a></h4><p><strong>Note:</strong> <code>watson-machine-learning-client</code> documentation can be found <a href="http://wml-api-pyclient.mybluemix.net/" target="_blank" rel="noopener no referrer">here</a>.</p>
+<p>We need a scalable MIP model in order to show how to leverage progress listeners in Docplex MP API.</p>
+<p>Progress listeners are designed to monitor the progress of complex MIP search in docplex MP, 
+that is, linear programs with integer variables.</p>
+<p>This model is easily scalable, and thus is appropriate to demonstrate  the progress listener API, but any other scalable MIP model would do.</p>
 
 </div>
 </div>
@@ -12750,21 +12748,37 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>rm -rf <span class="nv">$PIP_BUILD</span>/watson-machine-learning-client
-</pre></div>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="k">import</span> <span class="n">Model</span>
 
-</div>
-</div>
-</div>
+<span class="k">def</span> <span class="nf">build_hearts</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c1"># initialize the model</span>
+    <span class="n">mdl</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;love_hearts_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">r</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#Install the WML client if required.</span>
-<span class="o">!</span>pip install --upgrade watson-machine-learning-client 
+    <span class="c1"># the dictionary of decision variables, one variable</span>
+    <span class="c1"># for each circle with i in (1 .. r) as the row and</span>
+    <span class="c1"># j in (1 .. i) as the position within the row    </span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">binary_var_dict</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="k">lambda</span> <span class="n">ij</span><span class="p">:</span> <span class="s2">&quot;a_</span><span class="si">%d</span><span class="s2">_</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ij</span><span class="p">)</span>
+
+    <span class="c1"># the constraints - enumerate all equilateral triangles</span>
+    <span class="c1"># and prevent any such triangles being formed by keeping</span>
+    <span class="c1"># the number of included circles at its vertexes below 3</span>
+
+    <span class="c1"># for each row except the last</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="c1"># for each position in this row</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># for each triangle of side length (k) with its upper vertex at</span>
+            <span class="c1"># (i, j) and its sides parallel to those of the overall shape</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">-</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># the sets of 3 points at the same distances clockwise along the</span>
+                <span class="c1"># sides of these triangles form k equilateral triangles</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                    <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">m</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">k</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">m</span><span class="p">),</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">k</span> <span class="o">-</span> <span class="n">m</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">k</span> <span class="o">-</span> <span class="n">m</span><span class="p">)</span>
+                    <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">mdl</span><span class="o">.</span><span class="n">maximize</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">mdl</span>
 </pre></div>
 
 </div>
@@ -12776,9 +12790,58 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Authenticate the WML service on the IBM Cloud.</p>
-<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-get-wml-credentials.html" target="_blank" rel="noopener no referrer">Service Credentials</a> tab of the service instance that you created on the IBM Cloud. <BR>If you cannot find the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
-<p><strong>Action</strong>: Enter your WML service instance credentials in the following cell.</p>
+<p>Let's try to build a small instance of the 'hearts' program and print its characteristics.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m5</span> <span class="o">=</span> <span class="n">build_hearts</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">m5</span><span class="o">.</span><span class="n">print_information</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Model: love_hearts_5
+ - number of variables: 15
+   - binary=15, integer=0, continuous=0
+ - number of constraints: 35
+   - linear=35
+ - parameters: defaults
+ - problem type is: MILP
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Step-2:-Monitoring-CPLEX-progress">Step 2: Monitoring CPLEX progress<a class="anchor-link" href="#Step-2:-Monitoring-CPLEX-progress">&#182;</a></h3><p>MIP search can take some time for large (or complex) problems. Setting the <code>log_output=True</code> in a solve() lets
+you display the CPLEX log, which provides a lot of information. In certain cases, you might want to take control of what happens at intermediate points in the search, and this is what listeners are designed for.</p>
+<h4 id="An-introduction-to-progress-listeners">An introduction to progress listeners<a class="anchor-link" href="#An-introduction-to-progress-listeners">&#182;</a></h4><p>Progress listeners are objects, sub-classes of the <code>docplex.mp.progress.ProgressListener</code> class. Once a listener has been attached to a model instance (using <code>Model.add_progress_listener</code>), it receives method calls from within the CPLEX MIP search. CPLEX code decides when listeners are called, and this baseline logic cannot be changed. 
+However, progress listeners let you select certian types of events.</p>
+<p>First, we have to import the <code>docplex.mp.progress</code> module, which contains everything about progress listeners.</p>
 
 </div>
 </div>
@@ -12788,40 +12851,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Enter your credentials here.</span>
-<span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;apikey&#39;</span><span class="p">:</span> <span class="s1">&#39;***&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://ibm-watson-ml.mybluemix.net&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;***&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="s1">&#39;***&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;instance_id&#39;</span><span class="p">:</span> <span class="s1">&#39;***&#39;</span>
-<span class="p">}</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">watson_machine_learning_client</span> <span class="k">import</span> <span class="n">WatsonMachineLearningAPIClient</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">wml_client</span> <span class="o">=</span> <span class="n">WatsonMachineLearningAPIClient</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.progress</span> <span class="k">import</span> <span class="o">*</span>
 </pre></div>
 
 </div>
@@ -12833,7 +12863,133 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You cand check the details of your Watson Machine Learning service by calling the <code>service_instance.details</code> attribute.</p>
+<h4 id="Monitoring-MIP-search-progress">Monitoring MIP search progress<a class="anchor-link" href="#Monitoring-MIP-search-progress">&#182;</a></h4><p>The simplest class of listener is the <code>TextProgressListener</code>, which prints a message on the stdout each time it is called. Let's see what this does on our small model.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># connect a listener to the model</span>
+<span class="n">m5</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">TextProgressListener</span><span class="p">())</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Solve-with-Decision-Optimization">Solve with Decision Optimization<a class="anchor-link" href="#Solve-with-Decision-Optimization">&#182;</a></h4><p>If you're using a Community Edition of CPLEX runtimes, depending on the size of the problem, the solve stage may fail and will need a paying subscription or product installation.</p>
+<p>Here, we solve with the <strong><em>clean_before_true</em></strong> flag set to True, as we want each solve to produce the same output. Without this flag, a second solve on the model would start from the first solve solution, and would not have the same output.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m5</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">clean_before_solve</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>  1+: Node=0 Left=1 Best Integer=5.0000, Best Bound=10.0000, gap=100.00%, ItCnt=21 [0.0s]
+  2+: Node=0 Left=1 Best Integer=6.0000, Best Bound=10.0000, gap=66.67%, ItCnt=21 [0.0s]
+  3+: Node=0 Left=1 Best Integer=6.0000, Best Bound=9.3266, gap=55.44%, ItCnt=33 [0.0s]
+  4+: Node=0 Left=1 Best Integer=7.0000, Best Bound=9.3266, gap=33.24%, ItCnt=33 [0.0s]
+  5+: Node=0 Left=1 Best Integer=7.0000, Best Bound=9.1900, gap=31.29%, ItCnt=40 [0.0s]
+  6+: Node=0 Left=1 Best Integer=8.0000, Best Bound=9.1900, gap=14.88%, ItCnt=40 [0.0s]
+  7+: Node=0 Left=1 Best Integer=8.0000, Best Bound=9.0233, gap=12.79%, ItCnt=53 [0.0s]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The listener prints one line each time it is called by CPLEX code; fromthis we can see that:</p>
+<ul>
+<li>the listener is called several time from the same node (0)</li>
+<li>the listener is called several time at the same iteration (ItCnt=42)</li>
+<li>the listener is called several times with the same objective 7.0</li>
+</ul>
+<p>In each line, the '+' indicates that an intermediate solution is available at the time of the call. In this case, an intermediate solution was available at each call, but this is not always the case.
+Looking closer, we also see that the listener reacts to events which improve either the objective or the best bound.
+This is due to the value of the <em>clock</em> attribute of the listener</p>
+<h4 id="Listener-clocks">Listener clocks<a class="anchor-link" href="#Listener-clocks">&#182;</a></h4><p>Clocks are value sof the enumerated type <code>docplex.mp.progress.ProgressClock</code>, which defines types of events to listen to. Every listener has a clock, the default being <code>ProgressClock.Gap</code>, which reacts when an event satisfies the following conditions:</p>
+<ul>
+<li>an intermediate solution is available </li>
+<li>either the objective has improved <em>or</em> the best bound has improved</li>
+</ul>
+<p>Let's check this on our model:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">listener</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">m5</span><span class="o">.</span><span class="n">iter_progress_listeners</span><span class="p">(),</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;listener #</span><span class="si">{0}</span><span class="s2"> has type &#39;</span><span class="si">{1}</span><span class="s2">&#39;, clock=</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">listener</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">listener</span><span class="o">.</span><span class="n">clock</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>listener #1 has type &#39;TextProgressListener&#39;, clock=ProgressClock.Gap
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, let's experiment with a text progress listener listening to the <code>All</code> clock, that is the baseline clock that reacts to all calls from CPLEX. To do so, we first clear all progress listeners and add a new one.</p>
+<p>Note the constructor also accepts strings, interpreted as clock name.</p>
 
 </div>
 </div>
@@ -12843,8 +12999,9 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># List information about your WML service instance.</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">wml_client</span><span class="o">.</span><span class="n">service_instance</span><span class="o">.</span><span class="n">details</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m5</span><span class="o">.</span><span class="n">clear_progress_listeners</span><span class="p">()</span>
+<span class="n">m5</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">TextProgressListener</span><span class="p">(</span><span class="n">clock</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">))</span>
+<span class="n">m5</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">clean_before_solve</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -12861,7 +13018,20 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;metadata&#39;: {&#39;guid&#39;: &#39;b4b6c696-172c-4164-8049-c0b621dbf3c9&#39;, &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9&#39;, &#39;created_at&#39;: &#39;2018-12-10T08:05:26.901Z&#39;, &#39;modified_at&#39;: &#39;2019-07-08T21:43:27.219Z&#39;}, &#39;entity&#39;: {&#39;source&#39;: &#39;Bluemix&#39;, &#39;published_models&#39;: {&#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models&#39;}, &#39;usage&#39;: {&#39;expiration_date&#39;: &#39;2019-08-01T00:00:00.000Z&#39;, &#39;computation_time&#39;: {&#39;current&#39;: 0}, &#39;gpu_count_k80&#39;: {&#39;limit&#39;: 48, &#39;current&#39;: 0}, &#39;model_count&#39;: {&#39;limit&#39;: 1000, &#39;current&#39;: 60}, &#39;gpu_count_p100&#39;: {&#39;limit&#39;: 14, &#39;current&#39;: 0}, &#39;prediction_count&#39;: {&#39;current&#39;: 26}, &#39;capacity_units&#39;: {&#39;current&#39;: 223596}, &#39;deployment_count&#39;: {&#39;limit&#39;: 1000, &#39;current&#39;: -6}, &#39;gpu_count_v100&#39;: {&#39;limit&#39;: 34, &#39;current&#39;: 0}}, &#39;tags&#39;: None, &#39;plan_id&#39;: &#39;0f2a3c2c-456b-40f3-9b19-726d2740b11c&#39;, &#39;status&#39;: &#39;Active&#39;, &#39;organization_guid&#39;: &#39;N/A&#39;, &#39;region&#39;: &#39;us-south&#39;, &#39;account&#39;: {&#39;id&#39;: &#39;4512e0f7a54c74e3c3742a68d5641ddb&#39;, &#39;name&#39;: &#34;Jihyoung Kim&#39;s Account&#34;, &#39;type&#39;: &#39;PAYG&#39;}, &#39;owner&#39;: {&#39;ibm_id&#39;: &#39;310000SXE7&#39;, &#39;email&#39;: &#39;jihyoungkim@us.ibm.com&#39;, &#39;user_id&#39;: &#39;b811bd0c-9771-4b3f-b86e-2d76bdd4105f&#39;, &#39;country_code&#39;: &#39;USA&#39;, &#39;beta_user&#39;: True}, &#39;deployments&#39;: {&#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/deployments&#39;}, &#39;space_guid&#39;: &#39;N/A&#39;, &#39;plan&#39;: &#39;standard&#39;}}
+<pre>  1+: Node=0 Left=1 Best Integer=5.0000, Best Bound=10.0000, gap=100.00%, ItCnt=21 [0.0s]
+  2+: Node=0 Left=1 Best Integer=5.0000, Best Bound=10.0000, gap=100.00%, ItCnt=21 [0.0s]
+  3+: Node=0 Left=1 Best Integer=6.0000, Best Bound=10.0000, gap=66.67%, ItCnt=21 [0.0s]
+  4+: Node=0 Left=1 Best Integer=6.0000, Best Bound=10.0000, gap=66.67%, ItCnt=33 [0.0s]
+  5+: Node=0 Left=1 Best Integer=6.0000, Best Bound=9.3266, gap=55.44%, ItCnt=33 [0.0s]
+  6+: Node=0 Left=1 Best Integer=7.0000, Best Bound=9.3266, gap=33.24%, ItCnt=33 [0.0s]
+  7+: Node=0 Left=1 Best Integer=7.0000, Best Bound=9.3266, gap=33.24%, ItCnt=40 [0.0s]
+  8+: Node=0 Left=1 Best Integer=7.0000, Best Bound=9.1900, gap=31.29%, ItCnt=40 [0.0s]
+  9+: Node=0 Left=1 Best Integer=8.0000, Best Bound=9.1900, gap=14.88%, ItCnt=40 [0.0s]
+ 10+: Node=0 Left=1 Best Integer=8.0000, Best Bound=9.1900, gap=14.88%, ItCnt=47 [0.0s]
+ 11+: Node=0 Left=1 Best Integer=8.0000, Best Bound=9.1067, gap=13.83%, ItCnt=47 [0.0s]
+ 12+: Node=0 Left=1 Best Integer=8.0000, Best Bound=9.1067, gap=13.83%, ItCnt=53 [0.0s]
+ 13+: Node=0 Left=1 Best Integer=8.0000, Best Bound=9.0233, gap=12.79%, ItCnt=53 [0.0s]
+ 14+: Node=0 Left=1 Best Integer=8.0000, Best Bound=9.0233, gap=12.79%, ItCnt=56 [0.0s]
 </pre>
 </div>
 </div>
@@ -12874,7 +13044,14 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Obtain information about the stored models in your WML instance.</p>
+<p>In this case, the listener is called more often, sometimes with identical objective and bound (see lines 3 and 4). This explains why the default clock is <strong>Gap</strong> , to focus on actual changes.</p>
+<p>Other possible values for the clock enumerated type are:</p>
+<ul>
+<li><strong>Solutions</strong>: listen to all intermediate solutions, whether or not they improve objective or best bound.</li>
+<li><strong>Objective</strong>: listen to intermediate solutions, which improve the objective.</li>
+</ul>
+<p>How exactly is improvement measured? A listener constructor can specify an <em>absdiff</em> and <em>reldiff</em> parameters which ar e interpreted as the minimal absolute (resp. relative) improvement to accept or not a call from CPLEX.</p>
+<p>Let us demonstrate this with a third <code>TextProgressListener</code> with clock set to 'objective' and an absolute diff of 1. We expect this listener to react whenever th eobjec5tive ha simprobed by an amount greater than 1:</p>
 
 </div>
 </div>
@@ -12884,8 +13061,9 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># List information about the stored models.</span>
-<span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">list_models</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m5</span><span class="o">.</span><span class="n">clear_progress_listeners</span><span class="p">()</span>
+<span class="n">m5</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">TextProgressListener</span><span class="p">(</span><span class="n">clock</span><span class="o">=</span><span class="s1">&#39;objective&#39;</span><span class="p">,</span> <span class="n">absdiff</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">reldiff</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">m5</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">clean_before_solve</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -12902,60 +13080,10 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>------------------------------------  -------------------------------------------  ------------------------  -----------------
-GUID                                  NAME                                         CREATED                   FRAMEWORK
-4e98e7b9-86e6-48ac-8bc8-2084a8d10ee1  Product line model                           2019-07-08T21:39:42.597Z  mllib-2.3
-53b90fb3-0d12-4d66-96c8-b4e4cf96a0ae  Customer churn Spark model                   2019-07-03T15:47:49.776Z  mllib-2.3
-ad24c140-f97a-49f2-b02c-f8ce44a58c27  Custom ARIMA estimator for sklearn pipeline  2019-07-03T01:04:33.998Z  scikit-learn-0.19
-471b39cc-9c3b-4ff9-a8ea-0297efe0ca5d  Boston house price prediction                2019-05-20T18:19:55.433Z  scikit-learn-0.19
-fc5462c8-7eb9-4dda-8b0a-947e2faa30da  WML Product Line Prediction Model            2019-05-17T17:33:53.278Z  mllib-2.3
-a57e82a9-076e-4236-8bd2-7465e726c419  WML Product Line Prediction Model            2019-05-17T17:28:36.434Z  mllib-2.3
-914b598b-f52e-4a87-bfed-2f4163eba25e  Boston house price prediction                2019-05-13T21:11:04.132Z  scikit-learn-0.19
-43dbda1f-34f4-4396-9b57-942d96389440  Boston house price prediction                2019-05-13T19:16:12.783Z  scikit-learn-0.19
-20da8eb9-36d3-4230-bf0c-ba4f7434080c  ML Contest - Label Prediction Model          2019-05-07T16:43:17.658Z  scikit-learn-0.19
-6ee6777d-b716-49e8-acf0-1913fec902f3  ML Contest - ETA Prediction Model            2019-05-07T16:43:16.065Z  scikit-learn-0.19
-3bb7e3ab-836a-4331-9676-7bcc07cc2d63  ML Contest - Assignee Prediction Model       2019-05-07T16:43:14.430Z  scikit-learn-0.19
-0ffb0000-511b-443d-a4fe-3e076ce2381c  WML Product Line Prediction Model            2019-04-26T17:19:09.804Z  mllib-2.3
-eecf9e06-24cc-4675-a84e-adcf863b0ec6  WML Product Line Prediction Model            2019-04-26T16:57:07.468Z  mllib-2.3
-24f8c253-ab45-45fc-ab94-65ceba1f3dcc  WML Product Line Prediction Model            2019-04-25T22:15:37.304Z  mllib-2.3
-9eabbb0d-aaaf-4f00-a7b4-609b8253c9ab  Time Series SPSS Model                       2019-03-22T17:48:22.760Z  spss-modeler-18.1
-0de88973-a74f-46c7-9ce5-bb3a72457ebc  TensorFlow MNIST model                       2019-03-15T18:27:25.134Z  tensorflow-1.5
-f72ed23b-a7dd-4668-8b18-60e55ae2a59a  Best Heart Drug Selection                    2019-03-12T23:47:20.526Z  mllib-2.3
-2660bd78-4ecb-4224-85d6-667b43eb3813  Sentiment Prediction Model                   2019-03-12T23:01:07.679Z  mllib-2.3
-93638ac0-a8ae-4cf7-a3b5-47e026ad5bcd  SPSS model for Churn prediction              2019-03-12T12:59:13.801Z  spss-modeler-18.1
-4e7d708b-783c-4f82-95c2-90d02957031f  Customer churn Spark model                   2019-03-11T15:27:06.684Z  mllib-2.3
-56529f33-9bce-45f5-87f5-b6bc838b88a0  MNIST best model                             2019-03-07T13:37:39.720Z  tensorflow-1.5
-a59d7814-b8f9-4e13-b433-253364dec6ff  Customer churn Spark model                   2019-03-07T13:14:14.864Z  mllib-2.3
-5fb4a3c0-f18a-4936-ba15-294c13849167  Product line model                           2019-03-06T14:24:29.322Z  mllib-2.3
-193f97a4-2a48-4be7-9497-11ccc58aebb3  My cool mnist model                          2019-03-06T12:52:11.179Z  tensorflow-1.5
-2dcc72ce-16c2-4ad0-94c8-77f37317b47b  Boston house price prediction                2019-03-06T11:45:30.725Z  scikit-learn-0.19
-f7982685-3040-4936-a7a4-d42aec6b2e1c  Boston house price prediction                2019-03-06T11:32:56.268Z  scikit-learn-0.19
-c9dfebfa-0411-4e3e-a9c5-9a311444ed59  CHAID PMML model for Iris data               2019-03-04T12:59:21.351Z  pmml-4.2
-c0e97a79-7db0-471e-afd8-f3e238fd16b6  XGBoost model for breast cancer              2019-02-28T19:11:24.484Z  scikit-learn-0.19
-8008b47c-0f07-482c-8d2f-0b6940c824e5  SMS Spam prediction model                    2019-02-28T00:57:59.713Z  scikit-learn-0.19
-f2ea0716-7d1f-484a-8468-14f4b6ec7333  WML Product Line Prediction Model            2019-02-27T13:50:04.628Z  mllib-2.3
-fe1f7f54-b66f-46ed-8785-9fa5d129e02e  SPSS model for Churn prediction              2019-02-27T11:53:10.672Z  spss-modeler-18.1
-7bd8d8b7-bb2b-4e71-95e6-502fec50657f  SPSS model for Churn prediction              2019-02-27T09:29:04.867Z  spss-modeler-18.1
-c4fbb8ff-0e1b-4c45-b155-85b07527ecc3  SPSS model for Churn prediction              2019-02-26T13:13:42.220Z  spss-modeler-18.1
-8a245de4-7907-44fe-b67f-3cf1746d9eb4  CHAID PMML model for Iris data               2019-02-25T13:09:14.752Z  pmml-4.2
-462931ef-bcf8-486c-8bcb-2b2c114cb20c  MNIST - compressed keras model               2019-02-25T12:29:43.085Z  tensorflow-1.5
-e349018e-a37c-4d26-bb86-01ce7f52bdaa  SMS Spam prediction model                    2019-02-13T15:52:39.175Z  scikit-learn-0.19
-0cc8a058-6b08-4ae5-84df-a62d49e0f4bf  SPSS XGBoost Tree Regression model_auto-opt  2019-02-12T19:00:25.864Z  spss-modeler-18.1
-67ee96bc-cb64-4ad0-8255-bf471df915bb  SMS Spam prediction model                    2019-02-12T02:48:36.430Z  scikit-learn-0.19
-9de866c9-bb52-4c19-b095-94c265530f46  Earthquake magnitude prediction model        2019-02-11T16:41:38.815Z  tensorflow-1.12
-f514ff10-8857-433c-89b0-280c708a6e26  Earthquake magnitude prediction model        2019-02-11T16:31:26.538Z  tensorflow-1.12
-e561751f-d7d9-4c6f-a7af-6677baf3d45f  Earthquake magnitude prediction model        2019-02-07T00:21:53.513Z  tensorflow-1.12
-f87ac4d9-7a05-435d-98eb-6eacd290e3cc  Earthquake magnitude prediction model        2019-02-07T00:08:13.678Z  tensorflow-1.12
-482e49ea-1207-45b8-bf57-89d57bc44678  SPSS XGBoost Regression Model - Car Price    2019-02-05T18:09:21.456Z  spss-modeler-18.1
-e0ef0258-ef7c-45f0-9466-3568e03fed65  SPSS (Auto) Regression Model - Car Price     2019-01-30T23:18:33.431Z  spss-modeler-18.1
-afb7a22e-1e6c-4e29-a1da-5305a2f5a16b  WML Product Line Prediction Model            2019-01-19T19:36:59.710Z  mllib-2.3
-61c9afb7-94ae-4c05-ad2b-dc734bb0f932  SPSS model for Churn prediction              2019-01-18T10:28:30.835Z  spss-modeler-18.1
-52e8d90f-482a-4358-8889-979ecb5f35c0  CHAID PMML model for Iris data               2019-01-18T09:36:11.392Z  pmml-4.2
-47b21e40-eba3-4cda-b7d2-cb9a2d31d12d  Customer churn Spark model                   2019-01-18T06:45:13.422Z  mllib-2.3
-f5eb38e5-2b04-4da0-bf14-3edafe554be8  Customer churn Spark model                   2019-01-18T02:18:45.291Z  mllib-2.3
-e772e16f-936f-4f20-849d-259ea80b1e87  Product line model                           2019-01-17T09:57:27.972Z  mllib-2.3
-------------------------------------  -------------------------------------------  ------------------------  -----------------
-Note: Only first 50 records were displayed. To display more use &#39;limit&#39; parameter.
+<pre>  1+: Node=0 Left=1 Best Integer=5.0000, Best Bound=10.0000, gap=100.00%, ItCnt=21 [0.0s]
+  2+: Node=0 Left=1 Best Integer=6.0000, Best Bound=10.0000, gap=66.67%, ItCnt=21 [0.0s]
+  3+: Node=0 Left=1 Best Integer=7.0000, Best Bound=9.3266, gap=33.24%, ItCnt=33 [0.0s]
+  4+: Node=0 Left=1 Best Integer=8.0000, Best Bound=9.1900, gap=14.88%, ItCnt=40 [0.0s]
 </pre>
 </div>
 </div>
@@ -12968,7 +13096,25 @@ Note: Only first 50 records were displayed. To display more use &#39;limit&#39; 
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>List deployed models in your WML service instance.</p>
+<p>As expected, the listener accepted three events, with the objective vaklues of 6,7 and 8.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Monitor-progress:-manage-intermediate-solutions">Monitor progress: manage intermediate solutions<a class="anchor-link" href="#Monitor-progress:-manage-intermediate-solutions">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This is done by another predefined listener class: <code>SolutionRecorder</code>. This type of listener is a subclass of the <code>SolutionListerer</code> class. Again, this listener contains a <em>clock</em> parameter (default is <strong>Gap</strong>) which controls which events are accepted or not.</p>
+<p>The default behavior is to accept only solutions, which improve either the objective or the best bound</p>
 
 </div>
 </div>
@@ -12978,119 +13124,23 @@ Note: Only first 50 records were displayed. To display more use &#39;limit&#39; 
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># List the deployed models.</span>
-<span class="n">wml_client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.progress</span> <span class="k">import</span> <span class="n">SolutionRecorder</span>
+
+<span class="n">sol_recorder</span> <span class="o">=</span> <span class="n">SolutionRecorder</span><span class="p">()</span>
+<span class="n">m5</span><span class="o">.</span><span class="n">clear_progress_listeners</span><span class="p">()</span>
+<span class="n">m5</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">sol_recorder</span><span class="p">)</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>------------------------------------  -------------------------------------------------------  -------  ------------------  ------------------------  -----------------  -------------
-GUID                                  NAME                                                     TYPE     STATE               CREATED                   FRAMEWORK          ARTIFACT TYPE
-a4741007-2bc4-4a5d-b3bc-bbac1b6a8c83  Product line model deployment                            online   DEPLOY_SUCCESS      2019-07-08T21:43:21.337Z  mllib-2.3          model
-7985e484-4192-400e-82e5-3756d4600668  ARIMA model python function deployment                   online   DEPLOY_SUCCESS      2019-07-03T20:33:40.817Z  n/a                function
-6aedb5b7-638a-4388-ab0d-45fecb3b7081  Customer Churn Prediction                                online   DEPLOY_SUCCESS      2019-07-03T15:51:34.166Z  mllib-2.3          model
-cfcd5f9e-5b07-4bea-b57d-304c12254add  sklearn_pipeline_arima                                   online   DEPLOY_SUCCESS      2019-07-03T01:06:29.302Z  scikit-learn-0.19  model
-7b045679-07c9-4225-9116-c153c6359588  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-20T18:20:14.124Z  scikit-learn-0.19  model
-2b9a344c-2dbf-4568-920d-bb5b598d8273  Online scoring                                           online   DEPLOY_SUCCESS      2019-05-17T17:34:23.382Z  mllib-2.3          model
-69aa4267-dc8c-4243-bc33-3ee7571c0ca4  Online scoring                                           online   DEPLOY_SUCCESS      2019-05-17T17:29:35.859Z  mllib-2.3          model
-81911f93-50bb-4fec-a146-eb6f8519b79e  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-13T21:11:07.340Z  scikit-learn-0.19  model
-4431988f-678b-4f40-92b4-2dbe63ea54e2  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-13T19:16:19.731Z  scikit-learn-0.19  model
-31fdffd5-6a0a-459f-a160-7c4be26ddf15  ML Contest - Label Prediction Model deployment           online   DEPLOY_SUCCESS      2019-05-07T16:48:56.694Z  scikit-learn-0.19  model
-18fe2647-55e0-451a-8f51-0c3195223981  ML Contest - Issue ETA Prediction Model deployment       online   DEPLOY_SUCCESS      2019-05-07T16:48:51.102Z  scikit-learn-0.19  model
-5649340d-248b-4d34-a2d8-ed3e0316ea9b  ML Contest - Assignee Prediction Model deployment        online   DEPLOY_SUCCESS      2019-05-07T16:48:45.286Z  scikit-learn-0.19  model
-49055fc5-88f4-46ea-b17a-517d75f120ba  Online scoring                                           online   DEPLOY_SUCCESS      2019-04-26T17:19:40.703Z  mllib-2.3          model
-7eb9b874-53b8-463c-bd19-058ee52e3e3d  Online scoring                                           online   DEPLOY_SUCCESS      2019-04-26T17:07:07.833Z  mllib-2.3          model
-8b95a4dd-4b3f-4b36-bd3e-b58b59f100e2  Mnist model deployment                                   online   DEPLOY_SUCCESS      2019-04-02T16:09:27.875Z  tensorflow-1.5     model
-451f5f1a-d1f5-4a90-a441-b2953053ae6f  Time Series model (SPSS) deployment                      online   DEPLOY_SUCCESS      2019-03-28T19:00:49.524Z  spss-modeler-18.1  model
-486a79af-ea0b-4e8e-8166-dc2bb43b6c98  TensorFlow MNIST model deployment                        online   DEPLOY_SUCCESS      2019-03-15T18:27:34.468Z  tensorflow-1.5     model
-92991643-a229-4f9e-a70a-3e9de612942e  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-03-12T12:59:15.857Z  spss-modeler-18.1  model
-dce80b25-3d32-4005-b96b-9d9c80a7239a  MNIST keras deployment                                   online   DEPLOY_FAILURE      2019-03-07T13:37:41.529Z  tensorflow-1.5     model
-00edc46c-5df5-482e-936a-4d9f2e5fbc06  Product line model deployment                            online   DEPLOY_SUCCESS      2019-03-06T14:30:35.086Z  mllib-2.3          model
-86da6500-18ff-4970-b3e4-7e335d4a08f9  Mnist model deployment                                   online   DEPLOY_SUCCESS      2019-03-06T12:52:13.175Z  tensorflow-1.5     model
-d250df1b-6e43-4c69-98d2-10ff25b5d63d  Virtual deployment of Boston model                       virtual  DEPLOY_SUCCESS      2019-03-06T11:45:33.176Z  scikit-learn-0.19  model
-6d3cf6bb-db92-427c-8b52-9d050d7bfec8  Virtual deployment of Boston model                       virtual  DEPLOY_SUCCESS      2019-03-06T11:32:59.110Z  scikit-learn-0.19  model
-ded4770f-c2fe-4653-9ce2-0c79ecfa10be  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-03-04T12:59:23.413Z  pmml-4.2           model
-450f555b-1952-4ef1-90be-96a16f600345  Predict breast cancer                                    online   DEPLOY_SUCCESS      2019-02-28T19:11:28.862Z  scikit-learn-0.19  model
-dd987565-3e04-4179-9cf9-546710fbadcd  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-28T11:50:04.209Z  n/a                function
-984ffa92-1c82-4b54-bb56-f6f85e915227  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-27T17:50:16.907Z  n/a                function
-e5472c3f-c7d7-4a3e-9b20-44f03030373e  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-27T16:51:24.029Z  n/a                function
-304c671c-6a48-496d-b27b-3ad9888a0156  Online scoring                                           online   DEPLOY_SUCCESS      2019-02-27T13:50:39.730Z  mllib-2.3          model
-18298746-41ec-4bac-928c-fc34e3708ca9  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-27T11:53:13.523Z  spss-modeler-18.1  model
-375d050d-1e3b-49e5-9f1d-655f28734ec7  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-27T09:29:07.286Z  spss-modeler-18.1  model
-2924aaaf-bddf-4567-8206-6972c163dfa4  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-26T13:13:44.977Z  spss-modeler-18.1  model
-feb87375-fca8-4b0c-8f2f-5c83a6e26115  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-02-25T13:09:17.454Z  pmml-4.2           model
-a0e16777-75ad-489a-a6db-5213619381a4  Keras MNIST model deployment through compressed file.    online   DEPLOY_SUCCESS      2019-02-25T12:29:47.265Z  tensorflow-1.5     model
-5c5ebf10-c47a-4224-b35d-3646b0348af1  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-21T14:58:00.141Z  n/a                function
-b9efb426-845a-45e7-b591-85c4bdb1417c  SMS Spam prediction model deployment.                    online   DEPLOY_SUCCESS      2019-02-13T15:52:48.108Z  scikit-learn-0.19  model
-569fb590-41aa-433e-aeb4-89a9688a4a7b  Keras earthquake magnitude prediction model deployment.  online   DEPLOY_SUCCESS      2019-02-11T16:41:49.568Z  tensorflow-1.12    model
-7b2ff02b-b6a7-4ef4-b0e6-6765b1c45766  Keras earthquake magnitude prediction model deployment.  online   DEPLOY_SUCCESS      2019-02-07T00:21:58.175Z  tensorflow-1.12    model
-a738de63-d74e-454a-9dd7-f377c65420bc  Online scoring                                           online   DEPLOY_SUCCESS      2019-01-19T19:49:21.391Z  mllib-2.3          model
-d8f43799-cf5c-499f-a9d3-42d2e398f337  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-01-18T10:28:38.134Z  spss-modeler-18.1  model
-12056c7c-6ff1-454d-b324-d1cf4b42c4fd  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-01-18T09:36:17.097Z  pmml-4.2           model
-a375c7bc-963d-4a9b-9896-7dbcdcaed78d  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-01-17T10:11:40.324Z  n/a                function
-a8b47a68-060c-4474-a5c0-15da3304063a  Product line model deployment                            online   DEPLOY_SUCCESS      2019-01-17T10:02:44.991Z  mllib-2.3          model
-ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment                            online   DEPLOY_SUCCESS      2019-01-17T07:14:05.178Z  mllib-2.3          model
-902853d1-9ff6-40a7-8918-d6b7b39c3a4e  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-01-17T02:37:29.921Z  n/a                function
-3da0fb97-24b9-44d6-ac16-e97a0cf8dfcb  Keras MNIST model deployment through compressed file.    online   DEPLOY_SUCCESS      2019-01-15T14:49:46.285Z  tensorflow-1.5     model
-------------------------------------  -------------------------------------------------------  -------  ------------------  ------------------------  -----------------  -------------
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="scoring"></a></p>
-<h2 id="2.-Persist,-deploy,-and-score-a-PMML-model-in-the-Watson-Machine-Learning-(WML)-repository">2. Persist, deploy, and score a PMML model in the Watson Machine Learning (WML) repository<a class="anchor-link" href="#2.-Persist,-deploy,-and-score-a-PMML-model-in-the-Watson-Machine-Learning-(WML)-repository">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section, you will use the Python API client for the WML service to create an online deployment and score the PMML model with a new data record.</p>
-<p>For more information, please refer to the <a href="http://wml-api-pyclient.mybluemix.net/" target="_blank" rel="noopener no referrer">Python API client documentation</a>.</p>
-<ul>
-<li><a href="#persist">2.1 Persist a PMML model</a></li>
-<li><a href="#deploy">2.2 Create an online deployment</a></li>
-<li><a href="#score">2.3 Score a test data record</a></li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="2.1-Persist-a-PMML-model">2.1 Persist a PMML model<a id="persist" /><a class="anchor-link" href="#2.1-Persist-a-PMML-model">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Action</strong>: Use <code>wget</code> to download the sample PMML model, <code>iris_chaid.xml</code> from the <a href="https://github.com/pmservice/wml-sample-models" target="_blank" rel="noopener no referrer">Git repository</a>.<br>
-<strong>Note:</strong> You may need to install the <code>wget</code> package. To install the <code>wget</code> package, run the following command.</p>
+<p>Again, we solve with the <code>clean_before_solve</code> flag set to <code>True</code> to ensure a deterministic behavior.</p>
 
 </div>
 </div>
@@ -13100,7 +13150,38 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install --upgrade wget
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m5</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">clean_before_solve</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>At the end of the solve, the recorder contains all the intermediate solutions.
+Now, let's display some information about those intermediate solutions.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># utility function to display recorded solutions in a recorder.</span>
+<span class="k">def</span> <span class="nf">display_recorded_solutions</span><span class="p">(</span><span class="n">rec</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;* The recorder contains </span><span class="si">{}</span><span class="s1"> solutions&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">number_of_solutions</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">sol</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">iter_solutions</span><span class="p">(),</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">sumvals</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sol</span><span class="o">.</span><span class="n">iter_var_values</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  - solution #</span><span class="si">{0}</span><span class="s1">, obj=</span><span class="si">{1}</span><span class="s1">, non-zero-values=</span><span class="si">{2}</span><span class="s1">, total=</span><span class="si">{3}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+           <span class="n">s</span><span class="p">,</span> <span class="n">sol</span><span class="o">.</span><span class="n">objective_value</span><span class="p">,</span> <span class="n">sol</span><span class="o">.</span><span class="n">number_of_var_values</span><span class="p">,</span> <span class="n">sumvals</span><span class="p">))</span>
+        
+<span class="n">display_recorded_solutions</span><span class="p">(</span><span class="n">sol_recorder</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13117,7 +13198,14 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Requirement already up-to-date: wget in /opt/conda/envs/Python36/lib/python3.6/site-packages (3.2)
+<pre>* The recorder contains 7 solutions
+  - solution #1, obj=5.0, non-zero-values=5, total=5.0
+  - solution #2, obj=6.0, non-zero-values=6, total=6.0
+  - solution #3, obj=6.0, non-zero-values=6, total=6.0
+  - solution #4, obj=7.0, non-zero-values=7, total=7.0
+  - solution #5, obj=7.0, non-zero-values=7, total=7.0
+  - solution #6, obj=8.0, non-zero-values=8, total=8.0
+  - solution #7, obj=8.0, non-zero-values=8, total=8.0
 </pre>
 </div>
 </div>
@@ -13126,34 +13214,11 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Download the sample PMML model and the &#39;iris_chaid.xml&#39; file from the Github repo.</span>
-<span class="kn">import</span> <span class="nn">wget</span>
-<span class="kn">import</span> <span class="nn">os</span>
-
-<span class="n">sample_dir</span> <span class="o">=</span> <span class="s1">&#39;pmml_sample_model&#39;</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">sample_dir</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">sample_dir</span><span class="p">)</span>
-    
-<span class="n">filename</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sample_dir</span><span class="p">,</span> <span class="s1">&#39;iris_chaid.xml&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="n">filename</span> <span class="o">=</span> <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;https://github.com/pmservice/wml-sample-models/raw/master/pmml/iris-species/model/iris_chaid.xml&#39;</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">sample_dir</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Store the downloaded file as <em>CHAID PMML model for Iris data</em> in the WML service repository, then list all the files stored in the repository.</p>
+<p>Now, let's try a solution recorder with a different clock: <strong>Objective</strong>. This recorder will record only intermediate solutions which improve the objective, regardless of the best bound. Such changes occur less frequently than the Gap clock, so we expect less solutions to be recorded.</p>
 
 </div>
 </div>
@@ -13163,16 +13228,11 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Save the downloaded file to the WML repository.</span>
-<span class="n">props_pmml</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s1">&#39;CHAID PMML model for Iris data&#39;</span><span class="p">,</span>
-    <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">AUTHOR_NAME</span><span class="p">:</span> <span class="s1">&#39;IBM&#39;</span><span class="p">,</span> 
-    <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_NAME</span><span class="p">:</span> <span class="s1">&#39;pmml&#39;</span><span class="p">,</span> 
-    <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_VERSION</span><span class="p">:</span> <span class="s1">&#39;4.2&#39;</span>
-<span class="p">}</span>
-
-<span class="n">model_details</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_model</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">props_pmml</span><span class="p">)</span>
-<span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">list_models</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sol_recorder2</span> <span class="o">=</span> <span class="n">SolutionRecorder</span><span class="p">(</span><span class="n">clock</span><span class="o">=</span><span class="s1">&#39;objective&#39;</span><span class="p">)</span>
+<span class="n">m5</span><span class="o">.</span><span class="n">clear_progress_listeners</span><span class="p">()</span>
+<span class="n">m5</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">sol_recorder2</span><span class="p">)</span>
+<span class="n">m5</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">clean_before_solve</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">display_recorded_solutions</span><span class="p">(</span><span class="n">sol_recorder2</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13189,60 +13249,11 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>------------------------------------  -------------------------------------------  ------------------------  -----------------
-GUID                                  NAME                                         CREATED                   FRAMEWORK
-93da112e-62ea-483e-bbe8-8fbc6addb601  CHAID PMML model for Iris data               2019-07-08T21:52:59.865Z  pmml-4.2
-4e98e7b9-86e6-48ac-8bc8-2084a8d10ee1  Product line model                           2019-07-08T21:39:42.597Z  mllib-2.3
-53b90fb3-0d12-4d66-96c8-b4e4cf96a0ae  Customer churn Spark model                   2019-07-03T15:47:49.776Z  mllib-2.3
-ad24c140-f97a-49f2-b02c-f8ce44a58c27  Custom ARIMA estimator for sklearn pipeline  2019-07-03T01:04:33.998Z  scikit-learn-0.19
-471b39cc-9c3b-4ff9-a8ea-0297efe0ca5d  Boston house price prediction                2019-05-20T18:19:55.433Z  scikit-learn-0.19
-fc5462c8-7eb9-4dda-8b0a-947e2faa30da  WML Product Line Prediction Model            2019-05-17T17:33:53.278Z  mllib-2.3
-a57e82a9-076e-4236-8bd2-7465e726c419  WML Product Line Prediction Model            2019-05-17T17:28:36.434Z  mllib-2.3
-914b598b-f52e-4a87-bfed-2f4163eba25e  Boston house price prediction                2019-05-13T21:11:04.132Z  scikit-learn-0.19
-43dbda1f-34f4-4396-9b57-942d96389440  Boston house price prediction                2019-05-13T19:16:12.783Z  scikit-learn-0.19
-20da8eb9-36d3-4230-bf0c-ba4f7434080c  ML Contest - Label Prediction Model          2019-05-07T16:43:17.658Z  scikit-learn-0.19
-6ee6777d-b716-49e8-acf0-1913fec902f3  ML Contest - ETA Prediction Model            2019-05-07T16:43:16.065Z  scikit-learn-0.19
-3bb7e3ab-836a-4331-9676-7bcc07cc2d63  ML Contest - Assignee Prediction Model       2019-05-07T16:43:14.430Z  scikit-learn-0.19
-0ffb0000-511b-443d-a4fe-3e076ce2381c  WML Product Line Prediction Model            2019-04-26T17:19:09.804Z  mllib-2.3
-eecf9e06-24cc-4675-a84e-adcf863b0ec6  WML Product Line Prediction Model            2019-04-26T16:57:07.468Z  mllib-2.3
-24f8c253-ab45-45fc-ab94-65ceba1f3dcc  WML Product Line Prediction Model            2019-04-25T22:15:37.304Z  mllib-2.3
-9eabbb0d-aaaf-4f00-a7b4-609b8253c9ab  Time Series SPSS Model                       2019-03-22T17:48:22.760Z  spss-modeler-18.1
-0de88973-a74f-46c7-9ce5-bb3a72457ebc  TensorFlow MNIST model                       2019-03-15T18:27:25.134Z  tensorflow-1.5
-f72ed23b-a7dd-4668-8b18-60e55ae2a59a  Best Heart Drug Selection                    2019-03-12T23:47:20.526Z  mllib-2.3
-2660bd78-4ecb-4224-85d6-667b43eb3813  Sentiment Prediction Model                   2019-03-12T23:01:07.679Z  mllib-2.3
-93638ac0-a8ae-4cf7-a3b5-47e026ad5bcd  SPSS model for Churn prediction              2019-03-12T12:59:13.801Z  spss-modeler-18.1
-4e7d708b-783c-4f82-95c2-90d02957031f  Customer churn Spark model                   2019-03-11T15:27:06.684Z  mllib-2.3
-56529f33-9bce-45f5-87f5-b6bc838b88a0  MNIST best model                             2019-03-07T13:37:39.720Z  tensorflow-1.5
-a59d7814-b8f9-4e13-b433-253364dec6ff  Customer churn Spark model                   2019-03-07T13:14:14.864Z  mllib-2.3
-5fb4a3c0-f18a-4936-ba15-294c13849167  Product line model                           2019-03-06T14:24:29.322Z  mllib-2.3
-193f97a4-2a48-4be7-9497-11ccc58aebb3  My cool mnist model                          2019-03-06T12:52:11.179Z  tensorflow-1.5
-2dcc72ce-16c2-4ad0-94c8-77f37317b47b  Boston house price prediction                2019-03-06T11:45:30.725Z  scikit-learn-0.19
-f7982685-3040-4936-a7a4-d42aec6b2e1c  Boston house price prediction                2019-03-06T11:32:56.268Z  scikit-learn-0.19
-c9dfebfa-0411-4e3e-a9c5-9a311444ed59  CHAID PMML model for Iris data               2019-03-04T12:59:21.351Z  pmml-4.2
-c0e97a79-7db0-471e-afd8-f3e238fd16b6  XGBoost model for breast cancer              2019-02-28T19:11:24.484Z  scikit-learn-0.19
-8008b47c-0f07-482c-8d2f-0b6940c824e5  SMS Spam prediction model                    2019-02-28T00:57:59.713Z  scikit-learn-0.19
-f2ea0716-7d1f-484a-8468-14f4b6ec7333  WML Product Line Prediction Model            2019-02-27T13:50:04.628Z  mllib-2.3
-fe1f7f54-b66f-46ed-8785-9fa5d129e02e  SPSS model for Churn prediction              2019-02-27T11:53:10.672Z  spss-modeler-18.1
-7bd8d8b7-bb2b-4e71-95e6-502fec50657f  SPSS model for Churn prediction              2019-02-27T09:29:04.867Z  spss-modeler-18.1
-c4fbb8ff-0e1b-4c45-b155-85b07527ecc3  SPSS model for Churn prediction              2019-02-26T13:13:42.220Z  spss-modeler-18.1
-8a245de4-7907-44fe-b67f-3cf1746d9eb4  CHAID PMML model for Iris data               2019-02-25T13:09:14.752Z  pmml-4.2
-462931ef-bcf8-486c-8bcb-2b2c114cb20c  MNIST - compressed keras model               2019-02-25T12:29:43.085Z  tensorflow-1.5
-e349018e-a37c-4d26-bb86-01ce7f52bdaa  SMS Spam prediction model                    2019-02-13T15:52:39.175Z  scikit-learn-0.19
-0cc8a058-6b08-4ae5-84df-a62d49e0f4bf  SPSS XGBoost Tree Regression model_auto-opt  2019-02-12T19:00:25.864Z  spss-modeler-18.1
-67ee96bc-cb64-4ad0-8255-bf471df915bb  SMS Spam prediction model                    2019-02-12T02:48:36.430Z  scikit-learn-0.19
-9de866c9-bb52-4c19-b095-94c265530f46  Earthquake magnitude prediction model        2019-02-11T16:41:38.815Z  tensorflow-1.12
-f514ff10-8857-433c-89b0-280c708a6e26  Earthquake magnitude prediction model        2019-02-11T16:31:26.538Z  tensorflow-1.12
-e561751f-d7d9-4c6f-a7af-6677baf3d45f  Earthquake magnitude prediction model        2019-02-07T00:21:53.513Z  tensorflow-1.12
-f87ac4d9-7a05-435d-98eb-6eacd290e3cc  Earthquake magnitude prediction model        2019-02-07T00:08:13.678Z  tensorflow-1.12
-482e49ea-1207-45b8-bf57-89d57bc44678  SPSS XGBoost Regression Model - Car Price    2019-02-05T18:09:21.456Z  spss-modeler-18.1
-e0ef0258-ef7c-45f0-9466-3568e03fed65  SPSS (Auto) Regression Model - Car Price     2019-01-30T23:18:33.431Z  spss-modeler-18.1
-afb7a22e-1e6c-4e29-a1da-5305a2f5a16b  WML Product Line Prediction Model            2019-01-19T19:36:59.710Z  mllib-2.3
-61c9afb7-94ae-4c05-ad2b-dc734bb0f932  SPSS model for Churn prediction              2019-01-18T10:28:30.835Z  spss-modeler-18.1
-52e8d90f-482a-4358-8889-979ecb5f35c0  CHAID PMML model for Iris data               2019-01-18T09:36:11.392Z  pmml-4.2
-47b21e40-eba3-4cda-b7d2-cb9a2d31d12d  Customer churn Spark model                   2019-01-18T06:45:13.422Z  mllib-2.3
-f5eb38e5-2b04-4da0-bf14-3edafe554be8  Customer churn Spark model                   2019-01-18T02:18:45.291Z  mllib-2.3
-------------------------------------  -------------------------------------------  ------------------------  -----------------
-Note: Only first 50 records were displayed. To display more use &#39;limit&#39; parameter.
+<pre>* The recorder contains 4 solutions
+  - solution #1, obj=5.0, non-zero-values=5, total=5.0
+  - solution #2, obj=6.0, non-zero-values=6, total=6.0
+  - solution #3, obj=7.0, non-zero-values=7, total=7.0
+  - solution #4, obj=8.0, non-zero-values=8, total=8.0
 </pre>
 </div>
 </div>
@@ -13255,7 +13266,7 @@ Note: Only first 50 records were displayed. To display more use &#39;limit&#39; 
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Note:</strong> From the list of downloaded files, you can see that model is successfully stored in the WML repository.</p>
+<p>As expected, the 'objective' recorder stored only 3 solutions instead of 5. Only one solution with objective 7 is recorded, instead of three with the 'Gap' recorder.</p>
 
 </div>
 </div>
@@ -13264,15 +13275,17 @@ Note: Only first 50 records were displayed. To display more use &#39;limit&#39; 
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="2.2-Create-an-online-deployment">2.2 Create an online deployment<a id="deploy" /><a class="anchor-link" href="#2.2-Create-an-online-deployment">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Now, create an online deployment, <em>Iris species prediction</em>, for the stored model, and list all the online deployments for the model.</p>
+<h3 id="Step-3:-Aborting-the-search-with-a-custom-progress-listener">Step 3: Aborting the search with a custom progress listener<a class="anchor-link" href="#Step-3:-Aborting-the-search-with-a-custom-progress-listener">&#182;</a></h3><p>MIP search can be time-consuming; insome cases, a 'good-enough' solution can be sufficient.
+For example, when the gap is converging very slowly, it may be a good idea to stop and use the last solution instead of waiting for along time to prove optimality.</p>
+<p>Let's assume we want to implement the following behavior: 
+stop the search, when no improvement has occured in objective for N seconds since the latest improvements.</p>
+<p>The first question to ask is: what clock do we listen to? As we want to stop as soon as 
+elapsed time without improvement is greater than our limit, we listent to the higher frequency clock, <code>All</code> clock.</p>
+<p>Second, as we do not care for solutions, we sub-class from <code>ProgressListener</code>, not from <code>SolutionListener</code>.</p>
+<p>What do we need to code this aborter? we need to know whether an incumbent solution is present, and what is its objective value, then check whether the objective has improved or not.
+If it has improved, we store the value of the objective and the time (obtained throught <code>ProgressData.time</code>),
+if not, we check whether elapsed time is greater than the limit, and if it is the case, call method <code>abort()</code>.</p>
+<p>The code is as follows:</p>
 
 </div>
 </div>
@@ -13282,11 +13295,71 @@ Note: Only first 50 records were displayed. To display more use &#39;limit&#39; 
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create an online deployment.</span>
-<span class="n">model_uid</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_model_uid</span><span class="p">(</span><span class="n">model_details</span><span class="p">)</span>
-<span class="n">model_deployment</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model_uid</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Iris species prediction&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.progress</span> <span class="k">import</span> <span class="n">ProgressListener</span>
 
-<span class="n">wml_client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">AutomaticAborter</span><span class="p">(</span><span class="n">ProgressListener</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; a simple implementation of an automatic search stopper.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_no_improve_time</span><span class="o">=</span><span class="mf">10.</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AutomaticAborter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ProgressClock</span><span class="o">.</span><span class="n">All</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_obj</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_obj_time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_no_improve_time</span> <span class="o">=</span> <span class="n">max_no_improve_time</span>
+        
+    <span class="k">def</span> <span class="nf">notify_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AutomaticAborter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">notify_start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_obj</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_obj_time</span> <span class="o">=</span> <span class="kc">None</span>    
+        
+    <span class="k">def</span> <span class="nf">is_improving</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_obj</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+        <span class="n">last_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_obj</span>
+        <span class="k">return</span> <span class="n">last_obj</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">new_obj</span><span class="o">-</span> <span class="n">last_obj</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">eps</span><span class="p">)</span>
+            
+    <span class="k">def</span> <span class="nf">notify_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdata</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AutomaticAborter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">notify_progress</span><span class="p">(</span><span class="n">pdata</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pdata</span><span class="o">.</span><span class="n">has_incumbent</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_improving</span><span class="p">(</span><span class="n">pdata</span><span class="o">.</span><span class="n">current_objective</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_obj</span> <span class="o">=</span> <span class="n">pdata</span><span class="o">.</span><span class="n">current_objective</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_obj_time</span> <span class="o">=</span> <span class="n">pdata</span><span class="o">.</span><span class="n">time</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----&gt; #new objective=</span><span class="si">{0}</span><span class="s1">, time=</span><span class="si">{1}</span><span class="s1">s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_obj_time</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># a non improving move</span>
+            <span class="n">last_obj_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_obj_time</span>
+            <span class="n">this_time</span> <span class="o">=</span> <span class="n">pdata</span><span class="o">.</span><span class="n">time</span>
+            <span class="k">if</span> <span class="n">last_obj_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">elapsed</span> <span class="o">=</span> <span class="p">(</span><span class="n">this_time</span> <span class="o">-</span> <span class="n">last_obj_time</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_no_improve_time</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;!! aborting cplex, elapsed=</span><span class="si">{0}</span><span class="s1"> &gt;= max_no_improve: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elapsed</span><span class="p">,</span>
+                                                                             <span class="bp">self</span><span class="o">.</span><span class="n">max_no_improve_time</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">abort</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----&gt; non improving time=</span><span class="si">{0}</span><span class="s1">s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elapsed</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We demonstrate the aborter on a bigger problem:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">large_hearts</span> <span class="o">=</span> <span class="n">build_hearts</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+<span class="c1">#large_hearts.add_progress_listener(TextProgressListener(clock=&#39;gap&#39;))</span>
+<span class="c1"># maximum non-improving time is 4 seconds.</span>
+<span class="n">large_hearts</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">AutomaticAborter</span><span class="p">(</span><span class="n">max_no_improve_time</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+<span class="c1"># again use clean_before_solve to ensure deterministic run of this cell.</span>
+<span class="n">large_hearts</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">clean_before_solve</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_output</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span>
 </pre></div>
 
 </div>
@@ -13303,74 +13376,92 @@ Note: Only first 50 records were displayed. To display more use &#39;limit&#39; 
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>
-
-#######################################################################################
-
-Synchronous deployment creation for uid: &#39;93da112e-62ea-483e-bbe8-8fbc6addb601&#39; started
-
-#######################################################################################
-
-
-INITIALIZING
-DEPLOY_SUCCESS
-
-
-------------------------------------------------------------------------------------------------
-Successfully finished deployment creation, deployment_uid=&#39;247cd224-2459-4f77-8369-282bd20461ad&#39;
-------------------------------------------------------------------------------------------------
-
-
-------------------------------------  -------------------------------------------------------  -------  ------------------  ------------------------  -----------------  -------------
-GUID                                  NAME                                                     TYPE     STATE               CREATED                   FRAMEWORK          ARTIFACT TYPE
-247cd224-2459-4f77-8369-282bd20461ad  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-07-08T21:53:02.342Z  pmml-4.2           model
-a4741007-2bc4-4a5d-b3bc-bbac1b6a8c83  Product line model deployment                            online   DEPLOY_SUCCESS      2019-07-08T21:43:21.337Z  mllib-2.3          model
-7985e484-4192-400e-82e5-3756d4600668  ARIMA model python function deployment                   online   DEPLOY_SUCCESS      2019-07-03T20:33:40.817Z  n/a                function
-6aedb5b7-638a-4388-ab0d-45fecb3b7081  Customer Churn Prediction                                online   DEPLOY_SUCCESS      2019-07-03T15:51:34.166Z  mllib-2.3          model
-cfcd5f9e-5b07-4bea-b57d-304c12254add  sklearn_pipeline_arima                                   online   DEPLOY_SUCCESS      2019-07-03T01:06:29.302Z  scikit-learn-0.19  model
-7b045679-07c9-4225-9116-c153c6359588  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-20T18:20:14.124Z  scikit-learn-0.19  model
-2b9a344c-2dbf-4568-920d-bb5b598d8273  Online scoring                                           online   DEPLOY_SUCCESS      2019-05-17T17:34:23.382Z  mllib-2.3          model
-69aa4267-dc8c-4243-bc33-3ee7571c0ca4  Online scoring                                           online   DEPLOY_SUCCESS      2019-05-17T17:29:35.859Z  mllib-2.3          model
-81911f93-50bb-4fec-a146-eb6f8519b79e  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-13T21:11:07.340Z  scikit-learn-0.19  model
-4431988f-678b-4f40-92b4-2dbe63ea54e2  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-13T19:16:19.731Z  scikit-learn-0.19  model
-31fdffd5-6a0a-459f-a160-7c4be26ddf15  ML Contest - Label Prediction Model deployment           online   DEPLOY_SUCCESS      2019-05-07T16:48:56.694Z  scikit-learn-0.19  model
-18fe2647-55e0-451a-8f51-0c3195223981  ML Contest - Issue ETA Prediction Model deployment       online   DEPLOY_SUCCESS      2019-05-07T16:48:51.102Z  scikit-learn-0.19  model
-5649340d-248b-4d34-a2d8-ed3e0316ea9b  ML Contest - Assignee Prediction Model deployment        online   DEPLOY_SUCCESS      2019-05-07T16:48:45.286Z  scikit-learn-0.19  model
-49055fc5-88f4-46ea-b17a-517d75f120ba  Online scoring                                           online   DEPLOY_SUCCESS      2019-04-26T17:19:40.703Z  mllib-2.3          model
-7eb9b874-53b8-463c-bd19-058ee52e3e3d  Online scoring                                           online   DEPLOY_SUCCESS      2019-04-26T17:07:07.833Z  mllib-2.3          model
-8b95a4dd-4b3f-4b36-bd3e-b58b59f100e2  Mnist model deployment                                   online   DEPLOY_SUCCESS      2019-04-02T16:09:27.875Z  tensorflow-1.5     model
-451f5f1a-d1f5-4a90-a441-b2953053ae6f  Time Series model (SPSS) deployment                      online   DEPLOY_SUCCESS      2019-03-28T19:00:49.524Z  spss-modeler-18.1  model
-486a79af-ea0b-4e8e-8166-dc2bb43b6c98  TensorFlow MNIST model deployment                        online   DEPLOY_SUCCESS      2019-03-15T18:27:34.468Z  tensorflow-1.5     model
-92991643-a229-4f9e-a70a-3e9de612942e  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-03-12T12:59:15.857Z  spss-modeler-18.1  model
-dce80b25-3d32-4005-b96b-9d9c80a7239a  MNIST keras deployment                                   online   DEPLOY_FAILURE      2019-03-07T13:37:41.529Z  tensorflow-1.5     model
-00edc46c-5df5-482e-936a-4d9f2e5fbc06  Product line model deployment                            online   DEPLOY_SUCCESS      2019-03-06T14:30:35.086Z  mllib-2.3          model
-86da6500-18ff-4970-b3e4-7e335d4a08f9  Mnist model deployment                                   online   DEPLOY_SUCCESS      2019-03-06T12:52:13.175Z  tensorflow-1.5     model
-d250df1b-6e43-4c69-98d2-10ff25b5d63d  Virtual deployment of Boston model                       virtual  DEPLOY_SUCCESS      2019-03-06T11:45:33.176Z  scikit-learn-0.19  model
-6d3cf6bb-db92-427c-8b52-9d050d7bfec8  Virtual deployment of Boston model                       virtual  DEPLOY_SUCCESS      2019-03-06T11:32:59.110Z  scikit-learn-0.19  model
-ded4770f-c2fe-4653-9ce2-0c79ecfa10be  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-03-04T12:59:23.413Z  pmml-4.2           model
-450f555b-1952-4ef1-90be-96a16f600345  Predict breast cancer                                    online   DEPLOY_SUCCESS      2019-02-28T19:11:28.862Z  scikit-learn-0.19  model
-dd987565-3e04-4179-9cf9-546710fbadcd  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-28T11:50:04.209Z  n/a                function
-984ffa92-1c82-4b54-bb56-f6f85e915227  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-27T17:50:16.907Z  n/a                function
-e5472c3f-c7d7-4a3e-9b20-44f03030373e  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-27T16:51:24.029Z  n/a                function
-304c671c-6a48-496d-b27b-3ad9888a0156  Online scoring                                           online   DEPLOY_SUCCESS      2019-02-27T13:50:39.730Z  mllib-2.3          model
-18298746-41ec-4bac-928c-fc34e3708ca9  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-27T11:53:13.523Z  spss-modeler-18.1  model
-375d050d-1e3b-49e5-9f1d-655f28734ec7  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-27T09:29:07.286Z  spss-modeler-18.1  model
-2924aaaf-bddf-4567-8206-6972c163dfa4  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-26T13:13:44.977Z  spss-modeler-18.1  model
-feb87375-fca8-4b0c-8f2f-5c83a6e26115  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-02-25T13:09:17.454Z  pmml-4.2           model
-a0e16777-75ad-489a-a6db-5213619381a4  Keras MNIST model deployment through compressed file.    online   DEPLOY_SUCCESS      2019-02-25T12:29:47.265Z  tensorflow-1.5     model
-5c5ebf10-c47a-4224-b35d-3646b0348af1  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-21T14:58:00.141Z  n/a                function
-b9efb426-845a-45e7-b591-85c4bdb1417c  SMS Spam prediction model deployment.                    online   DEPLOY_SUCCESS      2019-02-13T15:52:48.108Z  scikit-learn-0.19  model
-569fb590-41aa-433e-aeb4-89a9688a4a7b  Keras earthquake magnitude prediction model deployment.  online   DEPLOY_SUCCESS      2019-02-11T16:41:49.568Z  tensorflow-1.12    model
-7b2ff02b-b6a7-4ef4-b0e6-6765b1c45766  Keras earthquake magnitude prediction model deployment.  online   DEPLOY_SUCCESS      2019-02-07T00:21:58.175Z  tensorflow-1.12    model
-a738de63-d74e-454a-9dd7-f377c65420bc  Online scoring                                           online   DEPLOY_SUCCESS      2019-01-19T19:49:21.391Z  mllib-2.3          model
-d8f43799-cf5c-499f-a9d3-42d2e398f337  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-01-18T10:28:38.134Z  spss-modeler-18.1  model
-12056c7c-6ff1-454d-b324-d1cf4b42c4fd  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-01-18T09:36:17.097Z  pmml-4.2           model
-a375c7bc-963d-4a9b-9896-7dbcdcaed78d  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-01-17T10:11:40.324Z  n/a                function
-a8b47a68-060c-4474-a5c0-15da3304063a  Product line model deployment                            online   DEPLOY_SUCCESS      2019-01-17T10:02:44.991Z  mllib-2.3          model
-ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment                            online   DEPLOY_SUCCESS      2019-01-17T07:14:05.178Z  mllib-2.3          model
-902853d1-9ff6-40a7-8918-d6b7b39c3a4e  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-01-17T02:37:29.921Z  n/a                function
-3da0fb97-24b9-44d6-ac16-e97a0cf8dfcb  Keras MNIST model deployment through compressed file.    online   DEPLOY_SUCCESS      2019-01-15T14:49:46.285Z  tensorflow-1.5     model
-------------------------------------  -------------------------------------------------------  -------  ------------------  ------------------------  -----------------  -------------
+<pre>----&gt; #new objective=9.0, time=0.008725881576538086s
+----&gt; non improving time=0.0005750656127929688s
+----&gt; #new objective=14.0, time=0.01063394546508789s
+----&gt; non improving time=0.008255958557128906s
+----&gt; non improving time=0.008549928665161133s
+----&gt; #new objective=15.0, time=0.020428895950317383s
+----&gt; non improving time=0.006577968597412109s
+----&gt; non improving time=0.006904125213623047s
+----&gt; #new objective=16.0, time=0.02869892120361328s
+----&gt; non improving time=0.003971099853515625s
+----&gt; non improving time=0.0043179988861083984s
+----&gt; non improving time=0.011265039443969727s
+----&gt; non improving time=0.01171112060546875s
+----&gt; non improving time=0.018388986587524414s
+----&gt; non improving time=0.018702983856201172s
+----&gt; non improving time=0.02556014060974121s
+----&gt; non improving time=0.025892019271850586s
+----&gt; non improving time=0.03513193130493164s
+----&gt; non improving time=0.035429954528808594s
+----&gt; non improving time=0.04221296310424805s
+----&gt; non improving time=0.04251813888549805s
+----&gt; non improving time=0.05061507225036621s
+----&gt; non improving time=0.05091500282287598s
+----&gt; non improving time=0.05755209922790527s
+----&gt; non improving time=0.05786395072937012s
+----&gt; non improving time=0.06489396095275879s
+----&gt; non improving time=0.0652170181274414s
+----&gt; non improving time=0.07401013374328613s
+----&gt; non improving time=0.07433700561523438s
+----&gt; non improving time=0.08264899253845215s
+----&gt; non improving time=0.0829770565032959s
+----&gt; non improving time=0.09490609169006348s
+----&gt; non improving time=0.0952460765838623s
+----&gt; non improving time=0.10434699058532715s
+----&gt; non improving time=0.10467910766601562s
+----&gt; non improving time=0.1133270263671875s
+----&gt; non improving time=0.11365914344787598s
+----&gt; non improving time=0.12253999710083008s
+----&gt; non improving time=0.12289214134216309s
+----&gt; non improving time=0.13700199127197266s
+----&gt; non improving time=0.13734698295593262s
+----&gt; non improving time=0.14644908905029297s
+----&gt; non improving time=0.14678692817687988s
+----&gt; non improving time=0.1571660041809082s
+----&gt; non improving time=0.15749597549438477s
+----&gt; non improving time=0.17714309692382812s
+----&gt; non improving time=0.17754793167114258s
+----&gt; non improving time=0.18161702156066895s
+----&gt; non improving time=0.18203997611999512s
+----&gt; non improving time=0.18544793128967285s
+----&gt; non improving time=0.1880359649658203s
+----&gt; non improving time=0.19693994522094727s
+----&gt; non improving time=0.20291399955749512s
+----&gt; non improving time=0.2106621265411377s
+----&gt; non improving time=0.23824310302734375s
+----&gt; non improving time=0.25863194465637207s
+----&gt; non improving time=0.27390599250793457s
+----&gt; #new objective=17.0, time=0.32657504081726074s
+----&gt; non improving time=0.03587484359741211s
+----&gt; non improving time=0.057440996170043945s
+----&gt; non improving time=0.06664395332336426s
+----&gt; non improving time=0.08997392654418945s
+----&gt; non improving time=0.09701800346374512s
+----&gt; non improving time=0.12534403800964355s
+----&gt; non improving time=0.13640785217285156s
+----&gt; non improving time=0.14538192749023438s
+----&gt; non improving time=0.167510986328125s
+----&gt; non improving time=0.1886448860168457s
+----&gt; non improving time=0.19601082801818848s
+----&gt; non improving time=0.2005469799041748s
+----&gt; non improving time=0.22052383422851562s
+----&gt; non improving time=0.24114680290222168s
+----&gt; non improving time=0.2520768642425537s
+----&gt; non improving time=0.2623708248138428s
+----&gt; non improving time=0.26929187774658203s
+----&gt; non improving time=0.2882688045501709s
+----&gt; non improving time=0.2957038879394531s
+----&gt; non improving time=0.29933691024780273s
+----&gt; non improving time=0.30068087577819824s
+----&gt; non improving time=0.30759191513061523s
+----&gt; non improving time=0.31165289878845215s
+----&gt; non improving time=0.31313300132751465s
+----&gt; non improving time=0.3265810012817383s
+----&gt; non improving time=0.3414278030395508s
+----&gt; non improving time=0.3418748378753662s
+----&gt; non improving time=0.34207987785339355s
 </pre>
 </div>
 </div>
@@ -13383,50 +13474,8 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Note:</strong> From the list of deployed models, you can see that model was  successfully created.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="2.3-Score-a-test-data-record">2.3 Score a test data record<a id="score" /><a class="anchor-link" href="#2.3-Score-a-test-data-record">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Send a sample record using the Python API client to check if the online scoring endpoint is available.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Verify the online scoring endpoint.</span>
-<span class="n">model_scoring_url</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_scoring_url</span><span class="p">(</span><span class="n">model_deployment</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">model_scoring_url</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You can see that the endpoint url is available for sending scoring requests.</p>
-<p>Now, you can score data and predict the species of iris flower.</p>
+<p>Though the solve has been aborted, it returned the latest solution,
+but the status of the solve shows it hhas been aborted.</p>
 
 </div>
 </div>
@@ -13436,14 +13485,9 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 <div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Score data and predict species of flower.</span>
-<span class="n">scoring_data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Sepal.Length&#39;</span><span class="p">,</span> <span class="s1">&#39;Sepal.Width&#39;</span><span class="p">,</span> <span class="s1">&#39;Petal.Length&#39;</span><span class="p">,</span> <span class="s1">&#39;Petal.Width&#39;</span><span class="p">],</span> 
-    <span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="mf">5.1</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]]</span>
-<span class="p">}</span>
-<span class="n">predictions</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">model_scoring_url</span><span class="p">,</span> <span class="n">scoring_data</span><span class="p">)</span> 
-
-<span class="nb">print</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">large_s</span> <span class="o">=</span> <span class="n">large_hearts</span><span class="o">.</span><span class="n">solution</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;* solution has objective </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">large_s</span><span class="o">.</span><span class="n">objective_value</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;* solve status is &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">large_hearts</span><span class="o">.</span><span class="n">solve_details</span><span class="o">.</span><span class="n">status</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -13460,7 +13504,101 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;fields&#39;: [[&#39;$R-Species&#39;, &#39;$RC-Species&#39;, &#39;$RP-Species&#39;, &#39;$RP-setosa&#39;, &#39;$RP-versicolor&#39;, &#39;$RP-virginica&#39;, &#39;$RI-Species&#39;]], &#39;values&#39;: [[&#39;setosa&#39;, 1.0, 1.0, 1.0, 0.0, 0.0, &#39;1&#39;]]}
+<pre>* solution has objective 17
+* solve status is &#39;integer optimal solution&#39;
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>### Step 5: Produce advancement charts
+
+Progress listeners may also be used to generate visual charts to plot the advancement of the solve.
+For example, let's assume we want to plot the chart of the gap vs. time.
+In a first version, we will just print the value of the gap and time.
+What clock do we listen to? obviously we listen to the `Gap` clock, and do not care for solution values,
+so we need a sub-class of `ProgressListener`.
+
+As this listener has no internal data, there is no need to write a `notify_start` method.
+
+The `notify_progress` consist in printing a formatted message with the gap and time.
+
+The code is as follows:
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">MipGapPrinter</span><span class="p">(</span><span class="n">ProgressListener</span><span class="p">):</span>
+  
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ProgressListener</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ProgressClock</span><span class="o">.</span><span class="n">Gap</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">notify_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdata</span><span class="p">):</span>
+        <span class="n">gap</span> <span class="o">=</span> <span class="n">pdata</span><span class="o">.</span><span class="n">mip_gap</span>
+        <span class="n">ms_time</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">*</span> <span class="n">pdata</span><span class="o">.</span><span class="n">time</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-- new gap: </span><span class="si">{0:.1%}</span><span class="s1">, time: </span><span class="si">{1:.0f}</span><span class="s1"> ms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">ms_time</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m8</span> <span class="o">=</span> <span class="n">build_hearts</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">m8</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">MipGapPrinter</span><span class="p">())</span>
+<span class="n">m8</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">clean_before_solve</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>-- new gap: 200.0%, time: 4 ms
+-- new gap: 118.2%, time: 5 ms
+-- new gap: 111.1%, time: 9 ms
+-- new gap: 93.5%, time: 10 ms
+-- new gap: 90.6%, time: 16 ms
+-- new gap: 76.0%, time: 17 ms
+-- new gap: 73.9%, time: 21 ms
+-- new gap: 61.5%, time: 22 ms
+-- new gap: 60.8%, time: 27 ms
+-- new gap: 59.0%, time: 37 ms
+-- new gap: 57.8%, time: 46 ms
+-- new gap: 56.9%, time: 51 ms
+-- new gap: 56.0%, time: 55 ms
+-- new gap: 54.7%, time: 60 ms
+-- new gap: 53.5%, time: 73 ms
+-- new gap: 52.8%, time: 105 ms
+-- new gap: 52.0%, time: 134 ms
+-- new gap: 27.7%, time: 167 ms
+-- new gap: 22.9%, time: 195 ms
+-- new gap: 21.4%, time: 202 ms
+-- new gap: 19.0%, time: 205 ms
+-- new gap: 15.5%, time: 214 ms
+-- new gap: 14.3%, time: 220 ms
+-- new gap: 12.5%, time: 223 ms
+-- new gap: 9.5%, time: 228 ms
+-- new gap: 8.3%, time: 231 ms
+-- new gap: 7.1%, time: 233 ms
+-- new gap: 0.0%, time: 233 ms
 </pre>
 </div>
 </div>
@@ -13473,7 +13611,105 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As we can see from the prediction, this is the Iris Setosa flower.</p>
+<h3 id="Variant:-using-matplotlib-to-plot-a-chart-of-gap-vs.-time">Variant: using matplotlib to plot a chart of gap vs. time<a class="anchor-link" href="#Variant:-using-matplotlib-to-plot-a-chart-of-gap-vs.-time">&#182;</a></h3><p>In this variant, we use <code>matplotlib</code> to chart the evolution of gap over time. The logic of the custom listener is exactly similar to the gap printer, except that we call matplotlib.plot instead of printing a message.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.progress</span> <span class="k">import</span> <span class="n">ProgressListener</span><span class="p">,</span> <span class="n">ProgressClock</span>
+<span class="kn">from</span> <span class="nn">IPython</span> <span class="k">import</span> <span class="n">display</span>
+
+<span class="k">class</span> <span class="nc">MipGapPlotter</span><span class="p">(</span><span class="n">ProgressListener</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ProgressListener</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ProgressClock</span><span class="o">.</span><span class="n">Gap</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">notify_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">times</span> <span class="o">=</span><span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaps</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1">#self.lines, = ax.plot([],[], &#39;o&#39;)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time (ms)&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;gap (%)&#39;</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">notify_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdata</span><span class="p">):</span>
+        <span class="n">gap</span> <span class="o">=</span> <span class="n">pdata</span><span class="o">.</span><span class="n">mip_gap</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">pdata</span><span class="o">.</span><span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1000</span><span class="o">*</span> <span class="n">time</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gaps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="n">gap</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">times</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaps</span><span class="p">,</span> <span class="s1">&#39;go-&#39;</span><span class="p">)</span>
+        <span class="n">display</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">plt</span><span class="o">.</span><span class="n">gcf</span><span class="p">())</span>
+        <span class="n">display</span><span class="o">.</span><span class="n">clear_output</span><span class="p">(</span><span class="n">wait</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m9</span> <span class="o">=</span> <span class="n">build_hearts</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">m9</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">MipGapPlotter</span><span class="p">())</span>
+<span class="n">m9</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">clean_before_solve</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAmcAAAEKCAYAAABXMPIIAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDMuMC4yLCBodHRwOi8vbWF0cGxvdGxpYi5vcmcvOIA7rQAAIABJREFUeJzt3Xu8VXWd//H3m8MdDEFQEFFEScNMNH6Nt8rUUdO8NGVSlkxToWm/bk6OZYZUNnabJme8UeNPMW9MNpOapUZ2mSkrUEy8BSgpiYAIKBeBc/j8/tjrHDewzz77nLPXXmvv/Xo+Hvtx9vqutdf+nC+Px/Ht97u+azkiBAAAgHzok3UBAAAAeA3hDAAAIEcIZwAAADlCOAMAAMgRwhkAAECOEM4AAAByhHAGAACQI4QzAACAHCGcAQAA5EjfrAvojZEjR8b48eOzLgMAAKBL8+fPfzEiRnV1XF2Hs/Hjx2vevHlZlwEAANAl23+p5DimNQEAAHKEcAYAAJAjhDMAAIAcIZwBAADkCOEMAAAgR+p6tWbaPNM7tcWMyKASAADQLBg560SpYFauHQAAoBoIZwAAADlCOAMAAMgRwhkAAECOEM4AAAByhHDWic5WZbJaEwAApIlwVkZxEIsZQTADAACpI5wBAADkCOGsQvcsuifrEgAAQBMgnFXotFtOy7oEAADQBAhnFWpTW9YlAACAJkA4AwAAyBHCGQAAQI4Qzrpw7d9em3UJAACgiRDOunDukedmXQIAAGgihDMAAIAcIZwBAADkCOEMAAAgRwhn3bD3t/bOugQAANDgCGfd8NyG57IuAQAANDjCGQAAQI4QzgAAAHKEcFaBySMnZ10CAABoEoSzCjx8wcNZlwAAAJoE4QwAACBHCGcAAAA5QjgDAADIkdTCme1xth+w/YTtx2x/KmkfYft+24uSn8OTdtu+0vZi23+yfVhatfXGp/77U1mXAAAAGliaI2etki6MiDdIOlzSBbYnSbpY0tyImChpbrItSe+UNDF5TZd0TYq19diVj1yZdQkAAKCBpRbOImJ5RDyUvH9F0hOSxko6XdKNyWE3SjojeX+6pNlR8KCkXW2PSas+AACAPKrJNWe2x0s6VNLvJe0REculQoCTtHty2FhJxc9HWpa07Xiu6bbn2Z63atWqNMsGAACoudTDme2hku6Q9OmIeLncoSXaYqeGiFkRMSUipowaNapaZXZpgAbU7LsAAEDzSjWc2e6nQjC7OSJ+lDSvaJ+uTH6uTNqXSRpX9PG9JD2fZn3d8egHHs26BAAA0ATSXK1pSf8h6YmI+JeiXXdKmpa8nybpx0Xt5ySrNg+XtK59+jMPJk6cmHUJAACgCfRN8dxHSfqQpEdtL0javiDpCklzbH9E0rOSzkz23SPpZEmLJW2U9OEUawMAAMil1MJZRPyPSl9HJknHlTg+JF2QVj0AAAD1gCcE9MCiRYuyLgEAADQowlkPHHLLIVmXAAAAGhThrAc2aVPWJQAAgAZFOAMAAMgRwhkAAECOEM664ZOHfDLrEgAAQIMjnHXDd8/4btYlAACABkc4AwAAyBHCGQAAQI4QzgAAAHKEcNZDR153ZNYlAACABkQ466HfvfC7rEsAAAANiHAGAACQI4QzAACAHCGcddPoQaOzLgEAADQwwlk3Lb9oedYlAACABkY4AwAAyBHCGQAAQI4QzgAAAHKEcNYL1/32uqxLAAAADYZw1gvn3X9e1iUAAIAGQzgDAADIEcIZAABAjhDOesBy1iUAAIAGRTjrgbs/cHfWJQAAgAZFOOuBkyeenHUJAACgQRHOAAAAcoRwBgAAkCOEMwAAgBwhnPXSmG+MyboEAADQQAhnvfTCpheyLgEAADQQwhkAAECOEM4AAAByJLVwZvt62yttLyxqu8z2X20vSF4nF+37vO3Ftp+yfWJadVXL8Xsdn3UJAACgAaU5cnaDpJNKtH8nIiYnr3skyfYkSVMlHZR85mrbLSnW1mv3f+T+rEsAAAANKLVwFhG/lvRShYefLum2iNgcEc9IWizpLWnVBgAAkFdZXHP2Cdt/SqY9hydtYyU9V3TMsqQNAACgqdQ6nF0jaT9JkyUtl/TtpN0ljo1SJ7A93fY82/NWrVqVTpUAAAAZqWk4i4gVEdEWEdskfU+vTV0ukzSu6NC9JD3fyTlmRcSUiJgyatSodAuu0LTbp2VdAgAAaBA1DWe2i2+n/25J7Ss575Q01fYA2/tKmijpD7WsrTdmPzk76xIAAECD6JvWiW3fKukYSSNtL5M0Q9IxtierMGW5VNK5khQRj9meI+lxSa2SLoiItrRqAwAAyKvUwllEvL9E83+UOf5ySZenVQ8AAEA94AkBvTCkz5CsSwAAAA2GcNYLD099OOsSAABAgyGc9cLEiROzLgEAADQYwhkAAECOEM4AAABypKJwZnu47YNsT7BNoCth0aJFWZcAAAAaQKdBy/Yw21+w/aikByVdJ2mOpL/Y/k/b76hVkfXg4FsOzroEAADQAMrd5+yHkmZLemtErC3eYfvNkj5ke0JEdHrvsmayWZuzLgEAADSATsNZRPxtmX3zJc1PpSIAAIAmVvETAmyPkvQpSYMkXRMRi1OrCgAAoEl15+L+b0v6taSfSbo1nXLqz4wjZmRdAgAAaCDlFgT8zPZbi5r6q/Cw8qWSBqRbVv247ITLsi4BAAA0kHIjZ2dJOt32Lbb3k3SppC9JukLS+bUoDgAAoNmUWxCwTtI/2p4g6XJJf5V0QdIOAACAFHQazpJQ9nFJWyVdKGk/SXNs3y3p6ohoq02JAAAAzaPctOatKlz8/6CkmyLiNxFxoqSXJd1Xi+LqzaFXHZp1CQAAoM6Vu5XGQEnPSBoiaXB7Y0TcaHtO2oXVowUvLsi6BAAAUOfKhbPzJX1T0hZJ5xXviIhNaRYFAADQrMotCPhfSf9bw1oAAACaXrn7nN1l+122+5XYN8H2l23/Q7rl1YcJr5uQdQkAAKBBlFsQ8DFJb5P0pO0/2r7H9i9sPy3pOknzI+L6mlSZc0s+syTrEgAAQIMoN635gqSLJF1ke7ykMZI2SfpzRGysSXUAAABNpqIHn0fEUhUe24QSPNM7vY8ZkVU5AACgjnXnwecooTiYVdIOAABQDuEMAAAgRyoKZ7b7236T7YNt90+7qEbB6BkAAOiuLq85s32KpGslLZFkSfvaPjcifpp2cY2gPaDtP2x/Lfr0opKBjevTAABAu0pGzr4t6R0RcUxEvF3SOyR9J92yGs/idYu5Pg0AAHSpknC2MiIWF20/LWllSvXUnc5GvWJGKGaEFp29qMYVAQCAelbJrTQes32PpDmSQtKZkv5o++8kKSJ+lGJ9daHctOT+++/fsZ8RMgAA0JVKwtlASSskvT3ZXiVphKRTVQhrTR/OAAAAqqXLcBYRH65FIQAAAKjgmjPbA21fYPtq29e3v2pRXKMpN/054p9H1LASAACQV5UsCLhJ0mhJJ0r6laS9JL2SZlGNrH2hQPur3Zota/SxH34sw8oAAEAeVBLO9o+ISyVtiIgbJZ0i6eCuPpSMsK20vbCobYTt+20vSn4OT9pt+0rbi23/yfZhPf2F6k1xQPv+Y9/XkiVLMqwGAABkrZJwtjX5udb2GyUNkzS+gs/dIOmkHdouljQ3IiZKmptsS9I7JU1MXtMlXVPB+RtGcUDb/wf7Z1gJAADIWiXhbFYywnWppDslPS7pG119KCJ+LemlHZpPl3Rj8v5GSWcUtc+Oggcl7Wp7TAW1NYzFH3ztVnLccgMAgObVZTiLiO9HxJqI+FVETIiI3SPi2h5+3x4RsTw573JJuyftYyU9V3TcsqRtJ7an255ne96qVat6WEb+7LfffjpzvzM7tgloAAA0p0qerfnZEs3rJM2PiAVVqqNUEim5tDEiZkmaJUlTpkxpqIdSzvngHL3u8tfpldbCeosdAxrP4AQAoPFVMq05RdJ5KoxkjVXhmrBjJH3P9kXd/L4V7dOVyc/2x0AtkzSu6Li9JD3fzXM3hJcvebnTfYymAQDQ+CoJZ7tJOiwiLoyIC1UIa6MkvU3S33fz++6UNC15P03Sj4vaz0lWbR4uaV379Ce294Yr39DlMZ7pnV4AAKA+VPL4pr0lbSna3ippn4jYZHtzZx+yfasKI2wjbS+TNEPSFZLm2P6IpGdVeE6nJN0j6WRJiyVtlMRTCTrx5JonS4atfzrsn3TFqVd0GsQ800yLAgBQByoJZ7dIetB2+yjXqZJutT1EhZWbJUXE+zvZdVyJY0PSBRXUgk58/aGv6+sPfT3rMgAAQC9V8mzNr9i+R9LRKly4f15EzEt2n51mcdhZ8ejX+295v25bdFuG1QAAgGpzYdCqPk2ZMiXmzZvX9YF1qNT0ZCXTkuWuL2NaEwCA7NieHxFTujqukmlNZIAgBQBAc6pktSbqSLlQx6pNAADyj5GzBrRjQCsOZazaBAAg3xg5awLlwhoAAMgXwlmTiBmhfurXsU1AAwAgnwhnTWTLjC0av8v4jm0CGgAA+cM1Z03mmc8+ow/e9kHd/NTNkrp/y46e3uIDAABUhvucNalfPPMLHTd7p4c1dCgVuHpyDzXCHAAABdznDGUdu++xZfd3d8rTM60WtWjcLuP01bd9VWdPObtHz/kkzAEAmh0jZ00sT9ecDfRAvRqvdrqfgAYAqHeMnKFXujut2Vvlgpkk3f7Q7TrrsLNK7mO0DQDQSAhnqIruhrnBLYO1sW1jxeefetdUTb1r6nZtoweP1gsbXyh5PDfbBQDUK8JZE4sZ0a1Rp+4eX86GL27Yqa27I3OdBbN2Dy57UIfvdXhF30OQAwDkBdecIVXdCUKVrAZ97rnndMANB2jTtk3VKbCHdXUV5giAAIAdVXrNGeEMuVKN+67VSm9CZmcIdQDQuFgQgLpUzSCS9qKGnpyr+DMtatFuA3fTyfufrK8d+TXtOWvPTj9DQAOA5sHjm1DXyl0f15Nztb+WfXSZDhpxUG/LK6tNbVr56krdsPCGToMZAKD5MHKGupfGqNLYsWO18P8urNpTEQAAqBThDE2lmitOe/r9nSHUAQAkwhmaUHeCWE/CXBoBkOvOAKB5sFoTyJGuRs8IaABQv1itCdShUuFr16/tqnVb10kqhLfl5y7X6NGja10aAKBGWK0J5NzaL6zVByZ9oGN7zHVjdPXvrs6wIgBAmghnQB24+cyb9fC5D3dsX3DfBTr43w/OsCIAQFoIZ0CdmDx68nbTngtXL1S/mf0yrAgAkAbCGVBnigNaq1q5BQcANBjCGVCHYkaob9F6HgIaADQOwhlQp7bO2KpDRh3Sse2Z1oIXFmRYEQCgGghnQB1bcP4CXXXCVR3bh153qN5zy3syrAgA0FuEM6DOnX/E+Vp+7vKO7R8t+pF2uXyXDCsCAPQG4QxoAKNHj95uocD61vVchwYAdSqTJwTYXirpFUltklojYortEZJulzRe0lJJ74uINVnUB9SrHZ/rmeVD3gEAPZPlyNk7ImJy0TOmLpY0NyImSpqbbAPoppgRGjVoVKf7uzui5pne6QUASE8mDz5PRs6mRMSLRW1PSTomIpbbHiPplxFxQLnz8OBzoHM9CVFD+w7VjLfP0D8e/Y9dnoMROADonkoffJ7VyFlIus/2fNvTk7Y9ImK5JCU/d8+oNqBprW9dr8/N/RwjZACQoUyuOZN0VEQ8b3t3SffbfrLSDyZhbrok7b333mnVBzS09lGvb/3PtzTzVzO1vnV9t8/RHt7233V/LfrUopL7Sn0nAKC8TKY1tyvAvkzSekkfE9OaQNVUY0qy2qNnBDQAzSy305q2h9jepf29pBMkLZR0p6RpyWHTJP241rUBjaSzIFStgHTyvid3+zN7fmNPrVq1qtP9LD4AgAxGzmxPkPRfyWZfSbdExOW2d5M0R9Lekp6VdGZEvFTuXIycAenrzhTlHl/fQytfXVn1GhhxA9AIKh05y3xaszcIZ0D+pDXaNaTvEN36d7fq1Dec2uX3EeYA5FGl4SyrBQEAmlCp0HTErCP04PIHu/zshtYNOm3OaRV9j2eagAagbvH4JgBV1d1r3X43/XcEKQAowsgZgKqrdtjq7HwsGADQiBg5A5AL1V5d6pnW6tWre1MSAGSCkTMAuVHtEbeR/z5SA1sGatMXN1X1vACQJkbOANStzsLcU594quP9q22vyjOt7/zPd2pVFgD0CrfSANCwDrjyAP15zZ+3a2PxAYCs5PYJAQBQK0998qmdwphnWkd976iMKgKArhHOADS8mBH6zP/5TMf2b5//LQsGAOQW05oAmkrfmX3VprayxzD1CSANTGsCQAmtM1r12/f/tuwx3D8NQJa4lQaApnPE649QzIiyIax9X4ta9IGDPqDZ753d6THFGHUD0FtMawJoWmmNkHUV0Ah1QHNiWhMAeuGiwy9SX/dscsEzvd1ryOVDdMYtZ2jNmjWdBkKmUgG0Y+QMQNMqF4jKjWSddftZmvPknKrXc+u7b9XUN00tuY/RNqD+VTpyRjgD0NR6GnrKBbuXPvmSPvSTD+mBvzygja0be1VfVwhoQP2oNJyxIABAU0sj3AwfPlx3f/DukvuqPX3pmdaQvkN0xoFn6Krjr9KwYcMq+s5yvzejdEC2GDkDgB7qSYjpzlTqKTedonufvrfL+7L1VKlaezrVC6BrTGsCQE5VYySrXYtb1BbphLcdVRrOGHkDSmNaEwByqppBpfVLrZ3uu+mhm3TOXedU7bu6mpK1rFDp380zzS1GgAoxcgYAdSCNhQvdndastn59+mnEgBE6etzRuuPPd3R6HKEOjYKRMwBoIHkIG53V8K3ffEvXP3K9nl33rDa0bqj4fFu3bdWKTSvKBjPptfDV1301qN8gjd1lrI4ad5QuOeISTbhmQqef6Wl4zUNfo7kxcgYADa6WqzW7Gqlbv369Lpx7oX665KdasXGFtrRtqei8PdG3T1+NGDhCU8ZM0Vfe/hUdNu6wbtXamZaZLdqmbR3bfdRHbTNqc90f6hsLAgAANdfTwFPuc587/HO67+n79Oy6Z/XKllfUGp1fZ1ctlx59qU7Y7wS9eY83a9CgQR3tOwazdpUGtP5f7q+tsbVju5/7acuX0guoyBfCGQAgE2nfYqTSz40ZOkarN67Wlm21CT+W1eIW9W/pr8H9B2u3Qbtpn2H76JA9DtFprz9Nx84+drtg1q7SgDb4q4O1qW1Tx/aglkHa+MV0b3KM6iKcAQDqSi1DXVefLbfyNC193Ed9+/TVwJaBet3A12nMkDGaNGqSjhl/jM676zxtjs07faaSgDb8iuFau3ltx/auA3bVmovXVL1+dI1wBgBoCrVaydrVZ6449gr94fk/aMnqJVqxcYXWb12vLa1b1BqtiojUwt6AlgEa2n+oxgwdo4NGHaRTJp6isyadpf79++8UzNpVGtDGfnusnl//fMf2nkP31F8v/GtV628mhDMAALrQ3WDXm2vOygW7Vy9+Vb989pf66ZKf6uHnH9ZzLz+ntZvXatPWTdq6bWsqNxp+z4Hv0ZQ9p+hdr3+X3rjHG3fav2Mwa1dpQDvoqoP0+IuPd2xPGjlJj13wWO+KrnOEMwAAUtDT1Zo7LgZoV8k1Z+WC3axTZuneJffq8Rcf14oNK7RhywZtbdtaMkRWqqtp3d98+DeavPtkDR04tOT+HYNZu0oC2vGzj9fcZ+Z2bB+373H6+Tk/r7DyfCOcAQCQMz1drbnjYoB2XV1zVi7UHbDbAVq9cbU2bN2gLW1btC229Xrq1bL6uE/Zkb5rT7lWB+x2gN40+k0aMWjEdvt2DGbtKglo5//kfM2aP0tt0aYWt2j6m6fr6lOu7tkvkhLCGQAADaQnqzV7c81ZuWC3x5A9OqZcW7e1qi3aenVdXSWh7gtv/YJGDByhkYNHauTgkdp9yO7afcjuGj10tD5z72d0zbxrdvrMx6d8PFcBjXAGAAB6vFqzN9eclQt2x084Xqs3rta6V9dpw9YN2rR1kza3be4IedXU4payz5+tNR7fBAAAenzbjL9e+Ncer9acNHJSp9ec3f+h+zv9XLlQ94O/+4Fe3PCiVm9arbWvrtXaTWv18paX9fLml/XA0gdKfqYt2nTbwtt0+gGna1C/QSWPyaPcjZzZPknSdyW1SPp+RFzR2bGMnAEAkE89Wa3Z02vO+n65b9lRt2EDhul9B71P0w6ZpiPHHSm78xCYpkpHzvrUophK2W6RdJWkd0qaJOn9tidlWxUAAOiuxy54TDEjOl6V3Ebj5+f8XMfte9x2bZUsBpj+5ukl28+bcp7mnjNXpx94um559BYd/f+O1sR/m6gv/+rLWrp2qSTp5kdv1vh/Ha8+M/to/L+O182P3lzZL5iiXI2c2T5C0mURcWKy/XlJioh/LnU8I2cAAEDqerXm+i3rdcfjd2j2n2brgWceUCh04G4H6um1T2tL22srZgf3G6xZp87S2QefXfUa63JBgO33SjopIj6abH9I0t9ExCdKHU84AwAA3fXsumd10yM36bJfXabWbTsvGNhn2D5a+umlVf/eupzWlFRqEni79Gh7uu15tuetWrWqRmUBAIBGsfewvXXJ2y5R27bS16k9u+7ZGle0vbyFs2WSxhVt7yVpu3W8ETErIqZExJRRo0bVtDgAANA49h62d7faayVv4eyPkiba3td2f0lTJd2ZcU0AAKABXX7c5Rrcb/B2bYP7Ddblx12eUUUFuQpnEdEq6ROS7pX0hKQ5EdHcT0kFAACpOPvgszXr1FnaZ9g+sqx9hu2T2mKA7sjVgoDuYkEAAACoF/W6IAAAAKCpEc4AAAByhHAGAACQI4QzAACAHCGcAQAA5Ehdr9a0vUrSX1L+mpGSXkz5O/Aa+ru26O/aor9rjz6vLfq7vH0ioss76Nd1OKsF2/MqWfaK6qC/a4v+ri36u/bo89qiv6uDaU0AAIAcIZwBAADkCOGsa7OyLqDJ0N+1RX/XFv1de/R5bdHfVcA1ZwAAADnCyBkAAECOEM46Yfsk20/ZXmz74qzrqVe2r7e90vbCorYRtu+3vSj5OTxpt+0rkz7/k+3Dij4zLTl+ke1pWfwu9cD2ONsP2H7C9mO2P5W00+cpsT3Q9h9sP5L0+cykfV/bv0/673bb/ZP2Acn24mT/+KJzfT5pf8r2idn8Rvlnu8X2w7bvTrbp6xTZXmr7UdsLbM9L2vibkqaI4LXDS1KLpCWSJkjqL+kRSZOyrqseX5LeJukwSQuL2r4h6eLk/cWSvp68P1nSTyVZ0uGSfp+0j5D0dPJzePJ+eNa/Wx5fksZIOix5v4ukP0uaRJ+n2ueWNDR530/S75O+nCNpatJ+raSPJ+/Pl3Rt8n6qpNuT95OSvzUDJO2b/A1qyfr3y+NL0mcl3SLp7mSbvk63v5dKGrlDG39TUnwxclbaWyQtjoinI2KLpNsknZ5xTXUpIn4t6aUdmk+XdGPy/kZJZxS1z46CByXtanuMpBMl3R8RL0XEGkn3Szop/errT0Qsj4iHkvevSHpC0ljR56lJ+m59stkveYWkYyX9MGnfsc/b/y1+KOk4207ab4uIzRHxjKTFKvwtQhHbe0k6RdL3k22Lvs4Cf1NSRDgrbayk54q2lyVtqI49ImK5VAgTknZP2jvrd/49eiCZwjlUhZEc+jxFyTTbAkkrVfiPzhJJayOiNTmkuP86+jbZv07SbqLPK/Wvki6StC3Z3k30ddpC0n2259uenrTxNyVFfbMuIKdcoo1lrenrrN/59+gm20Ml3SHp0xHxcmGwoPShJdro826KiDZJk23vKum/JL2h1GHJT/q8h2y/S9LKiJhv+5j25hKH0tfVdVREPG97d0n3236yzLH0eRUwclbaMknjirb3kvR8RrU0ohXJMLeSnyuT9s76nX+PbrDdT4VgdnNE/Chpps9rICLWSvqlCtfa7Gq7/X+Ai/uvo2+T/cNUmPqnz7t2lKTTbC9V4XKTY1UYSaOvUxQRzyc/V6rwPx9vEX9TUkU4K+2PkiYmK4D6q3Ah6Z0Z19RI7pTUvlJnmqQfF7Wfk6z2OVzSumS4/F5JJ9genqwIOiFpww6S62n+Q9ITEfEvRbvo85TYHpWMmMn2IEnHq3Ct3wOS3psctmOft/9bvFfSLyIikvapyQrDfSVNlPSH2vwW9SEiPh8Re0XEeBX+Lv8iIs4WfZ0a20Ns79L+XoW/BQvF35R0Zb0iIa8vFVac/FmFa0cuybqeen1JulXScklbVfg/p4+ocM3HXEmLkp8jkmMt6aqkzx+VNKXoPP+gwkW7iyV9OOvfK68vSUerMFXwJ0kLktfJ9Hmqff4mSQ8nfb5Q0peS9gkq/Ad/saT/lDQgaR+YbC9O9k8oOtclyb/FU5LemfXvlueXpGP02mpN+jq9fp6gwsrWRyQ91v7fQ/6mpPviCQEAAAA5wrQmAABAjhDOAAAAcoRwBgAAkCOEMwAAgBwhnAEAAOQI4QwAACBHCGcA6o7tXW2fX7S9p+0flvtML77rDNtfqsJ5vmX72GrUBKCxcZ8zAHUneaj73RHxxhp8128lnRYRL/byPPtI+l5EnFCdygA0KkbOANSjKyTtZ3uB7W/aHm97oSTZ/nvb/237LtvP2P6E7c/aftj2g7ZHJMftZ/tntufb/o3tA3f8Etuvl7S5PZjZvsH2NbYfsP207bfbvt72E7ZvSI5pSY5baPtR25+RpIj4i6TdbI+uTRcBqFd9uz4EAHLnYklvjIjJUsdIWrE3SjpUhcf3LJb0TxFxqO3vSDpHhYdlz5J0XkQssv03kq5W4UHaxY6S9NAObcOT406TdFdyzEcl/dH2ZEktksa2j+q1P3cz8VBy/B09+7UBNAPCGYBG9EBEvCLpFdvrVAhRUuFZf2+yPVTSkZL+s/CseEnSgBLnGSNp1Q5td0VE2H5U0oqIeFSSbD8mabykX0maYPvfJP1E0n1Fn10pac/e/nIAGhvhDEAj2lz0flvR9jYV/u71kbS2feStjE2ShnVy7uLzdpw7ItbYPkTSiZIukPQ+FR74LBVG8jZ14/cA0IS45gxAPXpF0i49/XBEvCzpGdtnSpILDilx6BOS9u/OuW2PlNQnIu6QdKmkw4qT3n3FAAAApklEQVR2v17Swp5VDaBZEM4A1J2IWC3pf5OL7r/Zw9OcLekjth+R9Jik00sc82tJh7po7rMCYyX90vYCSTdI+rwk2e6nQtCb18N6ATQJbqUBAGXY/q4K15n9vJfnebekwyLi0upUBqBRMXIGAOV9TdLgKpynr6RvV+E8ABocI2cAAAA5wsgZAABAjhDOAAAAcoRwBgAAkCOEMwAAgBwhnAEAAOTI/wdvmPsu9F+cEQAAAABJRU5ErkJggg==
+"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You learned how to set up and use the IBM Decision Optimization CPLEX Modeling for Python to formulate a Mathematical Programming model and track its progress.</p>
 
 </div>
 </div>
@@ -13482,17 +13718,10 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="summary"></a></p>
-<h2 id="3.-Summary-and-next-steps">3. Summary and next steps<a class="anchor-link" href="#3.-Summary-and-next-steps">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You successfully completed this notebook! You learned how to use Watson Machine Learning for PMML model deployment and scoring.</p>
-<p>Check out our <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener no referrer">documentation</a> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
+<h4 id="References">References<a class="anchor-link" href="#References">&#182;</a></h4><ul>
+<li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization CPLEX Modeling for Python documentation</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/getting-started/welcome-main.html?audience=wdp&context=wdp" target="_blank" rel="noopener noreferrer">Watson Studio documentation</a></li>
+</ul>
 
 </div>
 </div>
@@ -13501,26 +13730,7 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Citation">Citation<a class="anchor-link" href="#Citation">&#182;</a></h3><p>Dua, D. and Karra Taniskidou, E. (2017). <a href="http://archive.ics.uci.edu/ml" target="_blank" rel="noopener no referrer">UCI Machine Learning Repository</a>. Irvine, CA: University of California, School of Information and Computer Science.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Wojciech Sobala</strong> is a Data Scientist at IBM.<br>
-<strong>Jihyoung Kim</strong>, Ph.D., is a Data Scientist at IBM who strives to make data science easy for everyone through Watson Studio.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Copyright © 2018, 2019 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright &copy; 2017-2019 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>

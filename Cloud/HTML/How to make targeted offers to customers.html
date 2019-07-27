@@ -13258,7 +13258,7 @@ whereas
                                            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span> 
                                            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span><span class="p">)</span> <span class="p">)</span>
 
-<span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span> <span class="n">budgetSpent</span> <span class="o">==</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channelVars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span><span class="o">*</span><span class="n">channels</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s2">&quot;cost&quot;</span><span class="p">)</span> 
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span> <span class="n">budgetSpent</span> <span class="o">==</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channelVars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span><span class="o">*</span><span class="n">channels</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;cost&quot;</span><span class="p">]</span> 
                                            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offersR</span> 
                                            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span> 
                                            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span><span class="p">)</span> <span class="p">)</span>
@@ -13269,7 +13269,7 @@ whereas
                        <span class="o">&lt;=</span> <span class="n">budgetShare</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">*</span> <span class="n">totaloffers</span> <span class="p">)</span>
             
 <span class="c1"># Do not exceed the budget</span>
-<span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channelVars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span><span class="o">*</span><span class="n">channels</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s2">&quot;cost&quot;</span><span class="p">)</span> 
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channelVars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span><span class="o">*</span><span class="n">channels</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;cost&quot;</span><span class="p">]</span>
                             <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offersR</span> 
                             <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span> 
                             <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span><span class="p">)</span>  <span class="o">&lt;=</span> <span class="n">availableBudget</span> <span class="p">)</span>  
@@ -13297,18 +13297,7 @@ whereas
  - number of constraints: 34
    - linear=34
  - parameters: defaults
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/envs/DSX-Python35/lib/python3.5/site-packages/ipykernel/__main__.py:13: FutureWarning: get_value is deprecated and will be removed in a future release. Please use .at[] or .iat[] accessors instead
-/opt/conda/envs/DSX-Python35/lib/python3.5/site-packages/ipykernel/__main__.py:24: FutureWarning: get_value is deprecated and will be removed in a future release. Please use .at[] or .iat[] accessors instead
+ - problem type is: MILP
 </pre>
 </div>
 </div>
@@ -13386,7 +13375,7 @@ whereas
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">report</span> <span class="o">=</span> <span class="p">[(</span><span class="n">channels</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">col</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">),</span> <span class="n">products</span><span class="p">[</span><span class="n">p</span><span class="p">],</span> <span class="n">names</span><span class="p">[</span><span class="n">offers</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="s2">&quot;customerid&quot;</span><span class="p">)])</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">report</span> <span class="o">=</span> <span class="p">[(</span><span class="n">channels</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">products</span><span class="p">[</span><span class="n">p</span><span class="p">],</span> <span class="n">names</span><span class="p">[</span><span class="n">offers</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">o</span><span class="p">,</span> <span class="s2">&quot;customerid&quot;</span><span class="p">]])</span> 
           <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span> 
           <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span> 
           <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offersR</span>  <span class="k">if</span> <span class="n">channelVars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">solution_value</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span>
@@ -13414,17 +13403,6 @@ whereas
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Marketing plan has 20 offers costing 364.0
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/envs/DSX-Python35/lib/python3.5/site-packages/ipykernel/__main__.py:4: FutureWarning: get_value is deprecated and will be removed in a future release. Please use .at[] or .iat[] accessors instead
 </pre>
 </div>
 </div>
@@ -13713,7 +13691,6 @@ whereas
 <h2 id="References">References<a class="anchor-link" href="#References">&#182;</a></h2><ul>
 <li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization CPLEX Modeling for Python documentation</a></li>
 <li><a href="https://dataplatform.cloud.ibm.com/docs/content/getting-started/welcome-main.html?audience=wdp&context=wdp" target="_blank" rel="noopener noreferrer">Watson Studio documentation</a></li>
-<li>Need help with DOcplex or to report a bug? Go to <a href="https://developer.ibm.com/answers/smartspace/docloud" target="_blank" rel="noopener noreferrer">https://developer.ibm.com/answers/smartspace/docloud</a></li>
 </ul>
 
 </div>
@@ -13724,7 +13701,7 @@ whereas
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><hr>
-Copyright © 2017-2018. This notebook and its source code are released under the terms of the MIT License.</p>
+Copyright © 2017-2019. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
