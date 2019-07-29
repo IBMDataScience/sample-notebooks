@@ -12675,12 +12675,12 @@ div#notebook {
 <h1 id="Using-the-Progress-Listeners-with-CPLEX-Optimizer">Using the Progress Listeners with CPLEX Optimizer<a class="anchor-link" href="#Using-the-Progress-Listeners-with-CPLEX-Optimizer">&#182;</a></h1><p>This tutorial includes everything you need to set up decision optimization engines, build a mathematical programming model, then use the progress listeners to monitor progress, capture intermediate solutions and stop the solve on your own criteria.</p>
 <p>Table of contents:</p>
 <ul>
-<li><a href="#Describe-the-business-problem:--Games-Scheduling-in-the-National-Football-League">Describe the business problem</a></li>
 <li><a href="#How--decision-optimization-can-help">How decision optimization (prescriptive analytics) can help</a></li>
 <li><a href="#Use-decision-optimization">Use decision optimization</a><ul>
 <li><a href="#Step-1:-Set-up-the-prescriptive-model">Step 1: Set up the prescriptive model</a></li>
 <li><a href="#Step-2:-Monitoring-CPLEX-progress">Step 2: Monitoring CPLEX progress</a></li>
 <li><a href="#Step-3:-Aborting-the-search-with-a-custom-progress-listener">Step 3: Aborting the search with a custom progress listener</a></li>
+<li><a href="#Step-4:-Produce-advancement-charts">Step 4: Produce advancement charts</a></li>
 <li><a href="#Variant:-using-matplotlib-to-plot-a-chart-of-gap-vs.-time">Variant: using matplotlib to plot a chart of gap vs. time</a></li>
 </ul>
 </li>
@@ -12735,8 +12735,8 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We need a scalable MIP model in order to show how to leverage progress listeners in Docplex MP API.</p>
-<p>Progress listeners are designed to monitor the progress of complex MIP search in docplex MP, 
+<p>A simple geometric problem is used here to show you how you can leverage progress listeners in the DOcplex Mathematical Programming (MP) API. It is a Mixed Integer Programming (MIP) model.</p>
+<p>Progress listeners are designed to monitor the progress of complex MIP search in DOcplex MP, 
 that is, linear programs with integer variables.</p>
 <p>This model is easily scalable, and thus is appropriate to demonstrate  the progress listener API, but any other scalable MIP model would do.</p>
 
@@ -12790,7 +12790,7 @@ that is, linear programs with integer variables.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's try to build a small instance of the 'hearts' program and print its characteristics.</p>
+<p>First build a small instance of the 'hearts' program and print its characteristics.</p>
 
 </div>
 </div>
@@ -12838,10 +12838,10 @@ that is, linear programs with integer variables.</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h3 id="Step-2:-Monitoring-CPLEX-progress">Step 2: Monitoring CPLEX progress<a class="anchor-link" href="#Step-2:-Monitoring-CPLEX-progress">&#182;</a></h3><p>MIP search can take some time for large (or complex) problems. Setting the <code>log_output=True</code> in a solve() lets
-you display the CPLEX log, which provides a lot of information. In certain cases, you might want to take control of what happens at intermediate points in the search, and this is what listeners are designed for.</p>
-<h4 id="An-introduction-to-progress-listeners">An introduction to progress listeners<a class="anchor-link" href="#An-introduction-to-progress-listeners">&#182;</a></h4><p>Progress listeners are objects, sub-classes of the <code>docplex.mp.progress.ProgressListener</code> class. Once a listener has been attached to a model instance (using <code>Model.add_progress_listener</code>), it receives method calls from within the CPLEX MIP search. CPLEX code decides when listeners are called, and this baseline logic cannot be changed. 
-However, progress listeners let you select certian types of events.</p>
-<p>First, we have to import the <code>docplex.mp.progress</code> module, which contains everything about progress listeners.</p>
+you display the CPLEX log, which provides lots of information. In certain cases, you might want to take control of what happens at intermediate points in the search, and this is what listeners are designed for.</p>
+<h4 id="An-introduction-to-progress-listeners">An introduction to progress listeners<a class="anchor-link" href="#An-introduction-to-progress-listeners">&#182;</a></h4><p>Progress listeners are objects, sub-classes of the <code>docplex.mp.progress.ProgressListener</code> class. Once a listener has been attached to a model instance (using <code>Model.add_progress_listener</code>), it receives method calls from within the CPLEX MIP search. The CPLEX code decides when listeners are called, and this baseline logic cannot be changed. 
+However, progress listeners let you select certain types of events.</p>
+<p>First, you import the <code>docplex.mp.progress</code> module, which contains everything you need about progress listeners.</p>
 
 </div>
 </div>
@@ -12863,7 +12863,7 @@ However, progress listeners let you select certian types of events.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Monitoring-MIP-search-progress">Monitoring MIP search progress<a class="anchor-link" href="#Monitoring-MIP-search-progress">&#182;</a></h4><p>The simplest class of listener is the <code>TextProgressListener</code>, which prints a message on the stdout each time it is called. Let's see what this does on our small model.</p>
+<h4 id="Monitoring-MIP-search-progress">Monitoring MIP search progress<a class="anchor-link" href="#Monitoring-MIP-search-progress">&#182;</a></h4><p>The simplest class of listener is the <code>TextProgressListener</code>, which prints a message on the STDOUT each time it is called. See what this does on the small model.</p>
 
 </div>
 </div>
@@ -12886,8 +12886,8 @@ However, progress listeners let you select certian types of events.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Solve-with-Decision-Optimization">Solve with Decision Optimization<a class="anchor-link" href="#Solve-with-Decision-Optimization">&#182;</a></h4><p>If you're using a Community Edition of CPLEX runtimes, depending on the size of the problem, the solve stage may fail and will need a paying subscription or product installation.</p>
-<p>Here, we solve with the <strong><em>clean_before_true</em></strong> flag set to True, as we want each solve to produce the same output. Without this flag, a second solve on the model would start from the first solve solution, and would not have the same output.</p>
+<h4 id="Solve-with-Decision-Optimization">Solve with Decision Optimization<a class="anchor-link" href="#Solve-with-Decision-Optimization">&#182;</a></h4><p>You must use an environment that has the full version of CPLEX (Default Python 3.6 XS + DO). Otherwise, depending on the size of the problem, the solve stage might fail.</p>
+<p>Here, you solve with the <strong><em>clean_before_true</em></strong> flag set to True, as you want each solve to produce the same output. Without this flag, a second solve on the model would start from the first solve solution, and would not have the same output.</p>
 
 </div>
 </div>
@@ -12933,21 +12933,21 @@ However, progress listeners let you select certian types of events.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The listener prints one line each time it is called by CPLEX code; fromthis we can see that:</p>
+<p>The listener prints one line each time it is called by CPLEX code; from this you can see that:</p>
 <ul>
-<li>the listener is called several time from the same node (0)</li>
-<li>the listener is called several time at the same iteration (ItCnt=42)</li>
-<li>the listener is called several times with the same objective 7.0</li>
+<li>the listener is called several times from the same node </li>
+<li>the listener is called several times at the same iteration </li>
+<li>the listener is called several times with the same objective </li>
 </ul>
 <p>In each line, the '+' indicates that an intermediate solution is available at the time of the call. In this case, an intermediate solution was available at each call, but this is not always the case.
-Looking closer, we also see that the listener reacts to events which improve either the objective or the best bound.
-This is due to the value of the <em>clock</em> attribute of the listener</p>
-<h4 id="Listener-clocks">Listener clocks<a class="anchor-link" href="#Listener-clocks">&#182;</a></h4><p>Clocks are value sof the enumerated type <code>docplex.mp.progress.ProgressClock</code>, which defines types of events to listen to. Every listener has a clock, the default being <code>ProgressClock.Gap</code>, which reacts when an event satisfies the following conditions:</p>
+Looking closer, you can also see that the listener reacts to events which improve either the objective or the best bound.
+This is due to the value of the <em>clock</em> attribute of the listener.</p>
+<h4 id="Listener-clocks">Listener clocks<a class="anchor-link" href="#Listener-clocks">&#182;</a></h4><p>Clocks are values of the enumerated type <code>docplex.mp.progress.ProgressClock</code>, which defines types of events to listen to. Every listener has a clock, the default being <code>ProgressClock.Gap</code>, which reacts when an event satisfies the following conditions:</p>
 <ul>
 <li>an intermediate solution is available </li>
 <li>either the objective has improved <em>or</em> the best bound has improved</li>
 </ul>
-<p>Let's check this on our model:</p>
+<p>You can see this with this model:</p>
 
 </div>
 </div>
@@ -12988,8 +12988,8 @@ This is due to the value of the <em>clock</em> attribute of the listener</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now, let's experiment with a text progress listener listening to the <code>All</code> clock, that is the baseline clock that reacts to all calls from CPLEX. To do so, we first clear all progress listeners and add a new one.</p>
-<p>Note the constructor also accepts strings, interpreted as clock name.</p>
+<p>Now, you can experiment with a text progress listener listening to the <code>All</code> clock, that is the baseline clock that reacts to all calls from CPLEX. To do so, first clear all progress listeners and add a new one.</p>
+<p>Note that the constructor also accepts strings, interpreted as the clock name.</p>
 
 </div>
 </div>
@@ -13044,14 +13044,14 @@ This is due to the value of the <em>clock</em> attribute of the listener</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this case, the listener is called more often, sometimes with identical objective and bound (see lines 3 and 4). This explains why the default clock is <strong>Gap</strong> , to focus on actual changes.</p>
+<p>In this case, the listener is called more often, sometimes with identical objective and bound (see lines 3 and 4). This explains why the default clock is <strong>Gap</strong>, to focus on actual changes.</p>
 <p>Other possible values for the clock enumerated type are:</p>
 <ul>
-<li><strong>Solutions</strong>: listen to all intermediate solutions, whether or not they improve objective or best bound.</li>
-<li><strong>Objective</strong>: listen to intermediate solutions, which improve the objective.</li>
+<li><strong>Solutions</strong>: listens to all intermediate solutions, whether or not they improve the objective or best bound.</li>
+<li><strong>Objective</strong>: listens to intermediate solutions, which improve the objective.</li>
 </ul>
-<p>How exactly is improvement measured? A listener constructor can specify an <em>absdiff</em> and <em>reldiff</em> parameters which ar e interpreted as the minimal absolute (resp. relative) improvement to accept or not a call from CPLEX.</p>
-<p>Let us demonstrate this with a third <code>TextProgressListener</code> with clock set to 'objective' and an absolute diff of 1. We expect this listener to react whenever th eobjec5tive ha simprobed by an amount greater than 1:</p>
+<p>How exactly is improvement measured? A listener constructor can specify an <em>absdiff</em> and <em>reldiff</em> parameters which are interpreted as the minimal absolute (resp. relative) improvement to accept (or not) a call from CPLEX.</p>
+<p>You can see this here with a third <code>TextProgressListener</code> with clock set to 'objective' and an absolute diff of 1. You can expect this listener to react whenever the objective has improved by an amount greater than 1:</p>
 
 </div>
 </div>
@@ -13096,7 +13096,7 @@ This is due to the value of the <em>clock</em> attribute of the listener</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As expected, the listener accepted three events, with the objective vaklues of 6,7 and 8.</p>
+<p>As expected, the listener accepted four events, with increasing objective values of 5, 6, 7 and 8.</p>
 
 </div>
 </div>
@@ -13114,7 +13114,7 @@ This is due to the value of the <em>clock</em> attribute of the listener</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This is done by another predefined listener class: <code>SolutionRecorder</code>. This type of listener is a subclass of the <code>SolutionListerer</code> class. Again, this listener contains a <em>clock</em> parameter (default is <strong>Gap</strong>) which controls which events are accepted or not.</p>
-<p>The default behavior is to accept only solutions, which improve either the objective or the best bound</p>
+<p>The default behavior is to accept only solutions, which improve either the objective or the best bound.</p>
 
 </div>
 </div>
@@ -13140,7 +13140,7 @@ This is due to the value of the <em>clock</em> attribute of the listener</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Again, we solve with the <code>clean_before_solve</code> flag set to <code>True</code> to ensure a deterministic behavior.</p>
+<p>Again, solve with the <code>clean_before_solve</code> flag set to <code>True</code> to ensure a deterministic behavior.</p>
 
 </div>
 </div>
@@ -13163,7 +13163,7 @@ This is due to the value of the <em>clock</em> attribute of the listener</p>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>At the end of the solve, the recorder contains all the intermediate solutions.
-Now, let's display some information about those intermediate solutions.</p>
+Now, you can display some information about these intermediate solutions.</p>
 
 </div>
 </div>
@@ -13218,7 +13218,7 @@ Now, let's display some information about those intermediate solutions.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now, let's try a solution recorder with a different clock: <strong>Objective</strong>. This recorder will record only intermediate solutions which improve the objective, regardless of the best bound. Such changes occur less frequently than the Gap clock, so we expect less solutions to be recorded.</p>
+<p>Now, you can try a solution recorder with a different clock: <strong>Objective</strong>. This recorder will record only intermediate solutions which improve the objective, regardless of the best bound. Such changes occur less frequently than the Gap clock, so you can expect less solutions to be recorded.</p>
 
 </div>
 </div>
@@ -13266,7 +13266,7 @@ Now, let's display some information about those intermediate solutions.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As expected, the 'objective' recorder stored only 3 solutions instead of 5. Only one solution with objective 7 is recorded, instead of three with the 'Gap' recorder.</p>
+<p>As expected, the 'objective' recorder stored only 4 solutions instead of 7. Only one solution with each objective is recorded, instead of several with the 'Gap' recorder.</p>
 
 </div>
 </div>
@@ -13275,16 +13275,18 @@ Now, let's display some information about those intermediate solutions.</p>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Step-3:-Aborting-the-search-with-a-custom-progress-listener">Step 3: Aborting the search with a custom progress listener<a class="anchor-link" href="#Step-3:-Aborting-the-search-with-a-custom-progress-listener">&#182;</a></h3><p>MIP search can be time-consuming; insome cases, a 'good-enough' solution can be sufficient.
-For example, when the gap is converging very slowly, it may be a good idea to stop and use the last solution instead of waiting for along time to prove optimality.</p>
-<p>Let's assume we want to implement the following behavior: 
-stop the search, when no improvement has occured in objective for N seconds since the latest improvements.</p>
-<p>The first question to ask is: what clock do we listen to? As we want to stop as soon as 
-elapsed time without improvement is greater than our limit, we listent to the higher frequency clock, <code>All</code> clock.</p>
-<p>Second, as we do not care for solutions, we sub-class from <code>ProgressListener</code>, not from <code>SolutionListener</code>.</p>
-<p>What do we need to code this aborter? we need to know whether an incumbent solution is present, and what is its objective value, then check whether the objective has improved or not.
-If it has improved, we store the value of the objective and the time (obtained throught <code>ProgressData.time</code>),
-if not, we check whether elapsed time is greater than the limit, and if it is the case, call method <code>abort()</code>.</p>
+<h3 id="Step-3:-Aborting-the-search-with-a-custom-progress-listener">Step 3: Aborting the search with a custom progress listener<a class="anchor-link" href="#Step-3:-Aborting-the-search-with-a-custom-progress-listener">&#182;</a></h3><p>MIP search can be time-consuming; in some cases, a 'good-enough' solution can be sufficient.
+For example, when the gap is converging very slowly, it might be a good idea to stop and use the last solution instead of waiting for a long time to prove optimality.</p>
+<p>Assume that you want to implement the following behavior: 
+stop the search when the listener ha sbeen called N times without any improvement in the objective. This
+is not quite realistic, as one would rather use a time limit, but this may lead to non-deterministic behaviors.</p>
+<p>The first question to ask is: what clock do you listen to? As you want to stop as soon as 
+elapsed time without improvement is greater than your limit, you can listen to the higher frequency clock, <code>All</code> clock.</p>
+<p>Second, as you do not need to report solutions, you can sub-class from <code>ProgressListener</code>, not from <code>SolutionListener</code>.</p>
+<p>What do you need to code this aborter? You need to know whether an incumbent solution is present, and what its objective value is, then check whether the objective has improved or not.
+If it has improved, you can store the value of the objective and the time (obtained through <code>ProgressData.time</code>).
+If not, you can check whether the elapsed time is greater than the limit, and if it is the case, call method <code>abort()</code>.</p>
+<p>The 'abort()' method must be called inside a 'notify_progress' call, otherwise it will have no effect.</p>
 <p>The code is as follows:</p>
 
 </div>
@@ -13292,7 +13294,7 @@ if not, we check whether elapsed time is greater than the limit, and if it is th
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.progress</span> <span class="k">import</span> <span class="n">ProgressListener</span>
@@ -13300,16 +13302,16 @@ if not, we check whether elapsed time is greater than the limit, and if it is th
 <span class="k">class</span> <span class="nc">AutomaticAborter</span><span class="p">(</span><span class="n">ProgressListener</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; a simple implementation of an automatic search stopper.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_no_improve_time</span><span class="o">=</span><span class="mf">10.</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_no_improve_events</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">AutomaticAborter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">ProgressClock</span><span class="o">.</span><span class="n">All</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_obj</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_obj_time</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">max_no_improve_time</span> <span class="o">=</span> <span class="n">max_no_improve_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_events_since_last_obj</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_no_improve_events</span> <span class="o">=</span> <span class="n">max_no_improve_events</span>
         
     <span class="k">def</span> <span class="nf">notify_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">AutomaticAborter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">notify_start</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_obj</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_obj_time</span> <span class="o">=</span> <span class="kc">None</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_events_since_last_obj</span> <span class="o">=</span> <span class="mi">0</span>
         
     <span class="k">def</span> <span class="nf">is_improving</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_obj</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
         <span class="n">last_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_obj</span>
@@ -13319,20 +13321,17 @@ if not, we check whether elapsed time is greater than the limit, and if it is th
         <span class="nb">super</span><span class="p">(</span><span class="n">AutomaticAborter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">notify_progress</span><span class="p">(</span><span class="n">pdata</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pdata</span><span class="o">.</span><span class="n">has_incumbent</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_improving</span><span class="p">(</span><span class="n">pdata</span><span class="o">.</span><span class="n">current_objective</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">last_obj</span> <span class="o">=</span> <span class="n">pdata</span><span class="o">.</span><span class="n">current_objective</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">last_obj_time</span> <span class="o">=</span> <span class="n">pdata</span><span class="o">.</span><span class="n">time</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----&gt; #new objective=</span><span class="si">{0}</span><span class="s1">, time=</span><span class="si">{1}</span><span class="s1">s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_obj_time</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nb_events_since_last_obj</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----&gt; #new objective=</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_obj</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># a non improving move</span>
-            <span class="n">last_obj_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_obj_time</span>
-            <span class="n">this_time</span> <span class="o">=</span> <span class="n">pdata</span><span class="o">.</span><span class="n">time</span>
-            <span class="k">if</span> <span class="n">last_obj_time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">elapsed</span> <span class="o">=</span> <span class="p">(</span><span class="n">this_time</span> <span class="o">-</span> <span class="n">last_obj_time</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">elapsed</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_no_improve_time</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;!! aborting cplex, elapsed=</span><span class="si">{0}</span><span class="s1"> &gt;= max_no_improve: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elapsed</span><span class="p">,</span>
-                                                                             <span class="bp">self</span><span class="o">.</span><span class="n">max_no_improve_time</span><span class="p">))</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">abort</span><span class="p">()</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----&gt; non improving time=</span><span class="si">{0}</span><span class="s1">s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elapsed</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nb_events_since_last_obj</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_events_since_last_obj</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_no_improve_events</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;!! aborting cplex, non_improving=</span><span class="si">{0}</span><span class="s1"> &gt;= max_no_improve: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_events_since_last_obj</span><span class="p">,</span>
+                                                                             <span class="bp">self</span><span class="o">.</span><span class="n">max_no_improve_events</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">abort</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----&gt; nb non-improving events=</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_events_since_last_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_no_improve_events</span><span class="p">))</span>
 </pre></div>
 
 </div>
@@ -13344,20 +13343,20 @@ if not, we check whether elapsed time is greater than the limit, and if it is th
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We demonstrate the aborter on a bigger problem:</p>
+<p>Now see the aborter used on a larger problem:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">large_hearts</span> <span class="o">=</span> <span class="n">build_hearts</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
 <span class="c1">#large_hearts.add_progress_listener(TextProgressListener(clock=&#39;gap&#39;))</span>
 <span class="c1"># maximum non-improving time is 4 seconds.</span>
-<span class="n">large_hearts</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">AutomaticAborter</span><span class="p">(</span><span class="n">max_no_improve_time</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">large_hearts</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">AutomaticAborter</span><span class="p">(</span><span class="n">max_no_improve_events</span><span class="o">=</span><span class="mi">20</span><span class="p">))</span>
 <span class="c1"># again use clean_before_solve to ensure deterministic run of this cell.</span>
 <span class="n">large_hearts</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">clean_before_solve</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">log_output</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span>
 </pre></div>
@@ -13376,92 +13375,35 @@ if not, we check whether elapsed time is greater than the limit, and if it is th
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>----&gt; #new objective=9.0, time=0.008725881576538086s
-----&gt; non improving time=0.0005750656127929688s
-----&gt; #new objective=14.0, time=0.01063394546508789s
-----&gt; non improving time=0.008255958557128906s
-----&gt; non improving time=0.008549928665161133s
-----&gt; #new objective=15.0, time=0.020428895950317383s
-----&gt; non improving time=0.006577968597412109s
-----&gt; non improving time=0.006904125213623047s
-----&gt; #new objective=16.0, time=0.02869892120361328s
-----&gt; non improving time=0.003971099853515625s
-----&gt; non improving time=0.0043179988861083984s
-----&gt; non improving time=0.011265039443969727s
-----&gt; non improving time=0.01171112060546875s
-----&gt; non improving time=0.018388986587524414s
-----&gt; non improving time=0.018702983856201172s
-----&gt; non improving time=0.02556014060974121s
-----&gt; non improving time=0.025892019271850586s
-----&gt; non improving time=0.03513193130493164s
-----&gt; non improving time=0.035429954528808594s
-----&gt; non improving time=0.04221296310424805s
-----&gt; non improving time=0.04251813888549805s
-----&gt; non improving time=0.05061507225036621s
-----&gt; non improving time=0.05091500282287598s
-----&gt; non improving time=0.05755209922790527s
-----&gt; non improving time=0.05786395072937012s
-----&gt; non improving time=0.06489396095275879s
-----&gt; non improving time=0.0652170181274414s
-----&gt; non improving time=0.07401013374328613s
-----&gt; non improving time=0.07433700561523438s
-----&gt; non improving time=0.08264899253845215s
-----&gt; non improving time=0.0829770565032959s
-----&gt; non improving time=0.09490609169006348s
-----&gt; non improving time=0.0952460765838623s
-----&gt; non improving time=0.10434699058532715s
-----&gt; non improving time=0.10467910766601562s
-----&gt; non improving time=0.1133270263671875s
-----&gt; non improving time=0.11365914344787598s
-----&gt; non improving time=0.12253999710083008s
-----&gt; non improving time=0.12289214134216309s
-----&gt; non improving time=0.13700199127197266s
-----&gt; non improving time=0.13734698295593262s
-----&gt; non improving time=0.14644908905029297s
-----&gt; non improving time=0.14678692817687988s
-----&gt; non improving time=0.1571660041809082s
-----&gt; non improving time=0.15749597549438477s
-----&gt; non improving time=0.17714309692382812s
-----&gt; non improving time=0.17754793167114258s
-----&gt; non improving time=0.18161702156066895s
-----&gt; non improving time=0.18203997611999512s
-----&gt; non improving time=0.18544793128967285s
-----&gt; non improving time=0.1880359649658203s
-----&gt; non improving time=0.19693994522094727s
-----&gt; non improving time=0.20291399955749512s
-----&gt; non improving time=0.2106621265411377s
-----&gt; non improving time=0.23824310302734375s
-----&gt; non improving time=0.25863194465637207s
-----&gt; non improving time=0.27390599250793457s
-----&gt; #new objective=17.0, time=0.32657504081726074s
-----&gt; non improving time=0.03587484359741211s
-----&gt; non improving time=0.057440996170043945s
-----&gt; non improving time=0.06664395332336426s
-----&gt; non improving time=0.08997392654418945s
-----&gt; non improving time=0.09701800346374512s
-----&gt; non improving time=0.12534403800964355s
-----&gt; non improving time=0.13640785217285156s
-----&gt; non improving time=0.14538192749023438s
-----&gt; non improving time=0.167510986328125s
-----&gt; non improving time=0.1886448860168457s
-----&gt; non improving time=0.19601082801818848s
-----&gt; non improving time=0.2005469799041748s
-----&gt; non improving time=0.22052383422851562s
-----&gt; non improving time=0.24114680290222168s
-----&gt; non improving time=0.2520768642425537s
-----&gt; non improving time=0.2623708248138428s
-----&gt; non improving time=0.26929187774658203s
-----&gt; non improving time=0.2882688045501709s
-----&gt; non improving time=0.2957038879394531s
-----&gt; non improving time=0.29933691024780273s
-----&gt; non improving time=0.30068087577819824s
-----&gt; non improving time=0.30759191513061523s
-----&gt; non improving time=0.31165289878845215s
-----&gt; non improving time=0.31313300132751465s
-----&gt; non improving time=0.3265810012817383s
-----&gt; non improving time=0.3414278030395508s
-----&gt; non improving time=0.3418748378753662s
-----&gt; non improving time=0.34207987785339355s
+<pre>----&gt; #new objective=9.0
+----&gt; nb non-improving events=1/20
+----&gt; #new objective=14.0
+----&gt; nb non-improving events=1/20
+----&gt; nb non-improving events=2/20
+----&gt; #new objective=15.0
+----&gt; nb non-improving events=1/20
+----&gt; nb non-improving events=2/20
+----&gt; #new objective=16.0
+----&gt; nb non-improving events=1/20
+----&gt; nb non-improving events=2/20
+----&gt; nb non-improving events=3/20
+----&gt; nb non-improving events=4/20
+----&gt; nb non-improving events=5/20
+----&gt; nb non-improving events=6/20
+----&gt; nb non-improving events=7/20
+----&gt; nb non-improving events=8/20
+----&gt; nb non-improving events=9/20
+----&gt; nb non-improving events=10/20
+----&gt; nb non-improving events=11/20
+----&gt; nb non-improving events=12/20
+----&gt; nb non-improving events=13/20
+----&gt; nb non-improving events=14/20
+----&gt; nb non-improving events=15/20
+----&gt; nb non-improving events=16/20
+----&gt; nb non-improving events=17/20
+----&gt; nb non-improving events=18/20
+----&gt; nb non-improving events=19/20
+!! aborting cplex, non_improving=20 &gt;= max_no_improve: 20
 </pre>
 </div>
 </div>
@@ -13474,15 +13416,14 @@ if not, we check whether elapsed time is greater than the limit, and if it is th
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Though the solve has been aborted, it returned the latest solution,
-but the status of the solve shows it hhas been aborted.</p>
+<p>The solve has aborted, it returned the latest solution. You can see this in the solve details' status value.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">large_s</span> <span class="o">=</span> <span class="n">large_hearts</span><span class="o">.</span><span class="n">solution</span>
@@ -13504,8 +13445,8 @@ but the status of the solve shows it hhas been aborted.</p>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>* solution has objective 17
-* solve status is &#39;integer optimal solution&#39;
+<pre>* solution has objective 16
+* solve status is &#39;aborted&#39;
 </pre>
 </div>
 </div>
@@ -13513,19 +13454,23 @@ but the status of the solve shows it hhas been aborted.</p>
 </div>
 </div>
 
-</div>### Step 5: Produce advancement charts
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Step-4:-Produce-advancement-charts">Step 4: Produce advancement charts<a class="anchor-link" href="#Step-4:-Produce-advancement-charts">&#182;</a></h3><p>Progress listeners can also be used to generate visual charts to plot the advancement of the solve.
+For example, assume you want to plot the chart of the gap vs. time.
+In a first version, you will just print the value of the gap and time.
+What clock do you listen to? Here you can listen to the <code>Gap</code> clock, and do not need to report solution values,
+so you can use a sub-class of <code>ProgressListener</code>.</p>
+<p>As this listener has no internal data, there is no need to write a <code>notify_start</code> method.</p>
+<p>The <code>notify_progress</code> consists of printing a formatted message with the gap and time.</p>
+<p>The code is as follows:</p>
 
-Progress listeners may also be used to generate visual charts to plot the advancement of the solve.
-For example, let's assume we want to plot the chart of the gap vs. time.
-In a first version, we will just print the value of the gap and time.
-What clock do we listen to? obviously we listen to the `Gap` clock, and do not care for solution values,
-so we need a sub-class of `ProgressListener`.
-
-As this listener has no internal data, there is no need to write a `notify_start` method.
-
-The `notify_progress` consist in printing a formatted message with the gap and time.
-
-The code is as follows:
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[16]:</div>
@@ -13611,7 +13556,7 @@ The code is as follows:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Variant:-using-matplotlib-to-plot-a-chart-of-gap-vs.-time">Variant: using matplotlib to plot a chart of gap vs. time<a class="anchor-link" href="#Variant:-using-matplotlib-to-plot-a-chart-of-gap-vs.-time">&#182;</a></h3><p>In this variant, we use <code>matplotlib</code> to chart the evolution of gap over time. The logic of the custom listener is exactly similar to the gap printer, except that we call matplotlib.plot instead of printing a message.</p>
+<h3 id="Variant:-using-matplotlib-to-plot-a-chart-of-gap-vs.-time">Variant: using matplotlib to plot a chart of gap vs. time<a class="anchor-link" href="#Variant:-using-matplotlib-to-plot-a-chart-of-gap-vs.-time">&#182;</a></h3><p>In this variant, use <code>matplotlib</code> to chart the evolution of gap over time. The logic of the custom listener is exactly the same as with the gap printer, except that you call matplotlib.plot instead of printing a message.</p>
 
 </div>
 </div>
