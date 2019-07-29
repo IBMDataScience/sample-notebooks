@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Using the Progress Callbacks with CPLEX Optimizer</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Predict Loan Behvior - TensorFlow Neural Network</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -12672,69 +12672,63 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Using-the-Progress-Callbacks-with-CPLEX-Optimizer">Using the Progress Callbacks with CPLEX Optimizer<a class="anchor-link" href="#Using-the-Progress-Callbacks-with-CPLEX-Optimizer">&#182;</a></h1><p>This tutorial includes everything you need to set up decision optimization engines, build a mathematical programming model, then use the progress callbacks to follow the progress, capture the intermediate solutions and stop the solve on your own criteria.</p>
-<p>Table of contents:</p>
+<h1 id="Predict-Loan-Applicant-Behavior-with-TensorFlow-Neural-Networking">Predict Loan Applicant Behavior with TensorFlow Neural Networking<a class="anchor-link" href="#Predict-Loan-Applicant-Behavior-with-TensorFlow-Neural-Networking">&#182;</a></h1><p>This notebook guides you through the basic concepts to construct a neural net
+model with the
+TensorFlow library in Watson Studio. It includes instructions on how to import the predictive
+data, train the model to predict
+client behaviors, and save the model to use for future inference.</p>
+<p>Some familiarity with Python is recommended. This notebook runs on Python 3.6 with Spark.</p>
+<p>This TensorFlow neural network tutorial has several aspects that are unique or
+not evident in other TensorFlow tutorials, such as the MNIST handwritten digits
+tutorial. The focus is on business, both in terms of the use case and data and
+in terms of extra steps that are needed to help take your data science results to
+production.</p>
+<h2 id="Describe-the-business-problem">Describe the business problem<a class="anchor-link" href="#Describe-the-business-problem">&#182;</a></h2><p>This notebook describes how to use the TensorFlow library for a Neural Network
+model to predict whether a loan applicant is likely to ‘default’ on a bank loan
+based on specific client characteristics. The model must be trained over a
+serial of data batches to increase prediction accuracy.</p>
+<p>The following characteristics are considered:</p>
 <ul>
-<li><a href="#Describe-the-business-problem:--Games-Scheduling-in-the-National-Football-League">Describe the business problem</a></li>
-<li><a href="#How--decision-optimization-can-help">How decision optimization (prescriptive analytics) can help</a></li>
-<li><a href="#Use-decision-optimization">Use decision optimization</a><ul>
-<li><a href="#Step-1:-Set-up-the-prescriptive-model">Step 1: Set up the prescriptive model</a></li>
-<li><a href="#Step-2:-Track-the-CPLEX-progress">Step 2: Track the CPLEX progress</a></li>
+<li>Predictor variables such as age, education, income.</li>
+<li>Differing business objectives, for example, curbing the typical defaulters,
+or filtering the best applicants only.</li>
 </ul>
-</li>
-<li><a href="#Summary">Summary</a></li>
-</ul>
-<hr>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="How--decision-optimization-can-help">How  decision optimization can help<a class="anchor-link" href="#How--decision-optimization-can-help">&#182;</a></h2><ul>
-<li><p>Prescriptive analytics (decision optimization) technology recommends actions that are based on desired outcomes.  It takes into account specific scenarios, resources, and knowledge of past and current events. With this insight, your organization can make better decisions and have greater control of business outcomes.</p>
-</li>
-<li><p>Prescriptive analytics is the next step on the path to insight-based actions. It creates value through synergy with predictive analytics, which analyzes data to predict future outcomes.</p>
-</li>
-<li><p>Prescriptive analytics takes that insight to the next level by suggesting the optimal way to handle that future situation. Organizations that can act fast in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.<br>
-<br/></p>
-</li>
-</ul>
-<p><u>With prescriptive analytics, you can:</u></p>
-<ul>
-<li>Automate the complex decisions and trade-offs to better manage your limited resources.</li>
-<li>Take advantage of a future opportunity or mitigate a future risk.</li>
-<li>Proactively update recommendations based on changing events.</li>
-<li>Meet operational goals, increase customer loyalty, prevent threats and fraud, and optimize business processes.</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Use-decision-optimization">Use decision optimization<a class="anchor-link" href="#Use-decision-optimization">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Step-1:-Set-up-the-prescriptive-model">Step 1: Set up the prescriptive model<a class="anchor-link" href="#Step-1:-Set-up-the-prescriptive-model">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>First write a scalable model to show how to use the progress callback API.</p>
-<p>This model is not important: it is a model that can take a very long time to solve and will find multiple intermediate solutions</p>
+<p>To train the machine learning model, a sample data set is provided and run
+through in this notebook that specifies the data and
+variables.</p>
+<h2 id="Table-of-Contents">Table of Contents<a class="anchor-link" href="#Table-of-Contents">&#182;</a></h2><ol>
+<li><a href="#import">Import the Data</a><br></li>
+<li><a href="#download">Download the TensorFlow library</a><br></li>
+<li><a href="#tuning">Tuning the Hyperparameters</a><br></li>
+<li><a href="#save-model">Save the Model</a><br></li>
+<li><a href="#derive">Derive Confidence Values</a><br></li>
+<li><a href="#summary">Summary</a><br>
+ a. <a href="#rel_links">Related Links</a><br>
+ b. <a href="#author">Author information</a><br></li>
+</ol>
+<div class="alert alert-block alert-info">
+You can follow along if you already installed
+Jupyter, Python and TensorFlow, or you can take a few minutes to sign up for a free
+trial of IBM Watson Studio on IBM Cloud to run the notebook on a data science
+platform <a href="https://dataplatform.cloud.ibm.com/" target="_blank">here</a>.
+</div><p><a id="import"></a></p>
+<h2 id="Import-the-Data">Import the Data<a class="anchor-link" href="#Import-the-Data">&#182;</a></h2><p>As a prerequisite, you must prepare a CSV file that you would like to use the
+TensorFlow neural net with.</p>
+<p>To provide an example, a sample data file that is called <code>bankloanData.csv</code> from the IBM SPSS Statistics package is extracted and is available for download here: <a href="https://github.com/john-boyer-phd/TensorFlow-Samples/tree/master/Neural%20Net" target="_blank">John Boyer's GitHub repo</a>. The advantages are that theresulting TensorFlow code can be easily adapted to build bigger neural nets that can learn from much larger data sets.</p>
+<p>This particular sample is selected because it is easy to use SPSS to double
+check whether the TensorFlow code is behaving as expected (for more
+information on IBM SPSS, see <a href="#rel-links">Related Links</a>).</p>
+<p>The dependent variable is called the ‘label’, and the data in the column is
+called the ‘labeled data’. In this case, the dependent variable that is
+predicted is the column that is named ‘default’ in the CSV file.</p>
+<p>To read the CSV file from cloud Object Storage into a Pandas Dataframe, open the
+<strong>Files</strong> window by clicking the binary icon in the upper right corner and
+upload the file. Then, select the empty cell below and click Insert to code, and
+then Insert Pandas DataFrame. After the code is
+loaded, the cell can be run to read the CSV file.</p>
+<p>For larger data sets, you can prefer to use a SparkSession Dataframe instead, but
+in that case, you’ll need to slightly adjust the numpy extraction code in the
+next notebook cell.</p>
 
 </div>
 </div>
@@ -12744,103 +12738,12 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="k">import</span> <span class="n">Model</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># @hidden_cell</span>
+<span class="c1"># USE &#39;INSERT CODE&#39; HERE</span>
+<span class="c1"># This function accesses a file in your Object Storage. The definition contains your credentials.</span>
+<span class="c1"># You might want to remove those credentials before you share your notebook.</span>
 
-<span class="k">def</span> <span class="nf">build_hearts</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="c1"># initialize the model</span>
-    <span class="n">mdl</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;love_hearts_</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">r</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="c1"># the dictionary of decision variables, one variable</span>
-    <span class="c1"># for each circle with i in (1 .. r) as the row and</span>
-    <span class="c1"># j in (1 .. i) as the position within the row    </span>
-    <span class="n">idx</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">binary_var_dict</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="k">lambda</span> <span class="n">idx_tuple</span><span class="p">:</span> <span class="s2">&quot;a_</span><span class="si">%d</span><span class="s2">_</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">idx_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">idx_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-
-    <span class="c1"># the constraints - enumerate all equilateral triangles</span>
-    <span class="c1"># and prevent any such triangles being formed by keeping</span>
-    <span class="c1"># the number of included circles at its vertexes below 3</span>
-
-    <span class="c1"># for each row except the last</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-        <span class="c1"># for each position in this row</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="c1"># for each triangle of side length (k) with its upper vertex at</span>
-            <span class="c1"># (i, j) and its sides parallel to those of the overall shape</span>
-            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">-</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="c1"># the sets of 3 points at the same distances clockwise along the</span>
-                <span class="c1"># sides of these triangles form k equilateral triangles</span>
-                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-                    <span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">m</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">k</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">m</span><span class="p">),</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">k</span> <span class="o">-</span> <span class="n">m</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="n">k</span> <span class="o">-</span> <span class="n">m</span><span class="p">)</span>
-                    <span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+</span> <span class="n">a</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">2</span><span class="p">)</span>
-
-    <span class="n">mdl</span><span class="o">.</span><span class="n">maximize</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">mdl</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>It is a useful approach to demonstrate how to listen to CPLEX during its progress, as it contains multiple intermediate solutions.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Step-2:-Track-the-CPLEX-progress">Step 2: Track the CPLEX progress<a class="anchor-link" href="#Step-2:-Track-the-CPLEX-progress">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Basic-track-of-the-search-progress">Basic track of the search progress<a class="anchor-link" href="#Basic-track-of-the-search-progress">&#182;</a></h4><p>Use a <i>TextProgressListener</i> to follow the CPLEX search. It will print on the standard output each time an intermediate solution is found.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m5</span> <span class="o">=</span> <span class="n">build_hearts</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">docplex.mp.progress</span> <span class="k">import</span> <span class="n">TextProgressListener</span>
-<span class="n">unfiltered_texter</span> <span class="o">=</span> <span class="n">TextProgressListener</span><span class="p">(</span><span class="n">filtering</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">m5</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">unfiltered_texter</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Solve-with-Decision-Optimization">Solve with Decision Optimization<a class="anchor-link" href="#Solve-with-Decision-Optimization">&#182;</a></h4><p>Depending on the size of the problem, the solve stage might fail and require the Commercial Edition of CPLEX engines, which is included in the premium environments in Watson Studio.</p>
-<p>You will get the best solution found after <strong><em>n</em></strong> seconds, because of a time limit parameter.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m5</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">clean_before_solve</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># Please change last two lines to &#39;df_data_1...&#39; rather than &#39;df_data_2...&#39; etc.</span>
 </pre></div>
 
 </div>
@@ -12857,13 +12760,225 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>  1+: Best Integer=8.0000, Best Bound=10.0000, gap=25.00%, nodes=0/1 [0.1s]
-  2+: Best Integer=8.0000, Best Bound=10.0000, gap=25.00%, nodes=0/1 [0.2s]
-  3+: Best Integer=8.0000, Best Bound=9.3266, gap=16.58%, nodes=0/1 [0.2s]
-  4+: Best Integer=8.0000, Best Bound=9.0636, gap=13.29%, nodes=0/1 [0.2s]
+<pre>Waiting for a Spark session to start...
+Spark Initialization Done! ApplicationId = app-20190629182743-0000
+KERNEL_ID = 19e295ce-1756-4993-b90c-e1c34a51c7d2
 </pre>
 </div>
 </div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[1]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>age</th>
+      <th>ed</th>
+      <th>employ</th>
+      <th>address</th>
+      <th>income</th>
+      <th>debtinc</th>
+      <th>creddebt</th>
+      <th>othdebt</th>
+      <th>default</th>
+      <th>preddef1</th>
+      <th>preddef2</th>
+      <th>preddef3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>41</td>
+      <td>3</td>
+      <td>17</td>
+      <td>12</td>
+      <td>176</td>
+      <td>9.3</td>
+      <td>11.359392</td>
+      <td>5.008608</td>
+      <td>1</td>
+      <td>0.808394</td>
+      <td>0.788640</td>
+      <td>0.213043</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>27</td>
+      <td>1</td>
+      <td>10</td>
+      <td>6</td>
+      <td>31</td>
+      <td>17.3</td>
+      <td>1.362202</td>
+      <td>4.000798</td>
+      <td>0</td>
+      <td>0.198297</td>
+      <td>0.128445</td>
+      <td>0.436903</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>40</td>
+      <td>1</td>
+      <td>15</td>
+      <td>14</td>
+      <td>55</td>
+      <td>5.5</td>
+      <td>0.856075</td>
+      <td>2.168925</td>
+      <td>0</td>
+      <td>0.010036</td>
+      <td>0.002987</td>
+      <td>0.141023</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>41</td>
+      <td>1</td>
+      <td>15</td>
+      <td>14</td>
+      <td>120</td>
+      <td>2.9</td>
+      <td>2.658720</td>
+      <td>0.821280</td>
+      <td>0</td>
+      <td>0.022138</td>
+      <td>0.010273</td>
+      <td>0.104422</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>24</td>
+      <td>2</td>
+      <td>2</td>
+      <td>0</td>
+      <td>28</td>
+      <td>17.3</td>
+      <td>1.787436</td>
+      <td>3.056564</td>
+      <td>1</td>
+      <td>0.781588</td>
+      <td>0.737885</td>
+      <td>0.436903</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>As you can see from the chart that is generated, the predictor variables are as follows:</p>
+<ul>
+<li><em>age</em></li>
+<li><em>ed</em> (level of education)</li>
+<li><em>employ</em></li>
+<li><em>address</em> (years at current address)</li>
+<li><em>income</em> (household income in thousands)</li>
+<li><em>debtinc</em></li>
+<li><em>creddebt</em></li>
+<li><em>othdebt</em> (other debt in thousands)</li>
+</ul>
+<p>The predictor variables are also called ‘features’. The remaining columns of
+data are unnecessary for this particular model.</p>
+<p>Now, look at the details of the data columns.</p>
+<p>If the following code cells generate an error message, please recitify the last two lines of the previous import code to 
+<br><br>
+<em>df_data_1 = pd.read_csv(body)<br>
+df_data_1.head()</em></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_data_1</span><span class="o">.</span><span class="n">dtypes</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[2]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>age           int64
+ed            int64
+employ        int64
+address       int64
+income        int64
+debtinc     float64
+creddebt    float64
+othdebt     float64
+default      object
+preddef1    float64
+preddef2    float64
+preddef3    float64
+dtype: object</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_data_1</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
 
 <div class="output_area">
 
@@ -12873,7 +12988,19 @@ div#notebook {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>docplex.mp.solution.SolveSolution(obj=8,values={a_1_1:1,a_2_1:1,a_3_1:1,..</pre>
+<pre>array([[41, 3, 17, ..., 0.808394327359702, 0.7886404318214371,
+        0.21304337612811897],
+       [27, 1, 10, ..., 0.19829747615910395, 0.128445387038174,
+        0.43690300550604605],
+       [40, 1, 15, ..., 0.0100361080990023, 0.00298677834821412,
+        0.141022623460993],
+       ...,
+       [48, 1, 13, ..., 0.0301374981044824, 0.0325702625943738,
+        0.24801041775523303],
+       [35, 2, 1, ..., 0.26900345101699397, 0.37854649636973203,
+        0.181814378077261],
+       [37, 1, 20, ..., 0.006397812918809229, 0.0111731232851226,
+        0.30304155578236497]], dtype=object)</pre>
 </div>
 
 </div>
@@ -12886,7 +13013,10 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now remove the listener.</p>
+<p>The next couple of cells prunes the data. The code assumes that a
+Pandas dataframe that are named <code>df_data_1</code> exists and uses it to extract the data into
+numpy arrays that are needed as input to the TensorFlow API. The comprehension in the
+first np.array() removes instances (rows) that are missing a label.</p>
 
 </div>
 </div>
@@ -12896,7 +13026,19 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m5</span><span class="o">.</span><span class="n">remove_progress_listener</span><span class="p">(</span><span class="n">unfiltered_texter</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Make a numpy array from the dataframe, except remove rows with no value for &#39;default&#39;</span>
+<span class="n">i</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_data_1</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">df_data_1</span><span class="o">.</span><span class="n">values</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">]])</span>
+
+<span class="c1"># Remove the columns for preddef1, predef2 and preddef3</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">12</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Separate the &#39;predictors&#39; (aka &#39;features&#39;) from the dependent variable (aka &#39;label&#39;) </span>
+<span class="c1"># that we will learn how to predict</span>
+<span class="n">predictors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">dependent</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12908,16 +13050,15 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Track-and-store-all-intermediate-solutions">Track and store all intermediate solutions<a class="anchor-link" href="#Track-and-store-all-intermediate-solutions">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You just need to subclass the <i>SolutionListener</i> object and specialize the <i>notify_*</i> methods if needed.
-Here you will store all solutions all along the way.</p>
+<p>The next cell reshapes the data slightly, with the following steps:</p>
+<ol>
+<li>Separate predictors from the dependent variable.</li>
+<li>Convert labeled data from type string to type integer.</li>
+<li>Flatten the dependent array to one dimension to match the shape of the data
+that comes from the neural network output layer.</li>
+<li>Convert the predictor type to Float to facilitate matrix multiplication with
+weights and biases within the neural network.</li>
+</ol>
 
 </div>
 </div>
@@ -12927,24 +13068,42 @@ Here you will store all solutions all along the way.</p>
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.progress</span> <span class="k">import</span> <span class="n">SolutionListener</span>
-<span class="k">class</span> <span class="nc">MyProgressListener</span><span class="p">(</span><span class="n">SolutionListener</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
-        <span class="n">SolutionListener</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span> <span class="o">=</span> <span class="p">[]</span>
- 
-    <span class="k">def</span> <span class="nf">notify_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
-        <span class="n">SolutionListener</span><span class="o">.</span><span class="n">notify_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_solution</span><span class="p">)</span>
- 
-    <span class="k">def</span> <span class="nf">get_solutions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span>
-    
-<span class="n">keeper</span> <span class="o">=</span> <span class="n">MyProgressListener</span><span class="p">(</span><span class="n">m5</span><span class="p">)</span>
-<span class="n">m5</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">keeper</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Convert the label type to numeric categorical representing the classes to predict (binary classfier)</span>
+<span class="n">dependent</span> <span class="o">=</span> <span class="n">dependent</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="c1"># And flatten it to one dimensional for use as the expected output label vector in TensorFlow</span>
+<span class="n">dependent</span> <span class="o">=</span> <span class="n">dependent</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+<span class="n">dependent</span>
+
+<span class="c1"># Convert all the predictors to float to simplify this demo TensorFlow code</span>
+<span class="n">predictors</span> <span class="o">=</span> <span class="n">predictors</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+
+<span class="c1"># Get the shape of the predictors</span>
+<span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">predictors</span><span class="o">.</span><span class="n">shape</span>
+<span class="n">m</span><span class="p">,</span> <span class="n">n</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(700, 8)</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -12954,7 +13113,8 @@ Here you will store all solutions all along the way.</p>
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">m5</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">clean_before_solve</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Take a peak at the first sample of the predictors</span>
+<span class="n">predictors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -12973,7 +13133,8 @@ Here you will store all solutions all along the way.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>docplex.mp.solution.SolveSolution(obj=8,values={a_1_1:1,a_2_1:1,a_3_1:1,..</pre>
+<pre>array([ 41.      ,   3.      ,  17.      ,  12.      , 176.      ,
+         9.3     ,  11.359392,   5.008608])</pre>
 </div>
 
 </div>
@@ -12981,24 +13142,14 @@ Here you will store all solutions all along the way.</p>
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You have stored <i>docplex.mp.solution.SolveSolution</i> objects.
-You can iterate on them to query the objective values, the values of each variables...</p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">keeper</span><span class="o">.</span><span class="n">get_solutions</span><span class="p">():</span>
-     <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">objective_value</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Take a peak at the dependent variable values</span>
+<span class="n">dependent</span>
 </pre></div>
 
 </div>
@@ -13011,16 +13162,46 @@ You can iterate on them to query the objective values, the values of each variab
 
 <div class="output_area">
 
-<div class="prompt"></div>
+<div class="prompt output_prompt">Out[7]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>8.0
-8.0
-8.0
-8.0
-</pre>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+       0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+       1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,
+       1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0,
+       0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+       0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+       0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+       0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0,
+       0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0,
+       0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1,
+       0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0,
+       0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+       0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0,
+       0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+       0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0,
+       0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0,
+       0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+       0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0,
+       0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0,
+       1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+       0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
+       0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0,
+       1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0,
+       0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+       0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1,
+       1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0,
+       0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0,
+       1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0,
+       1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1,
+       0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+       0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1,
+       0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0])</pre>
 </div>
+
 </div>
 
 </div>
@@ -13031,9 +13212,20 @@ You can iterate on them to query the objective values, the values of each variab
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Implement-our-own-aborter">Implement our own aborter<a class="anchor-link" href="#Implement-our-own-aborter">&#182;</a></h4><p>You might want to abort the CPLEX solution according to your own criteria.
-For example, when the gap is converging very slowly, it might be a good idea to stop and use the last solution instead of waiting forever.</p>
-<p>You just need to subclass the <i>ProgressListener</i> and specialize the <i>notify_*</i> methods.</p>
+<p>When you train the model, the feature values of the instances (rows) of data are
+input to the neural net, and the weights and biases of the neural network are
+adjusted to minimize ‘loss’, which coarsely maps to maximizing accuracy of the
+neural network’s output layer predictions of the labeled data.</p>
+<p><a id="random"></a></p>
+<h3 id="Randomize-the-training-data">Randomize the training data<a class="anchor-link" href="#Randomize-the-training-data">&#182;</a></h3><p>The next cell takes the first 500 instances as training data, and leaves the
+remaining 200 instances as a test set. This particular sample is already
+randomly enumerated, so there is no need to randomly select the training and
+test sets from the data. The code also chooses about a 70:30 percent split
+for training and testing. Though, it does not round the split sample to a size
+divisible by the training batch size, which is defined later in the notebook.</p>
+<p>This cell also defines a method that returns batch-sized slices of the training
+data. If the training data is too large to fit in memory, then this method can
+instead load data one batch at a time, such as with an SQL query.</p>
 
 </div>
 </div>
@@ -13043,35 +13235,24 @@ For example, when the gap is converging very slowly, it might be a good idea to 
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.progress</span> <span class="k">import</span> <span class="n">ProgressListener</span>
-<span class="k">class</span> <span class="nc">AutomaticAborter</span><span class="p">(</span><span class="n">ProgressListener</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_no_solutions</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">last_incumbent_obj</span> <span class="o">=</span> <span class="o">-</span><span class="mi">999999999</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nb_solutions</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nb_non_improving</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">max_non_improving</span> <span class="o">=</span> <span class="n">max_no_solutions</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Partition the input data into a training set and a test set</span>
 
-    <span class="k">def</span> <span class="nf">notify_progress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">progress_data</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">AutomaticAborter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">notify_progress</span><span class="p">(</span><span class="n">progress_data</span><span class="p">)</span>
-        <span class="n">last_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_incumbent_obj</span>
-        <span class="k">if</span> <span class="n">progress_data</span><span class="o">.</span><span class="n">has_incumbent</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">last_obj</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">progress_data</span><span class="o">.</span><span class="n">current_objective</span> <span class="o">&gt;=</span> <span class="n">last_obj</span> <span class="o">+</span> <span class="mf">1e-5</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">nb_solutions</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">nb_non_improving</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----&gt; #solutions=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_solutions</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
+<span class="n">m_train</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">m_test</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="n">m_train</span>
 
-                <span class="c1"># non improving move</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">nb_non_improving</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;----&gt; #non improving solutions=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_non_improving</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">last_incumbent_obj</span> <span class="o">=</span> <span class="n">progress_data</span><span class="o">.</span><span class="n">current_objective</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">nb_non_improving</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_non_improving</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_non_improving</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_aborted</span><span class="p">():</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;!! aborting cplex, #solutions=</span><span class="si">{0}</span><span class="s1">, #non-improving: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_solutions</span><span class="p">,</span>
-                                                                                              <span class="bp">self</span><span class="o">.</span><span class="n">nb_non_improving</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">abort</span><span class="p">()</span>
+<span class="n">predictors_train</span> <span class="o">=</span> <span class="n">predictors</span><span class="p">[:</span><span class="n">m_train</span><span class="p">]</span>
+<span class="n">dependent_train</span> <span class="o">=</span> <span class="n">dependent</span><span class="p">[:</span><span class="n">m_train</span><span class="p">]</span>
+
+<span class="n">predictors_test</span> <span class="o">=</span> <span class="n">predictors</span><span class="p">[</span><span class="n">m_train</span><span class="p">:]</span>
+<span class="n">dependent_test</span> <span class="o">=</span> <span class="n">dependent</span><span class="p">[</span><span class="n">m_train</span><span class="p">:]</span>
+
+<span class="c1"># Gets a batch of the training data. </span>
+<span class="c1"># NOTE: Rather than loading a whole large data set as above and then taking array slices as done here, </span>
+<span class="c1">#       This method can connect to a data source and select just the batch needed.</span>
+<span class="k">def</span> <span class="nf">get_training_batch</span><span class="p">(</span><span class="n">batch_num</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+    <span class="n">lower</span> <span class="o">=</span> <span class="n">batch_num</span> <span class="o">*</span> <span class="p">(</span><span class="n">m_train</span> <span class="o">//</span> <span class="n">batch_size</span><span class="p">)</span>
+    <span class="n">upper</span> <span class="o">=</span> <span class="n">lower</span> <span class="o">+</span> <span class="n">batch_size</span>
+    <span class="k">return</span> <span class="n">predictors_train</span><span class="p">[</span><span class="n">lower</span><span class="p">:</span><span class="n">upper</span><span class="p">],</span> <span class="n">dependent_train</span><span class="p">[</span><span class="n">lower</span><span class="p">:</span><span class="n">upper</span><span class="p">]</span>
 </pre></div>
 
 </div>
@@ -13083,7 +13264,11 @@ For example, when the gap is converging very slowly, it might be a good idea to 
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now build a bigger problem with more solutions.</p>
+<p><a id="download"></a></p>
+<h2 id="Download-the-TensorFlow-library">Download the TensorFlow library<a class="anchor-link" href="#Download-the-TensorFlow-library">&#182;</a></h2><p>Now you are set to start the training with some actual TensorFlow code. The next
+cell imports the TensorFlow library and makes a few initializations. After, it
+defines a method that will build a neural network layer of any size, connect it
+to a preceding layer, and set the output activation function.</p>
 
 </div>
 </div>
@@ -13093,7 +13278,30 @@ For example, when the gap is converging very slowly, it might be a good idea to 
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">love14</span> <span class="o">=</span> <span class="n">build_hearts</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="c1"># Make this notebook&#39;s output stable across runs</span>
+<span class="n">tf</span><span class="o">.</span><span class="n">reset_default_graph</span><span class="p">()</span>
+<span class="n">tf</span><span class="o">.</span><span class="n">set_random_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c1"># A method to build a new neural net layer of a given size,  </span>
+<span class="c1"># fully connect it to a given preceding layer X, and </span>
+<span class="c1"># compute its output Z either with or without (default) an activation function</span>
+<span class="c1"># Call with activation=tf.nn.relu or tf.nn.sigmoid or tf.nn.tanh, for examples</span>
+
+<span class="k">def</span> <span class="nf">make_nn_layer</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">layer_size</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="n">layer_name</span><span class="p">):</span>
+        <span class="n">X_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">get_shape</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">SD</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">X_size</span><span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">((</span><span class="n">X_size</span><span class="p">,</span> <span class="n">layer_size</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">stddev</span><span class="o">=</span><span class="n">SD</span><span class="p">)</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;weights&#39;</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">layer_size</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;biases&#39;</span><span class="p">)</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">W</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span>
+        <span class="k">if</span> <span class="n">activation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">activation</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Z</span>
 </pre></div>
 
 </div>
@@ -13101,15 +13309,223 @@ For example, when the gap is converging very slowly, it might be a good idea to 
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The next section is where most of the tuning of hyperparameters occurs.</p>
+<p><a id="tuning"></a></p>
+<h2 id="Tuning-network-structure-and-activation-function">Tuning network structure and activation function<a class="anchor-link" href="#Tuning-network-structure-and-activation-function">&#182;</a></h2><p>Now you can add the code cell that builds the neural network structure. In this
+case, you have one input layer <code>X</code>, one hidden layer <code>hidden1</code>, and one output
+layer <code>outputs</code>. The comments in the following code cell explain how to add more
+hidden layers, but with this sample data, it is possible to learn everything
+with only one layer. The output layer has two nodes, one for outputting class 0
+(the loan applicant will not default) and the other for class 1 (the loan applicant
+will default). The <code>y</code> variable will be used during tis usedtore the
+labeled data that is expected to match with the output layer.</p>
+<p>One line of code that helps makes this tutorial unique is the one that creates a
+tf.identity() node that gives the name <code>nn_output</code>. This allows you to save a
+name for the output layer so that you can recover and use the output layer after
+a restore.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">auto_abort</span> <span class="o">=</span> <span class="n">AutomaticAborter</span><span class="p">(</span><span class="n">max_no_solutions</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-<span class="n">love14</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">auto_abort</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Make the neural net structure</span>
 
-<span class="n">love14</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+<span class="n">n_inputs</span> <span class="o">=</span> <span class="n">n</span>
+<span class="n">n_hidden1</span> <span class="o">=</span> <span class="n">n</span> 
+<span class="c1">### n_hidden2 = n // 2</span>
+<span class="n">n_outputs</span> <span class="o">=</span> <span class="mi">2</span>   <span class="c1"># Two output classes: defaulting or non-defaulting on loan</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_inputs</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="s1">&#39;nn&#39;</span><span class="p">):</span>
+    <span class="n">hidden1</span> <span class="o">=</span> <span class="n">make_nn_layer</span><span class="p">(</span><span class="s1">&#39;hidden1&#39;</span><span class="p">,</span> <span class="n">n_hidden1</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+    <span class="n">hidden2</span> <span class="o">=</span> <span class="n">hidden1</span>
+    <span class="c1">### hidden2 = make_nn_layer(&#39;hidden2&#39;, n_hidden2, hidden1, activation=tf.nn.relu)</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">make_nn_layer</span><span class="p">(</span><span class="s1">&#39;outputs&#39;</span><span class="p">,</span> <span class="n">n_outputs</span><span class="p">,</span> <span class="n">hidden2</span><span class="p">)</span> 
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="s2">&quot;nn_output&quot;</span><span class="p">)</span>
+    
+<span class="n">y</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">int64</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING:tensorflow:From /opt/ibm/conda/miniconda36/lib/python3.6/site-packages/tensorflow/python/framework/op_def_library.py:263: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The input parameters that are passed to a neural network during inference are the feature
+values. During training, the input parameters are feature values and the
+expected output are labeled data. But the neural network is adaptable beyond
+previously mentioned input parameters, and these configurable parts are called
+hyperparameters. The hyperparameters contain the number and size of the hidden
+layers and the activation function.  You can try other numbers and sizes of
+hidden layers. ‘tanh’ and ‘sigmoid’ are other activation functions that you can try.
+However, the default configuration works best on this data.</p>
+<p>What you accomplished so far in this notebook is create the main part of a
+TensorFlow compute graph that has the shape for a neural network. Next,
+you must attach two different root nodes to the output layer, one that adds
+functions for training and the other for testing, like in the following
+cell. The ‘training_op’ uses the gradient descent method for minimizing loss (of
+perfect confidence in the correct answers and zero confidence in incorrect
+answers, where the correct answers are provided by the labeled data that are
+in ‘y’).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Define how the neural net will learn</span>
+
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="s1">&#39;loss&#39;</span><span class="p">):</span>
+    <span class="n">xentropy</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">sparse_softmax_cross_entropy_with_logits</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">logits</span><span class="o">=</span><span class="n">outputs</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">xentropy</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;l&#39;</span><span class="p">)</span>
+    
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">):</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">GradientDescentOptimizer</span><span class="p">(</span><span class="n">learning_rate</span><span class="p">)</span>
+    <span class="n">training_op</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+    
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">name_scope</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">):</span>
+    <span class="n">correct</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">in_top_k</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">correct</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>    
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="save-dir"></a></p>
+<h3 id="Create-save-directories">Create save directories<a class="anchor-link" href="#Create-save-directories">&#182;</a></h3><p>Now you must run this cell that sets up your ability to save the model when it
+is trained. You need to do these mkdir commands the first time that you run
+this notebook only, so you might want to put them in a separate cell to make it
+easier to skip them.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Set up the ability to save and restore the trained neural net...</span>
+
+<span class="n">init</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">global_variables_initializer</span><span class="p">()</span>
+<span class="n">saver</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">Saver</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="save"></a></p>
+<h2 id="Train-the-Data">Train the Data<a class="anchor-link" href="#Train-the-Data">&#182;</a></h2><p>Now you can run the magic notebook cell that trains and saves the trained model.
+Each epoch of training exposes the neural net to the entire set of training
+data. When you run the code, you can see the accuracy of results increase over
+the many epochs of runs, just as biological neural networks learn through
+repetition. For each epoch, you run through the training data in batches to
+simulate how you’d handle a larger training set. Each batch of features and
+corresponding labeled data is fed to the <code>training_op</code> root node in the compute
+graph, which is run by <em>training_session.run()</em>.</p>
+<p>One aspect of this tutorial that is unique (relative to other tutorials) is the
+randomization of the training data that takes place at the beginning of each
+epoch.  This essentially drives different data into the batches in each epoch,
+which dramatically improves accuracy over a larger number of epochs (though it
+is much easier programmatically to do this randomization when all data fits into
+memory).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># TRAINING TIME</span>
+
+<span class="c1"># This is how many times to use the full set of training data</span>
+<span class="n">n_epochs</span> <span class="o">=</span> <span class="mi">3000</span>
+
+<span class="c1"># For a larger training set, it&#39;s typically necessary to break training into</span>
+<span class="c1"># batches so only the memory needed to store one batch of training data is used</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">50</span>
+
+<span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">training_session</span><span class="p">:</span>
+    <span class="n">init</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+    
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_epochs</span><span class="p">):</span>
+        
+        <span class="c1"># Shuffling (across batches) is easier to do for small data sets and</span>
+        <span class="c1"># helps increase accuracy</span>
+        <span class="n">training_set</span> <span class="o">=</span> <span class="p">[[</span><span class="n">pt_elem</span><span class="p">,</span> <span class="n">dependent_train</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pt_elem</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">predictors_train</span><span class="p">)]</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">training_set</span><span class="p">)</span>
+        <span class="n">predictors_train</span> <span class="o">=</span> <span class="p">[</span><span class="n">ts_elem</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ts_elem</span> <span class="ow">in</span> <span class="n">training_set</span><span class="p">]</span>
+        <span class="n">dependent_train</span> <span class="o">=</span> <span class="p">[</span><span class="n">ts_elem</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">ts_elem</span> <span class="ow">in</span> <span class="n">training_set</span><span class="p">]</span>
+        
+        <span class="c1"># Loop through the whole training set in batches</span>
+        <span class="k">for</span> <span class="n">batch_num</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m_train</span> <span class="o">//</span> <span class="n">batch_size</span><span class="p">):</span>
+            <span class="n">X_batch</span><span class="p">,</span> <span class="n">y_batch</span> <span class="o">=</span> <span class="n">get_training_batch</span><span class="p">(</span><span class="n">batch_num</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
+            <span class="n">training_session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">training_op</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">X_batch</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">y_batch</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">99</span><span class="p">:</span>
+            <span class="n">acc_train</span> <span class="o">=</span> <span class="n">accuracy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">predictors_train</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">dependent_train</span><span class="p">})</span>
+            <span class="n">acc_test</span> <span class="o">=</span> <span class="n">accuracy</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">predictors_test</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">dependent_test</span><span class="p">})</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Training accuracy:&quot;</span><span class="p">,</span> <span class="n">acc_train</span><span class="p">,</span> <span class="s2">&quot;Testing accuracy:&quot;</span><span class="p">,</span> <span class="n">acc_test</span><span class="p">)</span>
+
+    <span class="n">save_path</span> <span class="o">=</span> <span class="n">saver</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">training_session</span><span class="p">,</span> <span class="s2">&quot;../Neural Net.ckpt&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># A quick test with the trained model </span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">predictors_test</span><span class="p">[:</span><span class="mi">20</span><span class="p">]})</span>
+    <span class="n">dependent_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Actual classes:   &quot;</span><span class="p">,</span> <span class="n">dependent_test</span><span class="p">[:</span><span class="mi">20</span><span class="p">])</span>  
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Predicted classes:&quot;</span><span class="p">,</span> <span class="n">dependent_pred</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -13126,72 +13542,344 @@ For example, when the gap is converging very slowly, it might be a good idea to 
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>----&gt; #solutions=1
-----&gt; #non improving solutions=1
-----&gt; #non improving solutions=2
-----&gt; #non improving solutions=3
-----&gt; #non improving solutions=4
-----&gt; #non improving solutions=5
-----&gt; #non improving solutions=6
-----&gt; #non improving solutions=7
-----&gt; #non improving solutions=8
-----&gt; #non improving solutions=9
-----&gt; #non improving solutions=10
-----&gt; #non improving solutions=11
-----&gt; #non improving solutions=12
-----&gt; #non improving solutions=13
-----&gt; #non improving solutions=14
-----&gt; #non improving solutions=15
-----&gt; #non improving solutions=16
-----&gt; #non improving solutions=17
-----&gt; #non improving solutions=18
-----&gt; #non improving solutions=19
-----&gt; #non improving solutions=20
-----&gt; #non improving solutions=21
-----&gt; #non improving solutions=22
-----&gt; #non improving solutions=23
-----&gt; #non improving solutions=24
-----&gt; #non improving solutions=25
-----&gt; #non improving solutions=26
-----&gt; #non improving solutions=27
-----&gt; #non improving solutions=28
-----&gt; #non improving solutions=29
-----&gt; #non improving solutions=30
-----&gt; #non improving solutions=31
-----&gt; #non improving solutions=32
-----&gt; #non improving solutions=33
-----&gt; #non improving solutions=34
-----&gt; #non improving solutions=35
-----&gt; #non improving solutions=36
-----&gt; #non improving solutions=37
-----&gt; #non improving solutions=38
-----&gt; #non improving solutions=39
-----&gt; #non improving solutions=40
-----&gt; #non improving solutions=41
-----&gt; #non improving solutions=42
-----&gt; #non improving solutions=43
-----&gt; #non improving solutions=44
-----&gt; #non improving solutions=45
-----&gt; #non improving solutions=46
-----&gt; #non improving solutions=47
-----&gt; #non improving solutions=48
-----&gt; #non improving solutions=49
-----&gt; #non improving solutions=50
-!! aborting cplex, #solutions=1, #non-improving: 50
-----&gt; #non improving solutions=51
+<pre>100 Training accuracy: 0.76 Testing accuracy: 0.755
+200 Training accuracy: 0.774 Testing accuracy: 0.79
+300 Training accuracy: 0.798 Testing accuracy: 0.82
+400 Training accuracy: 0.798 Testing accuracy: 0.835
+500 Training accuracy: 0.808 Testing accuracy: 0.825
+600 Training accuracy: 0.796 Testing accuracy: 0.815
+700 Training accuracy: 0.802 Testing accuracy: 0.81
+800 Training accuracy: 0.788 Testing accuracy: 0.815
+900 Training accuracy: 0.81 Testing accuracy: 0.815
+1000 Training accuracy: 0.82 Testing accuracy: 0.81
+1100 Training accuracy: 0.818 Testing accuracy: 0.81
+1200 Training accuracy: 0.806 Testing accuracy: 0.805
+1300 Training accuracy: 0.802 Testing accuracy: 0.815
+1400 Training accuracy: 0.812 Testing accuracy: 0.82
+1500 Training accuracy: 0.806 Testing accuracy: 0.8
+1600 Training accuracy: 0.816 Testing accuracy: 0.81
+1700 Training accuracy: 0.806 Testing accuracy: 0.81
+1800 Training accuracy: 0.822 Testing accuracy: 0.825
+1900 Training accuracy: 0.802 Testing accuracy: 0.805
+2000 Training accuracy: 0.83 Testing accuracy: 0.82
+2100 Training accuracy: 0.812 Testing accuracy: 0.81
+2200 Training accuracy: 0.824 Testing accuracy: 0.825
+2300 Training accuracy: 0.804 Testing accuracy: 0.815
+2400 Training accuracy: 0.818 Testing accuracy: 0.815
+2500 Training accuracy: 0.828 Testing accuracy: 0.825
+2600 Training accuracy: 0.83 Testing accuracy: 0.815
+2700 Training accuracy: 0.822 Testing accuracy: 0.815
+2800 Training accuracy: 0.82 Testing accuracy: 0.805
+2900 Training accuracy: 0.814 Testing accuracy: 0.83
+3000 Training accuracy: 0.826 Testing accuracy: 0.825
+
+Actual classes:    [0 1 0 0 1 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0]
+Predicted classes: [1 1 1 0 1 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="alert alert-block alert-warning"><b>Author's Sidebar:</b>
+When you do business with a real stakeholder customer, you need to have a second
+test set, often called a validation set or a blind set. Why do you need a second
+test set? The typical reply might be akin to, “I don’t know, to
+double-check accuracy?”  Well, that is not incorrect. But if you look at the structure of
+training, the weights and biases are affected not just by the training data.
+Indirectly, they are also affected by the test data because you choose
+<i>n_epochs</i> to keep running training epochs until you get the best accuracy
+on the test set. In other words, you're teaching to the test. The validation set
+or blind set has no such indirect effect on the weights and biases that are computed for
+the neural network. It is another test set that to ensure construct
+validity, must be randomly from the same pool of data that the training set
+and test set are randomly selected from. In this way, the validation set is not
+just the ‘final exam’, it’s the first experience of the real world.
+</div><p><a id="save-model"></a></p>
+<h2 id="Save-and-Restore-models-for-a-Production-Environment">Save and Restore models for a Production Environment<a class="anchor-link" href="#Save-and-Restore-models-for-a-Production-Environment">&#182;</a></h2><p>When all training is done, the model is saved into the data sets subdirectory that is created previously. For larger training data sets, you can call on
+TensorFlow to save on checkpoints throughout the epoch-based training so that
+you can stop and resume training if needed.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The data files that TensorFlow created during that save operation can be
+transported to a production environment. The neural network can then be restored
+by using the code in the next cell, and the input and output layers can be obtained
+and used for inference, by using <em>get_tensor_by_name()</em>.</p>
+<p>The next cell also shows how to reference into the hierarchy of a name scope to get the output layer from within the neural network structure. It mocks
+up by having a REST API receive a batch of feature instances and converting them
+to a numpy array by taking a slice of the test data.  With the inference
+TensorFlow session, the compute graph and the values it contained are restored.
+After that, you obtain the tensors corresponding to the neural network input and output
+layers by using the names that you previously assigned.  Then, you run the output
+layer, and give the batch of feature instances to the input layer <code>X</code>
+(<em>inference_session.run()</em>). The predictions of the dependent variable are then
+obtained by choosing whichever of the two output layer nodes that have the higher
+value (by using <em>np.argmax()</em>).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Restore the saved model and use it to perform inference on a &quot;received&quot; new set of data</span>
+
+<span class="c1"># We will simulate &quot;receiving&quot; the new data by taking some slice of the test set (all in this case).</span>
+<span class="n">predictors_received</span> <span class="o">=</span> <span class="n">predictors_test</span><span class="p">[:]</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf_inference</span>
+
+<span class="k">with</span> <span class="n">tf_inference</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">inference_session</span><span class="p">:</span>
+    <span class="n">inf_saver</span> <span class="o">=</span> <span class="n">tf_inference</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">import_meta_graph</span><span class="p">(</span><span class="s1">&#39;../Neural Net.ckpt.meta&#39;</span><span class="p">)</span>
+    <span class="n">inf_saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">inference_session</span><span class="p">,</span> <span class="n">tf_inference</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">latest_checkpoint</span><span class="p">(</span><span class="s1">&#39;../&#39;</span><span class="p">))</span>
+    
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">tf_inference</span><span class="o">.</span><span class="n">get_default_graph</span><span class="p">()</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s2">&quot;X:0&quot;</span><span class="p">)</span>
+    <span class="n">nn_output</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s2">&quot;nn/nn_output:0&quot;</span><span class="p">)</span>
+
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">inference_session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">nn_output</span><span class="p">,</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">predictors_received</span><span class="p">})</span>
+    <span class="n">dependent_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Actual classes:   &quot;</span><span class="p">,</span> <span class="n">dependent_test</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">40</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Predicted classes:&quot;</span><span class="p">,</span> <span class="n">dependent_pred</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">40</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING:tensorflow:From /opt/ibm/conda/miniconda36/lib/python3.6/site-packages/tensorflow/python/training/saver.py:1266: checkpoint_exists (from tensorflow.python.training.checkpoint_management) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use standard file APIs to check for files with this prefix.
 </pre>
 </div>
 </div>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[10]:</div>
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Actual classes:    [0 0 0 0 0 0 0 0 0 1 1 1 1 0 0 0 0 1 0 1]
+Predicted classes: [0 0 0 0 0 0 0 0 0 1 0 1 0 0 0 0 0 1 0 1]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Transfer-learning">Transfer learning<a class="anchor-link" href="#Transfer-learning">&#182;</a></h3><p>As another unique aspect of this tutorial, you can also use this
+method of naming with <i>tf.identity</i> and then getting the tensor from a
+restored graph to transfer learning between neural nets. Specifically, when you
+create a hidden layer with <i>make_nn_layer()</i>, you can name it with
+<i>tf.identity</i>. Then, you train and save as shown above. To transfer to a
+second neural net, you restore the trained and saved one, get the hidden layer
+by name, attach alternative fully connected hidden layers as needed, and an
+alternative output layer, and then train the new second neural network by using the method above.</p>
+<p><a id="derive"></a></p>
+<h2 id="Derive-confidence-values-for-neural-net-output">Derive confidence values for neural net output<a class="anchor-link" href="#Derive-confidence-values-for-neural-net-output">&#182;</a></h2><p>Finally, to showcase more feature that makes this tutorial unique, you can look
+at how to get the actual confidence values for the predictions. This might not
+seem as important when you do the MNIST hand-written digit tutorial, but
+in a business context it’s important to know how much confidence we have in an
+answer.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="n">tf_inference</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span> <span class="k">as</span> <span class="n">inference_session</span><span class="p">:</span>
+    <span class="n">inf_saver</span> <span class="o">=</span> <span class="n">tf_inference</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">import_meta_graph</span><span class="p">(</span><span class="s1">&#39;../Neural Net.ckpt.meta&#39;</span><span class="p">)</span>
+    <span class="n">inf_saver</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="n">inference_session</span><span class="p">,</span> <span class="n">tf_inference</span><span class="o">.</span><span class="n">train</span><span class="o">.</span><span class="n">latest_checkpoint</span><span class="p">(</span><span class="s1">&#39;../&#39;</span><span class="p">))</span>
+    
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">tf_inference</span><span class="o">.</span><span class="n">get_default_graph</span><span class="p">()</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s2">&quot;X:0&quot;</span><span class="p">)</span>
+    <span class="n">nn_output</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">get_tensor_by_name</span><span class="p">(</span><span class="s2">&quot;nn/nn_output:0&quot;</span><span class="p">)</span>
+
+    <span class="n">dependent_prob</span> <span class="o">=</span> <span class="n">inference_session</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tf_inference</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">nn_output</span><span class="p">),</span> <span class="n">feed_dict</span><span class="o">=</span><span class="p">{</span><span class="n">X</span><span class="p">:</span> <span class="n">predictors_received</span><span class="p">})</span>
+
+<span class="n">confidences</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="n">dependent_pred</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dependent_prob</span><span class="p">)]</span>
+    
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Confidences: &quot;</span><span class="p">,</span> <span class="n">confidences</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">40</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Probabilities: &quot;</span><span class="p">,</span> <span class="n">dependent_prob</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">40</span><span class="p">])</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Confidences:  [0.7211578884122729, 0.8060704757830571, 0.8393404197391471, 0.9952225189537691, 0.6358370722403351, 0.9230137006102419, 0.9246727235093638, 0.7843975950250139, 0.9999999999958342, 0.6456186876399689, 0.7273640893160148, 0.6456186876399689, 0.8395932856637522, 0.9429180151471286, 0.6817096039466525, 0.99981345698851, 0.967785956412393, 0.5924861126052802, 0.9929383179955898, 0.5220483545876665]
+
+Probabilities:  [[7.21157888e-01 2.78842112e-01]
+ [8.06070476e-01 1.93929524e-01]
+ [8.39340420e-01 1.60659580e-01]
+ [9.95222519e-01 4.77748105e-03]
+ [6.35837072e-01 3.64162928e-01]
+ [9.23013701e-01 7.69862994e-02]
+ [9.24672724e-01 7.53272765e-02]
+ [7.84397595e-01 2.15602405e-01]
+ [1.00000000e+00 4.16586334e-12]
+ [3.54381312e-01 6.45618688e-01]
+ [7.27364089e-01 2.72635911e-01]
+ [3.54381312e-01 6.45618688e-01]
+ [8.39593286e-01 1.60406714e-01]
+ [9.42918015e-01 5.70819849e-02]
+ [6.81709604e-01 3.18290396e-01]
+ [9.99813457e-01 1.86543011e-04]
+ [9.67785956e-01 3.22140436e-02]
+ [4.07513887e-01 5.92486113e-01]
+ [9.92938318e-01 7.06168200e-03]
+ [4.77951645e-01 5.22048355e-01]]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>To get the confidence values, a new root node was inserted onto the output layer
+to apply the <em>softmax</em> function. Now the compute graph produces the probability
+of occurrence for each output value. Then, one final comprehension was done to
+ferret out the confidences of the predicted labels for each feature instance.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Now we&#39;re going to assess the quality of the neural net using ROC curve and AUC</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">roc_curve</span><span class="p">,</span> <span class="n">auc</span>
+
+<span class="c1"># send the actual dependent variable classifications for param 1, </span>
+<span class="c1"># and the confidences of the true classification for param 2.</span>
+<span class="n">FPR</span><span class="p">,</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">dependent_test</span><span class="p">,</span> <span class="n">dependent_prob</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="c1"># Calculate the area under the confidence ROC curve.</span>
+<span class="c1"># This area is equated with the probability that the classifier will rank </span>
+<span class="c1"># a randomly selected defaulter higher than a randomly selected non-defaulter.</span>
+<span class="n">AUC</span> <span class="o">=</span> <span class="n">auc</span><span class="p">(</span><span class="n">FPR</span><span class="p">,</span> <span class="n">TPR</span><span class="p">)</span>
+
+<span class="c1"># What is &quot;good&quot; can dependm but an AUC of 0.7+ is generally regarded as good, </span>
+<span class="c1"># and 0.8+ is generally regarded as being excellent </span>
+<span class="n">AUC</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[16]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>docplex.mp.solution.SolveSolution(obj=22,values={a_1_1:1,a_11_11:1,a_2_2..</pre>
+<pre>0.8527397260273972</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Now we&#39;ll plot the confidence ROC curve </span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">FPR</span><span class="p">,</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;ROC curve (area = </span><span class="si">%0.2f</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">AUC</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;r--&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;False Positive Rate&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;True Positive Rate&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;ROC Curve&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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fM9vv/3GnDlziImJITs7m+nTp3PttdeycOFCGjduTN26dbn88ssZNWoUp59+Ops3b+a8885j7dq1h5xnyZIltG/fPne7devWfPfdd5QtW5Y5c+Zwzz338NFHHwEwf/58Vq5cSc2aNZk9ezbr1q1j0aJFqCp9+/blu+++o3v37kyZMoWaNWuSlpbGSSedxIABA6hVq9Yh1x01ahTz5s074t81ePBgxo4de8i+rVu3csopp+RuN2jQgK1btx7x3smTJ9OnTx9iY2OpWrUqCxYsyH3to48+4rvvvqNly5aMHz+ehg0bAhAfH899991X5P0OhKhIFCWWkgLx8ZCdDS+9BMOH22gmExTF+cs/kNLS0ujUqRObNm2iS5cunHvuuYBrci5odExxRs3MmTOHadOm5W7XqFGjyPdcdtllxPhWdhw0aBCPPPII1157LdOmTWPQoEG5512zZk3ue/bs2UNKSgpxcXG5+7Zv306dPEsIJycnc80117Bu3TpEhIyMjNzXzj33XGrWrAnA7NmzmT17Np07dwbcU9G6devo3r07EyZMYPr06QBs2bKFdevWHZEoxo8f79/NgUP6fHLkd3/Hjx/PzJkzOfnkk3n66acZPXo0kydP5qKLLmLIkCFUqFCBl19+mWuuuYavv/4agGOOOYZt27b5HcvRiMhE8duOFMZ9vIp9B7JKdoING1yzUlwcTJ7sRjbVrx/YII0JA7GxsSxfvpzk5GQuvPBCJk2axMiRI2nXrh3ffffdIcdu3LiRKlWqEBcXR7t27Vi6dGlus05BCko4efcdPqa/cuXKud9369aN9evXk5iYyCeffJL7F3J2djbz588nNrbg4e6xsbGHnPv+++/n7LPPZvr06WzatImzzjor32uqKuPGjeOGG2445HzffPMNc+bMYf78+VSqVImzzjor3/kIxXmiaNCgAVu2bMndTkhIOKJZKTExkRUrVnDyyScDLnnmdFTnTVLXX389d999d+52enp6ofcnkCLyz+flm5NY+sduqseWo1fbupzarFbRbwLYuxfGjIGWLeGzz9y+AQMsSZioV61aNSZMmMAzzzxDRkYGV1xxBT/88ANz5swB3JPHyJEjueuuuwC48847+ec//8lvv/0GuA/u55577ojz9urVi4kTJ+Zu5zQ91a1bl7Vr1+Y2LRVERLjkkksYPXo0bdq0yf1gPPy8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
+"
+>
 </div>
 
 </div>
@@ -13204,30 +13892,181 @@ For example, when the gap is converging very slowly, it might be a good idea to 
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You have learned how to set up and use the IBM Decision Optimization CPLEX Modeling for Python to formulate a Mathematical Programming model and track its progress.</p>
+<p>You can also run a classification report to see how the model is behaving within
+each class.</p>
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="k">import</span> <span class="n">classification_report</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">dependent_test</span><span class="p">,</span> <span class="n">dependent_pred</span><span class="p">))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>              precision    recall  f1-score   support
+
+           0       0.86      0.91      0.88       146
+           1       0.71      0.59      0.65        54
+
+   micro avg       0.82      0.82      0.82       200
+   macro avg       0.78      0.75      0.77       200
+weighted avg       0.82      0.82      0.82       200
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="References">References<a class="anchor-link" href="#References">&#182;</a></h4><ul>
-<li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization CPLEX Modeling for Python documentation</a></li>
-<li><a href="https://dataplatform.cloud.ibm.com/docs/content/getting-started/welcome-main.html?audience=wdp&context=wdp" target="_blank" rel="noopener noreferrer">Watson Studio documentation</a></li>
-<li>Need help with DOcplex or to report a bug? Go to <a href="https://developer.ibm.com/answers/smartspace/docloud" target="_blank" rel="noopener noreferrer">https://developer.ibm.com/answers/smartspace/docloud</a></li>
-</ul>
+<p>As you can see, the recall on non-defaulters is 91%, which means the model
+allows most non-defaulters proceed to getting a loan. The recall for defaulters
+is only 59%, so many defaulters are flagged, but a substantial number are not.</p>
+<p>If the business objective of the model is to curb many but not all of the deficient
+applications while not perturbing business for better customers, then this is a good model.  But suppose that the objective is to have a model that lets through
+only the best applications and flags the rest for review. It might be costly to
+review many applications, but that cost might be less than the cost of making
+considerable loans that don't get repaid.</p>
+<p>To accommodate for the different objectives, this notebook calculates the
+confidence threshold that it would take to get a perfect true positive rate (that is, to
+detect all of the defaulters in the test set) even if that means you also get many false positives (that is, non-defaulters that the model classifies as
+defaulters).  If you look up at the ROC curve, you can see that a perfect 100%
+TPR happens just above 60% FPR, so the overall accuracy will be lower due to the number of false positives, but the
+confidence threshold is better from the standpoint of achieving the alternative desired business objective.</p>
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Say you want a model that is very accurate at recalling true positives (defaulters), </span>
+<span class="c1"># even if it gets a lot a false positives (non-defaulters). You might be automatically</span>
+<span class="c1"># accepting the false classifications and, for true classifications, you may send them</span>
+<span class="c1"># for human review rather than rejecting their loan applications.</span>
+
+<span class="c1"># The lowest confidence that can give 100% TPR on the test set is equal to the </span>
+<span class="c1"># true class with the lowest confidence, so we&#39;ll find that now</span>
+<span class="n">defaulter_probs</span> <span class="o">=</span> <span class="p">[</span><span class="n">dependent_prob</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dependent_test</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">min_conf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">defaulter_probs</span><span class="p">)</span>
+<span class="n">min_conf</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[19]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.043730491447763704</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Each non-defaulter with a confidence at or above min_conf would be predicted </span>
+<span class="c1"># to be a defaulter (which would be a false positve prediction for a non-defaulter)</span>
+
+<span class="n">non_defaulter_probs</span> <span class="o">=</span> <span class="p">[</span><span class="n">dependent_prob</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dependent_test</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">false_positives</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">non_defaulter_probs</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">min_conf</span><span class="p">]</span>
+
+<span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">defaulter_probs</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_defaulter_probs</span><span class="p">)</span>
+<span class="n">total_correct</span> <span class="o">=</span> <span class="n">total</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">false_positives</span><span class="p">)</span>
+<span class="n">accuracy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">total_correct</span><span class="p">)</span> <span class="o">/</span> <span class="n">total</span>
+
+<span class="c1"># Overall accuracy would suffer quite a bit, but this achieves </span>
+<span class="c1"># the desired high accuracy on true positive identification (defaulters)  </span>
+<span class="n">accuracy</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[20]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.54</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><a id="summary"></a></p>
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You learned how to import the TensorFlow library from IBM Watson Studio, create
+a neural network with layers, train the model to accurately predict business
+behavior to achieve your business objective.</p>
+<p><a id="rel_links"></a></p>
+<h2 id="Related-Links">Related Links<a class="anchor-link" href="#Related-Links">&#182;</a></h2><ol>
+<li><a href="https://datascience.ibm.com/" target="_blank">See Watson Studio</a></li>
+<li><a href="https://www.ibm.com/developerworks/community/profiles/html/profileView.do?userid=060000VMNY&lang=en" target="_blank">Author's Blog on IBM Developer Works</a></li>
+<li><a href="https://www.ibm.com/developerworks/community/blogs/JohnBoyer/entry/Measuring_the_Quality_of_a_TensorFlow_Neural_Network_An_IBM_Data_Science_Experience?lang=en" target="_blank">Author Blog: Measuring the Quality of a TensorFlow Neural Network</a></li>
+<li><a href="https://www.ibm.com/ca-en/marketplace/spss-statistics" target="_blank">IBM SPSS Statistics</a></li>
+</ol>
+<p><a id="author"></a></p>
+<h3 id="Author">Author<a class="anchor-link" href="#Author">&#182;</a></h3><p>John M. Boyer, IBM Global Chief Data Office</p>
 <p><hr>
-Copyright © 2017-2018 This notebook and its source code are released under the terms of the MIT License.</p>
+Copyright © IBM Corp. 2018, 2019. This notebook and its source code are released under
+the terms of the MIT License.</p>
 
 </div>
 </div>
