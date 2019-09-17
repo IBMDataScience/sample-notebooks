@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Use PMML to predict Iris species</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Use PMML to predict iris species</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -12688,7 +12688,7 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This notebook demonstrates how to store a sample Predictive Model Markup Language (PMML) model and score test data.</p>
-<p>Some familiarity with python is helpful. This notebook is compatible with Python 3.5.</p>
+<p>Some familiarity with python is helpful. This notebook is compatible with Python 3.6.</p>
 <p>You will use the <strong>Iris</strong> data set to predict the species of an iris flower. This data set contains measurements of the iris perianth flower.</p>
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>You will learn how to:</p>
 <ul>
@@ -12712,7 +12712,7 @@ div#notebook {
 <p><a id="setup"></a></p>
 <h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener no referrer">here</a>).</li>
+<li>Create a <a href="https://cloud.ibm.com/catalog/services/machine-learning" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener no referrer">here</a>).</li>
 <li>Install the <a href="https://pypi.python.org/pypi?%3Aaction=search&term=watson-machine-learning-client&submit=search" target="_blank" rel="noopener no referrer">watson-machine-learning-client</a> (<strong>not required on Watson Studio</strong>).</li>
 </ul>
 
@@ -12777,7 +12777,7 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Authenticate the WML service on the IBM Cloud.</p>
-<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://console.bluemix.net/docs/services/service_credentials.html#service_credentials" target="_blank" rel="noopener no referrer">Service Credentials</a> tab of the service instance that you created on the IBM Cloud. <BR>If you cannot find the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
+<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-get-wml-credentials.html" target="_blank" rel="noopener no referrer">Service Credentials</a> tab of the service instance that you created on the IBM Cloud. <BR>If you cannot find the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
 <p><strong>Action</strong>: Enter your WML service instance credentials in the following cell.</p>
 
 </div>
@@ -12790,6 +12790,7 @@ div#notebook {
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Enter your credentials here.</span>
 <span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;apikey&#39;</span><span class="p">:</span> <span class="s1">&#39;***&#39;</span><span class="p">,</span>
     <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://ibm-watson-ml.mybluemix.net&#39;</span><span class="p">,</span>
     <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s1">&#39;***&#39;</span><span class="p">,</span>
     <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="s1">&#39;***&#39;</span><span class="p">,</span>
@@ -12804,7 +12805,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">watson_machine_learning_client</span> <span class="k">import</span> <span class="n">WatsonMachineLearningAPIClient</span>
@@ -12839,7 +12840,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># List information about your WML service instance.</span>
@@ -12847,6 +12848,24 @@ div#notebook {
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{&#39;metadata&#39;: {&#39;guid&#39;: &#39;b4b6c696-172c-4164-8049-c0b621dbf3c9&#39;, &#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9&#39;, &#39;created_at&#39;: &#39;2018-12-10T08:05:26.901Z&#39;, &#39;modified_at&#39;: &#39;2019-07-08T21:43:27.219Z&#39;}, &#39;entity&#39;: {&#39;source&#39;: &#39;Bluemix&#39;, &#39;published_models&#39;: {&#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models&#39;}, &#39;usage&#39;: {&#39;expiration_date&#39;: &#39;2019-08-01T00:00:00.000Z&#39;, &#39;computation_time&#39;: {&#39;current&#39;: 0}, &#39;gpu_count_k80&#39;: {&#39;limit&#39;: 48, &#39;current&#39;: 0}, &#39;model_count&#39;: {&#39;limit&#39;: 1000, &#39;current&#39;: 60}, &#39;gpu_count_p100&#39;: {&#39;limit&#39;: 14, &#39;current&#39;: 0}, &#39;prediction_count&#39;: {&#39;current&#39;: 26}, &#39;capacity_units&#39;: {&#39;current&#39;: 223596}, &#39;deployment_count&#39;: {&#39;limit&#39;: 1000, &#39;current&#39;: -6}, &#39;gpu_count_v100&#39;: {&#39;limit&#39;: 34, &#39;current&#39;: 0}}, &#39;tags&#39;: None, &#39;plan_id&#39;: &#39;0f2a3c2c-456b-40f3-9b19-726d2740b11c&#39;, &#39;status&#39;: &#39;Active&#39;, &#39;organization_guid&#39;: &#39;N/A&#39;, &#39;region&#39;: &#39;us-south&#39;, &#39;account&#39;: {&#39;id&#39;: &#39;4512e0f7a54c74e3c3742a68d5641ddb&#39;, &#39;name&#39;: &#34;Jihyoung Kim&#39;s Account&#34;, &#39;type&#39;: &#39;PAYG&#39;}, &#39;owner&#39;: {&#39;ibm_id&#39;: &#39;310000SXE7&#39;, &#39;email&#39;: &#39;jihyoungkim@us.ibm.com&#39;, &#39;user_id&#39;: &#39;b811bd0c-9771-4b3f-b86e-2d76bdd4105f&#39;, &#39;country_code&#39;: &#39;USA&#39;, &#39;beta_user&#39;: True}, &#39;deployments&#39;: {&#39;url&#39;: &#39;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/deployments&#39;}, &#39;space_guid&#39;: &#39;N/A&#39;, &#39;plan&#39;: &#39;standard&#39;}}
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -12885,13 +12904,46 @@ div#notebook {
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>------------------------------------  -------------------------------------------  ------------------------  -----------------
 GUID                                  NAME                                         CREATED                   FRAMEWORK
+4e98e7b9-86e6-48ac-8bc8-2084a8d10ee1  Product line model                           2019-07-08T21:39:42.597Z  mllib-2.3
+53b90fb3-0d12-4d66-96c8-b4e4cf96a0ae  Customer churn Spark model                   2019-07-03T15:47:49.776Z  mllib-2.3
+ad24c140-f97a-49f2-b02c-f8ce44a58c27  Custom ARIMA estimator for sklearn pipeline  2019-07-03T01:04:33.998Z  scikit-learn-0.19
+471b39cc-9c3b-4ff9-a8ea-0297efe0ca5d  Boston house price prediction                2019-05-20T18:19:55.433Z  scikit-learn-0.19
+fc5462c8-7eb9-4dda-8b0a-947e2faa30da  WML Product Line Prediction Model            2019-05-17T17:33:53.278Z  mllib-2.3
+a57e82a9-076e-4236-8bd2-7465e726c419  WML Product Line Prediction Model            2019-05-17T17:28:36.434Z  mllib-2.3
+914b598b-f52e-4a87-bfed-2f4163eba25e  Boston house price prediction                2019-05-13T21:11:04.132Z  scikit-learn-0.19
+43dbda1f-34f4-4396-9b57-942d96389440  Boston house price prediction                2019-05-13T19:16:12.783Z  scikit-learn-0.19
+20da8eb9-36d3-4230-bf0c-ba4f7434080c  ML Contest - Label Prediction Model          2019-05-07T16:43:17.658Z  scikit-learn-0.19
+6ee6777d-b716-49e8-acf0-1913fec902f3  ML Contest - ETA Prediction Model            2019-05-07T16:43:16.065Z  scikit-learn-0.19
+3bb7e3ab-836a-4331-9676-7bcc07cc2d63  ML Contest - Assignee Prediction Model       2019-05-07T16:43:14.430Z  scikit-learn-0.19
+0ffb0000-511b-443d-a4fe-3e076ce2381c  WML Product Line Prediction Model            2019-04-26T17:19:09.804Z  mllib-2.3
+eecf9e06-24cc-4675-a84e-adcf863b0ec6  WML Product Line Prediction Model            2019-04-26T16:57:07.468Z  mllib-2.3
+24f8c253-ab45-45fc-ab94-65ceba1f3dcc  WML Product Line Prediction Model            2019-04-25T22:15:37.304Z  mllib-2.3
+9eabbb0d-aaaf-4f00-a7b4-609b8253c9ab  Time Series SPSS Model                       2019-03-22T17:48:22.760Z  spss-modeler-18.1
+0de88973-a74f-46c7-9ce5-bb3a72457ebc  TensorFlow MNIST model                       2019-03-15T18:27:25.134Z  tensorflow-1.5
+f72ed23b-a7dd-4668-8b18-60e55ae2a59a  Best Heart Drug Selection                    2019-03-12T23:47:20.526Z  mllib-2.3
+2660bd78-4ecb-4224-85d6-667b43eb3813  Sentiment Prediction Model                   2019-03-12T23:01:07.679Z  mllib-2.3
+93638ac0-a8ae-4cf7-a3b5-47e026ad5bcd  SPSS model for Churn prediction              2019-03-12T12:59:13.801Z  spss-modeler-18.1
+4e7d708b-783c-4f82-95c2-90d02957031f  Customer churn Spark model                   2019-03-11T15:27:06.684Z  mllib-2.3
+56529f33-9bce-45f5-87f5-b6bc838b88a0  MNIST best model                             2019-03-07T13:37:39.720Z  tensorflow-1.5
+a59d7814-b8f9-4e13-b433-253364dec6ff  Customer churn Spark model                   2019-03-07T13:14:14.864Z  mllib-2.3
+5fb4a3c0-f18a-4936-ba15-294c13849167  Product line model                           2019-03-06T14:24:29.322Z  mllib-2.3
+193f97a4-2a48-4be7-9497-11ccc58aebb3  My cool mnist model                          2019-03-06T12:52:11.179Z  tensorflow-1.5
+2dcc72ce-16c2-4ad0-94c8-77f37317b47b  Boston house price prediction                2019-03-06T11:45:30.725Z  scikit-learn-0.19
+f7982685-3040-4936-a7a4-d42aec6b2e1c  Boston house price prediction                2019-03-06T11:32:56.268Z  scikit-learn-0.19
+c9dfebfa-0411-4e3e-a9c5-9a311444ed59  CHAID PMML model for Iris data               2019-03-04T12:59:21.351Z  pmml-4.2
+c0e97a79-7db0-471e-afd8-f3e238fd16b6  XGBoost model for breast cancer              2019-02-28T19:11:24.484Z  scikit-learn-0.19
+8008b47c-0f07-482c-8d2f-0b6940c824e5  SMS Spam prediction model                    2019-02-28T00:57:59.713Z  scikit-learn-0.19
+f2ea0716-7d1f-484a-8468-14f4b6ec7333  WML Product Line Prediction Model            2019-02-27T13:50:04.628Z  mllib-2.3
+fe1f7f54-b66f-46ed-8785-9fa5d129e02e  SPSS model for Churn prediction              2019-02-27T11:53:10.672Z  spss-modeler-18.1
+7bd8d8b7-bb2b-4e71-95e6-502fec50657f  SPSS model for Churn prediction              2019-02-27T09:29:04.867Z  spss-modeler-18.1
+c4fbb8ff-0e1b-4c45-b155-85b07527ecc3  SPSS model for Churn prediction              2019-02-26T13:13:42.220Z  spss-modeler-18.1
+8a245de4-7907-44fe-b67f-3cf1746d9eb4  CHAID PMML model for Iris data               2019-02-25T13:09:14.752Z  pmml-4.2
 462931ef-bcf8-486c-8bcb-2b2c114cb20c  MNIST - compressed keras model               2019-02-25T12:29:43.085Z  tensorflow-1.5
 e349018e-a37c-4d26-bb86-01ce7f52bdaa  SMS Spam prediction model                    2019-02-13T15:52:39.175Z  scikit-learn-0.19
 0cc8a058-6b08-4ae5-84df-a62d49e0f4bf  SPSS XGBoost Tree Regression model_auto-opt  2019-02-12T19:00:25.864Z  spss-modeler-18.1
 67ee96bc-cb64-4ad0-8255-bf471df915bb  SMS Spam prediction model                    2019-02-12T02:48:36.430Z  scikit-learn-0.19
 9de866c9-bb52-4c19-b095-94c265530f46  Earthquake magnitude prediction model        2019-02-11T16:41:38.815Z  tensorflow-1.12
 f514ff10-8857-433c-89b0-280c708a6e26  Earthquake magnitude prediction model        2019-02-11T16:31:26.538Z  tensorflow-1.12
-c8a78694-3369-4a29-804e-754c96fdf33e  SMS Spam prediction model                    2019-02-07T17:02:00.999Z  scikit-learn-0.19
 e561751f-d7d9-4c6f-a7af-6677baf3d45f  Earthquake magnitude prediction model        2019-02-07T00:21:53.513Z  tensorflow-1.12
 f87ac4d9-7a05-435d-98eb-6eacd290e3cc  Earthquake magnitude prediction model        2019-02-07T00:08:13.678Z  tensorflow-1.12
 482e49ea-1207-45b8-bf57-89d57bc44678  SPSS XGBoost Regression Model - Car Price    2019-02-05T18:09:21.456Z  spss-modeler-18.1
@@ -12902,9 +12954,8 @@ afb7a22e-1e6c-4e29-a1da-5305a2f5a16b  WML Product Line Prediction Model         
 47b21e40-eba3-4cda-b7d2-cb9a2d31d12d  Customer churn Spark model                   2019-01-18T06:45:13.422Z  mllib-2.3
 f5eb38e5-2b04-4da0-bf14-3edafe554be8  Customer churn Spark model                   2019-01-18T02:18:45.291Z  mllib-2.3
 e772e16f-936f-4f20-849d-259ea80b1e87  Product line model                           2019-01-17T09:57:27.972Z  mllib-2.3
-afed5f15-80e0-4dce-8cac-d2bfcdab8a4d  Product line model                           2019-01-17T06:55:55.312Z  mllib-2.3
-95bfca55-0c53-43d2-86ed-5c770f403ee6  MNIST - compressed keras model               2019-01-15T14:49:42.639Z  tensorflow-1.5
 ------------------------------------  -------------------------------------------  ------------------------  -----------------
+Note: Only first 50 records were displayed. To display more use &#39;limit&#39; parameter.
 </pre>
 </div>
 </div>
@@ -12945,24 +12996,55 @@ afed5f15-80e0-4dce-8cac-d2bfcdab8a4d  Product line model                        
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>------------------------------------  -------------------------------------------------------  ------  --------------  ------------------------  -----------------  -------------
-GUID                                  NAME                                                     TYPE    STATE           CREATED                   FRAMEWORK          ARTIFACT TYPE
-a0e16777-75ad-489a-a6db-5213619381a4  Keras MNIST model deployment through compressed file.    online  DEPLOY_SUCCESS  2019-02-25T12:29:47.265Z  tensorflow-1.5     model
-5c5ebf10-c47a-4224-b35d-3646b0348af1  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-02-21T14:58:00.141Z  n/a                function
-8f51c988-01b4-4fa1-825d-39291d6e3ff1  SMS Spam classifier function deployment                  online  DEPLOY_SUCCESS  2019-02-13T17:02:16.276Z  n/a                function
-b9efb426-845a-45e7-b591-85c4bdb1417c  SMS Spam prediction model deployment.                    online  DEPLOY_SUCCESS  2019-02-13T15:52:48.108Z  scikit-learn-0.19  model
-840dc491-610b-467e-9522-a67f8d96b00e  Deployment of regression model (SPSS)                    online  DEPLOY_SUCCESS  2019-02-12T19:24:35.414Z  spss-modeler-18.1  model
-569fb590-41aa-433e-aeb4-89a9688a4a7b  Keras earthquake magnitude prediction model deployment.  online  DEPLOY_SUCCESS  2019-02-11T16:41:49.568Z  tensorflow-1.12    model
-7b2ff02b-b6a7-4ef4-b0e6-6765b1c45766  Keras earthquake magnitude prediction model deployment.  online  DEPLOY_SUCCESS  2019-02-07T00:21:58.175Z  tensorflow-1.12    model
-a738de63-d74e-454a-9dd7-f377c65420bc  Online scoring                                           online  DEPLOY_SUCCESS  2019-01-19T19:49:21.391Z  mllib-2.3          model
-d8f43799-cf5c-499f-a9d3-42d2e398f337  Sample SPSS model deployment                             online  DEPLOY_SUCCESS  2019-01-18T10:28:38.134Z  spss-modeler-18.1  model
-12056c7c-6ff1-454d-b324-d1cf4b42c4fd  Iris species prediction                                  online  DEPLOY_SUCCESS  2019-01-18T09:36:17.097Z  pmml-4.2           model
-a375c7bc-963d-4a9b-9896-7dbcdcaed78d  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-01-17T10:11:40.324Z  n/a                function
-a8b47a68-060c-4474-a5c0-15da3304063a  Product line model deployment                            online  DEPLOY_SUCCESS  2019-01-17T10:02:44.991Z  mllib-2.3          model
-ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment                            online  DEPLOY_SUCCESS  2019-01-17T07:14:05.178Z  mllib-2.3          model
-902853d1-9ff6-40a7-8918-d6b7b39c3a4e  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-01-17T02:37:29.921Z  n/a                function
-3da0fb97-24b9-44d6-ac16-e97a0cf8dfcb  Keras MNIST model deployment through compressed file.    online  DEPLOY_SUCCESS  2019-01-15T14:49:46.285Z  tensorflow-1.5     model
-------------------------------------  -------------------------------------------------------  ------  --------------  ------------------------  -----------------  -------------
+<pre>------------------------------------  -------------------------------------------------------  -------  ------------------  ------------------------  -----------------  -------------
+GUID                                  NAME                                                     TYPE     STATE               CREATED                   FRAMEWORK          ARTIFACT TYPE
+a4741007-2bc4-4a5d-b3bc-bbac1b6a8c83  Product line model deployment                            online   DEPLOY_SUCCESS      2019-07-08T21:43:21.337Z  mllib-2.3          model
+7985e484-4192-400e-82e5-3756d4600668  ARIMA model python function deployment                   online   DEPLOY_SUCCESS      2019-07-03T20:33:40.817Z  n/a                function
+6aedb5b7-638a-4388-ab0d-45fecb3b7081  Customer Churn Prediction                                online   DEPLOY_SUCCESS      2019-07-03T15:51:34.166Z  mllib-2.3          model
+cfcd5f9e-5b07-4bea-b57d-304c12254add  sklearn_pipeline_arima                                   online   DEPLOY_SUCCESS      2019-07-03T01:06:29.302Z  scikit-learn-0.19  model
+7b045679-07c9-4225-9116-c153c6359588  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-20T18:20:14.124Z  scikit-learn-0.19  model
+2b9a344c-2dbf-4568-920d-bb5b598d8273  Online scoring                                           online   DEPLOY_SUCCESS      2019-05-17T17:34:23.382Z  mllib-2.3          model
+69aa4267-dc8c-4243-bc33-3ee7571c0ca4  Online scoring                                           online   DEPLOY_SUCCESS      2019-05-17T17:29:35.859Z  mllib-2.3          model
+81911f93-50bb-4fec-a146-eb6f8519b79e  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-13T21:11:07.340Z  scikit-learn-0.19  model
+4431988f-678b-4f40-92b4-2dbe63ea54e2  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-13T19:16:19.731Z  scikit-learn-0.19  model
+31fdffd5-6a0a-459f-a160-7c4be26ddf15  ML Contest - Label Prediction Model deployment           online   DEPLOY_SUCCESS      2019-05-07T16:48:56.694Z  scikit-learn-0.19  model
+18fe2647-55e0-451a-8f51-0c3195223981  ML Contest - Issue ETA Prediction Model deployment       online   DEPLOY_SUCCESS      2019-05-07T16:48:51.102Z  scikit-learn-0.19  model
+5649340d-248b-4d34-a2d8-ed3e0316ea9b  ML Contest - Assignee Prediction Model deployment        online   DEPLOY_SUCCESS      2019-05-07T16:48:45.286Z  scikit-learn-0.19  model
+49055fc5-88f4-46ea-b17a-517d75f120ba  Online scoring                                           online   DEPLOY_SUCCESS      2019-04-26T17:19:40.703Z  mllib-2.3          model
+7eb9b874-53b8-463c-bd19-058ee52e3e3d  Online scoring                                           online   DEPLOY_SUCCESS      2019-04-26T17:07:07.833Z  mllib-2.3          model
+8b95a4dd-4b3f-4b36-bd3e-b58b59f100e2  Mnist model deployment                                   online   DEPLOY_SUCCESS      2019-04-02T16:09:27.875Z  tensorflow-1.5     model
+451f5f1a-d1f5-4a90-a441-b2953053ae6f  Time Series model (SPSS) deployment                      online   DEPLOY_SUCCESS      2019-03-28T19:00:49.524Z  spss-modeler-18.1  model
+486a79af-ea0b-4e8e-8166-dc2bb43b6c98  TensorFlow MNIST model deployment                        online   DEPLOY_SUCCESS      2019-03-15T18:27:34.468Z  tensorflow-1.5     model
+92991643-a229-4f9e-a70a-3e9de612942e  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-03-12T12:59:15.857Z  spss-modeler-18.1  model
+dce80b25-3d32-4005-b96b-9d9c80a7239a  MNIST keras deployment                                   online   DEPLOY_FAILURE      2019-03-07T13:37:41.529Z  tensorflow-1.5     model
+00edc46c-5df5-482e-936a-4d9f2e5fbc06  Product line model deployment                            online   DEPLOY_SUCCESS      2019-03-06T14:30:35.086Z  mllib-2.3          model
+86da6500-18ff-4970-b3e4-7e335d4a08f9  Mnist model deployment                                   online   DEPLOY_SUCCESS      2019-03-06T12:52:13.175Z  tensorflow-1.5     model
+d250df1b-6e43-4c69-98d2-10ff25b5d63d  Virtual deployment of Boston model                       virtual  DEPLOY_SUCCESS      2019-03-06T11:45:33.176Z  scikit-learn-0.19  model
+6d3cf6bb-db92-427c-8b52-9d050d7bfec8  Virtual deployment of Boston model                       virtual  DEPLOY_SUCCESS      2019-03-06T11:32:59.110Z  scikit-learn-0.19  model
+ded4770f-c2fe-4653-9ce2-0c79ecfa10be  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-03-04T12:59:23.413Z  pmml-4.2           model
+450f555b-1952-4ef1-90be-96a16f600345  Predict breast cancer                                    online   DEPLOY_SUCCESS      2019-02-28T19:11:28.862Z  scikit-learn-0.19  model
+dd987565-3e04-4179-9cf9-546710fbadcd  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-28T11:50:04.209Z  n/a                function
+984ffa92-1c82-4b54-bb56-f6f85e915227  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-27T17:50:16.907Z  n/a                function
+e5472c3f-c7d7-4a3e-9b20-44f03030373e  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-27T16:51:24.029Z  n/a                function
+304c671c-6a48-496d-b27b-3ad9888a0156  Online scoring                                           online   DEPLOY_SUCCESS      2019-02-27T13:50:39.730Z  mllib-2.3          model
+18298746-41ec-4bac-928c-fc34e3708ca9  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-27T11:53:13.523Z  spss-modeler-18.1  model
+375d050d-1e3b-49e5-9f1d-655f28734ec7  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-27T09:29:07.286Z  spss-modeler-18.1  model
+2924aaaf-bddf-4567-8206-6972c163dfa4  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-26T13:13:44.977Z  spss-modeler-18.1  model
+feb87375-fca8-4b0c-8f2f-5c83a6e26115  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-02-25T13:09:17.454Z  pmml-4.2           model
+a0e16777-75ad-489a-a6db-5213619381a4  Keras MNIST model deployment through compressed file.    online   DEPLOY_SUCCESS      2019-02-25T12:29:47.265Z  tensorflow-1.5     model
+5c5ebf10-c47a-4224-b35d-3646b0348af1  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-21T14:58:00.141Z  n/a                function
+b9efb426-845a-45e7-b591-85c4bdb1417c  SMS Spam prediction model deployment.                    online   DEPLOY_SUCCESS      2019-02-13T15:52:48.108Z  scikit-learn-0.19  model
+569fb590-41aa-433e-aeb4-89a9688a4a7b  Keras earthquake magnitude prediction model deployment.  online   DEPLOY_SUCCESS      2019-02-11T16:41:49.568Z  tensorflow-1.12    model
+7b2ff02b-b6a7-4ef4-b0e6-6765b1c45766  Keras earthquake magnitude prediction model deployment.  online   DEPLOY_SUCCESS      2019-02-07T00:21:58.175Z  tensorflow-1.12    model
+a738de63-d74e-454a-9dd7-f377c65420bc  Online scoring                                           online   DEPLOY_SUCCESS      2019-01-19T19:49:21.391Z  mllib-2.3          model
+d8f43799-cf5c-499f-a9d3-42d2e398f337  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-01-18T10:28:38.134Z  spss-modeler-18.1  model
+12056c7c-6ff1-454d-b324-d1cf4b42c4fd  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-01-18T09:36:17.097Z  pmml-4.2           model
+a375c7bc-963d-4a9b-9896-7dbcdcaed78d  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-01-17T10:11:40.324Z  n/a                function
+a8b47a68-060c-4474-a5c0-15da3304063a  Product line model deployment                            online   DEPLOY_SUCCESS      2019-01-17T10:02:44.991Z  mllib-2.3          model
+ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment                            online   DEPLOY_SUCCESS      2019-01-17T07:14:05.178Z  mllib-2.3          model
+902853d1-9ff6-40a7-8918-d6b7b39c3a4e  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-01-17T02:37:29.921Z  n/a                function
+3da0fb97-24b9-44d6-ac16-e97a0cf8dfcb  Keras MNIST model deployment through compressed file.    online   DEPLOY_SUCCESS      2019-01-15T14:49:46.285Z  tensorflow-1.5     model
+------------------------------------  -------------------------------------------------------  -------  ------------------  ------------------------  -----------------  -------------
 </pre>
 </div>
 </div>
@@ -13015,13 +13097,31 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install --upgrade wget
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Requirement already up-to-date: wget in /opt/conda/envs/Python36/lib/python3.6/site-packages (3.2)
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13091,6 +13191,40 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>------------------------------------  -------------------------------------------  ------------------------  -----------------
 GUID                                  NAME                                         CREATED                   FRAMEWORK
+93da112e-62ea-483e-bbe8-8fbc6addb601  CHAID PMML model for Iris data               2019-07-08T21:52:59.865Z  pmml-4.2
+4e98e7b9-86e6-48ac-8bc8-2084a8d10ee1  Product line model                           2019-07-08T21:39:42.597Z  mllib-2.3
+53b90fb3-0d12-4d66-96c8-b4e4cf96a0ae  Customer churn Spark model                   2019-07-03T15:47:49.776Z  mllib-2.3
+ad24c140-f97a-49f2-b02c-f8ce44a58c27  Custom ARIMA estimator for sklearn pipeline  2019-07-03T01:04:33.998Z  scikit-learn-0.19
+471b39cc-9c3b-4ff9-a8ea-0297efe0ca5d  Boston house price prediction                2019-05-20T18:19:55.433Z  scikit-learn-0.19
+fc5462c8-7eb9-4dda-8b0a-947e2faa30da  WML Product Line Prediction Model            2019-05-17T17:33:53.278Z  mllib-2.3
+a57e82a9-076e-4236-8bd2-7465e726c419  WML Product Line Prediction Model            2019-05-17T17:28:36.434Z  mllib-2.3
+914b598b-f52e-4a87-bfed-2f4163eba25e  Boston house price prediction                2019-05-13T21:11:04.132Z  scikit-learn-0.19
+43dbda1f-34f4-4396-9b57-942d96389440  Boston house price prediction                2019-05-13T19:16:12.783Z  scikit-learn-0.19
+20da8eb9-36d3-4230-bf0c-ba4f7434080c  ML Contest - Label Prediction Model          2019-05-07T16:43:17.658Z  scikit-learn-0.19
+6ee6777d-b716-49e8-acf0-1913fec902f3  ML Contest - ETA Prediction Model            2019-05-07T16:43:16.065Z  scikit-learn-0.19
+3bb7e3ab-836a-4331-9676-7bcc07cc2d63  ML Contest - Assignee Prediction Model       2019-05-07T16:43:14.430Z  scikit-learn-0.19
+0ffb0000-511b-443d-a4fe-3e076ce2381c  WML Product Line Prediction Model            2019-04-26T17:19:09.804Z  mllib-2.3
+eecf9e06-24cc-4675-a84e-adcf863b0ec6  WML Product Line Prediction Model            2019-04-26T16:57:07.468Z  mllib-2.3
+24f8c253-ab45-45fc-ab94-65ceba1f3dcc  WML Product Line Prediction Model            2019-04-25T22:15:37.304Z  mllib-2.3
+9eabbb0d-aaaf-4f00-a7b4-609b8253c9ab  Time Series SPSS Model                       2019-03-22T17:48:22.760Z  spss-modeler-18.1
+0de88973-a74f-46c7-9ce5-bb3a72457ebc  TensorFlow MNIST model                       2019-03-15T18:27:25.134Z  tensorflow-1.5
+f72ed23b-a7dd-4668-8b18-60e55ae2a59a  Best Heart Drug Selection                    2019-03-12T23:47:20.526Z  mllib-2.3
+2660bd78-4ecb-4224-85d6-667b43eb3813  Sentiment Prediction Model                   2019-03-12T23:01:07.679Z  mllib-2.3
+93638ac0-a8ae-4cf7-a3b5-47e026ad5bcd  SPSS model for Churn prediction              2019-03-12T12:59:13.801Z  spss-modeler-18.1
+4e7d708b-783c-4f82-95c2-90d02957031f  Customer churn Spark model                   2019-03-11T15:27:06.684Z  mllib-2.3
+56529f33-9bce-45f5-87f5-b6bc838b88a0  MNIST best model                             2019-03-07T13:37:39.720Z  tensorflow-1.5
+a59d7814-b8f9-4e13-b433-253364dec6ff  Customer churn Spark model                   2019-03-07T13:14:14.864Z  mllib-2.3
+5fb4a3c0-f18a-4936-ba15-294c13849167  Product line model                           2019-03-06T14:24:29.322Z  mllib-2.3
+193f97a4-2a48-4be7-9497-11ccc58aebb3  My cool mnist model                          2019-03-06T12:52:11.179Z  tensorflow-1.5
+2dcc72ce-16c2-4ad0-94c8-77f37317b47b  Boston house price prediction                2019-03-06T11:45:30.725Z  scikit-learn-0.19
+f7982685-3040-4936-a7a4-d42aec6b2e1c  Boston house price prediction                2019-03-06T11:32:56.268Z  scikit-learn-0.19
+c9dfebfa-0411-4e3e-a9c5-9a311444ed59  CHAID PMML model for Iris data               2019-03-04T12:59:21.351Z  pmml-4.2
+c0e97a79-7db0-471e-afd8-f3e238fd16b6  XGBoost model for breast cancer              2019-02-28T19:11:24.484Z  scikit-learn-0.19
+8008b47c-0f07-482c-8d2f-0b6940c824e5  SMS Spam prediction model                    2019-02-28T00:57:59.713Z  scikit-learn-0.19
+f2ea0716-7d1f-484a-8468-14f4b6ec7333  WML Product Line Prediction Model            2019-02-27T13:50:04.628Z  mllib-2.3
+fe1f7f54-b66f-46ed-8785-9fa5d129e02e  SPSS model for Churn prediction              2019-02-27T11:53:10.672Z  spss-modeler-18.1
+7bd8d8b7-bb2b-4e71-95e6-502fec50657f  SPSS model for Churn prediction              2019-02-27T09:29:04.867Z  spss-modeler-18.1
+c4fbb8ff-0e1b-4c45-b155-85b07527ecc3  SPSS model for Churn prediction              2019-02-26T13:13:42.220Z  spss-modeler-18.1
 8a245de4-7907-44fe-b67f-3cf1746d9eb4  CHAID PMML model for Iris data               2019-02-25T13:09:14.752Z  pmml-4.2
 462931ef-bcf8-486c-8bcb-2b2c114cb20c  MNIST - compressed keras model               2019-02-25T12:29:43.085Z  tensorflow-1.5
 e349018e-a37c-4d26-bb86-01ce7f52bdaa  SMS Spam prediction model                    2019-02-13T15:52:39.175Z  scikit-learn-0.19
@@ -13098,7 +13232,6 @@ e349018e-a37c-4d26-bb86-01ce7f52bdaa  SMS Spam prediction model                 
 67ee96bc-cb64-4ad0-8255-bf471df915bb  SMS Spam prediction model                    2019-02-12T02:48:36.430Z  scikit-learn-0.19
 9de866c9-bb52-4c19-b095-94c265530f46  Earthquake magnitude prediction model        2019-02-11T16:41:38.815Z  tensorflow-1.12
 f514ff10-8857-433c-89b0-280c708a6e26  Earthquake magnitude prediction model        2019-02-11T16:31:26.538Z  tensorflow-1.12
-c8a78694-3369-4a29-804e-754c96fdf33e  SMS Spam prediction model                    2019-02-07T17:02:00.999Z  scikit-learn-0.19
 e561751f-d7d9-4c6f-a7af-6677baf3d45f  Earthquake magnitude prediction model        2019-02-07T00:21:53.513Z  tensorflow-1.12
 f87ac4d9-7a05-435d-98eb-6eacd290e3cc  Earthquake magnitude prediction model        2019-02-07T00:08:13.678Z  tensorflow-1.12
 482e49ea-1207-45b8-bf57-89d57bc44678  SPSS XGBoost Regression Model - Car Price    2019-02-05T18:09:21.456Z  spss-modeler-18.1
@@ -13108,10 +13241,8 @@ afb7a22e-1e6c-4e29-a1da-5305a2f5a16b  WML Product Line Prediction Model         
 52e8d90f-482a-4358-8889-979ecb5f35c0  CHAID PMML model for Iris data               2019-01-18T09:36:11.392Z  pmml-4.2
 47b21e40-eba3-4cda-b7d2-cb9a2d31d12d  Customer churn Spark model                   2019-01-18T06:45:13.422Z  mllib-2.3
 f5eb38e5-2b04-4da0-bf14-3edafe554be8  Customer churn Spark model                   2019-01-18T02:18:45.291Z  mllib-2.3
-e772e16f-936f-4f20-849d-259ea80b1e87  Product line model                           2019-01-17T09:57:27.972Z  mllib-2.3
-afed5f15-80e0-4dce-8cac-d2bfcdab8a4d  Product line model                           2019-01-17T06:55:55.312Z  mllib-2.3
-95bfca55-0c53-43d2-86ed-5c770f403ee6  MNIST - compressed keras model               2019-01-15T14:49:42.639Z  tensorflow-1.5
 ------------------------------------  -------------------------------------------  ------------------------  -----------------
+Note: Only first 50 records were displayed. To display more use &#39;limit&#39; parameter.
 </pre>
 </div>
 </div>
@@ -13176,7 +13307,7 @@ afed5f15-80e0-4dce-8cac-d2bfcdab8a4d  Product line model                        
 
 #######################################################################################
 
-Synchronous deployment creation for uid: &#39;8a245de4-7907-44fe-b67f-3cf1746d9eb4&#39; started
+Synchronous deployment creation for uid: &#39;93da112e-62ea-483e-bbe8-8fbc6addb601&#39; started
 
 #######################################################################################
 
@@ -13186,29 +13317,60 @@ DEPLOY_SUCCESS
 
 
 ------------------------------------------------------------------------------------------------
-Successfully finished deployment creation, deployment_uid=&#39;feb87375-fca8-4b0c-8f2f-5c83a6e26115&#39;
+Successfully finished deployment creation, deployment_uid=&#39;247cd224-2459-4f77-8369-282bd20461ad&#39;
 ------------------------------------------------------------------------------------------------
 
 
-------------------------------------  -------------------------------------------------------  ------  --------------  ------------------------  -----------------  -------------
-GUID                                  NAME                                                     TYPE    STATE           CREATED                   FRAMEWORK          ARTIFACT TYPE
-feb87375-fca8-4b0c-8f2f-5c83a6e26115  Iris species prediction                                  online  DEPLOY_SUCCESS  2019-02-25T13:09:17.454Z  pmml-4.2           model
-a0e16777-75ad-489a-a6db-5213619381a4  Keras MNIST model deployment through compressed file.    online  DEPLOY_SUCCESS  2019-02-25T12:29:47.265Z  tensorflow-1.5     model
-5c5ebf10-c47a-4224-b35d-3646b0348af1  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-02-21T14:58:00.141Z  n/a                function
-8f51c988-01b4-4fa1-825d-39291d6e3ff1  SMS Spam classifier function deployment                  online  DEPLOY_SUCCESS  2019-02-13T17:02:16.276Z  n/a                function
-b9efb426-845a-45e7-b591-85c4bdb1417c  SMS Spam prediction model deployment.                    online  DEPLOY_SUCCESS  2019-02-13T15:52:48.108Z  scikit-learn-0.19  model
-840dc491-610b-467e-9522-a67f8d96b00e  Deployment of regression model (SPSS)                    online  DEPLOY_SUCCESS  2019-02-12T19:24:35.414Z  spss-modeler-18.1  model
-569fb590-41aa-433e-aeb4-89a9688a4a7b  Keras earthquake magnitude prediction model deployment.  online  DEPLOY_SUCCESS  2019-02-11T16:41:49.568Z  tensorflow-1.12    model
-7b2ff02b-b6a7-4ef4-b0e6-6765b1c45766  Keras earthquake magnitude prediction model deployment.  online  DEPLOY_SUCCESS  2019-02-07T00:21:58.175Z  tensorflow-1.12    model
-a738de63-d74e-454a-9dd7-f377c65420bc  Online scoring                                           online  DEPLOY_SUCCESS  2019-01-19T19:49:21.391Z  mllib-2.3          model
-d8f43799-cf5c-499f-a9d3-42d2e398f337  Sample SPSS model deployment                             online  DEPLOY_SUCCESS  2019-01-18T10:28:38.134Z  spss-modeler-18.1  model
-12056c7c-6ff1-454d-b324-d1cf4b42c4fd  Iris species prediction                                  online  DEPLOY_SUCCESS  2019-01-18T09:36:17.097Z  pmml-4.2           model
-a375c7bc-963d-4a9b-9896-7dbcdcaed78d  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-01-17T10:11:40.324Z  n/a                function
-a8b47a68-060c-4474-a5c0-15da3304063a  Product line model deployment                            online  DEPLOY_SUCCESS  2019-01-17T10:02:44.991Z  mllib-2.3          model
-ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment                            online  DEPLOY_SUCCESS  2019-01-17T07:14:05.178Z  mllib-2.3          model
-902853d1-9ff6-40a7-8918-d6b7b39c3a4e  Web scraping python function deployment                  online  DEPLOY_SUCCESS  2019-01-17T02:37:29.921Z  n/a                function
-3da0fb97-24b9-44d6-ac16-e97a0cf8dfcb  Keras MNIST model deployment through compressed file.    online  DEPLOY_SUCCESS  2019-01-15T14:49:46.285Z  tensorflow-1.5     model
-------------------------------------  -------------------------------------------------------  ------  --------------  ------------------------  -----------------  -------------
+------------------------------------  -------------------------------------------------------  -------  ------------------  ------------------------  -----------------  -------------
+GUID                                  NAME                                                     TYPE     STATE               CREATED                   FRAMEWORK          ARTIFACT TYPE
+247cd224-2459-4f77-8369-282bd20461ad  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-07-08T21:53:02.342Z  pmml-4.2           model
+a4741007-2bc4-4a5d-b3bc-bbac1b6a8c83  Product line model deployment                            online   DEPLOY_SUCCESS      2019-07-08T21:43:21.337Z  mllib-2.3          model
+7985e484-4192-400e-82e5-3756d4600668  ARIMA model python function deployment                   online   DEPLOY_SUCCESS      2019-07-03T20:33:40.817Z  n/a                function
+6aedb5b7-638a-4388-ab0d-45fecb3b7081  Customer Churn Prediction                                online   DEPLOY_SUCCESS      2019-07-03T15:51:34.166Z  mllib-2.3          model
+cfcd5f9e-5b07-4bea-b57d-304c12254add  sklearn_pipeline_arima                                   online   DEPLOY_SUCCESS      2019-07-03T01:06:29.302Z  scikit-learn-0.19  model
+7b045679-07c9-4225-9116-c153c6359588  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-20T18:20:14.124Z  scikit-learn-0.19  model
+2b9a344c-2dbf-4568-920d-bb5b598d8273  Online scoring                                           online   DEPLOY_SUCCESS      2019-05-17T17:34:23.382Z  mllib-2.3          model
+69aa4267-dc8c-4243-bc33-3ee7571c0ca4  Online scoring                                           online   DEPLOY_SUCCESS      2019-05-17T17:29:35.859Z  mllib-2.3          model
+81911f93-50bb-4fec-a146-eb6f8519b79e  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-13T21:11:07.340Z  scikit-learn-0.19  model
+4431988f-678b-4f40-92b4-2dbe63ea54e2  Virtual deployment of Boston model                       virtual  DEPLOY_IN_PROGRESS  2019-05-13T19:16:19.731Z  scikit-learn-0.19  model
+31fdffd5-6a0a-459f-a160-7c4be26ddf15  ML Contest - Label Prediction Model deployment           online   DEPLOY_SUCCESS      2019-05-07T16:48:56.694Z  scikit-learn-0.19  model
+18fe2647-55e0-451a-8f51-0c3195223981  ML Contest - Issue ETA Prediction Model deployment       online   DEPLOY_SUCCESS      2019-05-07T16:48:51.102Z  scikit-learn-0.19  model
+5649340d-248b-4d34-a2d8-ed3e0316ea9b  ML Contest - Assignee Prediction Model deployment        online   DEPLOY_SUCCESS      2019-05-07T16:48:45.286Z  scikit-learn-0.19  model
+49055fc5-88f4-46ea-b17a-517d75f120ba  Online scoring                                           online   DEPLOY_SUCCESS      2019-04-26T17:19:40.703Z  mllib-2.3          model
+7eb9b874-53b8-463c-bd19-058ee52e3e3d  Online scoring                                           online   DEPLOY_SUCCESS      2019-04-26T17:07:07.833Z  mllib-2.3          model
+8b95a4dd-4b3f-4b36-bd3e-b58b59f100e2  Mnist model deployment                                   online   DEPLOY_SUCCESS      2019-04-02T16:09:27.875Z  tensorflow-1.5     model
+451f5f1a-d1f5-4a90-a441-b2953053ae6f  Time Series model (SPSS) deployment                      online   DEPLOY_SUCCESS      2019-03-28T19:00:49.524Z  spss-modeler-18.1  model
+486a79af-ea0b-4e8e-8166-dc2bb43b6c98  TensorFlow MNIST model deployment                        online   DEPLOY_SUCCESS      2019-03-15T18:27:34.468Z  tensorflow-1.5     model
+92991643-a229-4f9e-a70a-3e9de612942e  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-03-12T12:59:15.857Z  spss-modeler-18.1  model
+dce80b25-3d32-4005-b96b-9d9c80a7239a  MNIST keras deployment                                   online   DEPLOY_FAILURE      2019-03-07T13:37:41.529Z  tensorflow-1.5     model
+00edc46c-5df5-482e-936a-4d9f2e5fbc06  Product line model deployment                            online   DEPLOY_SUCCESS      2019-03-06T14:30:35.086Z  mllib-2.3          model
+86da6500-18ff-4970-b3e4-7e335d4a08f9  Mnist model deployment                                   online   DEPLOY_SUCCESS      2019-03-06T12:52:13.175Z  tensorflow-1.5     model
+d250df1b-6e43-4c69-98d2-10ff25b5d63d  Virtual deployment of Boston model                       virtual  DEPLOY_SUCCESS      2019-03-06T11:45:33.176Z  scikit-learn-0.19  model
+6d3cf6bb-db92-427c-8b52-9d050d7bfec8  Virtual deployment of Boston model                       virtual  DEPLOY_SUCCESS      2019-03-06T11:32:59.110Z  scikit-learn-0.19  model
+ded4770f-c2fe-4653-9ce2-0c79ecfa10be  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-03-04T12:59:23.413Z  pmml-4.2           model
+450f555b-1952-4ef1-90be-96a16f600345  Predict breast cancer                                    online   DEPLOY_SUCCESS      2019-02-28T19:11:28.862Z  scikit-learn-0.19  model
+dd987565-3e04-4179-9cf9-546710fbadcd  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-28T11:50:04.209Z  n/a                function
+984ffa92-1c82-4b54-bb56-f6f85e915227  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-27T17:50:16.907Z  n/a                function
+e5472c3f-c7d7-4a3e-9b20-44f03030373e  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-27T16:51:24.029Z  n/a                function
+304c671c-6a48-496d-b27b-3ad9888a0156  Online scoring                                           online   DEPLOY_SUCCESS      2019-02-27T13:50:39.730Z  mllib-2.3          model
+18298746-41ec-4bac-928c-fc34e3708ca9  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-27T11:53:13.523Z  spss-modeler-18.1  model
+375d050d-1e3b-49e5-9f1d-655f28734ec7  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-27T09:29:07.286Z  spss-modeler-18.1  model
+2924aaaf-bddf-4567-8206-6972c163dfa4  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-02-26T13:13:44.977Z  spss-modeler-18.1  model
+feb87375-fca8-4b0c-8f2f-5c83a6e26115  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-02-25T13:09:17.454Z  pmml-4.2           model
+a0e16777-75ad-489a-a6db-5213619381a4  Keras MNIST model deployment through compressed file.    online   DEPLOY_SUCCESS      2019-02-25T12:29:47.265Z  tensorflow-1.5     model
+5c5ebf10-c47a-4224-b35d-3646b0348af1  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-02-21T14:58:00.141Z  n/a                function
+b9efb426-845a-45e7-b591-85c4bdb1417c  SMS Spam prediction model deployment.                    online   DEPLOY_SUCCESS      2019-02-13T15:52:48.108Z  scikit-learn-0.19  model
+569fb590-41aa-433e-aeb4-89a9688a4a7b  Keras earthquake magnitude prediction model deployment.  online   DEPLOY_SUCCESS      2019-02-11T16:41:49.568Z  tensorflow-1.12    model
+7b2ff02b-b6a7-4ef4-b0e6-6765b1c45766  Keras earthquake magnitude prediction model deployment.  online   DEPLOY_SUCCESS      2019-02-07T00:21:58.175Z  tensorflow-1.12    model
+a738de63-d74e-454a-9dd7-f377c65420bc  Online scoring                                           online   DEPLOY_SUCCESS      2019-01-19T19:49:21.391Z  mllib-2.3          model
+d8f43799-cf5c-499f-a9d3-42d2e398f337  Sample SPSS model deployment                             online   DEPLOY_SUCCESS      2019-01-18T10:28:38.134Z  spss-modeler-18.1  model
+12056c7c-6ff1-454d-b324-d1cf4b42c4fd  Iris species prediction                                  online   DEPLOY_SUCCESS      2019-01-18T09:36:17.097Z  pmml-4.2           model
+a375c7bc-963d-4a9b-9896-7dbcdcaed78d  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-01-17T10:11:40.324Z  n/a                function
+a8b47a68-060c-4474-a5c0-15da3304063a  Product line model deployment                            online   DEPLOY_SUCCESS      2019-01-17T10:02:44.991Z  mllib-2.3          model
+ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment                            online   DEPLOY_SUCCESS      2019-01-17T07:14:05.178Z  mllib-2.3          model
+902853d1-9ff6-40a7-8918-d6b7b39c3a4e  Web scraping python function deployment                  online   DEPLOY_SUCCESS      2019-01-17T02:37:29.921Z  n/a                function
+3da0fb97-24b9-44d6-ac16-e97a0cf8dfcb  Keras MNIST model deployment through compressed file.    online   DEPLOY_SUCCESS      2019-01-15T14:49:46.285Z  tensorflow-1.5     model
+------------------------------------  -------------------------------------------------------  -------  ------------------  ------------------------  -----------------  -------------
 </pre>
 </div>
 </div>
@@ -13339,7 +13501,7 @@ ada89546-d27c-4c32-953f-84f2238eb12a  Product line model deployment             
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Citation">Citation<a class="anchor-link" href="#Citation">&#182;</a></h3><p>Dua, D. and Karra Taniskidou, E. (2017). <a href="http://archive.ics.uci.edu/ml">UCI Machine Learning Repository</a>. Irvine, CA: University of California, School of Information and Computer Science.</p>
+<h3 id="Citation">Citation<a class="anchor-link" href="#Citation">&#182;</a></h3><p>Dua, D. and Karra Taniskidou, E. (2017). <a href="http://archive.ics.uci.edu/ml" target="_blank" rel="noopener no referrer">UCI Machine Learning Repository</a>. Irvine, CA: University of California, School of Information and Computer Science.</p>
 
 </div>
 </div>
