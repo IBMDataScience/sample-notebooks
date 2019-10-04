@@ -14,9 +14,6 @@ This notebook demonstrates how to store a sample Predictive Model Markup Languag
 **Use the Python function feature to scrape a webpage**<br/>
 This notebook demonstrates how to save, deploy, and score a Python function. Although the score() function is intended to score a Python function, it has other custom functionality such as preprocessing texts.
 
-**Use SPSS to predict customer churn**<br/>
-This notebook demonstrates how to deploy an SPSS model and score test data. 
-
 **Use scikit-learn to predict hand-written digits**<br/>
 This notebook demonstrates how to utilize the watson-machine-learning-client package in order to save, deploy, and score a predictive model.
 
