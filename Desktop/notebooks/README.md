@@ -17,5 +17,8 @@ This notebook demonstrates how to deploy an SPSS model and score test data.
 **Use scikit-learn to predict the price of a car**<br/>
 This notebook gives an insight on how to handle regression problems in data science. In machine learning, regression is used when the target (the variable that will be predicted) is numerical. There are various regression algorithms that can be used to predict numerical data and you will compare the results of three of them below.
 
+**Use scikit-learn to predict the price of a car - Batch Deployment**<br/>
+This notebook gives an insight on how to handle regression problems in data science. In machine learning, regression is used when the target (the variable that will be predicted) is numerical. There are various regression algorithms that can be used to predict numerical data and you will compare the results of three of them below.
+
 **Use scikit-learn to predict hand-written digits**<br/>
 This notebook demonstrates how to utilize the watson-machine-learning-client-V4 package in order to save, deploy, and score a predictive model.
