@@ -20,4 +20,9 @@ This notebook demonstrates how to utilize the watson-machine-learning-client p
 **Use scikit-learn to predict the price of a car**<br/>
 This notebook gives an insight on how to handle regression problems in data science. In machine learning, regression is used when the target (the variable that will be predicted) is numerical. There are various regression algorithms that can be used to predict numerical data and you will compare the results of three of them.
 
+**Use XGBoost to classify tumors (Batch)**
+This notebook demonstates how to obtain data from the IBM Watson Studio Gallery, create a predictive model, and score the model.You will use a publicly available data set, the Breast Cancer Wisconsin (Diagnostic) Data Set, to train an XGBoost Model to classify breast cancer tumors (as benign or malign). 
+
+**Use XGBoost to classify tumors with IBM Watson Machine Learning (online)**
+This notebook demonstates how to obtain data from the IBM Watson Studio Gallery, create a predictive model, and score the model. You will use a publicly available data set, the Breast Cancer Wisconsin (Diagnostic) Data Set, to train an XGBoost Model to classify breast cancer tumors (as benign or malign). 
 
