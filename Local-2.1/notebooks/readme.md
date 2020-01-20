@@ -23,3 +23,12 @@ This notebook gives an insight on how to handle regression problems in data scie
 
 **Use scikit-learn to predict the price of a car (Batch deploy)**<br/>
 This notebook gives an insight on how to handle regression problems in data science. In machine learning, regression is used when the target (the variable that will be predicted) is numerical. There are various regression algorithms that can be used to predict numerical data and you will compare the results of three of them.
+
+**Use the spatio-temporal library for location analytics**<br/>
+This notebook shows you how to work with the spatio-temporal library that is pre-installed on all Spark environments in Watson Studio. You can use the spatio-temporal library to expand your data science analysis in Python notebooks to include location analytics by gathering, manipulating, and displaying imagery, GPS, satellite photography and historical data.
+
+**Use spatial indexing to query spatial data**<br/>
+This notebook shows you how to work with the spatio-temporal library that is pre-installed on all Spark environments in Watson Studio. The spatio-temporal library supports spatial indexing functions which you will learn to use in this notebook.
+
+**Spatial Queries in PySpark**<br/>
+This notebook shows you show to use use spatial queries in Spark environments. The notebook uses the spatio-temporal library that is pre-installed on all Spark environments in Watson Studio. You will learn how to perform common spatial queries in Spark.
