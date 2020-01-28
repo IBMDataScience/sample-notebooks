@@ -1,5 +1,5 @@
 
-# Watson Studio on Cloud Pak for Data sample notebooks
+# Watson Studio on Watson Studio Local 2.1 sample notebooks
 
 With the IBM Watson Studio Notebook editor, you can create Python, Scala, and R notebooks to analyze your data. For more information see TBD.
 
