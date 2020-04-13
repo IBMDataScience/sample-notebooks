@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>Save, compress, and deploy a Keras model</title>
+<title>Deploy a Python function to WML (MNIST tutorial)</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -14135,39 +14135,17 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<table style="border: none" align="left">
-   <tr style="border: none">
-      <th style="border: none"><font face="verdana" size="4" color="black"><b>Save, compress, and deploy a handwritten digit prediction Keras model</b></font></th>
-      <th style="border: none"><img src="https://github.com/pmservice/customer-satisfaction-prediction/blob/master/app/static/images/ml_icon_gray.png?raw=true" alt="Watson Machine Learning icon" height="40" width="40"></th>
-   </tr> 
-   <tr style="border: none">
-       <td style="border: none"><img src="https://github.com/pmservice/wml-sample-models/raw/master/scikit-learn/hand-written-digits-recognition/images/numbers_banner-04.png" width="600" alt="Icon"></td>
-   </tr>
-</table>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>This notebook demonstrates how to train, deploy, and score a Deep Learning model using the Watson Machine Learning service.</p>
-<p>This notebook specifically shows how to save the trained Deep Learning model as a <code>.tgz</code> file locally and deploy the model - the <code>.tgz</code> file - online.</p>
-<p>Some familiarity with Python is helpful. This notebook is compatible with Python 3.6 and uses <code>keras 2.2.5</code> and <a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/environments-parent.html" target="_blank" rel="noopener no referrer">Watson Studio environments.</a></p>
-<h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>In this notebook, you will learn how to:</p>
-<ul>
-<li>Set up Watson Machine Learning service that can be used to deploy/score online a Deep Learning (Keras) model.</li>
-<li>Build a Deep Learning (Keras) model and train it.</li>
-<li>Save the trained model - <code>.tgz</code> file - in the Watson Machine Learning repository.</li>
-<li>Deploy the trained model online and score it.</li>
-</ul>
-<h2 id="Contents">Contents<a class="anchor-link" href="#Contents">&#182;</a></h2><ol>
-<li><a href="#setup">Set up the environment</a></li>
-<li><a href="#data">Explore data</a></li>
-<li><a href="#train">Train/evaluate the model</a></li>
-<li><a href="#save">Save the model locally</a></li>
-<li><a href="#deploy">Create an online deployment</a></li>
-<li><a href="#score">Score data</a></li>
-<li><a href="#summary">Summary and next steps</a></li>
+<h1 id="Deploy-a-Python-function-to-IBM-Watson-Machine-Learning-(MNIST-tutorial)">Deploy a Python function to IBM Watson Machine Learning (MNIST tutorial)<a class="anchor-link" href="#Deploy-a-Python-function-to-IBM-Watson-Machine-Learning-(MNIST-tutorial)">&#182;</a></h1><p>Create and deploy a function that receives HTML canvas image data from a web app and then processes and sends that data to a model trained to recognize handwritten digits.</p>
+<p>This notebook runs on Python 3.6.</p>
+<p>See: <a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-deployed-func-mnist-tutorial.html" target="_blank">MNIST function deployment tutorial</a></p>
+<ol>
+<li><a href="#step1">Install and import required packages and libraries</a></li>
+<li><a href="#step2">Instantiate a Watson Machine Learning client object</a></li>
+<li><a href="#step3">Get an endpoint URL for a model deployment</a></li>
+<li><a href="#step4">Get sample canvas data</a></li>
+<li><a href="#step5">Create a deployable function</a></li>
+<li><a href="#step6">Store and deploy the function</a></li>
+<li><a href="#step7">Test the deployed function</a></li>
 </ol>
 
 </div>
@@ -14176,39 +14154,16 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id="setup"></a></p>
-<h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before running the code in this notebook, make sure you meet the following prerequisites:</p>
-<ul>
-<li><p>A <a href="https://cloud.ibm.com/catalog/services/machine-learning" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance is installed (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener no referrer">here</a>.</p>
-</li>
-<li><p>Local python environment configurations:</p>
-<ul>
-<li>Python 3.6</li>
-<li>keras 2.2.5</li>
-<li>watson-machine-learning-client (run code below to install it)</li>
-<li>matplotlib</li>
-</ul>
-</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Note:</strong> <code>watson-machine-learning-client</code> documentation can be found <a href="http://wml-api-pyclient.mybluemix.net/" target="_blank" rel="noopener no referrer">here</a>.<br>
-<strong>Tip:</strong> Run the cell below to install <code>watson-machine-learning-client</code> package from <a href="https://pypi.python.org/pypi" target="_blank" rel="noopener no referrer">PyPI</a>.</p>
-
+<h2 id="-1.-Install-and-import-required-packages-and-libraries"><a id="step1" /> 1. Install and import required packages and libraries<a class="anchor-link" href="#-1.-Install-and-import-required-packages-and-libraries">&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>rm -rf <span class="nv">$PIP_BUILD</span>/watson-machine-learning-client
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install --upgrade wget
 </pre></div>
 
     </div>
@@ -14229,26 +14184,16 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Authenticate the Watson Machine Learning service on the IBM Cloud.</strong></p>
-<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-get-wml-credentials.html" target="_blank" rel="noopener no referrer">Service credentials</a> tab of the service instance that you created on the IBM Cloud. <BR>If you cannot find the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
-<p><strong>Action</strong>: Enter your WML service instance credentials in the following cell.</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;apikey&#39;</span><span class="p">:</span> <span class="s1">&#39;---&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://ibm-watson-ml.mybluemix.net&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;instance_id&#39;</span><span class="p">:</span> <span class="s1">&#39;---&#39;</span>
-<span class="p">}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">wget</span><span class="o">,</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">watson_machine_learning_client</span> <span class="k">import</span> <span class="n">WatsonMachineLearningAPIClient</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">requests</span>
 </pre></div>
 
     </div>
@@ -14259,16 +14204,22 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Import-watson-machine-learning-client-and-authenticate-the-service-instance.">Import <code>watson-machine-learning-client</code> and authenticate the service instance.<a class="anchor-link" href="#Import-watson-machine-learning-client-and-authenticate-the-service-instance.">&#182;</a></h4>
+<h2 id="-2.-Instantiate-a-Watson-Machine-Learning-client-object"><a id="step2" /> 2. Instantiate a Watson Machine Learning client object<a class="anchor-link" href="#-2.-Instantiate-a-Watson-Machine-Learning-client-object">&#182;</a></h2><p>Paste your Watson Machine Learning credentials in the following cell.</p>
+<p>See: <a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-get-wml-credentials.html" target="_blank">Looking up credentials</a></p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">watson_machine_learning_client</span> <span class="k">import</span> <span class="n">WatsonMachineLearningAPIClient</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;apikey&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;instance_id&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;***&quot;</span>
+<span class="p">}</span>
 </pre></div>
 
     </div>
@@ -14281,6 +14232,19 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">watson_machine_learning_client</span> <span class="k">import</span> <span class="n">WatsonMachineLearningAPIClient</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">WatsonMachineLearningAPIClient</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">)</span>
 </pre></div>
 
@@ -14292,15 +14256,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="2.-Explore-data-">2. Explore data <a id="data" /><a class="anchor-link" href="#2.-Explore-data-">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section, you will check what the input data looks like.
-You need <code>keras.datasets.mnist</code> and <code>matplotlib.pyplot</code> modules to see what each digit looks like.</p>
+<h2 id="3.--Get-an-endpoint-URL-for-a-model-deployment">3. <a id="step3" /> Get an endpoint URL for a model deployment<a class="anchor-link" href="#3.--Get-an-endpoint-URL-for-a-model-deployment">&#182;</a></h2><p>The deployed function created in this notebook is designed to send payload data to a TensorFlow model created in the <a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-mnist-tutorials.html" target="_blank" rel="noopener noreferrer">MNIST tutorials</a>.</p>
 
 </div>
 </div>
@@ -14308,7 +14264,16 @@ You need <code>keras.datasets.mnist</code> and <code>matplotlib.pyplot</code> mo
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Import the MNIST data set from the <code>keras.datasets.mnist</code> module and split the data set into training and test data sets.</p>
+<h3 id="Option-1:-Use-your-own,-existing-model-deployment">Option 1: Use your own, existing model deployment<a class="anchor-link" href="#Option-1:-Use-your-own,-existing-model-deployment">&#182;</a></h3><p>If you already deployed a model while working through one of the following MNIST tutorials, you can use that model deployment:</p>
+<ul>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml_dlaas_tutorial_tensorflow_experiment-builder.html" target="_blank" rel="noopener noreferrer">Experiment builder MNIST tutorial</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml_dlaas_tutorial_tensorflow_experiment-builder_hpo.html" target="_blank" rel="noopener noreferrer">Experiment builder (HPO) MNIST tutorial</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-python-mnist-tutorial.html" target="_blank" rel="noopener noreferrer">Python client (notebook) MNIST tutorial</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml_dlaas_tutorial_tensorflow_cli.html" target="_blank" rel="noopener noreferrer">CLI MNIST tutorial</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml_dlaas_cli_with_hpo.html" target="_blank" rel="noopener noreferrer">CLI (HPO) MNIST tutorial</a></li>
+</ul>
+<p>Paste the model deployment endpoint URL in the following cell.</p>
+<p>See: <a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-get-endpoint-url.html" target="_blank" rel="noopener noreferrer">Looking up an online deployment endpoint URL</a></p>
 
 </div>
 </div>
@@ -14318,8 +14283,7 @@ You need <code>keras.datasets.mnist</code> and <code>matplotlib.pyplot</code> mo
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
-<span class="n">tf</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_deployment_endpoint_url</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 </pre></div>
 
     </div>
@@ -14327,12 +14291,24 @@ You need <code>keras.datasets.mnist</code> and <code>matplotlib.pyplot</code> mo
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Option-2:-Download,-store,-and-deploy-a-sample-model">Option 2: Download, store, and deploy a sample model<a class="anchor-link" href="#Option-2:-Download,-store,-and-deploy-a-sample-model">&#182;</a></h3><p>You can deployed a sample model and get its deployment endpoint URL by running the code in the following four cells.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install --upgrade <span class="nv">keras</span><span class="o">==</span><span class="m">2</span>.2.5
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Download a sample model to the notebook working directory</span>
+
+<span class="n">sample_saved_model_filename</span> <span class="o">=</span> <span class="s1">&#39;mnist-tf-hpo-saved-model.tar.gz&#39;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://github.com/pmservice/wml-sample-models/raw/master/tensorflow/function-deployments-samples/&#39;</span> <span class="o">+</span> <span class="n">sample_saved_model_filename</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">sample_saved_model_filename</span><span class="p">):</span> <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14345,904 +14321,32 @@ You need <code>keras.datasets.mnist</code> and <code>matplotlib.pyplot</code> mo
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">keras</span>
-<span class="kn">from</span> <span class="nn">keras.datasets</span> <span class="k">import</span> <span class="n">mnist</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Store the sample model in your Watson Machine Learning repository</span>
 
-<span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span> <span class="o">=</span> <span class="n">mnist</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+<span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span>              <span class="p">:</span> <span class="s1">&#39;Saved MNIST model&#39;</span><span class="p">,</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_NAME</span>    <span class="p">:</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">,</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_VERSION</span> <span class="p">:</span> <span class="s1">&#39;1.15&#39;</span><span class="p">,</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">RUNTIME_NAME</span>      <span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">RUNTIME_VERSION</span>   <span class="p">:</span> <span class="s1">&#39;3.6&#39;</span>
+<span class="p">}</span>
+<span class="n">model_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_model</span><span class="p">(</span><span class="n">sample_saved_model_filename</span><span class="p">,</span> <span class="n">meta_props</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span> <span class="n">training_data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 </pre></div>
 
     </div>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Downloading data from https://s3.amazonaws.com/img-datasets/mnist.npz
-11493376/11490434 [==============================] - 0s 0us/step
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Import <code>matlplotlib.pyplot</code>.</p>
-
-</div>
-</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-</pre></div>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Deploy the stored model</span>
 
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">Paramters of &quot;display_digits&quot; function:</span>
-
-<span class="sd">plt     - matplotlib&#39;s pyplot module.</span>
-<span class="sd">images  - The array of images. Ex) X_train, X_test in our example</span>
-<span class="sd">labels  - Labels of mapping images. </span>
-<span class="sd">start   - Start index of &quot;images&quot; array.</span>
-<span class="sd">end     - End index of &quot;images&quot; array.</span>
-<span class="sd">num_row - Number of rows.</span>
-<span class="sd">title   - Title of every image that will be displayed. Ex) Training or Test</span>
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="k">def</span> <span class="nf">display_digits</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">num_row</span><span class="p">,</span> <span class="n">title</span><span class="p">):</span>
-    <span class="n">images_and_labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">labels</span><span class="p">))</span>
-    <span class="n">num_col</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="o">/</span><span class="n">num_row</span><span class="p">)</span> <span class="k">if</span> <span class="p">(</span><span class="n">end</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="o">/</span><span class="n">num_row</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
-
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">images_and_labels</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]):</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">num_row</span><span class="p">,</span> <span class="n">num_col</span><span class="p">,</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">gray_r</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span> <span class="o">+</span> <span class="s1">&#39;: </span><span class="si">%i</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">label</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">display_digits</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Train&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXAAAAEICAYAAABGaK+TAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDMuMC4yLCBodHRwOi8vbWF0cGxvdGxpYi5vcmcvOIA7rQAAF1tJREFUeJzt3X2QVcWZx/HfA8i7QBC1RBE1sILKakQlghGFBDUFItEIFUB8wWKVIFURiYkvsZS4asQtFVlFdwVFDCyrsmiiqFGRBRHjG1AJGCOKq4Mi4UVEFOj9Y4b29JE73Jm5b33v91NF1dM8957Tl8M809PT57Q55wQAiE+jYncAAFA/FHAAiBQFHAAiRQEHgEhRwAEgUhRwAIgUBTwLZtbYzD43s0OL3RfkDte1PFXSdS3LAl5z8Xb/2WVm2xLt4XU9nnNup3OutXPugxz0rYmZOTPbmujTvQ09biUo5eta07/jzex1M/vCzJaZ2T/n4rjlrtSva6Kfl9R87V6Yy+M2RJNidyAfnHOtd8dmtkbSaOfcc5leb2ZNnHM7CtG3hKOdc2sKfM6olfJ1NbNmkuZJuk3SNEljJT1hZkc6574uRB9iVcrXNXHO/SRdJekvhTzv3pTlCHxvzGySmc02s0fNbIukEWZ2spm9YmYbzexjM7vLzPapef3uUfNhNe2ZNfk/mtkWM1tiZocX8SNBRb+u/SU559zdzrntkv5NUjNJfXP/SStLiXy93irpDkkbcvnZGqoiC3iNIZJmSWorabakHZLGS+ogqY+kMyWNqeX9P5N0naT2kj6QdNPuRM1/lAl7Of9iM6sys7lm1rnenwJpxbquR0t6a3fDVT+jYnnN36Phivb1ama9JfWQ9EDDPkLuVXIBX+Scm++c2+Wc2+acW+acW+qc2+Gc+7uqfwyubfQ01zn3Ws2Px49IOm53wjl3lnPu9gzv2ynpVEmHSeou6VNJ/2NmjXPxoVC069pa0qbU322StG8DPgu+UZTramZNJN0jaZxzblcOP09OlOUceJbWJhtm1k3SZEk9JbVU9b/N0lreX5WIv1D1F/Be1YzMXq5pfmVmV0jaLOmfVGLza5EqynWV9LmkNqm/ayNpS5bvR+2KdV3HSVrmnHs1+64WTiWPwNOPYbxP0gpJXZxzbSRdL8kK1A9XoHNVgmJd15WSjt3dMDNT9Y/dK/NwrkpUrOvaX9J5NdOdVZJOknSnmd2Zh3PVWSWPwNP2VfWPvFvNrLuq59P+L9cnMbMeqv7GuULVI4ebJb0vaXWuzwVJBbqukv4kqbGZjVX1XOllkr6W9FIezoXCXdcRkpon2vNUPRc/PQ/nqrNKHoGnXSlplKp/5L1P1b8oqRczW2BmEzOkD5T0X6qeNnlX0iGSBhZhGWOlKMh1dc59KWmwpNGSNqr6C38wSwjzplDXdaNzrmr3H1V/U97knEv/vqMojA0dACBOjMABIFIUcACIFAUcACJFAQeASFHAASBShV4HzpKX0pHLmx64rqWD61qe9nhdGYEDQKQo4AAQKQo4AESKAg4AkaKAA0CkKOAAECkKOABEigIOAJGigANApCjgABApCjgARIoCDgCRYlNjYA/+/Oc/B+0pU6b4eMaMGUFu1KhRPh43blyQO/744/PQO6AaI3AAiBQFHAAiRQEHgEiZcwV9ZnsUD4jfuXNn0N60aVPW703OlX7xxRdBbtWqVT6+5557gtyECRN8/Oijjwa55s2b+/jqq68Ocr/5zW+y7lsKD/5PePPNN4P26aefHrQ3b96c1XHatm0btDds2NCwjtUd17UAnn/+eR8PHz48yL300ks+PvLII3N1SjZ0AIByQgEHgEiV9TLCDz74IGh/9dVXPl68eHGQW7RokY83btwY5ObOnZuT/nTq1MnH6eVmjz/+uI/33XffIHfsscf6uG/fvjnpC6RXX33Vx+eee26QS0+bmX3zE2ybNm2CXNOmTX28fv36ILdkyRIf9+zZM+P7ysnChQuD9meffebjIUOGFLo7ebFs2TIfn3DCCUXrByNwAIgUBRwAIkUBB4BIld0c+BtvvOHjfv36Bbm6LAfMhcaNGwftSZMm+bhVq1ZBLrkUqWPHjkHuO9/5jo9zuCypIiSXcr7++utBbsSIET7+6KOPsj5m165dg/bEiRN9PHTo0CDXp08fHyevvyT9+te/zvqcMXnxxReD9jvvvOPjWOfAd+3aFbTfe+89H6d/11bIpdmMwAEgUhRwAIhU2U2hdO7c2ccdOnQIcrmYQunVq1fQTk5vSNILL7zg4/QysZEjRzb4/KibMWPG+HjWrFk5OWb6SYWff/65j9PLPJPTCcuXL8/J+Utd+mmNvXv3LlJPcufjjz8O2tOmTfNx+uu6W7duBemTxAgcAKJFAQeASFHAASBSZTcH3r59ex//7ne/C3Lz58/38fe+970gd8UVV2Q85nHHHefj5557LsillwOuWLHCx3fddVcWPUYupeenn3zySR/XtrzrtNNOC9oDBw4M2smnRaaXeSb/L9X2O5ECP/mzaNJL7srB6NGjM+bSy0oLiRE4AESKAg4AkSq7KZSkc845J2gn78xMP/Hv7bff9vEDDzwQ5JI/PqenTNKOOeYYHyeXGiF/kpsx/PCHPwxyyY0Ykk8UlKQf//jHPk5vopG+m/C3v/2tj9M/Tu+///4+Tj45Mn3Op556Ksgl7wyNffPj5NfPunXritiT/Eg/oTTpRz/6UQF7EmIEDgCRooADQKQo4AAQqbKeA09L76SSlN6MNik5Jz5s2LAg16gR3wMLbfXq1UH7tttu83H6cQnJ+emDDjooyI0aNcrHrVu3DnLpZYTpdn2kN7m+/fbbfZyr2/yL5Q9/+IOPt23bVsSe5E5yLn/NmjUZX3fwwQcXoDd7RvUBgEhRwAEgUhU1hVKbG264wcfpu/mSS8rSd2IOGDAgn91Cje3bt/s4uaxTCpfnpafJHnroIR+nN58t9o/6a9euLer5c2nVqlUZc0cffXQBe5I7yf9nVVVVQS65sUp6SXIhMQIHgEhRwAEgUhRwAIgUc+A1krfI33///UEueZvzpZdeGuROP/30oJ2cZx07dmyQS9/KjewlbztP35KeNG/evKCd3iEHhXfiiScWuwte8tEKkvT000/7eObMmUFuwYIFGY9z7bXX+rhdu3Y56l3dMQIHgEhRwAEgUkyh7MF3v/vdoD19+nQfX3TRRUEuuUwt3d66dWuQu+CCC3ycvisQtfvFL37h4/TGCMnNGEptyqS2TRwqZYOHDRs21Ot9b731lo/Tm0Q8//zzPv7www+D3FdffeXjRx55JMilj9OiRQsfpzcsb9asmY+//vrrIJdeklosjMABIFIUcACIFAUcACLFHHgWhgwZ4uMuXboEuSuvvDJoJ2+1/9WvfhXk3n//fR9fc801Qa6YTzQrRcnNiKVw1530csyzzz67IH2qj2Rf0/1ObpYdu+Rccvpzjhkzxsc333xz1sdMzoGnf1+wzz77+Lhly5ZBrnv37j6++OKLg1zPnj2DdvL3JwceeGCQO+SQQ3ycfuxCt27daut6wTACB4BIUcABIFIUcACIFHPgddSjR4+gPWfOnKA9f/58H1944YVB7t577/XxO++8E+SeffbZHPWwPKTnHJNrew844IAgN3To0IL0KZPko26TjyVO69+/f9C+5ZZb8tWlgps6daqPO3fuHOQWL15cr2MeeuihPh48eHCQO+qoo3z8/e9/v17HT5s2bVrQ/uSTT3x8xBFH5OQcucYIHAAiRQEHgEgxhdJA6SeRjRw50sejR48OcsnbcRcuXBjkkrv+JJc24duaN28etAv9WILklIkkTZo0ycfJDZYlqVOnTj5OLzlNb6RcLn75y18Wuwv1krw9P+28884rYE+yxwgcACJFAQeASFHAASBSzIHX0dtvvx20586dG7SXLVvm4/QjKJOSy6Ak6dRTT81B7ypDMW6dT97Kn57nnj17to/Ty90ee+yx/HYMBXHOOecUuwt7xAgcACJFAQeASDGFsgerVq0K2nfffbeP0z8SV1VVZX3cJk2++edOL31r1IjvpUnpp88l20888USQu/POO3N+/jvuuCNo33TTTT7etGlTkBsxYoSP0zs0AflE1QCASFHAASBSFHAAiFTFzoGn565nzZrl4ylTpgS5NWvW1OscJ554YtBO7sJTyrvIlIL0ri7JdvraXXHFFT5O78Cy3377+fiVV14Jcg8//LCPk7u/SNLatWuDdvIJe2eeeWaQu/zyy7/9AVBW0k8PPfnkk4vUkxAjcACIFAUcACJV1lMo69atC9orV6708c9//vMg99e//rVe5+jVq1fQnjhxoo/Td+WxVDA3duzYEbTvueceH6fvjG3btq2PV69enfU5evfuHbT79evn4xtvvDHr46A87Nq1q9hd2CMqCgBEigIOAJGigANApKKfA9+wYUPQHjNmjI+TT5CTpHfffbde5+jTp4+P07uqnHHGGUG7RYsW9ToHQullWieddJKPX3311YzvSy8xTP8eJKlDhw4+HjZsWJDLx+35iNeSJUuCdnrD8mJhBA4AkaKAA0CkophCWbp0adBOPlA/uYGCJH344Yf1OkfLli19nLyzTwrvoGzVqlW9jo+6OeSQQ4J28imQ9913X5BLPimwNuPHjw/al112mY+7du1a1y4CRccIHAAiRQEHgEhRwAEgUlHMgT/++OO1tjNJbxw8aNAgHzdu3DjITZgwwcft2rWraxeRZ8kdjG644YYgl24D9XHWWWcF7Tlz5hSp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
-"
->
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Training and test data sets shape and correponding label arrays.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;X_train shape:&#39;</span><span class="p">,</span> <span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;y_train shape:&#39;</span><span class="p">,</span> <span class="n">y_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;X_test shape:&#39;</span><span class="p">,</span> <span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;y_test shape:&#39;</span><span class="p">,</span> <span class="n">y_test</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>X_train shape: (60000, 28, 28)
-y_train shape: (60000,)
-X_test shape: (10000, 28, 28)
-y_test shape: (10000,)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Save copies of <code>X_test</code> and <code>y_test</code> for scoring in section <a href="#score">6. Score</a> before reshaping them in section <a href="#train_sub">3.1 Train the model</a>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_test_score</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">y_test_score</span> <span class="o">=</span> <span class="n">y_test</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="3.-Train-and-evaluate-the-model-">3. Train and evaluate the model <a id="train" /><a class="anchor-link" href="#3.-Train-and-evaluate-the-model-">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section, you will build a Deep Learning (Keras) model, train it, and evaluate it.</p>
-<p>Import the required package and modules.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">keras</span>
-<span class="kn">from</span> <span class="nn">keras.models</span> <span class="k">import</span> <span class="n">Sequential</span>
-<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="k">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">Flatten</span>
-<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="k">import</span> <span class="n">Conv2D</span><span class="p">,</span> <span class="n">MaxPooling2D</span>
-<span class="kn">from</span> <span class="nn">keras</span> <span class="k">import</span> <span class="n">backend</span> <span class="k">as</span> <span class="n">K</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.1-Train-the-model-">3.1 Train the model <a id="train_sub" /><a class="anchor-link" href="#3.1-Train-the-model-">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Set the parameters that are required for the Deep Learning (Keras) model.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">128</span>
-<span class="n">num_classes</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">epochs</span> <span class="o">=</span> <span class="mi">6</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>As you have seen in section <a href="#data">2. Explore data</a>, the image size is 28x28 pixels.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span> <span class="o">=</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="n">K</span><span class="o">.</span><span class="n">image_data_format</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;channels_first&#39;</span><span class="p">:</span>
-    <span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span><span class="p">)</span>
-    <span class="n">X_test</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span><span class="p">)</span>
-    <span class="n">input_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">X_test</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">X_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">input_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Scale the digits to be in the range of [0-1] instead of [0-255].</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">X_train</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-<span class="n">X_test</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-<span class="n">X_train</span> <span class="o">/=</span> <span class="mi">255</span>
-<span class="n">X_test</span> <span class="o">/=</span> <span class="mi">255</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Convert the label arrays of training/test digit images into one hot format matrix.</p>
-<p>Ex)<br>
-0 =&gt; [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]<br>
-1 =&gt; [0, 1, 0, 0, 0, 0, 0, 0, 0, 0]<br>
-2 =&gt; [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]<br>
-.<br>
-.<br>
-.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">y_train</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_categorical</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-<span class="n">y_test</span> <span class="o">=</span> <span class="n">keras</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">to_categorical</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<ul>
-<li>Conv2D layer<ul>
-<li>The first 2D convolution layer has 32 output filters and the second 2D convolution layer has 64 output filters.</li>
-<li><code>kernel_size</code> specifies the height and width of the 2D convolution window.</li>
-<li><code>activation</code> is a non-linear function that applies to the output of the layer. <code>relu</code> (rectified linear unit) clamps all values below 0 to 0.</li>
-</ul>
-</li>
-<li>MaxPooling layer<ul>
-<li>Max pooling basically moves a <code>m</code>x<code>n</code> window across a 2D input space where <code>m</code> and <code>n</code> are both 2 in this example. The max value within the window is the output.</li>
-</ul>
-</li>
-<li>Dropout layer<ul>
-<li>Helps the model to avoid overfitting.</li>
-</ul>
-</li>
-<li>Dense layer<ul>
-<li>A regular densely-connected Neural Network layer.</li>
-</ul>
-</li>
-<li>Flatten layer<ul>
-<li>Flattens the input and doesn't affect the batch size.</li>
-</ul>
-</li>
-<li>Adadelta <ul>
-<li>Adapts learning rates based on a moving window of gradient updates instead of accumulating all past gradients. This way, Adadelta continues learning even when many updates occur.</li>
-</ul>
-</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> 
-                 <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
-                 <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span>
-                 <span class="n">input_shape</span><span class="o">=</span><span class="n">input_shape</span><span class="p">))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MaxPooling2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.25</span><span class="p">))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Flatten</span><span class="p">())</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
-<span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
-
-<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">categorical_crossentropy</span><span class="p">,</span>
-              <span class="n">optimizer</span><span class="o">=</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adadelta</span><span class="p">(),</span>
-              <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Train the model with the parameters you set before.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">history</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span>
-          <span class="n">y_train</span><span class="p">,</span>
-          <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
-          <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span>
-          <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-          <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Train on 60000 samples, validate on 10000 samples
-Epoch 1/6
-60000/60000 [==============================] - 341s 6ms/step - loss: 0.2775 - acc: 0.9149 - val_loss: 0.0622 - val_acc: 0.9803
-Epoch 2/6
-60000/60000 [==============================] - 320s 5ms/step - loss: 0.0922 - acc: 0.9730 - val_loss: 0.0382 - val_acc: 0.9868
-Epoch 3/6
-60000/60000 [==============================] - 330s 6ms/step - loss: 0.0671 - acc: 0.9804 - val_loss: 0.0322 - val_acc: 0.9885
-Epoch 4/6
-60000/60000 [==============================] - 327s 5ms/step - loss: 0.0545 - acc: 0.9836 - val_loss: 0.0312 - val_acc: 0.9896
-Epoch 5/6
-60000/60000 [==============================] - 319s 5ms/step - loss: 0.0468 - acc: 0.9856 - val_loss: 0.0296 - val_acc: 0.9899
-Epoch 6/6
-60000/60000 [==============================] - 319s 5ms/step - loss: 0.0412 - acc: 0.9878 - val_loss: 0.0305 - val_acc: 0.9905
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's plot the model accuracy on the train and validation (test) data sets. You will plot the graphs in <code>R</code>'s <code>ggplot</code> style.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;ggplot&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;acc&#39;</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_acc&#39;</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Model Accuracy&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Accuracy&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epoch&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[24]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.legend.Legend at 0x7f3e7c1f8860&gt;</pre>
-</div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,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HiWJQ4gOcvToUSZMmMDatWvZuXMnK1asYNWqVQQHB/PHP/6Rfv368cYbb1BYWMhzzz1HVFQUw4cP5x//+Afbt29n8eLF9OrVixMnTuDn52ff7549e3jxxRepqalh0aJFJCYmumwoCSGcIYlDiFZavnw5RqPRPj1nzhxMJhNhYWHceuutaJrG5MmTef/999mzZw/x8fEcPnyYJ598El9fX2644QZSUlLYunUrw4cP57PPPmPOnDn07t0bgBtuuMHheLNmzSIoKIigoCASEhI4fvy4JA7hUZI4hGilJ554olmNIzs7G7PZ7NCF1KNHD8rKyjh//jzBwcEEBATYl0VGRnLs2DHANoR/VFTUNY8XHh5u/+zn50dtbW1HNUWINpHbcYXoIGVlZQ4vBCspKcFsNhMREUFVVZXD2+guLQPbu2DOnj3r9niFaCtJHEJ0kPLycj766COsVh+vdDgAAADpSURBVCs7duzg9OnTjB49msjISIYMGUJmZib19fWcOHGCL774gilTpgCQkpLCxo0bKSoqQinFiRMnqKys9HBrhLg26aoSopX+67/+y+E5jhEjRjBu3DgGDRpEUVERCxYsIDw8nN/85jeEhIQA8Pjjj7NmzRoeeughgoOD+elPf2rv7rrttttoaGjg+eefp7Kykj59+rBw4UKPtE0IZ8j7OIToAJdux33uuec8HYoQLiddVUIIIVpFEocQQohWka4qIYQQrSJXHEIIIVpFEocQQohWkcQhhBCiVSRxCCGEaBVJHEIIIVrl/wF7t9RleluWgQAAAABJRU5ErkJggg==
-"
->
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's plot the model loss on the train and validation (test) data sets.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Model Loss&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Loss&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epoch&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;train loss&#39;</span><span class="p">,</span> <span class="s1">&#39;test loss&#39;</span><span class="p">],</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[25]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.legend.Legend at 0x7f3e00268048&gt;</pre>
-</div>
-
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-
-
-<div class="output_png output_subarea ">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAY4AAAEaCAYAAAAG87ApAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDMuMC4yLCBodHRwOi8vbWF0cGxvdGxpYi5vcmcvOIA7rQAAIABJREFUeJzt3XtclGX+//HXNTOcB5AZBAQxFbU8pGSoaAdBqLTD5qad9pvfyvbbecv6bal97dvB1XVXc6td21Yzrdxt7eiWZQcytUTKJNSsDPIceACUMwjM9ftjcGAUldPMwMzn+Xjw0Lnnvu/5XB54c93XfV+X0lprhBBCiBYyeLoAIYQQXYsEhxBCiFaR4BBCCNEqEhxCCCFaRYJDCCFEq0hwCCGEaBUJDiHaYfny5ZhMplYd8+STT9KvXz8XVSSE60lwCK902223oZRi0qRJp7y3atUqlFKt/obvTikpKfz2t7/1dBlCNEuCQ3itXr168f7773Po0CGn7YsXL+acc87xUFVCdH0SHMJr9e/fn+TkZJYvX+7Ytm/fPj799FNuv/32U/b/8MMPufDCCwkICCAqKop7772XiooKx/taax5//HGioqIwm83cdNNNHD169JTzfPrpp1x00UUEBQURFxfH7bffTlFRUYe2raCggJtuuolu3boRFBRESkoK33zzjeP92tpaHn74YXr27ElAQAA9evTgpptucry/Y8cOrrjiCrp160ZISAgDBw7ktdde69AahfeS4BBe7c477+Sll17ixMw6L730Emlpaaf0OLZt28avfvUrLr30UnJycnjllVdYvXo1d999t2Of559/noULFzJ//nyys7MZPnw4Tz31lNN51q5dy7XXXstNN93Etm3bWLVqFXv27OHXv/41HTW7j9aaiRMn8uOPP7J69Wq+/vproqOjueyyyygsLATgr3/9K2+88QYrVqwgNzeX9957j+TkZMc5br75ZqxWK5mZmWzfvp2FCxcSERHRIfUJH6CF8EK33nqrTktL01VVVdpisei1a9fquro6HRcXp99++229bNkybTQaHfvfcsstesSIEU7nWLVqlVZK6T179mittY6Li9OPPfaY0z6TJk1yOs/YsWP19OnTnfbZu3evBvS3336rtdb6iSee0AkJCWesf+zYsfqOO+5o9r2MjAwN6B07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
-"
->
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.2-Evaluate-the-model">3.2 Evaluate the model<a class="anchor-link" href="#3.2-Evaluate-the-model">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's evaluate the model.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">score</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Test loss:&#39;</span><span class="p">,</span> <span class="n">score</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Test accuracy: </span><span class="si">{:.2f}</span><span class="s1">%&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">score</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">100</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Test loss: 0.030464614627418632
-Test accuracy: 99.05%
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="4.-Save-the-model-locally-">4. Save the model locally <a id="save" /><a class="anchor-link" href="#4.-Save-the-model-locally-">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section, you will learn how to save the train Deep Learning (Keras) model locally and compress it into a <code>.tgz</code> file.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>First, save the Keras model locally.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">contextlib</span> <span class="k">import</span> <span class="n">suppress</span>
-<span class="kn">import</span> <span class="nn">os</span>
-
-<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;keras_mnist_model.h5&#39;</span>
-
-<span class="c1"># Delete a duplicate file if exists.</span>
-<span class="k">with</span> <span class="n">suppress</span><span class="p">(</span><span class="ne">OSError</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-    
-<span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Compress the Keras model file into a <code>.tgz</code> file. Make sure to add the <code>z</code> flag when running the <code>tar</code> command.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#compress keras model</span>
-<span class="n">tar_filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.tgz&#39;</span>
-<span class="n">cmdstring</span> <span class="o">=</span> <span class="s1">&#39;tar -zcvf &#39;</span> <span class="o">+</span> <span class="n">tar_filename</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">filename</span>
-<span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">cmdstring</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[29]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You can see that the model file (keras_mnist_model.h5) and its compressed version (keras_mnist_model.h5.tgz) are both saved in the local file system.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>ls
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>keras_mnist_model.h5  keras_mnist_model.h5.tgz
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="5.-Create-an-online-deployment-">5. Create an online deployment <a id="deploy" /><a class="anchor-link" href="#5.-Create-an-online-deployment-">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section, you learn how to deploy the compressed version - the <code>.tgz</code> file - of the trained model described in section <a href="#save">4. Save the model locally</a> online.</p>
-<p>First, let's instantiate a <code>WatsonMachineLearningAPIClient</code> object with your WML credentials.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">WatsonMachineLearningAPIClient</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Define metadata for the trained model in section <a href="#train">3. Train and evaluate the model</a>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_props</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s1">&#39;MNIST - compressed keras model&#39;</span><span class="p">,</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_NAME</span><span class="p">:</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">,</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_VERSION</span><span class="p">:</span> <span class="s1">&#39;1.15&#39;</span><span class="p">,</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">RUNTIME_NAME</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span><span class="p">,</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">RUNTIME_VERSION</span><span class="p">:</span> <span class="s1">&#39;3.6&#39;</span><span class="p">,</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">FRAMEWORK_LIBRARIES</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="s1">&#39;keras&#39;</span><span class="p">,</span> <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="s1">&#39;2.2.5&#39;</span><span class="p">}]</span>
-<span class="p">}</span>
-
-<span class="n">published_model_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_model</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">tar_filename</span><span class="p">,</span> <span class="n">meta_props</span><span class="o">=</span><span class="n">model_props</span><span class="p">)</span>       
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Get the <code>uid</code> for the trained model.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_model_uid</span><span class="p">(</span><span class="n">published_model_details</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">model_uid</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>c1e461d7-791c-42ce-95e2-570184a84d2b
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You can deploy the stored model as a web service (online) by running the following code.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[34]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">deployment</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model_uid</span><span class="p">,</span> <span class="s1">&#39;Keras MNIST model deployment through compressed file.&#39;</span><span class="p">)</span>
+<span class="n">model_id</span> <span class="o">=</span> <span class="n">model_details</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;guid&quot;</span><span class="p">]</span>
+<span class="n">model_deployment_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">artifact_uid</span><span class="o">=</span><span class="n">model_id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MNIST saved model deployment&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -15263,18 +14367,17 @@ Test accuracy: 99.05%
 
 #######################################################################################
 
-Synchronous deployment creation for uid: &#39;c1e461d7-791c-42ce-95e2-570184a84d2b&#39; started
+Synchronous deployment creation for uid: &#39;aa16f4fa-e6c1-4207-8f26-818c2259abb7&#39; started
 
 #######################################################################################
 
 
 INITIALIZING
-DEPLOY_IN_PROGRESS...
 DEPLOY_SUCCESS
 
 
 ------------------------------------------------------------------------------------------------
-Successfully finished deployment creation, deployment_uid=&#39;c4c37d47-2fe5-4e40-ad3e-04208b135d6b&#39;
+Successfully finished deployment creation, deployment_uid=&#39;e122beed-42d4-4241-b696-b6526294872a&#39;
 ------------------------------------------------------------------------------------------------
 
 
@@ -15286,20 +14389,15 @@ Successfully finished deployment creation, deployment_uid=&#39;c4c37d47-2fe5-4e4
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Let's list the deployed models.</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get the endpoint URL of the model deployment just created</span>
+
+<span class="n">model_deployment_endpoint_url</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_scoring_url</span><span class="p">(</span><span class="n">model_deployment_details</span><span class="p">)</span>
+<span class="n">model_deployment_endpoint_url</span>
 </pre></div>
 
     </div>
@@ -15310,26 +14408,73 @@ Successfully finished deployment creation, deployment_uid=&#39;c4c37d47-2fe5-4e4
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="6.-Score-data-">6. Score data <a id="score" /><a class="anchor-link" href="#6.-Score-data-">&#182;</a></h2>
+<h2 id="-4.-Get-sample-canvas-data"><a id="step4" /> 4. Get sample canvas data<a class="anchor-link" href="#-4.-Get-sample-canvas-data">&#182;</a></h2><p>The deployed function created in this notebook is designed to accept RGBA image data from an HTML canvas object in one of these sample apps:</p>
+<ul>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-nodejs-mnist-tutorial.html" target="_blank" rel="noopener noreferrer">Node.js MNIST sample app</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-python-flask-mnist-tutorial.html" target="_blank" rel="noopener noreferrer">Python Flask MNIST sample app</a></li>
+</ul>
+<p>Run the following cells to download and view sample canvas data for testing the deployed function.</p>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section, you will learn how to score a test data record.</p>
-<p>First, extract the scoring endpoint from the deployment details.</p>
-
+<h3 id="4.1-Download-sample-data-file">4.1 Download sample data file<a class="anchor-link" href="#4.1-Download-sample-data-file">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">scoring_endpoint</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_scoring_url</span><span class="p">(</span><span class="n">deployment</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">scoring_endpoint</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Download the file containing the sample data</span>
+
+<span class="n">sample_canvas_data_filename</span> <span class="o">=</span> <span class="s1">&#39;mnist-html-canvas-image-data.json&#39;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/pmservice/wml-sample-models/master/tensorflow/function-deployments-samples/&#39;</span> <span class="o">+</span> <span class="n">sample_canvas_data_filename</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">sample_canvas_data_filename</span><span class="p">):</span> <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load the sample data from the file into a variable</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sample_canvas_data_filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">data_file</span><span class="p">:</span>
+    <span class="n">sample_cavas_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data_file</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4.2-View-sample-data">4.2 View sample data<a class="anchor-link" href="#4.2-View-sample-data">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># View the raw contents of the sample data</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Height (n): &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">sample_cavas_data</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; pixels</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Num image data entries: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span> <span class="n">sample_cavas_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]))</span> <span class="o">+</span> <span class="s2">&quot; - (n * n * 4) elements - RGBA values</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">sample_cavas_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">3</span><span class="p">)[:</span><span class="mi">75</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">sample_cavas_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">3</span><span class="p">)[</span><span class="o">-</span><span class="mi">50</span><span class="p">:])</span>
 </pre></div>
 
     </div>
@@ -15346,7 +14491,25 @@ Successfully finished deployment creation, deployment_uid=&#39;c4c37d47-2fe5-4e4
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/deployments/c4c37d47-2fe5-4e40-ad3e-04208b135d6b/online
+<pre>Height (n): 187 pixels
+
+Num image data entries: 139876 - (n * n * 4) elements - RGBA values
+
+{
+   &#34;data&#34;: [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      ...
+      0,
+      0,
+      0
+   ],
+   &#34;height&#34;: 187
+}
 </pre>
 </div>
 </div>
@@ -15355,21 +14518,20 @@ Successfully finished deployment creation, deployment_uid=&#39;c4c37d47-2fe5-4e4
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The first digit of <code>X_test</code> will be used for scoring.</p>
-
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">scoring_data</span> <span class="o">=</span> <span class="n">X_test</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-<span class="n">display_digits</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">X_test_score</span><span class="p">,</span> <span class="n">y_test_score</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Test&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># See what hand-drawn digit the sample data represents</span>
+
+<span class="n">rgba_arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sample_cavas_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">sample_cavas_data</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span> <span class="n">rgba_arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -15388,7 +14550,7 @@ Successfully finished deployment creation, deployment_uid=&#39;c4c37d47-2fe5-4e4
 
 
 <div class="output_png output_subarea ">
-<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALoAAADICAYAAABf5Ps7AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEgAACxIB0t1+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDMuMC4yLCBodHRwOi8vbWF0cGxvdGxpYi5vcmcvOIA7rQAACDFJREFUeJzt3U1IlF0bwPFrynEMxWxwIYHikF8oSoELa5FaFiR9UBEDuWkRRS2ilUS0KWqTuUiTDMVFlCQoUYS20Ep0ERqlFBFFZkKNlSUREZZ63sUDvfjcxx7TGceZ6/+DIK7OjGfoz8H7bhpdxhgjQJRbFu4NAIuB0KECoUMFQocKhA4VCB0qEDpUIPR5crlcf/yVnp4elK/T2NgocXFx83rsiRMnZt3f06dPg7K/SBET7g1EqkAg8Pv3fX19smvXLunr65PU1FQREVm+fHm4tvbbqVOn5Pjx4zNmhw4dkqGhIcnPzw/TrsLEYMF6enqMiJg3b944/mxiYsKcPHnSpKWlmbi4OJOXl2eamppmrKmrqzNZWVnG4/EYr9drSkpKzOjoqOno6DAiMuPX4cOH573PT58+GY/HY2pqaub9HJGK0IPgT6H7/X6zbt0609nZaYaGhsz169dNQkKCuXbtmjHGmN7eXuN2u01zc7MZHh42g4ODpr6+3oyOjpqJiQlTXV1tPB6PCQQCJhAImK9fvxpjjLl8+bIRERMIBOa8z/Pnz5sVK1aY8fHxoLzuSMK3LiH04sULaWlpkaGhIfH5fCIi4vP55NmzZ1JbWysVFRUyMjIiiYmJsnPnTomPjxcRkYKCgt/PkZiYKCIiKSkpM5571apVkp2dLTExc/srNMZIQ0OD+P1+SUpKCsbLiyiEHkL9/f0iIo7vhycnJ39HXV5eLufOnZP09HTZsmWLbNq0Sfbs2SNer/ePz+33+8Xv9895L/fu3ZNXr17J1atX//JVRAdCD6Hp6WlxuVzS398vbrd7xp8tW/bPDa+VK1fKwMCA9PT0SFdXl9TW1kplZaV0d3cH9YKxvr5eCgoKpKioKGjPGUkIPYQKCwvFGCPv3r2TsrKyWdfFxMRIaWmplJaWypkzZyQzM1Nu3Lgh+fn5EhsbK1NTUwvax4cPH+TWrVty8eLFBT1PJOM+egjl5eXJ/v375cCBA9Lc3CyvX7+WgYEBaWxslOrqahERaW1tlZqaGnn8+LGMjIxIW1ubvH//XnJzc0Xkn+/pJycnpb29XcbGxuT79+8iItLS0iI5OTkyNjb2n/toamqS2NhYqaioCN2LXerCfTUcDf501+XXr1/m7NmzJjMz07jdbpOcnGxKSkrMzZs3jTHGdHZ2muLiYuP1eo3H4zFZWVmmqqpqxnMcOXLEJCcnz7i9ONe7LtPT08bn85mDBw8G58VGKJcx/A8jRD++dYEKhA4VCB0qEDpUIHSoQOhQgdChAqFDBUKHCoQOFQgdKhA6VCB0qEDoUIHQoQKhQwVChwqEDhUIHSoQOlQgdKhA6FCB0KECoUMFQocKhA4VCB0qEDpUIHSoQOhQgdChAqFDBUKHCoQOFQgdKhA6VCB0qEDoUIHQoQKhQwVChwqEDhViwr2Bxdba2uqYNTQ0WNeuXr3aMYuLi7OuraiocMxSUlKsazMyMv60RYQAJzpUIHSoQOhQgdChAqFDBZcxxoR7E4vJ5/M5ZsPDwyH5WomJidZ5bm5uSL5eKKSmplrnlZWVjllhYWGotzNvnOhQgdChAqFDBUKHCureAtDY2OiYDQ4OWtfaLhqfP39uXfvkyRPH7MGDB9a1Dx8+dMzS0tIcs5GREevj/4bb7XbMkpOTrWsDgYBjZturiP0ilYtRIMwIHSoQOlQgdKhA6FBB3VsAFtP4+Lh1brtDY7tj0d/fv+A9eDwexyw7O9u6NicnxzH78uWLdW1dXZ1jdvTo0b/c3eLhRIcKhA4VCB0qEDpU4GJUoba2Nut83759jll+fr517f379x0zr9e7sI2FECc6VCB0qEDoUIHQoQKhQwXuukS5jx8/Omaz3UmxrbV9VqWIyN69exe2sUXGiQ4VCB0qEDpUIHSooO5TALSxvW/cdtEpIpKUlOSYzfbe9UjDiQ4VCB0qEDpUIHSowL+MRone3l7rfPPmzY7Zz58/rWu7u7sds40bNy5sY0sEJzpUIHSoQOhQgdChAqFDBd4CECXa29utc9sdlrKyMuva9evXB3VPSwknOlQgdKhA6FCB0KECF6MR6MePH47Z3bt3rWttn49++vRp61rbT7CLFpzoUIHQoQKhQwVChwqEDhW46xKBqqqqHDPbT7oTEdm2bZtjtmHDhqDvaanjRIcKhA4VCB0qEDpU4FMAlrA7d+5Y57t373bM4uPjrWs7Ojocs2h+3/lsONGhAqFDBUKHCoQOFQgdKvAWgCXi8+fPjtmxY8esaycnJx2z8vJy61qNd1hsONGhAqFDBUKHCoQOFXgLQBhMTU05ZkVFRY7Zo0ePrI/PyMhwzGb7FIA1a9b85e6iEyc6VCB0qEDoUIHQoQKhQwXuuoTBy5cvHbPs7Ow5P/727duO2Y4dOxa0p2jHiQ4VCB0qEDpUIHSowPvRQ+jt27fW+datW+f0+AsXLljn27dvn/eetOJEhwqEDhUIHSoQOlQgdKjAXZcQunLlinU+292YfysuLrbOXS7XvPekFSc6VCB0qEDoUIHQoQIXo0HS09PjmF26dCkMO4ENJzpUIHSoQOhQgdChAqFDBe66BElvb69j9u3btzk/3vZ5igkJCQvaE/6PEx0qEDpUIHSoQOhQgYvRMFi7dq1j1tXV5Zh5vd7F2I4KnOhQgdChAqFDBUKHCoQOFfhBAFCBEx0qEDpUIHSoQOhQgdChAqFDBUKHCoQOFQgdKhA6VCB0qEDoUIHQoQKhQwVChwqEDhUIHSoQOlQgdKhA6FCB0KECoUMFQocKhA4VCB0qEDpUIHSoQOhQ4X8ISpG68ZW82AAAAABJRU5ErkJggg==
+<img src="data:image/png;base64,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
 "
 >
 </div>
@@ -15402,18 +14564,90 @@ Successfully finished deployment creation, deployment_uid=&#39;c4c37d47-2fe5-4e4
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Map keys - 'fields' and 'values' - to their corresponding values in the <code>scoring payload</code> dictionary and score the model. However, only 'values' will be used in this example - map 'values' to <code>scoring_data</code> in the <code>scoring payload</code> dictionary .</p>
+<h2 id="-5.-Create-a-deployable-function"><a id="step5" /> 5. Create a deployable function<a class="anchor-link" href="#-5.-Create-a-deployable-function">&#182;</a></h2><p>The basics of creating and deploying functions in Watson Machine Learning are given here:</p>
+<ul>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-deploy-functions.html" target="_blank" rel="noopener noreferrer">Creating and deploying functions</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-functions.html" target="_blank" rel="noopener noreferrer">Implementation details of deployable functions</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="5.1-Define-the-function">5.1 Define the function<a class="anchor-link" href="#5.1-Define-the-function">&#182;</a></h3><ol>
+<li>Define a Python closure with an inner function named "score".</li>
+<li>Use default parameters to save your Watson Machine Learning credentials and the model deployment endpoint URL with the deployed function.</li>
+<li>Process the canvas data (reshape and normalize) and then send the processed data to the model deployment.</li>
+<li>Process the results from the model deployment so the deployed function returns simpler results.</li>
+<li>Implement error handling so the function will behave gracefully if there is an error.</li>
+</ol>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">scoring_payload</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">scoring_data</span><span class="p">]}</span>
-<span class="n">scores</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">scoring_endpoint</span><span class="p">,</span> <span class="n">scoring_payload</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ai_parms</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;wml_credentials&quot;</span><span class="p">:</span> <span class="n">wml_credentials</span><span class="p">,</span> <span class="s2">&quot;model_deployment_endpoint_url&quot;</span><span class="p">:</span> <span class="n">model_deployment_endpoint_url</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">my_deployable_function</span><span class="p">(</span> <span class="n">parms</span><span class="o">=</span><span class="n">ai_parms</span> <span class="p">):</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        
+        <span class="kn">import</span> <span class="nn">subprocess</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="s2">&quot;pip install pillow --user&quot;</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        
+    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>        
+        <span class="n">install_err</span> <span class="o">=</span> <span class="s2">&quot;subprocess.CalledProcessError:</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;cmd:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="n">cmd</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">output:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Installing failed:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">install_err</span><span class="p">)</span>
+    
+        
+    <span class="k">def</span> <span class="nf">getRGBAArr</span><span class="p">(</span><span class="n">canvas_data</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+        <span class="n">dimension</span> <span class="o">=</span> <span class="n">canvas_data</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]</span>
+        <span class="n">rgba_data</span> <span class="o">=</span> <span class="n">canvas_data</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
+        <span class="n">rgba_arr</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">rgba_data</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rgba_arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">dimension</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">getNormAlphaList</span><span class="p">(</span><span class="n">img</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+        <span class="n">alpha_arr</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">norm_alpha_arr</span>  <span class="o">=</span> <span class="n">alpha_arr</span> <span class="o">/</span> <span class="mi">255</span>
+        <span class="n">norm_alpha_list</span> <span class="o">=</span> <span class="n">norm_alpha_arr</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">784</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">norm_alpha_list</span>
+        
+    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="n">function_payload</span><span class="p">):</span>
+            
+        <span class="k">try</span><span class="p">:</span>
+            
+            <span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+            <span class="n">canvas_data</span>   <span class="o">=</span> <span class="n">function_payload</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>           <span class="c1"># Read the payload received by the function</span>
+            <span class="n">rgba_arr</span>      <span class="o">=</span> <span class="n">getRGBAArr</span><span class="p">(</span><span class="n">canvas_data</span><span class="p">)</span>               <span class="c1"># Create an array object with the required shape</span>
+            <span class="n">img</span>           <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">fromarray</span><span class="p">(</span><span class="n">rgba_arr</span><span class="p">,</span> <span class="s1">&#39;RGBA&#39;</span><span class="p">)</span>     <span class="c1"># Create an image object that can be resized</span>
+            <span class="n">sm_img</span>        <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">LANCZOS</span><span class="p">)</span> <span class="c1"># Resize the image to 28 x 28 pixels</span>
+            <span class="n">alpha_list</span>    <span class="o">=</span> <span class="n">getNormAlphaList</span><span class="p">(</span><span class="n">sm_img</span><span class="p">)</span>              <span class="c1"># Create a 1 x 784 array of values between 0 and 1</span>
+            <span class="n">model_payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;values&quot;</span> <span class="p">:</span> <span class="n">alpha_list</span><span class="p">}</span>               <span class="c1"># Create a payload to be sent to the model</span>
+                    
+            <span class="c1">#print( &quot;Payload for model:&quot; ) # For debugging purposes</span>
+            <span class="c1">#print( model_payload )        # For debugging purposes</span>
+                    
+            <span class="kn">from</span> <span class="nn">watson_machine_learning_client</span> <span class="k">import</span> <span class="n">WatsonMachineLearningAPIClient</span>
+            <span class="n">client</span>       <span class="o">=</span> <span class="n">WatsonMachineLearningAPIClient</span><span class="p">(</span><span class="n">parms</span><span class="p">[</span><span class="s2">&quot;wml_credentials&quot;</span><span class="p">])</span>
+            <span class="n">model_result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">parms</span><span class="p">[</span><span class="s2">&quot;model_deployment_endpoint_url&quot;</span><span class="p">],</span> <span class="n">model_payload</span><span class="p">)</span>
+            <span class="n">digit_class</span>  <span class="o">=</span> <span class="n">model_result</span><span class="p">[</span><span class="s2">&quot;values&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;digit_class&quot;</span> <span class="p">:</span> <span class="n">digit_class</span><span class="p">}</span>
+            
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;error&quot;</span> <span class="p">:</span> <span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">)}</span>
+
+
+    <span class="k">return</span> <span class="n">score</span>
 </pre></div>
 
     </div>
@@ -15421,12 +14655,29 @@ Successfully finished deployment creation, deployment_uid=&#39;c4c37d47-2fe5-4e4
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="5.2-Test-locally">5.2 Test locally<a class="anchor-link" href="#5.2-Test-locally">&#182;</a></h3><p>You can test your function in the notebook before deploying the function.</p>
+<p>To see debugging info:</p>
+<ol>
+<li>Uncomment the print statements inside the score function</li>
+<li>Rerun the cell defining the function</li>
+<li>When you rerun the this cell, you will see the debugging info</li>
+</ol>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">scores</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Pass the sample canvas data to the function as a test</span>
+
+<span class="n">func_result</span> <span class="o">=</span> <span class="n">my_deployable_function</span><span class="p">()({</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">sample_cavas_data</span><span class="p">]})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">func_result</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -15443,7 +14694,7 @@ Successfully finished deployment creation, deployment_uid=&#39;c4c37d47-2fe5-4e4
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;fields&#39;: [&#39;prediction&#39;, &#39;prediction_classes&#39;, &#39;probability&#39;], &#39;values&#39;: [[[8.978261190062398e-11, 2.820466171726821e-08, 3.436095141751139e-08, 6.890854251651035e-07, 1.6416447368161613e-10, 8.940977402893679e-10, 8.189679945487527e-13, 0.9999990463256836, 1.604319732617654e-10, 2.0474242035106727e-07], 7, [8.978261190062398e-11, 2.820466171726821e-08, 3.436095141751139e-08, 6.890854251651035e-07, 1.6416447368161613e-10, 8.940977402893679e-10, 8.189679945487527e-13, 0.9999990463256836, 1.604319732617654e-10, 2.0474242035106727e-07]]]}
+<pre>{&#39;digit_class&#39;: 4}
 </pre>
 </div>
 </div>
@@ -15455,7 +14706,245 @@ Successfully finished deployment creation, deployment_uid=&#39;c4c37d47-2fe5-4e4
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As you can see in the following cell, the predicted label (<code>prediction_classes</code>) in the result of the above cell) and the true label are the same - <code>7</code>.</p>
+<h2 id="-6.-Store-and-deploy-the-function"><a id="step6" /> 6. Store and deploy the function<a class="anchor-link" href="#-6.-Store-and-deploy-the-function">&#182;</a></h2><p>Before you can deploy the function, you must store the function in your Watson Machine Learning repository.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Store the deployable function in your Watson Machine Learning repository</span>
+
+<span class="n">meta_data</span> <span class="o">=</span> <span class="p">{</span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">FunctionMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s1">&#39;MNIST deployable function&#39;</span><span class="p">}</span>
+<span class="n">function_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_function</span><span class="p">(</span><span class="n">meta_props</span><span class="o">=</span><span class="n">meta_data</span><span class="p">,</span> <span class="n">function</span><span class="o">=</span><span class="n">my_deployable_function</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>No matching default runtime found. Creating one...SUCCESS
+
+Successfully created runtime with uid: 6057cfcb-ddd2-4cbb-87b3-72db81b53070
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Deploy the stored function</span>
+
+<span class="n">function_id</span> <span class="o">=</span> <span class="n">function_details</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;guid&quot;</span><span class="p">]</span>
+<span class="n">function_deployment_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">artifact_uid</span><span class="o">=</span><span class="n">function_id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MNIST function deployment&quot;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+
+#######################################################################################
+
+Synchronous deployment creation for uid: &#39;7928c04c-2742-4355-9f8a-bc85e993c5dc&#39; started
+
+#######################################################################################
+
+
+INITIALIZING
+DEPLOY_IN_PROGRESS..
+DEPLOY_SUCCESS
+
+
+------------------------------------------------------------------------------------------------
+Successfully finished deployment creation, deployment_uid=&#39;32ca0aeb-4abf-4904-961b-35ce63356eb7&#39;
+------------------------------------------------------------------------------------------------
+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="-7.-Test-the-deployed-function"><a id="step7" /> 7. Test the deployed function<a class="anchor-link" href="#-7.-Test-the-deployed-function">&#182;</a></h2><p>You can use the Watson Machine Learning Python client or REST API to send data to your function deployment for processing in exactly the same way you send data to model deployments for processing.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get the endpoint URL of the function deployment just created</span>
+
+<span class="n">function_deployment_endpoint_url</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_scoring_url</span><span class="p">(</span><span class="n">function_deployment_details</span><span class="p">)</span>
+<span class="n">function_deployment_endpoint_url</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">sample_cavas_data</span><span class="p">]}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="7.1-Watson-Machine-Learning-Python-client">7.1 Watson Machine Learning Python client<a class="anchor-link" href="#7.1-Watson-Machine-Learning-Python-client">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">function_deployment_endpoint_url</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+<span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">])</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{&#39;digit_class&#39;: 4}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="7.2-Watson-Machine-Learning-REST-API-example">7.2 Watson Machine Learning REST API example<a class="anchor-link" href="#7.2-Watson-Machine-Learning-REST-API-example">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Get an IAM token from IBM Cloud</span>
+<span class="n">url</span>     <span class="o">=</span> <span class="s2">&quot;https://iam.bluemix.net/oidc/token&quot;</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span><span class="p">}</span>
+<span class="n">data</span>    <span class="o">=</span> <span class="s2">&quot;apikey=&quot;</span> <span class="o">+</span> <span class="n">wml_credentials</span><span class="p">[</span><span class="s2">&quot;apikey&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;&amp;grant_type=urn:ibm:params:oauth:grant-type:apikey&quot;</span>
+<span class="n">IBM_cloud_iam_uid</span> <span class="o">=</span> <span class="s2">&quot;bx&quot;</span>
+<span class="n">IBM_cloud_iam_pwd</span> <span class="o">=</span> <span class="s2">&quot;bx&quot;</span>
+<span class="n">response</span>  <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="n">IBM_cloud_iam_uid</span><span class="p">,</span> <span class="n">IBM_cloud_iam_pwd</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="mi">200</span> <span class="o">!=</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">reason</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">iam_token</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;access_token&quot;</span><span class="p">]</span>
+    
+    <span class="c1"># Send data to deployment for processing</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span>   <span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+               <span class="s2">&quot;Authorization&quot;</span>  <span class="p">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">iam_token</span><span class="p">,</span>
+               <span class="s2">&quot;ML-Instance-ID&quot;</span> <span class="p">:</span> <span class="n">wml_credentials</span><span class="p">[</span><span class="s2">&quot;instance_id&quot;</span><span class="p">]}</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">function_deployment_endpoint_url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{&#34;digit_class&#34;: 4}
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Summary-and-next-steps">Summary and next steps<a class="anchor-link" href="#Summary-and-next-steps">&#182;</a></h2><p>In this notebook, you created a Python function that receives HTML canvas image data and then processes and sends that data to a model trained to recognize handwritten digits.</p>
+<p>To learn how you can use this deployed function in a web app, see:</p>
+<ul>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-nodejs-mnist-tutorial.html" target="_blank" rel="noopener noreferrer">Sample Node.js app that recognizes hand-drawn digits</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/ml-python-flask-mnist-tutorial.html" target="_blank" rel="noopener noreferrer">Sample Python Flask app that recognizes hand-drawn digits</a></li>
+</ul>
 
 </div>
 </div>
@@ -15463,24 +14952,7 @@ Successfully finished deployment creation, deployment_uid=&#39;c4c37d47-2fe5-4e4
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="7.-Summary-and-next-steps-">7. Summary and next steps <a id="summary" /><a class="anchor-link" href="#7.-Summary-and-next-steps-">&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>You successfully completed this notebook!</p>
-<p>You learned how to train, evaluate, and score a Keras model. You also learned how to deploy the model in a <code>.tgz</code> format via <code>watson-machine-learning-client</code> package.</p>
-<p>Check out our <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener noreferrer">Online Documentation</a> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Author">Author<a class="anchor-link" href="#Author">&#182;</a></h3><p><strong>Jihyoung Kim</strong>, Ph.D., is a Data Scientist at IBM who strives to make data science easy for everyone through Watson Studio.</p>
+<h3 id="Authors"><a id="authors" />Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Sarah Packowski</strong> is a member of the IBM Watson Studio Content Design team in Canada.</p>
 
 </div>
 </div>
@@ -15489,7 +14961,7 @@ Successfully finished deployment creation, deployment_uid=&#39;c4c37d47-2fe5-4e4
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><hr>
-Copyright © 2019, 2020 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+Copyright &copy; IBM Corp. 2018-2020. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
