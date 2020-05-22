@@ -14164,7 +14164,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">encryptedParquetFullName</span> <span class="k">=</span> <span class="s">&quot;/tmp/bloodtests.parquet.encrypted&quot;</span> <span class="c1">// Change to your encrypted files path</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">val</span> <span class="n">encryptedParquetFullName</span> <span class="o">=</span> <span class="s2">&quot;/tmp/bloodtests.parquet.encrypted&quot;</span> <span class="o">//</span> <span class="n">Change</span> <span class="n">to</span> <span class="n">your</span> <span class="n">encrypted</span> <span class="n">files</span> <span class="n">path</span>
 </pre></div>
 
     </div>
@@ -14219,8 +14219,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="o">.</span><span class="n">set</span><span class="o">(</span><span class="s">&quot;encryption.key.list&quot;</span><span class="o">,</span>
-      <span class="s">&quot;key1: AAECAwQFBgcICQoLDA0ODw==, key2: AAECAAECAAECAAECAAECAA==&quot;</span><span class="o">)</span> <span class="c1">// Fill in your personal setup keys</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;encryption.key.list&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;key1: &lt;your_key_here&gt;==, key2: &lt;your_key_here&gt;==&quot;</span><span class="p">)</span> <span class="o">//</span> <span class="n">Fill</span> <span class="ow">in</span> <span class="n">your</span> <span class="n">personal</span> <span class="n">setup</span> <span class="n">keys</span>
 </pre></div>
 
     </div>
@@ -14261,8 +14261,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">dataRange</span> <span class="k">=</span> <span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="mi">40</span><span class="o">).</span><span class="n">toList</span>
-<span class="k">val</span> <span class="n">bloodTestList</span> <span class="k">=</span> <span class="n">dataRange</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="n">i</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="o">(</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="o">)))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">val</span> <span class="n">dataRange</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="n">to</span> <span class="mi">40</span><span class="p">)</span><span class="o">.</span><span class="n">toList</span>
+<span class="n">val</span> <span class="n">bloodTestList</span> <span class="o">=</span> <span class="n">dataRange</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">i</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)))</span>
 </pre></div>
 
     </div>
@@ -14326,11 +14326,11 @@ bloodTestList = List((1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16),
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="n">bloodTestList</span><span class="o">.</span><span class="n">toDF</span><span class="o">(</span><span class="s">&quot;id&quot;</span><span class="o">,</span> <span class="s">&quot;value&quot;</span><span class="o">).</span><span class="n">write</span>
-        <span class="c1">// Configure which columns to encrypt with which keys</span>
-      <span class="o">.</span><span class="n">option</span><span class="o">(</span><span class="s">&quot;encryption.column.keys&quot;</span><span class="o">,</span> <span class="s">&quot;key1: id&quot;</span><span class="o">)</span>
-      <span class="o">.</span><span class="n">option</span><span class="o">(</span><span class="s">&quot;encryption.footer.key&quot;</span><span class="o">,</span> <span class="s">&quot;key2&quot;</span><span class="o">)</span>
-      <span class="o">.</span><span class="n">mode</span><span class="o">(</span><span class="s">&quot;overwrite&quot;</span><span class="o">).</span><span class="n">parquet</span><span class="o">(</span><span class="n">encryptedParquetFullName</span><span class="o">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bloodTestList</span><span class="o">.</span><span class="n">toDF</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span>
+        <span class="o">//</span> <span class="n">Configure</span> <span class="n">which</span> <span class="n">columns</span> <span class="n">to</span> <span class="n">encrypt</span> <span class="k">with</span> <span class="n">which</span> <span class="n">keys</span>
+      <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;encryption.column.keys&quot;</span><span class="p">,</span> <span class="s2">&quot;key1: id&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;encryption.footer.key&quot;</span><span class="p">,</span> <span class="s2">&quot;key2&quot;</span><span class="p">)</span>
+      <span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="s2">&quot;overwrite&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">encryptedParquetFullName</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14359,10 +14359,10 @@ bloodTestList = List((1,2), (2,4), (3,6), (4,8), (5,10), (6,12), (7,14), (8,16),
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">encrypedDataDF</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="o">(</span><span class="n">encryptedParquetFullName</span><span class="o">)</span>
-<span class="n">encrypedDataDF</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="o">(</span><span class="s">&quot;bloodtests&quot;</span><span class="o">)</span>
-<span class="k">val</span> <span class="n">queryResult</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="o">(</span><span class="s">&quot;SELECT id, value FROM bloodtests&quot;</span><span class="o">)</span>
-<span class="n">queryResult</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="kc">false</span><span class="o">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">val</span> <span class="n">encrypedDataDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="n">encryptedParquetFullName</span><span class="p">)</span>
+<span class="n">encrypedDataDF</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">&quot;bloodtests&quot;</span><span class="p">)</span>
+<span class="n">val</span> <span class="n">queryResult</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sql</span><span class="p">(</span><span class="s2">&quot;SELECT id, value FROM bloodtests&quot;</span><span class="p">)</span>
+<span class="n">queryResult</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">false</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14445,9 +14445,9 @@ queryResult = [id: int, value: int]
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">scala.sys.process._</span>
-<span class="k">val</span> <span class="n">parquetPartitionFile</span> <span class="k">=</span> <span class="nc">Seq</span><span class="o">(</span><span class="s">&quot;hdfs&quot;</span><span class="o">,</span> <span class="s">&quot;dfs&quot;</span><span class="o">,</span> <span class="s">&quot;-ls&quot;</span><span class="o">,</span> <span class="s">&quot;-S&quot;</span><span class="o">,</span> <span class="s">&quot;-C&quot;</span><span class="o">,</span> <span class="n">encryptedParquetFullName</span><span class="o">).!!.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;\\s+&quot;</span><span class="o">)(</span><span class="mi">0</span><span class="o">)</span>
-<span class="nc">Seq</span><span class="o">(</span><span class="s">&quot;hdfs&quot;</span><span class="o">,</span> <span class="s">&quot;dfs&quot;</span><span class="o">,</span> <span class="s">&quot;-tail&quot;</span><span class="o">,</span> <span class="n">parquetPartitionFile</span><span class="o">)</span> <span class="o">#|</span> <span class="s">&quot;tail -c 4&quot;</span> <span class="o">!</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">scala.sys.process._</span>
+<span class="n">val</span> <span class="n">parquetPartitionFile</span> <span class="o">=</span> <span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;hdfs&quot;</span><span class="p">,</span> <span class="s2">&quot;dfs&quot;</span><span class="p">,</span> <span class="s2">&quot;-ls&quot;</span><span class="p">,</span> <span class="s2">&quot;-S&quot;</span><span class="p">,</span> <span class="s2">&quot;-C&quot;</span><span class="p">,</span> <span class="n">encryptedParquetFullName</span><span class="p">)</span><span class="o">.!</span>!.split<span class="o">(</span><span class="s2">&quot;\\s+&quot;</span><span class="o">)(</span><span class="m">0</span><span class="o">)</span>
+<span class="n">Seq</span><span class="p">(</span><span class="s2">&quot;hdfs&quot;</span><span class="p">,</span> <span class="s2">&quot;dfs&quot;</span><span class="p">,</span> <span class="s2">&quot;-tail&quot;</span><span class="p">,</span> <span class="n">parquetPartitionFile</span><span class="p">)</span> <span class="c1">#| &quot;tail -c 4&quot; !</span>
 </pre></div>
 
     </div>
