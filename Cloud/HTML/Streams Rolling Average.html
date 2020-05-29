@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>Streams Rolling Average</title>
+<title>Calculate rolling averages on streaming data using</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13088,19 +13088,102 @@ content: "\f048";
 
 /*GENERAL NOTEBOOK SITE*/
 
+/* COLOURS */
+/* CARBON 10 GRAY 10 */
+html {
+	--carbon-ui-background: #F4F4F4;
+	--carbon-interactive-01: #0F62FE;
+	--carbon-interactive-02: #393939;
+	--carbon-interactive-03: #0F62FE;
+	--carbon-interactive-04: #0F62FE;
+	--carbon-hover-primary: #0353e9;
+	--carbon-hover-ui: #E5E5E5;
+	--carbon-danger: #DA1E28;
+	--carbon-ui-01: #FFFFFF;
+	--carbon-ui-02: #F4F4F4;
+	--carbon-ui-03: #E0E0E0;
+	--carbon-ui-04: #8D8D8D;
+	--carbon-ui-05: #161616;
+	--carbon-text-01: #161616;
+	--carbon-text-02: #393939;
+	--carbon-text-03: #A8A8A8;
+	--carbon-text-04: #FFFFFF;
+	--carbon-text-05: #6F6F6F;
+	--carbon-link-01: #0F62FE;
+	--carbon-inverse-link: #78A9FF;
+	--carbon-icon-01: #161616;
+	--carbon-icon-02: #525252;
+	--carbon-icon-03: #FFFFFF;
+	--carbon-field-01: #FFFFFF;
+	--carbon-field-02: #F4F4F4;
+	--carbon-inverse-01: #FFFFFF;
+	--carbon-inverse-02: #393939;
+	--carbon-support-01: #DA1E28;
+	--carbon-support-02: #24A148;
+	--carbon-support-03: #F1C21B;
+	--carbon-support-04: #0043CE;
+	--carbon-inverse-support-01: #FA4D56;
+	--carbon-inverse-support-02: #42BE65;
+	--carbon-inverse-support-03: #F1C21B;
+	--carbon-inverse-support-04: #4589FF;
+	--carbon-overlay-01: rgba(22, 22, 22, 0.5);
+	--carbon-overlay-02: rgba(22, 22, 22, 0.05);
+}
+
+/* CARBON 10 GRAY 90 */
+/* html {
+	--carbon-ui-background: #262626;
+	--carbon-interactive-01: #0f62fe;
+	--carbon-interactive-02: #6f6f6f;
+	--carbon-interactive-03: #ffffff;
+	--carbon-interactive-04: #4589ff;
+	--carbon-hover-primary: #0353e9;
+	--carbon-hover-ui: #4c4c4c;
+	--carbon-danger: #da1e28;
+	--carbon-ui-01: #393939;
+	--carbon-ui-02: #525252;
+	--carbon-ui-03: #525252;
+	--carbon-ui-04: #8d8d8d;
+	--carbon-ui-05: #f4f4f4;
+	--carbon-text-01: #f4f4f4;
+	--carbon-text-02: #c6c6c6;
+	--carbon-text-03: #6f6f6f;
+	--carbon-text-04: #ffffff;
+	--carbon-text-05: #8d8d8d;
+	--carbon-link-01: #78a9ff;
+	--carbon-inverse-link: #0f62fe;
+	--carbon-icon-01: #f4f4f4;
+	--carbon-icon-02: #c6c6c6;
+	--carbon-icon-03: #ffffff;
+	--carbon-field-01: #393939;
+	--carbon-field-02: #525252;
+	--carbon-inverse-01: #161616;
+	--carbon-inverse-02: #f4f4f4;
+	--carbon-support-01: #fa4d56;
+	--carbon-support-02: #42be65;
+	--carbon-support-03: #f1c21b;
+	--carbon-support-04: #4589ff;
+	--carbon-inverse-support-01: #da1e28;
+	--carbon-inverse-support-02: #24a148;
+	--carbon-inverse-support-03: #f1c21b;
+	--carbon-inverse-support-04: #0f62fe;
+	--carbon-overlay-01: rgba(22, 22, 22, 0.7);
+	--carbon-overlay-02: rgba(22, 22, 22, 0.2);
+} */
+
 html, body {
 /*Return the root to 16px for safe usage of rem unit*/
 font-size: 100%;
 height: 100%;
 width: 100%;
-background-color: #f5f7fa;
+background-color: var(--carbon-ui-background);
 }
 
 body {
 margin: 0;
 padding: 0;
 border: 0;
-color: #5a6872;
+color: var(--carbon-text-02);
 font-weight: 400;
 /* Font-size fix for bluemix header (part 1) */
 font-size: 100%;
@@ -13130,7 +13213,7 @@ display: none !important;
 }
 
 .notebook_app #header {
-background-color: #f5f7fa;
+background-color: var(--carbon-ui-background);
 box-shadow: none;
 }
 
@@ -13143,35 +13226,35 @@ display: none;
 }
 
 .notebook_app .navbar-default {
-background-color: #f5f7fa;
+background-color: var(--carbon-ui-background);
 border: none;
 }
 
-.notebook_app .navbar-default .navbar-nav>li>a {
-color: #5a6872;
+.notebook_app .navbar-default .navbar-nav > li > a {
+color: var(--carbon-text-02);
 padding-left: 0;
 padding-right: 1.5rem;
 padding-top: 0;
 background-color: transparent;
 }
 
-.notebook_app .navbar-default .navbar-nav>li>a:hover,
-.notebook_app .navbar-default .navbar-nav>.open>a {
-color: #152934;
+.notebook_app .navbar-default .navbar-nav > li > a:hover,
+.notebook_app .navbar-default .navbar-nav > .open > a {
+color: var(--carbon-text-02);
 background-color: transparent;
 }
 
 .notebook_app .navbar-default .btn-default {
-color: #5a6872;
+color: var(--carbon-text-02);
 }
 
 .notebook_app .navbar-default .btn-default:hover {
-color: #152934;
+color: var(--carbon-text-02);
 background-color: transparent;
 }
 
 .notebook_app #kernel_indicator {
-color: #5a6872;
+color: var(--carbon-text-02);
 text-align: right;
 margin-right: 3em;
 line-height: normal;
@@ -13196,7 +13279,7 @@ width: 100% !important;
 
 .notebook_app .btn-group {
 margin: 0;
-border-right: solid 1px #dfe3e6;
+border-right: solid 1px var(--carbon-ui-03);
 /* height: 3em; */
 display: inline-flex;
 display: -webkit-inline-box;  /* OLD - iOS 6-, Safari 3.1-6, BB7 */
@@ -13221,14 +13304,14 @@ padding-left: 0;
   padding: 0;
   border-width: 0;
   font: inherit;
-  fill: #3d70b2;
-  color: #5a6872;
+  fill: var(--carbon-interactive-01);
+  color: var(--carbon-text-02);
 }
 
 .notebook_app .btn-group button:hover,
 .notebook_app .btn-group button:active,
 .notebook_app .btn-group button:focus {
-  fill: #5596e6;
+  fill: var(--carbon-hover-primary);
   background-color: transparent;
 }
 
@@ -13237,14 +13320,14 @@ padding-left: 0;
 }
 
 .notebook_app .toolbar .btn-group .btn .fa {
-  color: #3d70b2;
+  color: var(--carbon-interactive-01);
   font-size: 1rem;
 }
 
 .notebook_app .toolbar .btn-group .btn:hover .fa,
 .notebook_app .toolbar .btn-group .btn:active .fa,
 .notebook_app .toolbar .btn-group .btn:focus .fa {
-  color: #5596e6;
+  color: var(--carbon-hover-primary);
 }
 
 /*ICONS*/
@@ -13279,7 +13362,7 @@ height: 0;
 content: '';
 border-left: 0.3125rem solid transparent;
 border-right: 0.3125rem solid transparent; 
-border-top: 0.3125rem solid #3d70b2;
+border-top: 0.3125rem solid var(--carbon-interactive-01);
 z-index: -1;
 }
 
@@ -13294,9 +13377,9 @@ line-height: 1.68;
 -webkit-appearance: none;
 -moz-appearance: none;
 appearance: none;
-background-color: rgba(60, 112, 178, .1);
+background-color: var(--carbon-overlay-02);
 border: none;
-color: #5a6872;
+color: var(--carbon-text-02);
 margin: 0;
 padding: 0;
 padding-left: 0.5rem;
@@ -13325,32 +13408,32 @@ margin-right: .5rem;
 
 /*MENUS*/
 .notebook_app .dropdown-menu {
-background-color: #ffffff;
-border-color: #dfe3e6;
+background-color: var(--carbon-ui-01);
+border-color: var(--carbon-ui-03);
 box-sizing: border-box;
 }
 
 .notebook_app .dropdown-menu li a {
-color: #152934;
+color: var(--carbon-text-02);
 padding-left: 1rem;
 }
 
 .notebook_app .dropdown-menu li a:hover {
-background-color: #3d70b2;
-color: #ffffff;
+background-color: var(--carbon-interactive-04);
+color: var(--carbon-ui-01);
 }
 
 .notebook_app .dropdown-menu li.disabled a {
 background-color: transparent;
-color: #aeaeae;
+color: var(--carbon-text-03);
 }
 
 .notebook_app .dropdown-submenu > a::after {
-color: #152934;
+color: var(--carbon-text-02);
 }
 
 .notebook_app .dropdown-menu .divider {
-background-color: #dfe3e6;
+background-color: var(--carbon-ui-03);
 }
 
 .notebook_app .dropdown-submenu > .dropdown-menu {
@@ -13359,9 +13442,9 @@ margin-left: 0;
 
 /*NOTEBOOK CONTAINER*/
 .notebook_app #notebook-container {
-color: #5a6872;
+color: var(--carbon-text-02);
 box-shadow: none;
-border: solid thin #dfe3e6;
+border: solid thin var(--carbon-ui-03);
 }
 
 .notebook_app .btn:active {
@@ -13369,7 +13452,7 @@ box-shadow: none;
 }
 
 .notebook_app #notebook-container .celltoolbar {
-background-color: #f5f7fa;
+background-color: var(--carbon-ui-02);
 height: initial;
 padding: 3px;
 }
@@ -13392,27 +13475,27 @@ box-sizing: border-box;
 }
 
 .notebook_app #notebook-container .celltoolbar .tags-input input:focus {
-border-color: #3d70b2;
+border-color: var(--carbon-interactive-04);
 }
 
 .notebook_app #notebook-container .btn-xs {
 padding: 0 0.5rem;
 line-height: 1;
-color: #3d70b2;
+color: var(--carbon-interactive-04);
 font-weight: 600;
 text-decoration: none;
 transition: all .2s ease-in-out;
 cursor: pointer;
 height: 1.68rem;
-border: 0.125rem solid #3d70b2;
+border: 0.125rem solid var(--carbon-interactive-04);
 background-color: transparent;
 }
 
 .notebook_app #notebook-container .btn-xs:hover,
 .notebook_app #notebook-container .btn-xs:active,
 .notebook_app #notebook-container .btn-xs:focus {
-background-color: #3d70b2;
-color: #ffffff;
+background-color: var(--carbon-interactive-04);
+color: var(--carbon-ui-01);
 }
 
 .notebook_app #notebook-container .btn-xs.tags-dialog-btn {
@@ -13422,11 +13505,11 @@ display: none;
 }
 
 .notebook_app #notebook-container .cell-tag {
-color: #152934;
+color: var(--carbon-text-02);
 padding-right: 0.5rem;
 padding-left: 0.5rem;
 line-height: 1.5;
-background-color: #dfe3e6;
+background-color: var(--carbon-ui-03);
 border-radius: 0.9375rem;
 }
 
@@ -13435,12 +13518,12 @@ display: none;
 }
 
 .notebook_app #notebook-container .cell-tag .remove-tag-btn {
-color: #3d70b2;
+color: var(--carbon-interactive-01);
 cursor: pointer;
 }
 
 .notebook_app #notebook-container .cell-tag .remove-tag-btn:hover {
-color: #5596e6;
+color: var(--carbon-hover-primary);
 }
 
 .notebook_app #notebook-container .input .run_this_cell {
@@ -13448,11 +13531,11 @@ color: #5596e6;
   padding-top: 0.125rem;
   width: initial;
   align-self: flex-start;
-  fill: #3d70b2;
+  fill: var(--carbon-interactive-01);
 }
 
 .notebook_app #notebook-container .input .run_this_cell:hover {
-  fill: #5596e6;
+  fill: var(--carbon-hover-primary);
 }
 
 .notebook_app #notebook-container .input .prompt {
@@ -13465,7 +13548,7 @@ color: #5596e6;
 
 /*DIALOGS*/
 .notebook_app .modal-dialog {
-color: #5a6872;
+color: var(--carbon-text-02);
 font-family: 'ibm-plex-sans', 'Helvetica Neue for IBM', 'Helvetica Neue', Helvetica, Arial, Roboto, sans-serif;
 width: 50%;
 }
@@ -13477,7 +13560,7 @@ visibility: hidden;
 
 .notebook_app .modal-content {
 border-width: 0;
-border-top: 0.375rem solid #3d70b2;
+border-top: 0.375rem solid var(--carbon-interactive-01);
 border-radius: 0;
 }
 
@@ -13489,14 +13572,10 @@ padding-bottom: 0;
 border: none;
 }
 
-.notebook_app .modal-header button.close {
-display: none;
-}
-
 .notebook_app .modal-title {
 font-size: 2.618em;
 font-weight: 300;
-color: #1d3649;
+color: var(--carbon-text-01);
 }
 
 .notebook_app .modal-body {
@@ -13505,13 +13584,13 @@ padding: 1rem 4.99469%;
 
 .notebook_app .modal-footer {
 border: none;
-background-color: #f5f7fa;
+background-color: var(--carbon-ui-background);
 padding-right: 4.99469%;
 padding-left: 4.99469%;
 }
 
 .notebook_app .modal-body a {
-color: #3d70b2;
+color: var(--carbon-link-01);
 text-decoration: none;
 background-color: transparent;
 }
@@ -13522,7 +13601,7 @@ text-decoration: underline;
 }
 
 .notebook_app .modal-body a:active {
-color: #5596e6;
+color: var(--carbon-hover-primary);
 }
 
 .notebook_app .modal-dialog .btn {
@@ -13541,21 +13620,23 @@ font-family: inherit;
 .notebook_app .modal-dialog .btn-default {
 transition: all .2s ease-in-out;
 background-color: transparent;
-color: #3d70b2;
+color: var(--carbon-interactive-01);
 border: none;
 }
 
 .notebook_app .modal-dialog .btn-default:hover,
 .notebook_app .modal-dialog .btn-default:focus,
 .notebook_app .modal-dialog .btn-default:active  {
-background-color: #3d70b2;
-color: #ffffff;
+background-color: var(--carbon-hover-ui);
+color: var(--carbon-hover-primary);
 }
 
 .notebook_app .modal-dialog .btn-primary,
 .notebook_app .modal-dialog .btn-danger,
 .notebook_app .modal-dialog .btn-danger:focus {
-border: 2px solid #3d70b2;
+border: 2px solid var(--carbon-interactive-01);
+background-color: var(--carbon-interactive-01);
+color: var(--carbon-text-04);
 }
 
 .notebook_app .modal-dialog .btn-primary:hover,
@@ -13563,9 +13644,9 @@ border: 2px solid #3d70b2;
 .notebook_app .modal-dialog .btn-primary:active,
 .notebook_app .modal-dialog .btn-danger:hover,
 .notebook_app .modal-dialog .btn-danger:active {
-background-color: #3d70b2;
-border-color: #3d70b2;
-color: #ffffff;
+background-color: var(--carbon-hover-primary);
+border-color: var(--carbon-hover-primary);
+color: var(--carbon-text-04);
 }
 
 .notebook_app .modal-dialog .item-buttons .btn-default.btn-xs {
@@ -13582,7 +13663,7 @@ height: initial;
 .notebook_app .modal-dialog .item-buttons .btn-default.btn-danger:hover,
 .notebook_app .modal-dialog .item-buttons .btn-default.btn-danger:focus {
 background-color: transparent;
-color: #5596e6;
+color: var(--carbon-hover-primary);
 }
 
 .notification_widget.ax_notebook_saved {
@@ -13594,7 +13675,7 @@ margin-right: 0;
 margin-bottom: 0.375rem;
 line-height: normal;
 font-size: 0.875rem;
-color: #5aa700;
+color: var(--carbon-support-02);
 border: none;
 }
 
@@ -13611,7 +13692,7 @@ margin-right: 0;
 margin-bottom: 0.375rem;
 line-height: normal;
 font-size: 0.875rem;
-color: #5aa700;
+color: var(--carbon-support-02);
 border: none;
 }
 
@@ -13631,14 +13712,14 @@ margin-right: 0;
 margin-bottom: 0.375rem;
 line-height: normal;
 font-size: 0.875rem;
-color: #3d70b2;
+color: var(--carbon-interactive-04);
 border: none;
 }
 
 #notification_trusted:hover,
 #notification_trusted:active,
 #notification_trusted:focus {
-  color: #5596e6;
+  color: var(--carbon-hover-primary);
 }
 
 /*
@@ -13704,8 +13785,8 @@ color: black;
 display: table;
 table-layout: fixed;
 width: 100%;
-background-color: #ffffff;
-border: 2px solid #d8d8d8;
+background-color: var(--carbon-ui-01);
+border: 2px solid var(--carbon-ui-03);
 }
 
 .spark_table_thead {
@@ -13720,21 +13801,21 @@ border-color: inherit;
 }
 
 .spark_table_tr.spark_table_header {
-border-bottom: 2px solid #d8d8d8;
-background-color: #eaeaea;
+border-bottom: 2px solid var(--carbon-ui-03);
+background-color: var(--carbon-ui-01);
 }
 
 .spark_table_tr.spark_table_job_tr.black_side {
-border-bottom: 1px solid #d8d8d8;
+border-bottom: 1px solid var(--carbon-ui-03);
 }
 
 .spark_table_tr.spark_table_job_tr {
-border-bottom: 2px solid #d8d8d8;
-border-top: 2px solid #d8d8d8;
+border-bottom: 2px solid var(--carbon-ui-03);
+border-top: 2px solid var(--carbon-ui-03);
 }
 
 .spark_table_tr.stage_row {
-border-bottom: 1px solid #d8d8d8;
+border-bottom: 1px solid var(--carbon-ui-03);
 }
 
 .st_header_cell {
@@ -13810,7 +13891,7 @@ width: 100%;
 }
 
 .progress_bar_border {
-border: 1px solid #dfe3e6;
+border: 1px solid var(--carbon-ui-03);
 }
 
 .progress_bar_border_shape {
@@ -13818,7 +13899,7 @@ border-radius: 8px;
 }
 
 .progress_bar {
-background-color: #f5f7fa;
+background-color:  var(--carbon-ui-02);
 height: 100%;
 line-height: inherit;
 }
@@ -13855,7 +13936,7 @@ margin-top: -0.27em;
 height: 0.6rem;
 vertical-align: middle;
 width: 1.25rem;
-fill: #5a6872;
+fill: var(--carbon-text-02);
 }
 
 .state_label_wrapper {
@@ -13866,7 +13947,7 @@ overflow: hidden;
 }
 
 .state_label_wrapper.error_label {
-color: #e71d32;
+color: var(--carbon-support-01);
 }
 
 .icon_style {
@@ -13876,7 +13957,7 @@ width: 1.25rem;
 }
 
 .black_side {
-border-left: 2px solid #3d70b2;
+border-left: 2px solid var(--carbon-interactive-04);
 }
 
 .state_right {
@@ -13892,7 +13973,7 @@ min-width: 35rem;
 }
 
 .error_icon {
-fill: #e71d32;
+fill: var(--carbon-support-01);
 }
 
 .upper_header {
@@ -13931,7 +14012,7 @@ padding-right: 0.3rem;
 }
 
 .header_underline {
-border-top: 2px solid #dfe3e6;
+border-top: 2px solid var(--carbon-ui-03);
 }
 
 .upper_header_icon_up {
@@ -13943,11 +14024,11 @@ transform: rotate(180deg);
 }
 
 .spark_monitor_button {
-stroke: #3d70b2;
+stroke: var(--carbon-interactive-04);
 }
 
 .spark_monitor_button:hover {
-stroke: #5596e6;
+stroke: var(--carbon-hover-primary);
 }
 
 /* end of file "custom.css" */
@@ -14036,10 +14117,11 @@ div#notebook {
 <h1 id="Prerequisites">Prerequisites<a class="anchor-link" href="#Prerequisites">&#182;</a></h1><p>This notebook can be used as-is from within an IBM Cloud Pak for Data project.</p>
 <p>If you are not running this notebook from within IBM Cloud Pak for Data, <a href="https://ibmstreams.github.io/streamsx.documentation/docs/python/1.6/python-appapi-devguide-2/">follow these steps to make sure you have installed all the prerequisites</a>.</p>
 <p><a name="setup"></a></p>
-<h1 id="1.-Set-up-a-connection-to-the-Streams-instance">1. Set up a connection to the Streams instance<a class="anchor-link" href="#1.-Set-up-a-connection-to-the-Streams-instance">&#182;</a></h1><p>To submit the application for execution, you have to connect to the Streams instance. The application is always the same, but the information required to connect to the instance depends on the target installation of Streams.</p>
+<h1 id="1.-Set-up-a-connection-to-the-Streams-instance">1. Set up a connection to the Streams instance<a class="anchor-link" href="#1.-Set-up-a-connection-to-the-Streams-instance">&#182;</a></h1><p>To submit the application for execution, you have to connect to the Streams instance. The information required to connect to the instance depends on the target installation of Streams.</p>
+<p>Choose the option that matches your development environment.</p>
 <ul>
-<li><a href="#cpd">I'm running the notebook from an IBM Cloud for Data project</a></li>
-<li><a href="#notcpd">I'm using IBM Watson Studio, Jupyter Notebooks, or any other development environment</a></li>
+<li><strong>Option 1</strong>: <a href="#cpd">I'm running the notebook from an IBM Cloud for Data project</a></li>
+<li><strong>Option 2</strong>: <a href="#notcpd">I'm using IBM Watson Studio, Jupyter Notebooks, or any other development environment</a></li>
 </ul>
 
 </div>
@@ -14049,7 +14131,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a name="cpd"></a></p>
-<h3 id="1.1a-Connect-to-a-Streams-instance-from-an-IBM-Cloud-Pak-for-Data--project">1.1a Connect to a Streams instance from an IBM Cloud Pak for Data  project<a class="anchor-link" href="#1.1a-Connect-to-a-Streams-instance-from-an-IBM-Cloud-Pak-for-Data--project">&#182;</a></h3><p>In order to submit a Streams application you need to provide the name of the Streams instance.</p>
+<h3 id="Option-1:-Connect-to-a-Streams-instance-from-an-IBM-Cloud-Pak-for-Data--project">Option 1: Connect to a Streams instance from an IBM Cloud Pak for Data  project<a class="anchor-link" href="#Option-1:-Connect-to-a-Streams-instance-from-an-IBM-Cloud-Pak-for-Data--project">&#182;</a></h3><p>In order to submit a Streams application you need to provide the name of the Streams instance.</p>
 <ol>
 <li>From the navigation menu, click <strong>My instances</strong>.</li>
 <li>Click the <strong>Provisioned Instances</strong> tab.</li>
@@ -14069,8 +14151,12 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">icpd_core</span> <span class="k">import</span> <span class="n">icpd_util</span>
 <span class="kn">from</span> <span class="nn">streamsx.topology</span> <span class="k">import</span> <span class="n">context</span>
 
-<span class="n">streams_instance_name</span> <span class="o">=</span> <span class="s2">&quot;my-instance&quot;</span> <span class="c1">## Change this to Streams instance</span>
-<span class="n">cfg</span><span class="o">=</span><span class="n">icpd_util</span><span class="o">.</span><span class="n">get_service_instance_details</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">streams_instance_name</span><span class="p">)</span>
+<span class="n">streams_instance_name</span> <span class="o">=</span> <span class="s2">&quot;sample-streams&quot;</span> <span class="c1">## Change this to Streams instance</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">cfg</span><span class="o">=</span><span class="n">icpd_util</span><span class="o">.</span><span class="n">get_service_instance_details</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">streams_instance_name</span><span class="p">,</span> <span class="n">instance_type</span><span class="o">=</span><span class="s2">&quot;streams&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+    <span class="n">cfg</span><span class="o">=</span><span class="n">icpd_util</span><span class="o">.</span><span class="n">get_service_instance_details</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">streams_instance_name</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">submit_topology</span><span class="p">(</span><span class="n">topo</span><span class="p">):</span>
     <span class="k">global</span> <span class="n">cfg</span>
@@ -14079,6 +14165,8 @@ div#notebook {
     <span class="c1"># Topology wil be deployed as a distributed app</span>
     <span class="n">contextType</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">ContextTypes</span><span class="o">.</span><span class="n">DISTRIBUTED</span>
     <span class="k">return</span> <span class="n">context</span><span class="o">.</span><span class="n">submit</span> <span class="p">(</span><span class="n">contextType</span><span class="p">,</span> <span class="n">topo</span><span class="p">,</span> <span class="n">config</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Setup complete, continue to section 1.2&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14090,13 +14178,16 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a name="notcpd"></a></p>
-<h3 id="1.1b-Connect-to-a-Streams-instance-from-IBM-Watson-Studio-and-other-environments">1.1b Connect to a Streams instance from IBM Watson Studio and other environments<a class="anchor-link" href="#1.1b-Connect-to-a-Streams-instance-from-IBM-Watson-Studio-and-other-environments">&#182;</a></h3><p>The code for each scenario is available in the development guide.</p>
+<h3 id="Option-2:-Connect-to-a-Streams-instance-from-IBM-Watson-Studio-and-other-environments">Option 2: Connect to a Streams instance from IBM Watson Studio and other environments<a class="anchor-link" href="#Option-2:-Connect-to-a-Streams-instance-from-IBM-Watson-Studio-and-other-environments">&#182;</a></h3><p><em>Skip this section if you are running the notebook from a Cloud Pak for Data project.</em></p>
+<p>The code for each scenario is available in the development guide.<br>
+Each snippet will define a function called <code>submit_topology</code> that will be used later on to submit the <code>Topology</code> once it is defined.</p>
 <ul>
-<li>Choose the tab that best matches your environment. Copy the code under the heading <strong>Copy this code snippet</strong>.</li>
-<li>Paste it in the cell below.</li>
+<li>Choose the tab that best matches your environment. </li>
+<li>Copy the code under the heading <strong>Copy this code snippet</strong>.</li>
+<li><p>Paste it in the cell below.</p>
+<p><a target="_blank" href="https://ibmstreams.github.io/streamsx.documentation/docs/python/1.6/python-appapi-devguide-2/#connect">Connection instructions from the development guide</a></p>
+</li>
 </ul>
-<p><a href="https://ibmstreams.github.io/streamsx.documentation/docs/python/1.6/python-appapi-devguide-3/#1-set-up-a-connection-to-the-streams-instance">Connection instructions from the development guide</a></p>
-<p>Each snippet will define a function called <code>submit_topology</code> that will be used later on to submit the <code>Topology</code> once it is defined.</p>
 
 </div>
 </div>
@@ -14117,7 +14208,7 @@ div#notebook {
 <span class="n">SA_credentials</span><span class="o">=</span><span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="s1">&#39;Streaming Analytics credentials:&#39;</span><span class="p">)</span>
 <span class="n">cfg</span><span class="p">[</span><span class="n">ConfigParams</span><span class="o">.</span><span class="n">SERVICE_DEFINITION</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">SA_credentials</span><span class="p">)</span>
 <span class="n">cfg</span><span class="p">[</span><span class="n">context</span><span class="o">.</span><span class="n">ConfigParams</span><span class="o">.</span><span class="n">SSL_VERIFY</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved credentials, continue to section 1.2&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">submit_topology</span><span class="p">(</span><span class="n">topo</span><span class="p">):</span>
     <span class="k">global</span> <span class="n">cfg</span>
     <span class="c1"># This specifies how the application will be deployed</span>
@@ -14142,6 +14233,7 @@ div#notebook {
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Streaming Analytics credentials:········
+Saved credentials, continue to section 1.2
 </pre>
 </div>
 </div>
@@ -14191,6 +14283,16 @@ div#notebook {
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>INFO: streamsx package version: 1.13.14
+Name: streamsx
+Version: 1.13.14
+Summary: IBM Streams Python Support
+Home-page: https://github.com/IBMStreams/pypi.streamsx
+Author: IBM Streams @ github.com
+Author-email: debrunne@us.ibm.com
+License: Apache License - Version 2.0
+Location: /opt/conda/envs/Python36/lib/python3.6/site-packages
+Requires: future, dill, requests
+Required-by: 
 </pre>
 </div>
 </div>
@@ -14494,7 +14596,7 @@ See the <a href="https://streamsxtopology.readthedocs.io/en/stable/streamsx.topo
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;streamsx.topology.topology.Sink at 0x7f280b1cef60&gt;</pre>
+<pre>&lt;streamsx.topology.topology.Sink at 0x7f2be124cdd8&gt;</pre>
 </div>
 
 </div>
@@ -14557,13 +14659,13 @@ See the <a href="https://streamsxtopology.readthedocs.io/en/stable/streamsx.topo
 
  
  
-<div id="49c71880-7efe-4f10-8a69-8d41c9f8dbb9"></div>
+<div id="353ed23b-7a0f-4793-86fb-7fef23738783"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#49c71880-7efe-4f10-8a69-8d41c9f8dbb9');
+var element = $('#353ed23b-7a0f-4793-86fb-7fef23738783');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
-{"version_major": 2, "version_minor": 0, "model_id": "52d3fabcdf434f78a0aed7c8b8cd7c6a"}
+{"version_major": 2, "version_minor": 0, "model_id": "773a5e8d64d3425b82bbe258e1b726a2"}
 </script>
 </div>
 
@@ -14624,16 +14726,16 @@ Job name:  demo::SensorAverages_0
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Fetching view data ...
-{&#39;average&#39;: 1440.391555911075, &#39;sensor_id&#39;: &#39;sensor_1&#39;, &#39;period_end&#39;: &#39;Fri Feb 14 16:59:58 2020&#39;, &#39;coords&#39;: [40.6294, -74.4151]}
-{&#39;average&#39;: 1609.37176569041, &#39;sensor_id&#39;: &#39;sensor_10&#39;, &#39;period_end&#39;: &#39;Fri Feb 14 16:59:58 2020&#39;, &#39;coords&#39;: [40.6781, -74.7041]}
-{&#39;average&#39;: 1506.824212822619, &#39;sensor_id&#39;: &#39;sensor_100&#39;, &#39;period_end&#39;: &#39;Fri Feb 14 16:59:58 2020&#39;, &#39;coords&#39;: [40.4153, -73.9723]}
-{&#39;average&#39;: 1550.5277146304138, &#39;sensor_id&#39;: &#39;sensor_11&#39;, &#39;period_end&#39;: &#39;Fri Feb 14 16:59:58 2020&#39;, &#39;coords&#39;: [40.6715, -74.3918]}
-{&#39;average&#39;: 1484.8804929341718, &#39;sensor_id&#39;: &#39;sensor_12&#39;, &#39;period_end&#39;: &#39;Fri Feb 14 16:59:58 2020&#39;, &#39;coords&#39;: [40.0691, -74.2848]}
-{&#39;average&#39;: 1577.9136879674659, &#39;sensor_id&#39;: &#39;sensor_13&#39;, &#39;period_end&#39;: &#39;Fri Feb 14 16:59:58 2020&#39;, &#39;coords&#39;: [39.8472, -74.3445]}
-{&#39;average&#39;: 1604.640076927855, &#39;sensor_id&#39;: &#39;sensor_14&#39;, &#39;period_end&#39;: &#39;Fri Feb 14 16:59:58 2020&#39;, &#39;coords&#39;: [40.2269, -74.1168]}
-{&#39;average&#39;: 1597.6468148059519, &#39;sensor_id&#39;: &#39;sensor_15&#39;, &#39;period_end&#39;: &#39;Fri Feb 14 16:59:58 2020&#39;, &#39;coords&#39;: [40.0051, -73.8828]}
-{&#39;average&#39;: 1489.1201548710524, &#39;sensor_id&#39;: &#39;sensor_16&#39;, &#39;period_end&#39;: &#39;Fri Feb 14 16:59:58 2020&#39;, &#39;coords&#39;: [40.6951, -73.9989]}
-{&#39;average&#39;: 1551.4046373438105, &#39;sensor_id&#39;: &#39;sensor_17&#39;, &#39;period_end&#39;: &#39;Fri Feb 14 16:59:58 2020&#39;, &#39;coords&#39;: [40.5209, -74.6361]}
+{&#39;average&#39;: 1506.6545288633777, &#39;sensor_id&#39;: &#39;sensor_1&#39;, &#39;period_end&#39;: &#39;Fri May 29 18:38:37 2020&#39;, &#39;coords&#39;: [40.3664, -74.8488]}
+{&#39;average&#39;: 1448.4884753156052, &#39;sensor_id&#39;: &#39;sensor_10&#39;, &#39;period_end&#39;: &#39;Fri May 29 18:38:37 2020&#39;, &#39;coords&#39;: [40.7354, -74.0566]}
+{&#39;average&#39;: 1371.947140819208, &#39;sensor_id&#39;: &#39;sensor_100&#39;, &#39;period_end&#39;: &#39;Fri May 29 18:38:37 2020&#39;, &#39;coords&#39;: [40.6778, -74.4536]}
+{&#39;average&#39;: 1687.6960889456923, &#39;sensor_id&#39;: &#39;sensor_11&#39;, &#39;period_end&#39;: &#39;Fri May 29 18:38:37 2020&#39;, &#39;coords&#39;: [40.4391, -74.4675]}
+{&#39;average&#39;: 1615.8352964381731, &#39;sensor_id&#39;: &#39;sensor_12&#39;, &#39;period_end&#39;: &#39;Fri May 29 18:38:37 2020&#39;, &#39;coords&#39;: [40.2493, -73.9043]}
+{&#39;average&#39;: 1470.34668409349, &#39;sensor_id&#39;: &#39;sensor_13&#39;, &#39;period_end&#39;: &#39;Fri May 29 18:38:37 2020&#39;, &#39;coords&#39;: [40.5989, -74.2169]}
+{&#39;average&#39;: 1564.1658840745379, &#39;sensor_id&#39;: &#39;sensor_14&#39;, &#39;period_end&#39;: &#39;Fri May 29 18:38:37 2020&#39;, &#39;coords&#39;: [40.3127, -74.5819]}
+{&#39;average&#39;: 1431.769733733516, &#39;sensor_id&#39;: &#39;sensor_15&#39;, &#39;period_end&#39;: &#39;Fri May 29 18:38:37 2020&#39;, &#39;coords&#39;: [40.7591, -74.404]}
+{&#39;average&#39;: 1623.0778062436768, &#39;sensor_id&#39;: &#39;sensor_16&#39;, &#39;period_end&#39;: &#39;Fri May 29 18:38:37 2020&#39;, &#39;coords&#39;: [39.8671, -74.1024]}
+{&#39;average&#39;: 1625.3272862193953, &#39;sensor_id&#39;: &#39;sensor_17&#39;, &#39;period_end&#39;: &#39;Fri May 29 18:38:37 2020&#39;, &#39;coords&#39;: [39.9366, -74.1596]}
 </pre>
 </div>
 </div>
@@ -14677,13 +14779,13 @@ Job name:  demo::SensorAverages_0
 
  
  
-<div id="aaa50b28-29c2-46f9-9458-9dd00f8fe64f"></div>
+<div id="b4221483-5f31-4c47-9e0f-b47ed51685f2"></div>
 <div class="output_subarea output_widget_view ">
 <script type="text/javascript">
-var element = $('#aaa50b28-29c2-46f9-9458-9dd00f8fe64f');
+var element = $('#b4221483-5f31-4c47-9e0f-b47ed51685f2');
 </script>
 <script type="application/vnd.jupyter.widget-view+json">
-{"version_major": 2, "version_minor": 0, "model_id": "34e19c814ada4881b07b49cbbeda2fca"}
+{"version_major": 2, "version_minor": 0, "model_id": "9663ab1444b14537b0108b38f274ff3a"}
 </script>
 </div>
 
