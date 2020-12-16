@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>Federated Learning - for Admin</title>
+<title> Federated Learning Demo Part 1 - for Admin</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -14133,7 +14133,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">API_VERSION</span> <span class="o">=</span> <span class="s2">&quot;2019-10-25&quot;</span>
@@ -14142,7 +14142,7 @@ div#notebook {
 <span class="n">WML_SERVICES_URL</span> <span class="o">=</span> <span class="s2">&quot;https://&quot;</span> <span class="o">+</span> <span class="n">WML_SERVICES_HOST</span>
 <span class="n">IAM_TOKEN_URL</span> <span class="o">=</span> <span class="s2">&quot;https://iam.cloud.ibm.com/oidc/token&quot;</span>
 
-<span class="n">COS_ENDPOINT_URL</span> <span class="o">=</span> <span class="s2">&quot;https://s3.us-south.cloud-object-storage.appdomain.cloud&quot;</span> <span class="c1"># See list of endpoints for your location: https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-endpoints</span>
+<span class="n">COS_ENDPOINT_URL</span> <span class="o">=</span> <span class="s2">&quot;https://s3.private.us.cloud-object-storage.appdomain.cloud&quot;</span> <span class="c1"># See list of endpoints for your location: https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-endpoints</span>
 
 <span class="c1"># Get access key ID and secret access key from your HMAC service credentials for COS.</span>
 <span class="n">COS_ACCESS_KEY_ID</span> <span class="o">=</span> <span class="s2">&quot;xxx&quot;</span> 
@@ -14154,7 +14154,7 @@ div#notebook {
 <span class="n">IAM_APIKEY</span> <span class="o">=</span> <span class="s2">&quot;xxx&quot;</span>  
 
 <span class="c1"># Get this from Manage &lt; IAM &lt; Users, and check the URL. Your user ID should be in the format IBMid-&lt;xxx&gt;.</span>
-<span class="n">CLOUD_USERID</span> <span class="o">=</span> <span class="s2">&quot;IBMid-123456789&quot;</span> 
+<span class="n">CLOUD_USERID</span> <span class="o">=</span> <span class="s2">&quot;IBMid-1234567890&quot;</span> 
 
 <span class="n">PROJECT_ID</span> <span class="o">=</span> <span class="s2">&quot;xxx&quot;</span> <span class="c1"># Get this by going into your WS project and checking the URL.</span>
 </pre></div>
@@ -14174,7 +14174,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">urllib3</span>
@@ -14200,7 +14200,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">payload</span> <span class="o">=</span> <span class="s2">&quot;grant_type=urn:ibm:params:oauth:grant-type:apikey&amp;apikey=&quot;</span> <span class="o">+</span> <span class="n">IAM_APIKEY</span>
@@ -14217,31 +14217,13 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">token_resp</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;Response [200]&gt;
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -14335,7 +14317,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">base_model_id</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">base_model_save_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
@@ -14343,24 +14325,6 @@ div#notebook {
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Saved model id: 753d765e-de07-4277-ad49-31539a76b228
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -14383,7 +14347,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">base_model_content_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://github.com/IBMDataScience/sample-notebooks/raw/master/Files/tf_mnist_model.zip&quot;</span><span class="p">,</span>
@@ -14409,36 +14373,12 @@ div#notebook {
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Host URL = https://us-south.ml.cloud.ibm.com/ml/v4/models/753d765e-de07-4277-ad49-31539a76b228/content
-Response status for upload base model  753d765e-de07-4277-ad49-31539a76b228 : 201
-Create library content: {
-  &#34;attachment_id&#34;: &#34;e822dceb-2c4d-4738-bf1b-533f03ae9fd9&#34;,
-  &#34;content_format&#34;: &#34;native&#34;,
-  &#34;persisted&#34;: true
-}
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><a id = "rts"></a></p>
-<h2 id="3.-Create-a-Remote-Training-System">3. Create a Remote Training System<a class="anchor-link" href="#3.-Create-a-Remote-Training-System">&#182;</a></h2>
+<p><a id = "create-rts"></a></p>
+<h2 id="3.-Create-Remote-Training-System-Asset">3. Create Remote Training System Asset<a class="anchor-link" href="#3.-Create-Remote-Training-System-Asset">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -14446,95 +14386,6 @@ Create library content: {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now you will learn to create a Remote Training System (RTS). An RTS handles receiving your multiple parties' call to the aggregator to run the training.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">training_payload</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="s2">&quot;&quot;&quot; </span>
-<span class="s2">{</span>
-<span class="s2">  &quot;name&quot;: &quot;FL Aggregator&quot;,</span>
-<span class="s2">  &quot;tags&quot;: [</span>
-<span class="s2">    {</span>
-<span class="s2">      &quot;value&quot;: &quot;tags_jobs_fl&quot;,</span>
-<span class="s2">      &quot;description&quot;: &quot;Sample FL Aggregator&quot;</span>
-<span class="s2">    }</span>
-<span class="s2">  ],</span>
-<span class="s2">  &quot;federated_learning&quot;: {</span>
-<span class="s2">    &quot;model&quot;: {</span>
-<span class="s2">      &quot;spec&quot;: {</span>
-<span class="s2">        &quot;id&quot;: &quot;$modelID&quot;</span>
-<span class="s2">      },</span>
-<span class="s2">      &quot;type&quot;: &quot;tensorflow&quot;</span>
-<span class="s2">    },</span>
-<span class="s2">    &quot;fusion_type&quot;: &quot;iter_avg&quot;,</span>
-<span class="s2">    &quot;rounds&quot;: 5,</span>
-<span class="s2">    &quot;remote_training&quot; : {</span>
-<span class="s2">      &quot;quorum&quot;: 1.0,</span>
-<span class="s2">      &quot;remote_training_systems&quot;: [ { &quot;id&quot; : &quot;$rts_one&quot;, &quot;required&quot; : true  } ]</span>
-<span class="s2">    },</span>
-<span class="s2">    &quot;hardware_spec&quot;: {</span>
-<span class="s2">      &quot;name&quot;: &quot;XS&quot;</span>
-<span class="s2">    }</span>
-<span class="s2">  },</span>
-<span class="s2">  &quot;training_data_references&quot;: [],</span>
-<span class="s2">  &quot;results_reference&quot;: {</span>
-<span class="s2">    &quot;type&quot;: &quot;s3&quot;,</span>
-<span class="s2">    &quot;name&quot;: &quot;outputData&quot;,</span>
-<span class="s2">    &quot;connection&quot;: {</span>
-<span class="s2">      &quot;endpoint_url&quot;: &quot;$endpoint&quot;,</span>
-<span class="s2">      &quot;access_key_id&quot;: &quot;$accessId&quot;,</span>
-<span class="s2">      &quot;secret_access_key&quot;: &quot;$secretKey&quot;</span>
-<span class="s2">    },</span>
-<span class="s2">    &quot;location&quot;: {</span>
-<span class="s2">      &quot;bucket&quot;: &quot;$bucket&quot;,</span>
-<span class="s2">      &quot;path&quot;: &quot;.&quot;</span>
-<span class="s2">    }</span>
-<span class="s2">  },</span>
-<span class="s2">  &quot;project_id&quot;: &quot;$projectId&quot;  </span>
-<span class="s2">}</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">modelID</span> <span class="o">=</span> <span class="n">MODEL_ID</span><span class="p">,</span>
-                <span class="n">projectId</span> <span class="o">=</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
-                <span class="n">rts_one</span> <span class="o">=</span> <span class="n">wml_remote_training_system_one_asset_uid</span><span class="p">,</span>
-                <span class="n">endpoint</span> <span class="o">=</span> <span class="n">COS_ENDPOINT_URL</span><span class="p">,</span>
-                <span class="n">accessId</span> <span class="o">=</span> <span class="n">COS_ACCESS_KEY_ID</span><span class="p">,</span>
-                <span class="n">secretKey</span> <span class="o">=</span> <span class="n">COS_SECRET_ACCESS_KEY</span><span class="p">,</span>
-                <span class="n">bucket</span> <span class="o">=</span> <span class="n">COS_BUCKET</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training payload: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">training_payload</span><span class="p">)</span>
-
-<span class="n">training_launch_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/trainings&quot;</span><span class="p">,</span> 
-                                     <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
-                                              <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span>
-                                     <span class="n">data</span><span class="o">=</span><span class="n">training_payload</span><span class="p">,</span>
-                                     <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">training_launch_resp</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Launch training response </span><span class="si">%s</span><span class="s2">&quot;</span>  <span class="o">%</span> <span class="n">training_launch_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
-<span class="n">training_id</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">training_launch_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training ID: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">training_id</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id = "create-rts"></a></p>
-<h3 id="3.1-Create-Remote-Training-System-Asset">3.1 Create Remote Training System Asset<a class="anchor-link" href="#3.1-Create-Remote-Training-System-Asset">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <ul>
 <li><code>allowed_identities</code> are users permitted to connect to the Federated Learning experiment.  In this tutorial, only your user ID is permitted to connect but you can update the template and add additional users as required.</li>
 <li>An Admin in <code>remote_admin</code>. The template for the admin is the same as the user. In this tutorial, a template Admin is created. It is also the same as the user ID, however generally in application, the admin does not have to be one of the users.</li>
@@ -14649,7 +14500,7 @@ Create library content: {
 <span class="s2">  },</span>
 <span class="s2">  &quot;project_id&quot;: &quot;$projectId&quot;  </span>
 <span class="s2">}</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">modelID</span> <span class="o">=</span> <span class="n">MODEL_ID</span><span class="p">,</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">modelID</span> <span class="o">=</span> <span class="n">base_model_id</span><span class="p">,</span>
                 <span class="n">projectId</span> <span class="o">=</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
                 <span class="n">rts_one</span> <span class="o">=</span> <span class="n">wml_remote_training_system_one_asset_uid</span><span class="p">,</span>
                 <span class="n">endpoint</span> <span class="o">=</span> <span class="n">COS_ENDPOINT_URL</span><span class="p">,</span>
@@ -14716,24 +14567,10 @@ Create library content: {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<div class="alert alert-block alert-warning">Before you proceed further, run the following cell. The output should be `accepting_parties`. If output is `pending`, wait for a few minutes and re-run the <i>previous</i> code cell, with <code>requests.get</code>, and then re-run this code cell again to see the output.
+<div class="alert alert-block alert-warning">Before you proceed further, run the previous cell. The output should be `accepting_parties`. If output is `pending`, wait for a few minutes and re-run the <i>previous</i> code cell, with <code>requests.get</code>, and then re-run this code cell again to see the output.
 </div>
 </div>
 </div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">json_output</span> <span class="o">=</span> <span class="n">status_json</span><span class="p">[</span><span class="s2">&quot;entity&quot;</span><span class="p">][</span><span class="s2">&quot;status&quot;</span><span class="p">][</span><span class="s2">&quot;state&quot;</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">json_output</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
