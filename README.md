@@ -49,7 +49,7 @@ Credit/reference the dataset as required in their distribution licenses.
 
 ### Others
 
-Other configurations such as jobs, environments are currently not required for examinations.
+Other configurations such as jobs, environments, and project descriptions are currently not required for examinations. Please be advised to avoid plagiarism, confidential information, unethical slurs or any unprofessional content that could hurt IBM's reputation.
 
 <hr>
 
