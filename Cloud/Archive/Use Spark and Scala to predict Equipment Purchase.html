@@ -11611,8 +11611,10 @@ ul.typeahead-list > li > a {
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
 .highlight .o { color: #666666 } /* Operator */
+.highlight .ch { color: #408080; font-style: italic } /* Comment.Hashbang */
 .highlight .cm { color: #408080; font-style: italic } /* Comment.Multiline */
 .highlight .cp { color: #BC7A00 } /* Comment.Preproc */
+.highlight .cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
 .highlight .c1 { color: #408080; font-style: italic } /* Comment.Single */
 .highlight .cs { color: #408080; font-style: italic } /* Comment.Special */
 .highlight .gd { color: #A00000 } /* Generic.Deleted */
@@ -11652,8 +11654,10 @@ ul.typeahead-list > li > a {
 .highlight .mh { color: #666666 } /* Literal.Number.Hex */
 .highlight .mi { color: #666666 } /* Literal.Number.Integer */
 .highlight .mo { color: #666666 } /* Literal.Number.Oct */
+.highlight .sa { color: #BA2121 } /* Literal.String.Affix */
 .highlight .sb { color: #BA2121 } /* Literal.String.Backtick */
 .highlight .sc { color: #BA2121 } /* Literal.String.Char */
+.highlight .dl { color: #BA2121 } /* Literal.String.Delimiter */
 .highlight .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .highlight .s2 { color: #BA2121 } /* Literal.String.Double */
 .highlight .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -11664,9 +11668,11 @@ ul.typeahead-list > li > a {
 .highlight .s1 { color: #BA2121 } /* Literal.String.Single */
 .highlight .ss { color: #19177C } /* Literal.String.Symbol */
 .highlight .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #0000FF } /* Name.Function.Magic */
 .highlight .vc { color: #19177C } /* Name.Variable.Class */
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
+.highlight .vm { color: #19177C } /* Name.Variable.Magic */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style type="text/css">
@@ -12090,6 +12096,26 @@ cursor: pointer;
 
 .notebook_app #notebook-container .cell-tag .remove-tag-btn:hover {
 color: #5596e6;
+}
+
+.notebook_app #notebook-container .input .run_this_cell {
+  padding: 0;
+  padding-top: 0.125rem;
+  width: initial;
+  align-self: flex-start;
+  fill: #3d70b2;
+}
+
+.notebook_app #notebook-container .input .run_this_cell:hover {
+  fill: #5596e6;
+}
+
+.notebook_app #notebook-container .input .prompt {
+  min-width: 13ex;
+}
+
+.notebook_app #notebook-container .prompt {
+  min-width: 16.125ex;
 }
 
 /*DIALOGS*/
@@ -12662,28 +12688,28 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>This notebook contains steps and code to get data from the IBM Watson Studio Community, create a predictive model, and start scoring new data. This notebook introduces commands for getting data and for basic data cleaning and exploration, pipeline creation, model training, model persistance to the Watson Machine Learning repository, model deployment, and scoring.</p>
-<p>Some familiarity with Scala is helpful. This notebook uses Scala 2.11 and Apache Spark 2.1.</p>
-<p>You will use a publicly available data set, <strong>GoSales Transactions for Naive Bayes Model</strong>, which details anonymous outdoor equipment purchases. Use the details of this data set to predict clients' interests in terms of product line, such as golf accessories, camping equipment, and so on.</p>
-<p><strong>Note</strong>: In this notebook we use GOSales data available on <a href="https://apsportal.ibm.com/exchange-api/v1/entries/8044492073eb964f46597b4be06ff5ea/data?accessKey=9561295fa407698694b1e254d0099600">Watson Studio Community</a>.</p>
+<p>This notebook how to perform data analysis on classification problem using <a href="http://spark.apache.org/docs/2.3.0/ml-guide.html" target="_blank" rel="noopener no referrer">Spark ML package</a>.</p>
+<p>Some familiarity with Scala is helpful. This notebook uses Scala 2.11 with Spark.</p>
+<p>You will use a publicly available data set, <strong>GoSales Transactions for Naive Bayes Model</strong>, which details anonymous outdoor equipment purchases. This data set will be used to predict clients' interests in terms of product line, such as golf accessories, camping equipment, and so forth.</p>
+<p><strong>Note</strong>: In this notebook, we use the GoSales data available to the <a  href="https://dataplatform.cloud.ibm.com/exchange/public/entry/view/8044492073eb964f46597b4be06ff5ea" target="_blank" rel="noopener no referrer">Watson Studio Community</a>.</p>
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>The learning goals of this notebook are:</p>
 <ul>
-<li>Load a CSV file into an Apache® Spark DataFrame.</li>
+<li>Load a CSV file into a Spark DataFrame.</li>
 <li>Explore data.</li>
 <li>Prepare data for training and evaluation.</li>
-<li>Create an Apache Spark machine learning pipeline.</li>
+<li>Create a Spark machine learning pipeline.</li>
 <li>Train and evaluate a model.</li>
-<li>Store a pipeline and model in Watson Machine Learning (WML) repository.</li>
-<li>Deploy a model for online scoring using Wastson Machine Learning (WML) API.</li>
-<li>Score sample scoring data using the WML API.</li>
+<li>Store a pipeline and model in the Watson Machine Learning (WML) repository.</li>
+<li>Deploy a model for online scoring via the Watson Machine Learning (WML) API.</li>
+<li>Score the model using sample data via the Watson Machine Learning (WML) API.</li>
 </ul>
 <h2 id="Contents">Contents<a class="anchor-link" href="#Contents">&#182;</a></h2><p>This notebook contains the following parts:</p>
 <ol>
-<li><a href="#setup">Set up</a></li>
-<li><a href="#load">Load and explore data</a></li>
-<li><a href="#model">Create a spark ml model</a></li>
-<li><a href="#persistence">Store the model</a></li>
-<li><a href="#scoring">Deploy and score in a Cloud</a></li>
+<li><a href="#setup">Set up the environment</a></li>
+<li><a href="#load">Load and explore the data</a></li>
+<li><a href="#model">Build a Spark machine learning model</a></li>
+<li><a href="#persistence">Store the model in the WML repository</a></li>
+<li><a href="#scoring">Deploy and score in the WML repository</a></li>
 <li><a href="#summary">Summary and next steps</a></li>
 </ol>
 
@@ -12695,11 +12721,11 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="setup"></a></p>
-<h2 id="1.-Set-up">1. Set up<a class="anchor-link" href="#1.-Set-up">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
+<h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance is <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html">here</a>)</li>
-<li>Make sure that you are using a Spark 2.1 kernel.</li>
-<li>Download <strong>GoSales Transactions</strong> from the Watson Studio Community (code provided below).</li>
+<li>Create a <a href="https://cloud.ibm.com/catalog/services/machine-learning" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener no referrer">here</a>)</li>
+<li>Make sure that you are using a Spark 2.x kernel.</li>
+<li>Download <strong>GoSales Transactions</strong> from the Watson Studio Community (steps provided below).</li>
 </ul>
 
 </div>
@@ -12710,8 +12736,14 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="load"></a></p>
-<h2 id="2.-Load-and-explore-data">2. Load and explore data<a class="anchor-link" href="#2.-Load-and-explore-data">&#182;</a></h2><p>In this section you will load the data as an Apache Spark DataFrame and perform a basic exploration.</p>
-<p>Load the data to the Spark DataFrame by using <em>wget</em> to upload the data to gpfs and then use spark <em>read</em> method to read data.</p>
+<h2 id="2.-Load-and-explore-data">2. Load and explore data<a class="anchor-link" href="#2.-Load-and-explore-data">&#182;</a></h2><p>In this section, you will load the data into a SparkSession DataFrame and perform basic exploratory data analysis.</p>
+<ul>
+<li>Download <a href="https://dataplatform.cloud.ibm.com/data/exchange-api/v1/entries/8044492073eb964f46597b4be06ff5ea/data?accessKey=d1bec8d606656afaa378d73205093b10" target="_blank" rel="noopener no referrer">GoSales_Tx_NaiveBayes.csv</a> from the Watson Studio community. </li>
+<li>Load the .csv file into your notebook. Click the Data icon on the notebook action bar. Drop the file into the box or browse to select the file. The file is loaded to your object storage and appears in the Data Assets section of the project.</li>
+<li>To load the data into a Spark DataFrame, click in the next code cell and select <strong>Insert to code &gt; Insert SparkSession DataFrame</strong> under the file name.</li>
+<li>Rename <code>dfDatax</code> to <code>dfData</code> if needed.</li>
+<li>Run the cell.</li>
+</ul>
 
 </div>
 </div>
@@ -12721,178 +12753,33 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// Install wget if you don&#39;t already have it.</span>
-</pre></div>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// The code was removed by Watson Studio for sharing.</span>
+<span class="k">import</span> <span class="nn">com.ibm.ibmos2spark.CloudObjectStorage</span>
 
-</div>
-</div>
-</div>
+<span class="c1">// @hidden_cell</span>
+<span class="k">var</span> <span class="n">credentials</span> <span class="k">=</span> <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">mutable</span><span class="o">.</span><span class="nc">HashMap</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">](</span>
+    <span class="s">&quot;endPoint&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;apiKey&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;serviceId&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;iamServiceEndpoint&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;***&quot;</span><span class="o">)</span>
 
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">import</span> <span class="nn">scala.sys.process._</span>
+<span class="k">var</span> <span class="n">configurationName</span> <span class="k">=</span> <span class="s">&quot;os_985f24d93a7243aeb65f8aba59f75706_configs&quot;</span>
+<span class="k">var</span> <span class="n">cos</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">CloudObjectStorage</span><span class="o">(</span><span class="n">sc</span><span class="o">,</span> <span class="n">credentials</span><span class="o">,</span> <span class="n">configurationName</span><span class="o">,</span> <span class="s">&quot;bluemix_cos&quot;</span><span class="o">)</span>
 
-<span class="k">val</span> <span class="n">filename</span> <span class="k">=</span> <span class="s">&quot;GoSalesNaiveBayes.csv&quot;</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.SparkSession</span>
 
-<span class="s">s&quot;wget -O </span><span class="si">$filename</span><span class="s"> https://apsportal.ibm.com/exchange-api/v1/entries/8044492073eb964f46597b4be06ff5ea/data?accessKey=9561295fa407698694b1e254d0099600&quot;</span><span class="o">.!</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>--2018-04-03 07:20:15--  https://apsportal.ibm.com/exchange-api/v1/entries/8044492073eb964f46597b4be06ff5ea/data?accessKey=9561295fa407698694b1e254d0099600
-Resolving apsportal.ibm.com (apsportal.ibm.com)... 158.85.156.20
-Connecting to apsportal.ibm.com (apsportal.ibm.com)|158.85.156.20|:443... connected.
-HTTP request sent, awaiting response... 301 Moved Permanently
-Location: https://dataplatform.ibm.com/exchange-api/v1/entries/8044492073eb964f46597b4be06ff5ea/data?accessKey=9561295fa407698694b1e254d0099600 [following]
---2018-04-03 07:20:15--  https://dataplatform.ibm.com/exchange-api/v1/entries/8044492073eb964f46597b4be06ff5ea/data?accessKey=9561295fa407698694b1e254d0099600
-Resolving dataplatform.ibm.com (dataplatform.ibm.com)... 75.126.81.68
-Connecting to dataplatform.ibm.com (dataplatform.ibm.com)|75.126.81.68|:443... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: unspecified [application/octet-stream]
-Saving to: ‘GoSalesNaiveBayes.csv’
-
-     0K .......... .......... .......... .......... .......... 1.42M
-    50K .......... .......... .......... .......... .......... 7.56M
-   100K .......... .......... .......... .......... .......... 7.31M
-   150K .......... .......... .......... .......... .......... 11.7M
-   200K .......... .......... .......... .......... .......... 15.9M
-   250K .......... .......... .......... .......... .......... 4.48M
-   300K .......... .......... .......... .......... .......... 17.0M
-   350K .......... .......... .......... .......... .......... 11.0M
-   400K .......... .......... .......... .......... .......... 18.1M
-   450K .......... .......... .......... .......... .......... 12.1M
-   500K .......... .......... .......... .......... .......... 18.8M
-   550K .......... .......... .......... .......... .......... 19.5M
-   600K .......... .......... .......... .......... .......... 18.9M
-   650K .......... .......... .......... .......... .......... 12.6M
-   700K .......... .......... .......... .......... .......... 20.1M
-   750K .......... .......... .......... .......... .......... 19.7M
-   800K .......... .......... .......... .......... .......... 21.0M
-   850K .......... .......... .......... .......... .......... 13.2M
-   900K .......... .......... .......... .......... .......... 19.9M
-   950K .......... .......... .......... .......... .......... 18.5M
-  1000K .......... .......... .......... .......... .......... 17.0M
-  1050K .......... .......... .......... .......... .......... 20.8M
-  1100K .......... .......... .......... .......... .......... 21.4M
-  1150K .......... .......... .......... .......... .......... 11.4M
-  1200K .......... .......... .......... .......... .......... 19.6M
-  1250K .......... .......... .......... .......... .......... 11.2M
-  1300K .......... .......... .......... .......... .......... 20.0M
-  1350K .......... .......... .......... .......... .......... 19.9M
-  1400K .......... .......... .......... .......... .......... 20.5M
-  1450K .......... .......... .......... .......... .......... 12.0M
-  1500K .......... .......... .......... .......... .......... 19.9M
-  1550K .......... .......... .......... .......... .......... 20.9M
-  1600K .......... .......... .......... .......... .......... 20.1M
-  1650K .......... .......... .......... .......... .......... 19.0M
-  1700K .......... .......... .......... .......... .......... 19.0M
-  1750K .......... .......... .......... .......... .......... 10.7M
-  1800K .......... .......... .......... .......... .......... 67.2M
-  1850K .......... .......... .......... .......... .......... 12.7M
-  1900K .......... .......... .......... .......... .......... 20.3M
-  1950K .......... .......... .......... .......... .......... 20.2M
-  2000K .......... .......... .......... .......... .......... 62.8M
-  2050K .......... .......... .......... .......... .......... 12.3M
-  2100K .......... .......... .......... .......... .......... 20.3M
-  2150K .......... .......... .......... .......... .......... 13.8M
-  2200K .......... .......... .......... .......... .......... 20.0M
-  2250K .......... .......... .......... .......... .......... 15.3M
-  2300K .......... .......... .......... .......... .......... 21.3M
-  2350K .......... .......... .......... .......... .......... 19.4M
-  2400K .......... .......... .......... .......... .......... 20.9M
-  2450K .                                                      32.0M=0.2s
-
-2018-04-03 07:20:16 (12.8 MB/s) - ‘GoSalesNaiveBayes.csv’ saved [2510539]
-
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[1]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>The csv file GoSales_Tx_NaiveBayes.csv is availble on gpfs now. Load the file to Apache Spark DataFrame using code below.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">df_data</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span>
+<span class="k">val</span> <span class="n">spark</span> <span class="k">=</span> <span class="nc">SparkSession</span><span class="o">.</span>
+    <span class="n">builder</span><span class="o">().</span>
+    <span class="n">getOrCreate</span><span class="o">()</span>
+<span class="k">val</span> <span class="n">dfData</span> <span class="k">=</span> <span class="n">spark</span><span class="o">.</span>
     <span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="o">(</span><span class="s">&quot;org.apache.spark.sql.execution.datasources.csv.CSVFileFormat&quot;</span><span class="o">).</span>
     <span class="n">option</span><span class="o">(</span><span class="s">&quot;header&quot;</span><span class="o">,</span> <span class="s">&quot;true&quot;</span><span class="o">).</span>
     <span class="n">option</span><span class="o">(</span><span class="s">&quot;inferSchema&quot;</span><span class="o">,</span> <span class="s">&quot;true&quot;</span><span class="o">).</span>
-    <span class="n">load</span><span class="o">(</span><span class="n">filename</span><span class="o">)</span>
+    <span class="n">load</span><span class="o">(</span><span class="n">cos</span><span class="o">.</span><span class="n">url</span><span class="o">(</span><span class="s">&quot;wastonmachinelearningcommunitynot-donotdelete-pr-pnbylejs5jpqwu&quot;</span><span class="o">,</span> <span class="s">&quot;GoSales_Tx_NaiveBayes.csv&quot;</span><span class="o">))</span>
+<span class="n">dfData</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
 </pre></div>
 
 </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-
-
-<div class="output_text output_subarea ">
-<pre>Waiting for a Spark session to start...</pre>
-</div>
-
-</div>
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>[Stage 2:=============================&gt;                             (1 + 1) / 2]</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -12901,7 +12788,7 @@ Saving to: ‘GoSalesNaiveBayes.csv’
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Explore the loaded data by using the following Apache Spark DataFrame methods:</p>
+<p>Explore the loaded data by using the following Spark DataFrame methods:</p>
 <ul>
 <li>print schema</li>
 <li>print top ten records</li>
@@ -12913,10 +12800,10 @@ Saving to: ‘GoSalesNaiveBayes.csv’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">df_data</span><span class="o">.</span><span class="n">printSchema</span><span class="o">()</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">dfData</span><span class="o">.</span><span class="n">printSchema</span><span class="o">()</span>
 </pre></div>
 
 </div>
@@ -12959,10 +12846,10 @@ Saving to: ‘GoSalesNaiveBayes.csv’
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">df_data</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">dfData</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -13005,10 +12892,10 @@ only showing top 10 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">println</span><span class="o">(</span><span class="s">&quot;Total number of records: &quot;</span> <span class="o">+</span> <span class="n">df_data</span><span class="o">.</span><span class="n">count</span><span class="o">())</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">print</span><span class="o">(</span><span class="s">&quot;Total number of records: &quot;</span> <span class="o">+</span> <span class="n">dfData</span><span class="o">.</span><span class="n">count</span><span class="o">())</span>
 </pre></div>
 
 </div>
@@ -13025,8 +12912,7 @@ only showing top 10 rows
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Total number of records: 60252
-</pre>
+<pre>Total number of records: 60252</pre>
 </div>
 </div>
 
@@ -13048,10 +12934,10 @@ only showing top 10 rows
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="model"></a></p>
-<h2 id="3.-Create-an-Apache-Spark-machine-learning-model">3. Create an Apache Spark machine learning model<a class="anchor-link" href="#3.-Create-an-Apache-Spark-machine-learning-model">&#182;</a></h2><p>In this section you will learn how to:</p>
+<h2 id="3.-Build-a-Spark-machine-learning-model">3. Build a Spark machine learning model<a class="anchor-link" href="#3.-Build-a-Spark-machine-learning-model">&#182;</a></h2><p>In this section, you will learn how to:</p>
 <ul>
-<li><a href="#prep">3.1 Prepare data</a></li>
-<li><a href="#pipe">3.2 Create an Apache Spark machine learning pipeline</a></li>
+<li><a href="#prep">3.1 Split data</a></li>
+<li><a href="#pipe">3.2 Create a Spark machine learning pipeline</a></li>
 <li><a href="#train">3.3 Train a model</a></li>
 </ul>
 
@@ -13062,11 +12948,11 @@ only showing top 10 rows
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.1-Prepare-data">3.1 Prepare data<a id="prep" /><a class="anchor-link" href="#3.1-Prepare-data">&#182;</a></h3><p>In this subsection you will split your data into:</p>
+<h3 id="3.1-Split-data">3.1 Split data<a id="prep" /><a class="anchor-link" href="#3.1-Split-data">&#182;</a></h3><p>In this subsection, you will split your data into:</p>
 <ul>
-<li>train data set</li>
-<li>test data set</li>
-<li>predict data set</li>
+<li>Train data set</li>
+<li>Test data set</li>
+<li>Prediction data set</li>
 </ul>
 
 </div>
@@ -13074,17 +12960,17 @@ only showing top 10 rows
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">splits</span> <span class="k">=</span> <span class="n">df_data</span><span class="o">.</span><span class="n">randomSplit</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mf">0.8</span><span class="o">,</span> <span class="mf">0.18</span><span class="o">,</span> <span class="mf">0.02</span><span class="o">),</span> <span class="n">seed</span> <span class="k">=</span> <span class="mi">24L</span><span class="o">)</span>
-<span class="k">val</span> <span class="n">training_data</span> <span class="k">=</span> <span class="n">splits</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="n">cache</span><span class="o">()</span>
-<span class="k">val</span> <span class="n">test_data</span> <span class="k">=</span> <span class="n">splits</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
-<span class="k">val</span> <span class="n">prediction_data</span> <span class="k">=</span> <span class="n">splits</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">splits</span> <span class="k">=</span> <span class="n">dfData</span><span class="o">.</span><span class="n">randomSplit</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mf">0.8</span><span class="o">,</span> <span class="mf">0.18</span><span class="o">,</span> <span class="mf">0.02</span><span class="o">),</span> <span class="n">seed</span> <span class="k">=</span> <span class="mi">24L</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">trainingData</span> <span class="k">=</span> <span class="n">splits</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="n">cache</span><span class="o">()</span>
+<span class="k">val</span> <span class="n">testData</span> <span class="k">=</span> <span class="n">splits</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">predictionData</span> <span class="k">=</span> <span class="n">splits</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
 
-<span class="n">println</span><span class="o">(</span><span class="s">&quot;Number of training records: &quot;</span> <span class="o">+</span> <span class="n">training_data</span><span class="o">.</span><span class="n">count</span><span class="o">())</span>
-<span class="n">println</span><span class="o">(</span><span class="s">&quot;Number of testing records: &quot;</span> <span class="o">+</span> <span class="n">test_data</span><span class="o">.</span><span class="n">count</span><span class="o">())</span>
-<span class="n">println</span><span class="o">(</span><span class="s">&quot;Number of prediction records: &quot;</span> <span class="o">+</span> <span class="n">prediction_data</span><span class="o">.</span><span class="n">count</span><span class="o">())</span>
+<span class="n">println</span><span class="o">(</span><span class="s">&quot;Number of training records: &quot;</span> <span class="o">+</span> <span class="n">trainingData</span><span class="o">.</span><span class="n">count</span><span class="o">())</span>
+<span class="n">println</span><span class="o">(</span><span class="s">&quot;Number of testing records: &quot;</span> <span class="o">+</span> <span class="n">testData</span><span class="o">.</span><span class="n">count</span><span class="o">())</span>
+<span class="n">println</span><span class="o">(</span><span class="s">&quot;Number of prediction records: &quot;</span> <span class="o">+</span> <span class="n">predictionData</span><span class="o">.</span><span class="n">count</span><span class="o">())</span>
 </pre></div>
 
 </div>
@@ -13108,6 +12994,36 @@ Number of prediction records: 1216
 </div>
 </div>
 
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>splits = Array([PRODUCT_LINE: string, GENDER: string ... 3 more fields], [PRODUCT_LINE: string, GENDER: string ... 3 more fields], [PRODUCT_LINE: string, GENDER: string ... 3 more fields])
+trainingData = [PRODUCT_LINE: string, GENDER: string ... 3 more fields]
+testData = [PRODUCT_LINE: string, GENDER: string ... 3 more fields]
+predictionData = [PRODUCT_LINE: string, GENDER: string ... 3 more fields]
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[5]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[PRODUCT_LINE: string, GENDER: string ... 3 more fields]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13116,9 +13032,9 @@ Number of prediction records: 1216
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As you can see your data has been successfully split into three data sets:</p>
+<p>As you can see, your data has been successfully split into three data sets:</p>
 <ul>
-<li>The train data set, which is the largest group, is used for training.</li>
+<li>The train data set which is the largest group is used for training.</li>
 <li>The test data set will be used for model evaluation.</li>
 <li>The predict data set will be used for prediction.</li>
 </ul>
@@ -13130,7 +13046,7 @@ Number of prediction records: 1216
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.2-Create-the-pipeline">3.2 Create the pipeline<a id="pipe" /><a class="anchor-link" href="#3.2-Create-the-pipeline">&#182;</a></h3>
+<h3 id="3.2-Create-a-Spark-machine-learning-pipeline">3.2 Create a Spark machine learning pipeline<a id="pipe" /><a class="anchor-link" href="#3.2-Create-a-Spark-machine-learning-pipeline">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13138,18 +13054,18 @@ Number of prediction records: 1216
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In this section you will create an Apache Spark machine learning pipeline and then train the model.</p>
-<p>In the first step you need to import the Apache Spark machine learning packages that will be needed in the subsequent steps.</p>
+<p>In this section, you will create a Spark machine learning pipeline and train the model.</p>
+<p>First, you need to import Spark machine learning packages that will be needed in the subsequent steps.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">import</span> <span class="nn">org.apache.spark.ml.classification.RandomForestClassifier</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">org.apache.spark.ml.classification.RandomForestClassifier</span>
 <span class="k">import</span> <span class="nn">org.apache.spark.ml.feature.</span><span class="o">{</span><span class="nc">OneHotEncoder</span><span class="o">,</span> <span class="nc">StringIndexer</span><span class="o">,</span> <span class="nc">IndexToString</span><span class="o">,</span> <span class="nc">VectorAssembler</span><span class="o">}</span>
 <span class="k">import</span> <span class="nn">org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator</span>
 <span class="k">import</span> <span class="nn">org.apache.spark.ml.</span><span class="o">{</span><span class="nc">Model</span><span class="o">,</span> <span class="nc">Pipeline</span><span class="o">,</span> <span class="nc">PipelineStage</span><span class="o">,</span> <span class="nc">PipelineModel</span><span class="o">}</span>
@@ -13165,23 +13081,60 @@ Number of prediction records: 1216
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In the following step, use the StringIndexer transformer to convert all the string fields to numeric ones.</p>
+<p>In the following step, use the <code>StringIndexer</code> transformer to convert all the string fields to numeric ones.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">stringIndexer_label</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">().</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;PRODUCT_LINE&quot;</span><span class="o">).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">).</span><span class="n">fit</span><span class="o">(</span><span class="n">df_data</span><span class="o">)</span>
-<span class="k">val</span> <span class="n">stringIndexer_prof</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">().</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;PROFESSION&quot;</span><span class="o">).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;PROFESSION_IX&quot;</span><span class="o">)</span>
-<span class="k">val</span> <span class="n">stringIndexer_gend</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">().</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;GENDER&quot;</span><span class="o">).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;GENDER_IX&quot;</span><span class="o">)</span>
-<span class="k">val</span> <span class="n">stringIndexer_mar</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">().</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;MARITAL_STATUS&quot;</span><span class="o">).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;MARITAL_STATUS_IX&quot;</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">stringIndexerLabel</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">().</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;PRODUCT_LINE&quot;</span><span class="o">).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">).</span><span class="n">fit</span><span class="o">(</span><span class="n">dfData</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">stringIndexerProf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">().</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;PROFESSION&quot;</span><span class="o">).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;PROFESSION_IX&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">stringIndexerGend</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">().</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;GENDER&quot;</span><span class="o">).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;GENDER_IX&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">stringIndexerMar</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StringIndexer</span><span class="o">().</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;MARITAL_STATUS&quot;</span><span class="o">).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;MARITAL_STATUS_IX&quot;</span><span class="o">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>stringIndexerLabel = strIdx_001dfe13aa6f
+stringIndexerProf = strIdx_4aa8c2de7416
+stringIndexerGend = strIdx_243db3762e73
+stringIndexerMar = strIdx_c12bee13515e
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>strIdx_c12bee13515e</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13197,13 +13150,47 @@ Number of prediction records: 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">vectorAssembler_features</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">VectorAssembler</span><span class="o">().</span><span class="n">setInputCols</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="s">&quot;GENDER_IX&quot;</span><span class="o">,</span> <span class="s">&quot;AGE&quot;</span><span class="o">,</span> <span class="s">&quot;MARITAL_STATUS_IX&quot;</span><span class="o">,</span> <span class="s">&quot;PROFESSION_IX&quot;</span><span class="o">)).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">vectorAssemblerFeatures</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">VectorAssembler</span><span class="o">().</span><span class="n">setInputCols</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="s">&quot;GENDER_IX&quot;</span><span class="o">,</span> <span class="s">&quot;AGE&quot;</span><span class="o">,</span> <span class="s">&quot;MARITAL_STATUS_IX&quot;</span><span class="o">,</span> <span class="s">&quot;PROFESSION_IX&quot;</span><span class="o">)).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>vectorAssemblerFeatures = vecAssembler_cc7f2a432eeb
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[8]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>vecAssembler_cc7f2a432eeb</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13212,20 +13199,54 @@ Number of prediction records: 1216
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Next, define estimators you want to use for classification. Random Forest is used in the following example.</p>
+<p>Next, select the estimator you want to use for classification. <code>Random Forest</code> is used in the this example.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">rf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">RandomForestClassifier</span><span class="o">().</span><span class="n">setLabelCol</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">).</span><span class="n">setFeaturesCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">).</span><span class="n">setNumTrees</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">rf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">RandomForestClassifier</span><span class="o">().</span><span class="n">setLabelCol</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">).</span><span class="n">setFeaturesCol</span><span class="o">(</span><span class="s">&quot;features&quot;</span><span class="o">).</span><span class="n">setNumTrees</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>rf = rfc_36e8569c94a6
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[9]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>rfc_36e8569c94a6</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13241,13 +13262,47 @@ Number of prediction records: 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">labelConverter</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">IndexToString</span><span class="o">().</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;prediction&quot;</span><span class="o">).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;predictedLabel&quot;</span><span class="o">).</span><span class="n">setLabels</span><span class="o">(</span><span class="n">stringIndexer_label</span><span class="o">.</span><span class="n">labels</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">labelConverter</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">IndexToString</span><span class="o">().</span><span class="n">setInputCol</span><span class="o">(</span><span class="s">&quot;prediction&quot;</span><span class="o">).</span><span class="n">setOutputCol</span><span class="o">(</span><span class="s">&quot;predictedLabel&quot;</span><span class="o">).</span><span class="n">setLabels</span><span class="o">(</span><span class="n">stringIndexerLabel</span><span class="o">.</span><span class="n">labels</span><span class="o">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>labelConverter = idxToStr_57ae1bc4e090
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[10]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>idxToStr_57ae1bc4e090</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13263,13 +13318,47 @@ Number of prediction records: 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">pipeline_rf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Pipeline</span><span class="o">().</span><span class="n">setStages</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="n">stringIndexer_label</span><span class="o">,</span> <span class="n">stringIndexer_prof</span><span class="o">,</span> <span class="n">stringIndexer_gend</span><span class="o">,</span> <span class="n">stringIndexer_mar</span><span class="o">,</span> <span class="n">vectorAssembler_features</span><span class="o">,</span> <span class="n">rf</span><span class="o">,</span> <span class="n">labelConverter</span><span class="o">))</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">pipelineRf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">Pipeline</span><span class="o">().</span><span class="n">setStages</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="n">stringIndexerLabel</span><span class="o">,</span> <span class="n">stringIndexerProf</span><span class="o">,</span> <span class="n">stringIndexerGend</span><span class="o">,</span> <span class="n">stringIndexerMar</span><span class="o">,</span> <span class="n">vectorAssemblerFeatures</span><span class="o">,</span> <span class="n">rf</span><span class="o">,</span> <span class="n">labelConverter</span><span class="o">))</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>pipelineRf = pipeline_89e65091252c
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[11]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>pipeline_89e65091252c</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13278,7 +13367,7 @@ Number of prediction records: 1216
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="3.3-Train-the-model">3.3 Train the model<a id="train" /><a class="anchor-link" href="#3.3-Train-the-model">&#182;</a></h3>
+<h3 id="3.3-Train-a-model">3.3 Train a model<a id="train" /><a class="anchor-link" href="#3.3-Train-a-model">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13293,10 +13382,10 @@ Number of prediction records: 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">training_data</span><span class="o">.</span><span class="n">printSchema</span><span class="o">()</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">trainingData</span><span class="o">.</span><span class="n">printSchema</span><span class="o">()</span>
 </pre></div>
 
 </div>
@@ -13330,13 +13419,47 @@ Number of prediction records: 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">model_rf</span> <span class="k">=</span> <span class="n">pipeline_rf</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">training_data</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">modelRf</span> <span class="k">=</span> <span class="n">pipelineRf</span><span class="o">.</span><span class="n">fit</span><span class="o">(</span><span class="n">trainingData</span><span class="o">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>modelRf = pipeline_89e65091252c
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[13]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>pipeline_89e65091252c</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13352,14 +13475,14 @@ Number of prediction records: 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">predictions</span> <span class="k">=</span> <span class="n">model_rf</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">test_data</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">predictions</span> <span class="k">=</span> <span class="n">modelRf</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">testData</span><span class="o">)</span>
 <span class="k">val</span> <span class="n">evaluatorRF</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">MulticlassClassificationEvaluator</span><span class="o">().</span><span class="n">setLabelCol</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">).</span><span class="n">setPredictionCol</span><span class="o">(</span><span class="s">&quot;prediction&quot;</span><span class="o">).</span><span class="n">setMetricName</span><span class="o">(</span><span class="s">&quot;accuracy&quot;</span><span class="o">)</span>
 <span class="k">val</span> <span class="n">accuracy</span> <span class="k">=</span> <span class="n">evaluatorRF</span><span class="o">.</span><span class="n">evaluate</span><span class="o">(</span><span class="n">predictions</span><span class="o">)</span>
 
-<span class="n">println</span><span class="o">(</span><span class="s">f&quot;Accuracy = </span><span class="si">$accuracy</span><span class="s">%.2f&quot;</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="s">f&quot;Accuracy = </span><span class="si">${</span><span class="n">accuracy</span><span class="o">*</span><span class="mi">100</span><span class="si">}</span><span class="s">%.2f%%&quot;</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -13376,9 +13499,38 @@ Number of prediction records: 1216
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Accuracy = 0.58
+<pre>Accuracy = 58.21%
 </pre>
 </div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>predictions = [PRODUCT_LINE: string, GENDER: string ... 12 more fields]
+evaluatorRF = mcEval_ad3ef501c6bd
+accuracy = 0.5821362799263352
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[14]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.5821362799263352</pre>
+</div>
+
 </div>
 
 </div>
@@ -13399,10 +13551,10 @@ Number of prediction records: 1216
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="persistence"></a></p>
-<h2 id="4.-Store-the-model-in-the-WML-repository">4. Store the model in the WML repository<a class="anchor-link" href="#4.-Store-the-model-in-the-WML-repository">&#182;</a></h2><p>In this section you will learn how to use Scala client libraries to store your pipeline and model in the WML repository and make predictions.</p>
+<h2 id="4.-Store-the-model-in-the-WML-repository">4. Store the model in the WML repository<a class="anchor-link" href="#4.-Store-the-model-in-the-WML-repository">&#182;</a></h2><p>In this section, you will learn how to use Scala libraries to store your pipeline and model in the WML repository and make predictions.</p>
 <ul>
-<li><a href="#lib">4.1 Import the libraries</a></li>
-<li><a href="#save">4.2 Save pipeline and model</a></li>
+<li><a href="#lib">4.1 Import required libraries</a></li>
+<li><a href="#save">4.2 Save the pipeline and model</a></li>
 <li><a href="#load">4.3 Load the model</a></li>
 <li><a href="#make">4.4 Make predictions</a></li>
 </ul>
@@ -13414,7 +13566,7 @@ Number of prediction records: 1216
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.1-Import-the-libraries">4.1 Import the libraries<a id="lib" /><a class="anchor-link" href="#4.1-Import-the-libraries">&#182;</a></h3>
+<h3 id="4.1-Import-required-libraries">4.1 Import required libraries<a id="lib" /><a class="anchor-link" href="#4.1-Import-required-libraries">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -13422,20 +13574,19 @@ Number of prediction records: 1216
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>First, you must import the client libraries.</p>
-<p><strong>Note</strong>: Apache Spark 2.1 or higher is required.</p>
+<p>First, you must import required libraries.</p>
+<p><strong>Note</strong>: Spark 2.3 or higher is required.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// WML client library</span>
-
-<span class="k">import</span> <span class="nn">com.ibm.analytics.ngp.repository._</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// WML client library</span>
+<span class="k">import</span> <span class="nn">com.ibm.analytics.ngp.repository_v3._</span>
 
 <span class="c1">// Helper libraries</span>
 
@@ -13455,8 +13606,8 @@ Number of prediction records: 1216
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Authenticate to the Watson Machine Learning service on IBM Cloud.</p>
-<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://console.bluemix.net/docs/services/service_credentials.html#service_credentials">Service Credentials</a> tab of the service instance that you created on IBM Cloud. <BR>If you cannot see the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
+<p>Authenticate the Watson Machine Learning service on the IBM Cloud.</p>
+<p><strong>Tip</strong>: Authentication information (your credentials) can be found in the <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-get-wml-credentials.html" target="_blank" rel="noopener no referrer">Service credentials</a> tab of the service instance that you created on the IBM Cloud. <BR>If you cannot find the <strong>instance_id</strong> field in <strong>Service Credentials</strong>, click <strong>New credential (+)</strong> to generate new authentication information.</p>
 <p><strong>Action</strong>: Enter your Watson Machine Learning service instance credentials here.</p>
 
 </div>
@@ -13464,59 +13615,17 @@ Number of prediction records: 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">wml_credentials</span> <span class="k">=</span> <span class="s">&quot;&quot;&quot;{</span>
-<span class="s">  &quot;url&quot;: &quot;https://ibm-watson-ml.mybluemix.net&quot;,</span>
-<span class="s">  &quot;username&quot;: &quot;***&quot;,</span>
-<span class="s">  &quot;password&quot;: &quot;***&quot;,</span>
-<span class="s">  &quot;instance_id&quot;: &quot;***&quot;</span>
-<span class="s">}&quot;&quot;&quot;</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[46]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">wml_credentials_json</span><span class="k">:</span><span class="kt">JsValue</span> <span class="o">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">wml_credentials</span><span class="o">)</span>
-
-<span class="k">val</span> <span class="n">wml_service_path</span> <span class="k">=</span> <span class="o">(</span><span class="n">wml_credentials_json</span> <span class="o">\</span> <span class="s">&quot;url&quot;</span><span class="o">).</span><span class="n">asOpt</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">match</span> <span class="o">{</span>
-    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">x</span>
-    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="s">&quot;&quot;</span>
-<span class="o">}</span>
-<span class="k">val</span> <span class="n">wml_instance_id</span> <span class="k">=</span> <span class="o">(</span><span class="n">wml_credentials_json</span> <span class="o">\</span> <span class="s">&quot;instance_id&quot;</span><span class="o">).</span><span class="n">asOpt</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">match</span> <span class="o">{</span>
-    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">x</span>
-    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="s">&quot;&quot;</span>
-<span class="o">}</span>
-<span class="k">val</span> <span class="n">wml_username</span> <span class="k">=</span> <span class="o">(</span><span class="n">wml_credentials_json</span> <span class="o">\</span> <span class="s">&quot;username&quot;</span><span class="o">).</span><span class="n">asOpt</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">match</span> <span class="o">{</span>
-    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">x</span>
-    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="s">&quot;&quot;</span>
-<span class="o">}</span>
-<span class="k">val</span> <span class="n">wml_password</span> <span class="k">=</span> <span class="o">(</span><span class="n">wml_credentials_json</span> <span class="o">\</span> <span class="s">&quot;password&quot;</span><span class="o">).</span><span class="n">asOpt</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">match</span> <span class="o">{</span>
-    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">x</span>
-    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="s">&quot;&quot;</span>
-<span class="o">}</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[47]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">client</span> <span class="k">=</span> <span class="nc">MLRepositoryClient</span><span class="o">(</span><span class="n">wml_service_path</span><span class="o">)</span>
-<span class="n">client</span><span class="o">.</span><span class="n">authorize</span><span class="o">(</span><span class="n">wml_username</span><span class="o">,</span> <span class="n">wml_password</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">import</span> <span class="nn">scala.collection.mutable.HashMap</span>
+<span class="k">val</span> <span class="n">wmlCredentials</span><span class="k">:</span> <span class="kt">HashMap</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">HashMap</span><span class="o">(</span>
+    <span class="s">&quot;url&quot;</span><span class="o">-&gt;</span><span class="s">&quot;https://ibm-watson-ml.mybluemix.net&quot;</span><span class="o">,</span>
+    <span class="s">&quot;username&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;password&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;instance_id&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span><span class="o">,</span>
+    <span class="s">&quot;apikey&quot;</span><span class="o">-&gt;</span><span class="s">&quot;***&quot;</span>
+<span class="o">)</span>
 </pre></div>
 
 </div>
@@ -13529,7 +13638,86 @@ Number of prediction records: 1216
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[47]:</div>
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>wmlCredentials = Map(instance_id -&gt; ***, username -&gt; ***, apikey -&gt; ***, url -&gt; https://ibm-watson-ml.mybluemix.net, password -&gt; ***)
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[16]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Map(instance_id -&gt; ***, username -&gt; ***, apikey -&gt; ***, url -&gt; https://ibm-watson-ml.mybluemix.net, password -&gt; ***)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">wmlServicePath</span> <span class="k">=</span> <span class="n">wmlCredentials</span><span class="o">(</span><span class="s">&quot;url&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">wmlInstanceId</span> <span class="k">=</span> <span class="n">wmlCredentials</span><span class="o">(</span><span class="s">&quot;instance_id&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">wmlUsername</span> <span class="k">=</span> <span class="n">wmlCredentials</span><span class="o">(</span><span class="s">&quot;username&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">wmlPassword</span> <span class="k">=</span> <span class="n">wmlCredentials</span><span class="o">(</span><span class="s">&quot;password&quot;</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">wmlAPI</span> <span class="k">=</span> <span class="n">wmlCredentials</span><span class="o">(</span><span class="s">&quot;apikey&quot;</span><span class="o">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">client</span> <span class="k">=</span> <span class="nc">MLRepositoryClient</span><span class="o">(</span><span class="n">wmlServicePath</span><span class="o">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">authorize</span><span class="o">(</span><span class="n">wmlUsername</span><span class="o">,</span> <span class="n">wmlPassword</span><span class="o">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>client = com.ibm.analytics.ngp.repository_v3.MLRepositoryClient@d3332a5
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[19]:</div>
 
 
 
@@ -13555,13 +13743,47 @@ Number of prediction records: 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[48]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">model_artifact</span> <span class="k">=</span> <span class="nc">MLRepositoryArtifact</span><span class="o">(</span><span class="n">model_rf</span><span class="o">,</span> <span class="n">training_data</span><span class="o">,</span> <span class="s">&quot;WML Product Line Prediction Model&quot;</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">modelArtifact</span> <span class="k">=</span> <span class="nc">MLRepositoryArtifact</span><span class="o">(</span><span class="n">modelRf</span><span class="o">,</span> <span class="n">trainingData</span><span class="o">,</span> <span class="s">&quot;WML Product Line Prediction Model&quot;</span><span class="o">)</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>modelArtifact = com.ibm.analytics.ngp.repository_v3.SparkPipelineModelArtifact@73aa5f1c
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[20]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>com.ibm.analytics.ngp.repository_v3.SparkPipelineModelArtifact@73aa5f1c</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13579,40 +13801,17 @@ Number of prediction records: 1216
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.2-Save-the-pipeline-and-model">4.2 Save the pipeline and model<a id="save" /><a class="anchor-link" href="#4.2-Save-the-pipeline-and-model">&#182;</a></h3><p>In this subsection you will learn how to save pipeline and model artifacts to your Watson Machine Learning instance.</p>
+<h3 id="4.2-Save-the-pipeline-and-model">4.2 Save the pipeline and model<a id="save" /><a class="anchor-link" href="#4.2-Save-the-pipeline-and-model">&#182;</a></h3><p>In this subsection, you will learn how to save the pipeline and model artifacts in your WML repository.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[49]:</div>
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">saved_model</span> <span class="k">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">save</span><span class="o">(</span><span class="n">model_artifact</span><span class="o">).</span><span class="n">get</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Get saved model metadata from Watson Machine Learning.</p>
-<p><strong>Tip</strong>: Use <em>meta.availableProps</em> to get the list of available props.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[50]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">saved_model</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">availableProps</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">savedModel</span> <span class="k">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">save</span><span class="o">(</span><span class="n">modelArtifact</span><span class="o">).</span><span class="n">get</span>
 </pre></div>
 
 </div>
@@ -13625,13 +13824,70 @@ Number of prediction records: 1216
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[50]:</div>
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>savedModel = com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$ModelAdapter$$anon$14@24b63292
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[21]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>Vector(trainingDataSchema, lastUpdated, label, inputDataSchema, modelVersionHref, prediction, modelType, version, modelHref, artifactPath, pipelineVersionHref, runtime, creationTime, probability)</pre>
+<pre>com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$ModelAdapter$$anon$14@24b63292</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Get the saved model metadata from WML.</p>
+<p><strong>Tip</strong>: Use <em>meta.availableProps</em> to get the list of available props.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="n">savedModel</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">availableProps</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[22]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Vector(trainingDataSchema, modelUrl, trainingDefinitionVersionUrl, label, inputDataSchema, content_status, framework_runtimes, modelType, version, modelVersionUrl, artifactPath, modelInMemorySize, contentUrl, frameworkName, runtime, creationTime, frameworkVersion)</pre>
 </div>
 
 </div>
@@ -13642,14 +13898,14 @@ Number of prediction records: 1216
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[51]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">println</span><span class="o">(</span><span class="s">&quot;modelType: &quot;</span> <span class="o">+</span> <span class="n">saved_model</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;modelType&quot;</span><span class="o">).</span><span class="n">get</span><span class="o">)</span>
-<span class="n">println</span><span class="o">(</span><span class="s">&quot;trainingDataSchema: &quot;</span> <span class="o">+</span> <span class="n">saved_model</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;trainingDataSchema&quot;</span><span class="o">).</span><span class="n">get</span><span class="o">)</span>
-<span class="n">println</span><span class="o">(</span><span class="s">&quot;creationTime: &quot;</span> <span class="o">+</span> <span class="n">saved_model</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;creationTime&quot;</span><span class="o">).</span><span class="n">get</span><span class="o">)</span>
-<span class="n">println</span><span class="o">(</span><span class="s">&quot;modelVersionHref: &quot;</span> <span class="o">+</span> <span class="n">saved_model</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;modelVersionHref&quot;</span><span class="o">).</span><span class="n">get</span><span class="o">)</span>
-<span class="n">println</span><span class="o">(</span><span class="s">&quot;label: &quot;</span> <span class="o">+</span> <span class="n">saved_model</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">).</span><span class="n">get</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">println</span><span class="o">(</span><span class="s">&quot;modelType: &quot;</span> <span class="o">+</span> <span class="n">savedModel</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;modelType&quot;</span><span class="o">).</span><span class="n">get</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="s">&quot;trainingDataSchema: &quot;</span> <span class="o">+</span> <span class="n">savedModel</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;trainingDataSchema&quot;</span><span class="o">).</span><span class="n">get</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="s">&quot;creationTime: &quot;</span> <span class="o">+</span> <span class="n">savedModel</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;creationTime&quot;</span><span class="o">).</span><span class="n">get</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="s">&quot;modelVersionUrl: &quot;</span> <span class="o">+</span> <span class="n">savedModel</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;modelVersionUrl&quot;</span><span class="o">).</span><span class="n">get</span><span class="o">)</span>
+<span class="n">println</span><span class="o">(</span><span class="s">&quot;label: &quot;</span> <span class="o">+</span> <span class="n">savedModel</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;label&quot;</span><span class="o">).</span><span class="n">get</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -13666,10 +13922,10 @@ Number of prediction records: 1216
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>modelType: sparkml-model-2.1
-trainingDataSchema: {&#34;type&#34;:&#34;struct&#34;,&#34;fields&#34;:[{&#34;name&#34;:&#34;PRODUCT_LINE&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;GENDER&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;AGE&#34;,&#34;type&#34;:&#34;integer&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;MARITAL_STATUS&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;PROFESSION&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}}]}
-creationTime: 2018-04-03T12:35:32.457Z
-modelVersionHref: https://ibm-watson-ml.mybluemix.net/v2/artifacts/models/32b847bd-90a3-4db0-aa91-9fb01cf160ec/versions/605ebb83-ddde-4917-903e-4b9951c7b54c
+<pre>modelType: standard
+trainingDataSchema: {&#34;type&#34;:&#34;struct&#34;,&#34;fields&#34;:[{&#34;name&#34;:&#34;PRODUCT_LINE&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{&#34;modeling_role&#34;:&#34;target&#34;}},{&#34;name&#34;:&#34;GENDER&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;AGE&#34;,&#34;type&#34;:&#34;integer&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;MARITAL_STATUS&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}},{&#34;name&#34;:&#34;PROFESSION&#34;,&#34;type&#34;:&#34;string&#34;,&#34;nullable&#34;:true,&#34;metadata&#34;:{}}]}
+creationTime: 2019-07-16T16:04:33.080Z
+modelVersionUrl: https://us-south.ml.cloud.ibm.com/v3/ml_assets/models/4f5c3428-3983-4463-bd0a-86a3480124e7/versions/346ee803-2519-4323-a4ea-bf68b057f1b0
 label: PRODUCT_LINE
 </pre>
 </div>
@@ -13683,7 +13939,7 @@ label: PRODUCT_LINE
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Tip</strong>: <strong>modelVersionHref</strong> is our model unique indentifier in the Watson Machine Learning repository.</p>
+<p><strong>Tip</strong>: <strong>modelVersionUrl</strong> is the model unique indentifier in the WML repository.</p>
 
 </div>
 </div>
@@ -13692,21 +13948,56 @@ label: PRODUCT_LINE
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="4.3-Load-the-model">4.3 Load the model<a id="load" /><a class="anchor-link" href="#4.3-Load-the-model">&#182;</a></h3><p>In this subsection you will learn how to load a saved model from a specified instance of Watson Machine Learning.</p>
+<h3 id="4.3-Load-the-model">4.3 Load the model<a id="load" /><a class="anchor-link" href="#4.3-Load-the-model">&#182;</a></h3><p>In this subsection, you will learn how to load a saved model from a specified WML instance.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[52]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">model_version_href</span> <span class="k">=</span> <span class="n">saved_model</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;modelVersionHref&quot;</span><span class="o">).</span><span class="n">get</span>
-<span class="k">val</span> <span class="n">loaded_model_artifact</span> <span class="k">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">version</span><span class="o">(</span><span class="n">model_version_href</span><span class="o">).</span><span class="n">get</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">modelVersionUrl</span> <span class="k">=</span> <span class="n">savedModel</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">prop</span><span class="o">(</span><span class="s">&quot;modelVersionUrl&quot;</span><span class="o">).</span><span class="n">get</span>
+<span class="k">val</span> <span class="n">loadedModelArtifact</span> <span class="k">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">version</span><span class="o">(</span><span class="n">modelVersionUrl</span><span class="o">).</span><span class="n">get</span>
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>modelVersionUrl = https://us-south.ml.cloud.ibm.com/v3/ml_assets/models/4f5c3428-3983-4463-bd0a-86a3480124e7/versions/346ee803-2519-4323-a4ea-bf68b057f1b0
+loadedModelArtifact = com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$ModelAdapter$$anon$14@195ca98f
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[24]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>com.ibm.analytics.ngp.repository_v3.MLRepositoryClient$ModelAdapter$$anon$14@195ca98f</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13722,10 +14013,10 @@ label: PRODUCT_LINE
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[53]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">loaded_model_artifact</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">mkString</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">loadedModelArtifact</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">mkString</span>
 </pre></div>
 
 </div>
@@ -13738,7 +14029,7 @@ label: PRODUCT_LINE
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[53]:</div>
+<div class="prompt output_prompt">Out[25]:</div>
 
 
 
@@ -13757,7 +14048,7 @@ label: PRODUCT_LINE
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As you can see the name is correct.</p>
+<p>As you can see, the name is correct.</p>
 
 </div>
 </div>
@@ -13772,16 +14063,17 @@ label: PRODUCT_LINE
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[54]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">loaded_model_artifact</span> <span class="k">match</span> <span class="o">{</span>
-        <span class="k">case</span> <span class="nc">SparkPipelineModelLoader</span><span class="o">(</span><span class="nc">Success</span><span class="o">(</span><span class="n">model</span><span class="o">))</span> <span class="k">=&gt;</span> <span class="o">{</span>
-          <span class="k">val</span> <span class="n">predictions</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">prediction_data</span><span class="o">)</span>
-        <span class="o">}</span>
-        <span class="k">case</span> <span class="nc">SparkPipelineModelLoader</span><span class="o">(</span><span class="nc">Failure</span><span class="o">(</span><span class="n">e</span><span class="o">))</span> <span class="k">=&gt;</span> <span class="s">&quot;Loading failed.&quot;</span>
-        <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="s">s&quot;Unexpected artifact class: </span><span class="si">${</span><span class="n">loaded_model_artifact</span><span class="o">.</span><span class="n">getClass</span><span class="si">}</span><span class="s">&quot;</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">loadedModelArtifact</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="nc">SparkPipelineModelLoader</span><span class="o">(</span><span class="nc">Success</span><span class="o">(</span><span class="n">model</span><span class="o">))</span> <span class="k">=&gt;</span> <span class="o">{</span>
+        <span class="k">val</span> <span class="n">predictions</span> <span class="k">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="o">(</span><span class="n">predictionData</span><span class="o">)</span>
     <span class="o">}</span>
+    <span class="k">case</span> <span class="nc">SparkPipelineModelLoader</span><span class="o">(</span><span class="nc">Failure</span><span class="o">(</span><span class="n">e</span><span class="o">))</span> <span class="k">=&gt;</span> <span class="s">&quot;Loading failed.&quot;</span>
+    <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="n">println</span><span class="o">(</span><span class="s">s&quot;Unexpected artifact class: </span><span class="si">${</span><span class="n">loadedModelArtifact</span><span class="o">.</span><span class="n">getClass</span><span class="si">}</span><span class="s">&quot;</span><span class="o">)</span>
+<span class="o">}</span>
+
 <span class="n">predictions</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;GENDER&quot;</span><span class="o">,</span> <span class="s">&quot;AGE&quot;</span><span class="o">,</span> <span class="s">&quot;MARITAL_STATUS&quot;</span><span class="o">,</span> <span class="s">&quot;PROFESSION&quot;</span><span class="o">,</span> <span class="s">&quot;predictedLabel&quot;</span><span class="o">).</span><span class="n">show</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
 </pre></div>
 
@@ -13827,17 +14119,17 @@ only showing top 10 rows
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>By tabulating a count, you can see which product line is the most popular.</p>
+<p>By tabulating the <code>predictedLabel</code> column and count the frequencies of <code>predictedLabel</code> classes, you can see which product line is the most popular.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[55]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">predictions</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;predictedLabel&quot;</span><span class="o">).</span><span class="n">groupBy</span><span class="o">(</span><span class="s">&quot;predictedLabel&quot;</span><span class="o">).</span><span class="n">count</span><span class="o">().</span><span class="n">show</span><span class="o">()</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">predictions</span><span class="o">.</span><span class="n">select</span><span class="o">(</span><span class="s">&quot;predictedLabel&quot;</span><span class="o">).</span><span class="n">groupBy</span><span class="o">(</span><span class="s">&quot;predictedLabel&quot;</span><span class="o">).</span><span class="n">count</span><span class="o">().</span><span class="n">show</span><span class="o">()</span>
 </pre></div>
 
 </div>
@@ -13875,7 +14167,7 @@ only showing top 10 rows
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>You have now learned how save and load the model from WML repository, and make predictions.</p>
+<p>You have now learned how to save and load a model from the WML repository and make predictions.</p>
 
 </div>
 </div>
@@ -13885,29 +14177,27 @@ only showing top 10 rows
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="scoring"></a></p>
-<h2 id="5.-Deploy-and-score-in-a-Cloud">5. Deploy and score in a Cloud<a class="anchor-link" href="#5.-Deploy-and-score-in-a-Cloud">&#182;</a></h2><p>In this section you will learn how to create online scoring and to score a new data record by using the WML REST API. 
-For more information about REST APIs, see the <a href="http://watson-ml-api.mybluemix.net/">Swagger Documentation</a>.</p>
-<p>To work with the WML REST API you must generate an access token. To do this, use the following sample code:</p>
+<h2 id="5.-Deploy-and-score-in-the-WML-repository">5. Deploy and score in the WML repository<a class="anchor-link" href="#5.-Deploy-and-score-in-the-WML-repository">&#182;</a></h2><p>In this section, you will learn how to create online scoring and to score a test data record by using the WML REST API. 
+For more information about REST APIs, see the <a href="http://watson-ml-api.mybluemix.net/" target="_blank" rel="noopener no referrer">Swagger Documentation</a>.</p>
+<p>To work with the WML REST API you must generate an access token. To do this, use the following code:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[56]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="c1">// Get WML service instance token</span>
-
-<span class="k">val</span> <span class="n">wml_auth_header</span> <span class="k">=</span> <span class="s">&quot;Basic &quot;</span> <span class="o">+</span> <span class="nc">Base64</span><span class="o">.</span><span class="n">getEncoder</span><span class="o">.</span><span class="n">encodeToString</span><span class="o">((</span><span class="n">wml_username</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="n">wml_password</span><span class="o">).</span><span class="n">getBytes</span><span class="o">(</span><span class="nc">StandardCharsets</span><span class="o">.</span><span class="nc">UTF_8</span><span class="o">))</span>
-<span class="k">val</span> <span class="n">wml_url</span> <span class="k">=</span> <span class="n">wml_service_path</span> <span class="o">+</span> <span class="s">&quot;/v3/identity/token&quot;</span>
-<span class="k">val</span> <span class="n">wml_response</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">wml_url</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="n">wml_auth_header</span><span class="o">).</span><span class="n">asString</span>
-<span class="k">val</span> <span class="n">wml_token_json</span><span class="k">:</span><span class="kt">JsValue</span> <span class="o">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">wml_response</span><span class="o">.</span><span class="n">body</span><span class="o">)</span>
-
-<span class="k">val</span> <span class="n">wml_token</span> <span class="k">=</span> <span class="o">(</span><span class="n">wml_token_json</span> <span class="o">\</span> <span class="s">&quot;token&quot;</span><span class="o">).</span><span class="n">asOpt</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">match</span> <span class="o">{</span>
-    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">x</span>
-    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="s">&quot;&quot;</span>
-<span class="o">}</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="c1">// Get IAM token</span>
+<span class="k">val</span> <span class="n">wmlUrl</span> <span class="k">=</span> <span class="s">&quot;https://iam.bluemix.net/oidc/token&quot;</span>
+<span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="s">&quot;apikey=&quot;</span> <span class="o">+</span> <span class="n">wmlAPI</span> <span class="o">+</span> <span class="s">&quot;&amp;grant_type=urn:ibm:params:oauth:grant-type:apikey&quot;</span>
+<span class="k">val</span> <span class="nc">IBM_cloud_IAM_uid</span> <span class="k">=</span> <span class="s">&quot;bx&quot;</span>
+<span class="k">val</span> <span class="nc">IBM_cloud_IAM_pwd</span> <span class="k">=</span> <span class="s">&quot;bx&quot;</span>
+<span class="k">val</span> <span class="n">wmlAuthHeader</span> <span class="k">=</span> <span class="s">&quot;Basic &quot;</span> <span class="o">+</span> <span class="nc">Base64</span><span class="o">.</span><span class="n">getEncoder</span><span class="o">.</span><span class="n">encodeToString</span><span class="o">((</span><span class="nc">IBM_cloud_IAM_uid</span> <span class="o">+</span> <span class="s">&quot;:&quot;</span> <span class="o">+</span> <span class="nc">IBM_cloud_IAM_pwd</span><span class="o">).</span><span class="n">getBytes</span><span class="o">(</span><span class="nc">StandardCharsets</span><span class="o">.</span><span class="nc">UTF_8</span><span class="o">))</span>
+<span class="k">val</span> <span class="n">wmlResponse</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">wmlUrl</span><span class="o">).</span><span class="n">postData</span><span class="o">(</span><span class="n">data</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/x-www-form-urlencoded&quot;</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="n">wmlAuthHeader</span><span class="o">).</span><span class="n">asString</span>
+<span class="k">val</span> <span class="n">iamTokenJson</span> <span class="k">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">wmlResponse</span><span class="o">.</span><span class="n">body</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">iamToken</span> <span class="k">=</span> <span class="o">(</span><span class="n">iamTokenJson</span> <span class="o">\</span> <span class="s">&quot;access_token&quot;</span><span class="o">).</span><span class="n">as</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span>
 </pre></div>
 
 </div>
@@ -13919,236 +14209,21 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Get-the-published_models-url-from-instance-details.">Get the published_models url from instance details.<a class="anchor-link" href="#Get-the-published_models-url-from-instance-details.">&#182;</a></h4>
+<h4 id="Get-the-published-model-urls-from-instance-details.">Get the published model urls from instance details.<a class="anchor-link" href="#Get-the-published-model-urls-from-instance-details.">&#182;</a></h4>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[57]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">endpoint_instance</span> <span class="k">=</span> <span class="n">wml_service_path</span> <span class="o">+</span> <span class="s">&quot;/v3/wml_instances/&quot;</span> <span class="o">+</span> <span class="n">wml_instance_id</span>
-<span class="k">val</span> <span class="n">wml_response_instance</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">endpoint_instance</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">wml_token</span><span class="o">).</span><span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">connTimeout</span><span class="o">(</span><span class="mi">10000</span><span class="o">)).</span><span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">readTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">asString</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[58]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">wml_response_instance</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[58]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>HttpResponse({&#34;metadata&#34;:{&#34;guid&#34;:&#34;fd1db635-c9f3-4d83-afc7-32efec367e5e&#34;,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/fd1db635-c9f3-4d83-afc7-32efec367e5e&#34;,&#34;created_at&#34;:&#34;2018-01-30T10:39:51.938Z&#34;,&#34;modified_at&#34;:&#34;2018-04-03T12:35:32.514Z&#34;},&#34;entity&#34;:{&#34;source&#34;:&#34;Bluemix&#34;,&#34;published_models&#34;:{&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/fd1db635-c9f3-4d83-afc7-32efec367e5e/published_models&#34;},&#34;usage&#34;:{&#34;expiration_date&#34;:&#34;2018-05-01T00:00:00.000Z&#34;,&#34;computation_time&#34;:{&#34;current&#34;:0},&#34;model_count&#34;:{&#34;limit&#34;:1000,&#34;current&#34;:3},&#34;prediction_count&#34;:{&#34;current&#34;:0},&#34;gpu_count&#34;:{&#34;limit&#34;:8,&#34;current&#34;:0},&#34;capacity_units&#34;:{&#34;current&#34;:0},&#34;deployment_count&#34;:{&#34;limit&#34;:1000,&#34;current&#34;:2}},&#34;plan_id&#34;:&#34;0f2a3c2c-456b-40f3-9b19-726d2740b11c&#34;,&#34;status&#34;:&#34;Act...</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Create-online-scoring-endpoint.">Create online scoring endpoint.<a class="anchor-link" href="#Create-online-scoring-endpoint.">&#182;</a></h4><p>Run the following sample code that uses the publishedModelId value to create an online scoring endpoint ino the ÍBM Cloud repository.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[59]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">published_models_json</span><span class="k">:</span> <span class="kt">JsValue</span> <span class="o">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">wml_response_instance</span><span class="o">.</span><span class="n">body</span><span class="o">)</span>
-<span class="k">val</span> <span class="n">published_models_url</span> <span class="k">=</span> <span class="o">(((</span><span class="n">published_models_json</span> <span class="o">\</span> <span class="s">&quot;entity&quot;</span><span class="o">)</span> <span class="o">\\</span> <span class="s">&quot;published_models&quot;</span><span class="o">)(</span><span class="mi">0</span><span class="o">)</span> <span class="o">\</span> <span class="s">&quot;url&quot;</span><span class="o">).</span><span class="n">as</span><span class="o">[</span><span class="kt">JsString</span><span class="o">].</span><span class="n">value</span>
-<span class="n">published_models_url</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[59]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>https://ibm-watson-ml.mybluemix.net/v3/wml_instances/fd1db635-c9f3-4d83-afc7-32efec367e5e/published_models</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Get-a-list-of-published-models">Get a list of published models<a class="anchor-link" href="#Get-a-list-of-published-models">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[60]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">wml_models</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">published_models_url</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">wml_token</span><span class="o">).</span><span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">connTimeout</span><span class="o">(</span><span class="mi">10000</span><span class="o">)).</span><span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">readTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">asString</span>
-<span class="n">wml_models</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[60]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>HttpResponse({&#34;limit&#34;:1000,&#34;resources&#34;:[{&#34;metadata&#34;:{&#34;guid&#34;:&#34;32b847bd-90a3-4db0-aa91-9fb01cf160ec&#34;,&#34;url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/fd1db635-c9f3-4d83-afc7-32efec367e5e/published_models/32b847bd-90a3-4db0-aa91-9fb01cf160ec&#34;,&#34;created_at&#34;:&#34;2018-04-03T12:35:32.457Z&#34;,&#34;modified_at&#34;:&#34;2018-04-03T12:35:32.610Z&#34;},&#34;entity&#34;:{&#34;runtime_environment&#34;:&#34;spark-2.1&#34;,&#34;learning_configuration_url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/fd1db635-c9f3-4d83-afc7-32efec367e5e/published_models/32b847bd-90a3-4db0-aa91-9fb01cf160ec/learning_configuration&#34;,&#34;author&#34;:{},&#34;name&#34;:&#34;WML Product Line Prediction Model&#34;,&#34;label_col&#34;:&#34;PRODUCT_LINE&#34;,&#34;learning_iterations_url&#34;:&#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/fd1db635-c9f3-4d8...</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[61]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">var</span> <span class="n">deployment_endpoint</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="k">_</span>
-<span class="n">wml_models</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;\&quot;&quot;</span><span class="o">).</span><span class="n">map</span><span class="o">{</span> <span class="n">s</span> <span class="k">=&gt;</span> <span class="o">{</span><span class="k">if</span> <span class="o">((</span><span class="n">s</span> <span class="n">contains</span> <span class="s">&quot;deployments&quot;</span><span class="o">)</span> <span class="o">&amp;</span> <span class="o">(</span><span class="n">s</span> <span class="n">contains</span> <span class="n">saved_model</span><span class="o">.</span><span class="n">uid</span><span class="o">.</span><span class="n">mkString</span><span class="o">))</span> <span class="o">{</span><span class="n">deployment_endpoint</span> <span class="k">=</span> <span class="n">s</span><span class="o">}}}</span>
-<span class="n">deployment_endpoint</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[61]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>https://ibm-watson-ml.mybluemix.net/v3/wml_instances/fd1db635-c9f3-4d83-afc7-32efec367e5e/published_models/32b847bd-90a3-4db0-aa91-9fb01cf160ec/deployments</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Create-an-online-deployment-for-published-model">Create an online deployment for published model<a class="anchor-link" href="#Create-an-online-deployment-for-published-model">&#182;</a></h4>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[62]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">payload_name</span> <span class="k">=</span> <span class="s">&quot;Online scoring&quot;</span>
-<span class="k">val</span> <span class="n">payload_data_online</span> <span class="k">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">stringify</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="nc">Map</span><span class="o">(</span><span class="s">&quot;type&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;online&quot;</span><span class="o">,</span> <span class="s">&quot;name&quot;</span> <span class="o">-&gt;</span> <span class="n">payload_name</span><span class="o">)))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[63]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">response_online</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">deployment_endpoint</span><span class="o">).</span><span class="n">postData</span><span class="o">(</span><span class="n">payload_data_online</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">wml_token</span><span class="o">).</span><span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">connTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">readTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">asString</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[64]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">scoring_url_json</span><span class="k">:</span> <span class="kt">JsValue</span> <span class="o">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">response_online</span><span class="o">.</span><span class="n">body</span><span class="o">)</span>
-<span class="k">val</span> <span class="n">scoring_url</span> <span class="k">=</span> <span class="o">(</span><span class="n">scoring_url_json</span> <span class="o">\</span> <span class="s">&quot;entity&quot;</span> <span class="o">\</span> <span class="s">&quot;scoring_url&quot;</span><span class="o">).</span><span class="n">asOpt</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">match</span> <span class="o">{</span>
-    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">x</span>
-    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="s">&quot;&quot;</span>
-<span class="o">}</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[65]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">print</span><span class="o">(</span><span class="n">scoring_url</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">endpointInstance</span> <span class="k">=</span> <span class="n">wmlServicePath</span> <span class="o">+</span> <span class="s">&quot;/v3/wml_instances/&quot;</span> <span class="o">+</span> <span class="n">wmlInstanceId</span>
+<span class="k">val</span> <span class="n">wmlResponseInstance</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">endpointInstance</span><span class="o">).</span>
+                          <span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">).</span>
+                          <span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">iamToken</span><span class="o">).</span>
+                          <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">connTimeout</span><span class="o">(</span><span class="mi">10000</span><span class="o">)).</span>
+                          <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">readTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">asString</span>
 </pre></div>
 
 </div>
@@ -14164,9 +14239,45 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>https://ibm-watson-ml.mybluemix.net/v3/wml_instances/fd1db635-c9f3-4d83-afc7-32efec367e5e/published_models/32b847bd-90a3-4db0-aa91-9fb01cf160ec/deployments/ff37fa26-1076-4808-aed4-094e2fb97d29/online</pre>
+
+
+<div class="output_text output_subarea ">
+<pre>endpointInstance = https://ibm-watson-ml.mybluemix.net/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9
+wmlResponseInstance = 
+</pre>
 </div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>HttpResponse({
+  &#34;metadata&#34;: {
+    &#34;guid&#34;: &#34;b4b6c696-172c-4164-8049-c0b621dbf3c9&#34;,
+    &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9&#34;,
+    &#34;created_at&#34;: &#34;2018-12-10T08:05:26.901Z&#34;,
+    &#34;modified_at&#34;: &#34;2019-07-16T16:04:33.975Z&#34;
+  },
+  &#34;entity&#34;: {
+    &#34;source&#34;: &#34;Bluemix&#34;,
+    &#34;published_models&#34;: {
+      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models&#34;
+    },
+    &#34;usage&#34;: {
+      &#34;expiration_date&#34;: &#34;2019-08-01T00:00:00.000Z&#34;,
+      &#34;computation_time&#34;: {
+        &#34;current&#34;: 0
+      },
+      &#34;gpu_count_k80&#34;:...
+</pre>
+</div>
+
 </div>
 
 </div>
@@ -14175,24 +14286,10 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[66]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">payload_scoring</span> <span class="k">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">stringify</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="nc">Map</span><span class="o">(</span><span class="s">&quot;fields&quot;</span> <span class="o">-&gt;</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;GENDER&quot;</span><span class="o">),</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;AGE&quot;</span><span class="o">),</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;MARITAL_STATUS&quot;</span><span class="o">),</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;PROFESSION&quot;</span><span class="o">))),</span>
-                                                    <span class="s">&quot;values&quot;</span> <span class="o">-&gt;</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;M&quot;</span><span class="o">),</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="mi">55</span><span class="o">),</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;Single&quot;</span><span class="o">),</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;Executive&quot;</span><span class="o">)))))))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[67]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">payload_scoring</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">wmlResponseInstance</span>
 </pre></div>
 
 </div>
@@ -14205,7 +14302,347 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[67]:</div>
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>HttpResponse({
+  &#34;metadata&#34;: {
+    &#34;guid&#34;: &#34;b4b6c696-172c-4164-8049-c0b621dbf3c9&#34;,
+    &#34;url&#34;: &#34;https://ibm-watson-ml.mybluemix.net/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9&#34;,
+    &#34;created_at&#34;: &#34;2018-12-10T08:05:26.901Z&#34;,
+    &#34;modified_at&#34;: &#34;2019-07-16T16:04:33.975Z&#34;
+  },
+  &#34;entity&#34;: {
+    &#34;source&#34;: &#34;Bluemix&#34;,
+    &#34;published_models&#34;: {
+      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models&#34;
+    },
+    &#34;usage&#34;: {
+      &#34;expiration_date&#34;: &#34;2019-08-01T00:00:00.000Z&#34;,
+      &#34;computation_time&#34;: {
+        &#34;current&#34;: 0
+      },
+      &#34;gpu_count_k80&#34;: {
+        &#34;limit&#34;: 48,
+        &#34;current&#34;: 0
+      },
+      &#34;model_count&#34;: {
+        &#34;limit&#34;: 1000,
+        &#34;current&#34;: 68
+      },...
+</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Create-an-online-scoring-endpoint.">Create an online scoring endpoint.<a class="anchor-link" href="#Create-an-online-scoring-endpoint.">&#182;</a></h4><p>Run the following code that uses the <code>publishedModelId</code> value to create an online scoring endpoint ino the WML repository.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">publishedModelsJson</span><span class="k">:</span> <span class="kt">JsValue</span> <span class="o">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">wmlResponseInstance</span><span class="o">.</span><span class="n">body</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">publishedModelsUrl</span> <span class="k">=</span> <span class="o">(((</span><span class="n">publishedModelsJson</span> <span class="o">\</span> <span class="s">&quot;entity&quot;</span><span class="o">)</span> <span class="o">\\</span> <span class="s">&quot;published_models&quot;</span><span class="o">)(</span><span class="mi">0</span><span class="o">)</span> <span class="o">\</span> <span class="s">&quot;url&quot;</span><span class="o">).</span><span class="n">as</span><span class="o">[</span><span class="kt">JsString</span><span class="o">].</span><span class="n">value</span>
+<span class="n">publishedModelsUrl</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Get-the-list-of-published-models.">Get the list of published models.<a class="anchor-link" href="#Get-the-list-of-published-models.">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">wmlModels</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">publishedModelsUrl</span><span class="o">).</span>
+                <span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">).</span>
+                <span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">iamToken</span><span class="o">).</span>
+                <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">connTimeout</span><span class="o">(</span><span class="mi">10000</span><span class="o">)).</span>
+                <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">readTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">asString</span>
+<span class="n">wmlModels</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>wmlModels = 
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>HttpResponse({
+  &#34;limit&#34;: 1000,
+  &#34;resources&#34;: [{
+    &#34;metadata&#34;: {
+      &#34;guid&#34;: &#34;f5eb38e5-2b04-4da0-bf14-3edafe554be8&#34;,
+      &#34;url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models/f5eb38e5-2b04-4da0-bf14-3edafe554be8&#34;,
+      &#34;created_at&#34;: &#34;2019-01-18T02:18:45.291Z&#34;,
+      &#34;modified_at&#34;: &#34;2019-01-18T02:18:45.351Z&#34;
+    },
+    &#34;entity&#34;: {
+      &#34;runtime_environment&#34;: &#34;spark-2.3&#34;,
+      &#34;learning_configuration_url&#34;: &#34;https://us-south.ml.cloud.ibm.com/v3/wml_instances/b4b6c696-172c-4164-8049-c0b621dbf3c9/published_models/f5eb38e5-2b04-4da0-bf14-3edafe554be8/learning_configuration&#34;,
+      &#34;name&#34;: &#34;Customer churn Spark model&#34;,
+      &#34;label_col&#34;: &#34;Churn&#34;,
+      &#34;tags&#34;: [],
+      &#34;learning_...
+</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">var</span> <span class="n">deploymentEndpoint</span><span class="k">:</span> <span class="kt">String</span> <span class="o">=</span> <span class="k">_</span>
+
+<span class="n">wmlModels</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">split</span><span class="o">(</span><span class="s">&quot;\&quot;&quot;</span><span class="o">).</span><span class="n">map</span><span class="o">{</span> 
+    <span class="n">s</span> <span class="k">=&gt;</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">((</span><span class="n">s</span> <span class="n">contains</span> <span class="s">&quot;deployments&quot;</span><span class="o">)</span> <span class="o">&amp;</span> <span class="o">(</span><span class="n">s</span> <span class="n">contains</span> <span class="n">savedModel</span><span class="o">.</span><span class="n">uid</span><span class="o">.</span><span class="n">mkString</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">deploymentEndpoint</span> <span class="k">=</span> <span class="n">s</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="n">deploymentEndpoint</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Create-an-online-deployment-for-published-model.">Create an online deployment for published model.<a class="anchor-link" href="#Create-an-online-deployment-for-published-model.">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">payloadName</span> <span class="k">=</span> <span class="s">&quot;Online scoring&quot;</span>
+<span class="k">val</span> <span class="n">payloadDataOnline</span> <span class="k">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">stringify</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="nc">Map</span><span class="o">(</span><span class="s">&quot;type&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;online&quot;</span><span class="o">,</span> <span class="s">&quot;name&quot;</span> <span class="o">-&gt;</span> <span class="n">payloadName</span><span class="o">)))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>payloadName = Online scoring
+payloadDataOnline = {&#34;type&#34;:&#34;online&#34;,&#34;name&#34;:&#34;Online scoring&#34;}
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[34]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#34;type&#34;:&#34;online&#34;,&#34;name&#34;:&#34;Online scoring&#34;}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">responseOnline</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">deploymentEndpoint</span><span class="o">).</span>
+                     <span class="n">postData</span><span class="o">(</span><span class="n">payloadDataOnline</span><span class="o">).</span>
+                     <span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">).</span>
+                     <span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">iamToken</span><span class="o">).</span>
+                     <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">connTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span>
+                     <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">readTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">asString</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">scoringUrlJson</span><span class="k">:</span> <span class="kt">JsValue</span> <span class="o">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">parse</span><span class="o">(</span><span class="n">responseOnline</span><span class="o">.</span><span class="n">body</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">scoringUrl</span> <span class="k">=</span> <span class="o">(</span><span class="n">scoringUrlJson</span> <span class="o">\</span> <span class="s">&quot;entity&quot;</span> <span class="o">\</span> <span class="s">&quot;scoring_url&quot;</span><span class="o">).</span><span class="n">asOpt</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="n">x</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">x</span>
+    <span class="k">case</span> <span class="nc">None</span> <span class="k">=&gt;</span> <span class="s">&quot;&quot;</span>
+<span class="o">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="n">print</span><span class="o">(</span><span class="n">scoringUrl</span><span class="o">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">payloadScoring</span> <span class="k">=</span> <span class="nc">Json</span><span class="o">.</span><span class="n">stringify</span><span class="o">(</span>
+    <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span>
+        <span class="nc">Map</span><span class="o">(</span>
+            <span class="s">&quot;fields&quot;</span> <span class="o">-&gt;</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;GENDER&quot;</span><span class="o">),</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;AGE&quot;</span><span class="o">),</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;MARITAL_STATUS&quot;</span><span class="o">),</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;PROFESSION&quot;</span><span class="o">))),</span>
+            <span class="s">&quot;values&quot;</span> <span class="o">-&gt;</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;M&quot;</span><span class="o">),</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="mi">55</span><span class="o">),</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;Single&quot;</span><span class="o">),</span> <span class="nc">Json</span><span class="o">.</span><span class="n">toJson</span><span class="o">(</span><span class="s">&quot;Executive&quot;</span><span class="o">))))</span>
+        <span class="o">)</span>
+    <span class="o">)</span>
+<span class="o">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>payloadScoring = {&#34;fields&#34;:[&#34;GENDER&#34;,&#34;AGE&#34;,&#34;MARITAL_STATUS&#34;,&#34;PROFESSION&#34;],&#34;values&#34;:[[&#34;M&#34;,55,&#34;Single&#34;,&#34;Executive&#34;]]}
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[38]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#34;fields&#34;:[&#34;GENDER&#34;,&#34;AGE&#34;,&#34;MARITAL_STATUS&#34;,&#34;PROFESSION&#34;],&#34;values&#34;:[[&#34;M&#34;,55,&#34;Single&#34;,&#34;Executive&#34;]]}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-scala"><pre><span></span><span class="n">payloadScoring</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[39]:</div>
 
 
 
@@ -14224,30 +14661,74 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now, you can send (POST) new scoring records (new data) for which you would like to get predictions. To do that, run the following sample code:</p>
+<p>Now, you can send (POST) new scoring records (new data) for predictions. To do that, run the following sample code:</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[68]:</div>
+<div class="prompt input_prompt">In&nbsp;[40]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="k">val</span> <span class="n">response_scoring</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">scoring_url</span><span class="o">).</span><span class="n">postData</span><span class="o">(</span><span class="n">payload_scoring</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">).</span><span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">wml_token</span><span class="o">).</span><span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">method</span><span class="o">(</span><span class="s">&quot;POST&quot;</span><span class="o">)).</span><span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">connTimeout</span><span class="o">(</span><span class="mi">10000</span><span class="o">)).</span><span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">readTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">asString</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="k">val</span> <span class="n">responseScoring</span> <span class="k">=</span> <span class="nc">Http</span><span class="o">(</span><span class="n">scoringUrl</span><span class="o">).</span>
+                      <span class="n">postData</span><span class="o">(</span><span class="n">payloadScoring</span><span class="o">).</span>
+                      <span class="n">header</span><span class="o">(</span><span class="s">&quot;Content-Type&quot;</span><span class="o">,</span> <span class="s">&quot;application/json&quot;</span><span class="o">).</span>
+                      <span class="n">header</span><span class="o">(</span><span class="s">&quot;Authorization&quot;</span><span class="o">,</span> <span class="s">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">iamToken</span><span class="o">).</span>
+                      <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">method</span><span class="o">(</span><span class="s">&quot;POST&quot;</span><span class="o">)).</span>
+                      <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">connTimeout</span><span class="o">(</span><span class="mi">10000</span><span class="o">)).</span>
+                      <span class="n">option</span><span class="o">(</span><span class="nc">HttpOptions</span><span class="o">.</span><span class="n">readTimeout</span><span class="o">(</span><span class="mi">50000</span><span class="o">)).</span><span class="n">asString</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>responseScoring = 
+</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+
+
+<div class="output_text output_subarea ">
+<pre>HttpResponse({
+  &#34;fields&#34;: [&#34;GENDER&#34;, &#34;AGE&#34;, &#34;MARITAL_STATUS&#34;, &#34;PROFESSION&#34;, &#34;PRODUCT_LINE&#34;, &#34;label&#34;, &#34;PROFESSION_IX&#34;, &#34;GENDER_IX&#34;, &#34;MARITAL_STATUS_IX&#34;, &#34;features&#34;, &#34;rawPrediction&#34;, &#34;probability&#34;, &#34;prediction&#34;, &#34;predictedLabel&#34;],
+  &#34;values&#34;: [[&#34;M&#34;, 55, &#34;Single&#34;, &#34;Executive&#34;, &#34;Camping Equipment&#34;, 0.0, 3.0, 0.0, 1.0, [0.0, 55.0, 1.0, 3.0], [2.5050408694752604, 1.8771700964659068, 2.338808434620882, 3.1481331680893025, 0.13084743134864898], [0.250504086947526, 0.1877170096465907, 0.2338808434620882, 0.31481331680893027, 0.013084743134864898], 3.0, &#34;Golf Equipment&#34;]]
+},200,Map(cache-control -&gt; Vector(private, no-cache, no-store, must-revalidate), Connection -&gt; Vector(keep-alive), Content-Length -&gt; Vector(558), Content-Type -&gt; Vector(applic...
+</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[69]:</div>
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-scala"><pre><span class="n">print</span><span class="o">(</span><span class="n">response_scoring</span><span class="o">)</span>
+<div class=" highlight hl-scala"><pre><span></span><span class="n">print</span><span class="o">(</span><span class="n">responseScoring</span><span class="o">)</span>
 </pre></div>
 
 </div>
@@ -14267,7 +14748,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 <pre>HttpResponse({
   &#34;fields&#34;: [&#34;GENDER&#34;, &#34;AGE&#34;, &#34;MARITAL_STATUS&#34;, &#34;PROFESSION&#34;, &#34;PRODUCT_LINE&#34;, &#34;label&#34;, &#34;PROFESSION_IX&#34;, &#34;GENDER_IX&#34;, &#34;MARITAL_STATUS_IX&#34;, &#34;features&#34;, &#34;rawPrediction&#34;, &#34;probability&#34;, &#34;prediction&#34;, &#34;predictedLabel&#34;],
   &#34;values&#34;: [[&#34;M&#34;, 55, &#34;Single&#34;, &#34;Executive&#34;, &#34;Camping Equipment&#34;, 0.0, 3.0, 0.0, 1.0, [0.0, 55.0, 1.0, 3.0], [2.5050408694752604, 1.8771700964659068, 2.338808434620882, 3.1481331680893025, 0.13084743134864898], [0.250504086947526, 0.1877170096465907, 0.2338808434620882, 0.31481331680893027, 0.013084743134864898], 3.0, &#34;Golf Equipment&#34;]]
-},200,Map(Cache-Control -&gt; Vector(private, no-cache, no-store, must-revalidate), Connection -&gt; Vector(Keep-Alive), Content-Type -&gt; Vector(application/json), Date -&gt; Vector(Tue, 03 Apr 2018 12:36:39 GMT), Pragma -&gt; Vector(no-cache), Server -&gt; Vector(nginx/1.13.6), Status -&gt; Vector(HTTP/1.1 200 OK), Transfer-Encoding -&gt; Vector(chunked), X-Backside-Transport -&gt; Vector(OK OK), X-Content-Type-Options -&gt; Vector(nosniff), X-Envoy-Upstream-Service-Time -&gt; Vector(14), X-Frame-Options -&gt; Vector(DENY), X-Global-Transaction-ID -&gt; Vector(283563769), X-Xss-Protection -&gt; Vector(1)))</pre>
+},200,Map(cache-control -&gt; Vector(private, no-cache, no-store, must-revalidate), Connection -&gt; Vector(keep-alive), Content-Length -&gt; Vector(558), Content-Type -&gt; Vector(application/json), Date -&gt; Vector(Tue, 16 Jul 2019 16:05:13 GMT), pragma -&gt; Vector(no-cache), Server -&gt; Vector(nginx), Status -&gt; Vector(HTTP/1.1 200 OK), Strict-Transport-Security -&gt; Vector(max-age=31536000; includeSubDomains), x-content-type-options -&gt; Vector(nosniff), x-envoy-upstream-service-time -&gt; Vector(431), x-frame-options -&gt; Vector(DENY), x-xss-protection -&gt; Vector(1)))</pre>
 </div>
 </div>
 
@@ -14279,7 +14760,7 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As you can see, you can predict that a 55-year-old single male executive is interested in Mountaineering Equipment (prediction: 2.0).</p>
+<p>As you can see, you can predict that a 55-year-old single male executive is interested in Golf Equipment (prediction: 3.0).</p>
 
 </div>
 </div>
@@ -14290,10 +14771,11 @@ For more information about REST APIs, see the <a href="http://watson-ml-api.mybl
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="summary"></a></p>
 <h2 id="6.-Summary-and-next-steps">6. Summary and next steps<a class="anchor-link" href="#6.-Summary-and-next-steps">&#182;</a></h2><p>You successfully completed this notebook!</p>
-<p>You learned how to use Apache Spark machine learning as well as Watson Machine Learning for model creation and deployment.</p>
-<p>Check out our <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html">Online Documentation</a> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
-<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Umit Mert Cakmak</strong> is a Data Scientist at IBM with a track record of developing enterprise-level applications that substantially increases clients' ability to turn data into actionable insights.</p>
-<p>Copyright © 2017, 2018 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>You learned how to use Spark machine learning as well as Watson Machine Learning for model creation and deployment.</p>
+<p>Check out our <a href="https://dataplatform.ibm.com/docs/content/analyze-data/wml-setup.html" target="_blank" rel="noopener noreferrer">Online Documentation</a> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
+<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Umit Mert Cakmak</strong> is a Data Scientist at IBM with a track record of developing enterprise-level applications that substantially increases clients' ability to turn data into actionable insights.<br>
+<strong>Jihyoung Kim</strong>, Ph.D., is a Data Scientist at IBM who strives to make data science easy for everyone through Watson Studio.</p>
+<p>Copyright © 2017-2019 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
