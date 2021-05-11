@@ -1,11 +1,10 @@
 from keras.preprocessing.image import ImageDataGenerator
 import logging
-
+import pickle
 import numpy as np
 from keras.utils import np_utils
 
 from ibmfl.data.data_handler import DataHandler
-from ibmfl.util.datasets import load_mnist
 
 logger = logging.getLogger(__name__)
 
@@ -36,28 +35,20 @@ class MnistTFDataHandler(DataHandler):
         :return: training data
         :rtype: `tuple`
         """
-        if self.file_name is None:
-            (x_train, y_train), (x_test, y_test) = load_mnist()
-            # Reduce datapoints to make test faster
-            x_train = x_train[:nb_points]
-            y_train = y_train[:nb_points]
-            x_test = x_test[:nb_points]
-            y_test = y_test[:nb_points]
-        else:
-            try:
-                logger.info(
-                    'Loaded training data from ' + str(self.file_name))
-                data_train = np.load(self.file_name)
-                with open("MNIST-pkl/mnist-keras-train.pkl", 'rb') as f:
-                    (x_train, y_train)= pickle.load(f)
-
-                with open("MNIST-pkl/mnist-keras-train.pkl", 'rb') as f:
-                    (x_test, y_test)= pickle.load(f)
-                
-            except Exception:
-                raise IOError('Unable to load training data from path '
-                              'provided in config file: ' +
-                              self.file_name)
+        try:
+            logger.info(
+                'Loaded training data from ' + str(self.train_file_name))
+            with open(self.train_file_name, 'rb') as f:
+                (x_train, y_train)= pickle.load(f)
+            logger.info(
+                'Loaded test data from ' + str(self.test_file_name))
+            with open(self.test_file_name, 'rb') as f:
+                (x_test, y_test)= pickle.load(f)
+            
+        except Exception:
+            raise IOError('Unable to load training data from path '
+                            'provided in config file: ' +
+                            self.train_file_name)
 
         # Add a channels dimension
         import tensorflow as tf
