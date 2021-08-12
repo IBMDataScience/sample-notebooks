@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 class MnistTFDataHandler(DataHandler):
     """
-       Data handler for MNIST dataset.
-       """
+    Data handler for MNIST dataset.
+    """
 
     def __init__(self, data_config=None, channels_first=False):
         super().__init__()
@@ -44,6 +44,12 @@ class MnistTFDataHandler(DataHandler):
                 'Loaded test data from ' + str(self.test_file_name))
             with open(self.test_file_name, 'rb') as f:
                 (x_test, y_test)= pickle.load(f)
+                
+            x_train = x_train / 255.0
+            y_train = y_train / 255.0
+            x_test = x_test / 255.0
+            y_test = y_test / 255.0
+
             
         except Exception:
             raise IOError('Unable to load training data from path '
