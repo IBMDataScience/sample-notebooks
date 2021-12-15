@@ -46,9 +46,7 @@ class MnistTFDataHandler(DataHandler):
                 (x_test, y_test)= pickle.load(f)
                 
             x_train = x_train / 255.0
-            y_train = y_train / 255.0
             x_test = x_test / 255.0
-            y_test = y_test / 255.0
 
             
         except Exception:
