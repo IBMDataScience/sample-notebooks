@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>Federated Learning - XGB - Adult - Party</title>
+<title>Federated Learning XGBoost Demo Part 2 - for Party</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -12947,8 +12947,13 @@ ul.typeahead-list  > li > a.pull-right {
 /*# sourceMappingURL=style.min.css.map */
     </style>
 <style type="text/css">
-    .highlight .hll { background-color: #ffffcc }
-.highlight  { background: #f8f8f8; }
+    pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
 .highlight .c { color: #408080; font-style: italic } /* Comment */
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
@@ -14140,6 +14145,7 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">WML_SERVICES_HOST</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">PROJECT_ID</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 <span class="n">IAM_APIKEY</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 <span class="n">RTS_ID</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 <span class="n">TRAINING_ID</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -14225,7 +14231,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install --upgrade ibm-watson-machine-learning
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="o">!{</span>sys.executable<span class="o">}</span> -m pip install --upgrade ibm-watson-machine-learning<span class="o">[</span>fl<span class="o">]</span>
 </pre></div>
 
     </div>
@@ -14237,65 +14244,14 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id = "3.2"></a></p>
-<h3 id="3.2-Install-the-frameworks-and-libraries">3.2 Install the frameworks and libraries<a class="anchor-link" href="#3.2-Install-the-frameworks-and-libraries">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install --upgrade ibm-watson-machine-learning
-
-<span class="o">!</span>pip install <span class="nv">tensorflow</span><span class="o">==</span><span class="m">2</span>.4.3 <span class="err">\</span>
-<span class="n">torch</span><span class="o">==</span><span class="mf">1.7</span><span class="o">.</span><span class="mi">1</span> \
-<span class="n">scikit</span><span class="o">-</span><span class="n">learn</span><span class="o">==</span><span class="mf">0.23</span><span class="o">.</span><span class="mi">2</span> \
-<span class="n">scipy</span><span class="o">==</span><span class="mf">1.6</span><span class="o">.</span><span class="mi">3</span> \
-<span class="n">PyYAML</span> \
-<span class="n">aif360</span><span class="o">==</span><span class="mf">0.3</span><span class="o">.</span><span class="mi">0</span> \
-<span class="n">ddsketch</span> \
-<span class="n">diffprivlib</span> \
-<span class="n">environs</span> \
-<span class="n">h5py</span> \
-<span class="n">image</span> \
-<span class="n">jsonpickle</span><span class="o">==</span><span class="mf">1.4</span><span class="o">.</span><span class="mi">1</span> \
-<span class="n">keras</span><span class="o">==</span><span class="mf">2.2</span><span class="o">.</span><span class="mi">4</span> \
-<span class="n">numcompress</span> \
-<span class="n">numpy</span> \
-<span class="n">pandas</span> \
-<span class="n">parse</span> \
-<span class="n">pathlib2</span> \
-<span class="n">pillow</span> \
-<span class="n">pytest</span> \
-<span class="n">requests</span> \
-<span class="n">skorch</span> \
-<span class="n">torchvision</span><span class="o">==</span><span class="mf">0.2</span><span class="o">.</span><span class="mi">2</span> \
-<span class="n">websockets</span> \
-<span class="n">psutil</span> \
-<span class="n">setproctitle</span> \
-<span class="n">lz4</span> \
-<span class="n">gym</span> \
-<span class="n">ray</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><a id = "3.3"></a></p>
-<h3 id="3.3-Import-the-Party">3.3 Import the Party<a class="anchor-link" href="#3.3-Import-the-Party">&#182;</a></h3>
+<h3 id="3.2-Import-the-IBM-Watson-Machine-Learning-client">3.2 Import the IBM Watson Machine Learning client<a class="anchor-link" href="#3.2-Import-the-IBM-Watson-Machine-Learning-client">&#182;</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The following code imports the package for the party, and ensures that it is loaded.</p>
+<p>The following code imports the client for the party, and ensures that it is loaded.</p>
 
 </div>
 </div>
@@ -14305,8 +14261,15 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">ibmfl.party_env_validator</span>
-<span class="kn">from</span> <span class="nn">ibmfl.party.party</span> <span class="kn">import</span> <span class="n">Party</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning</span> <span class="kn">import</span> <span class="n">APIClient</span>
+
+<span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;apikey&quot;</span><span class="p">:</span> <span class="n">IAM_APIKEY</span><span class="p">,</span>
+    <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://&quot;</span> <span class="o">+</span> <span class="n">WML_SERVICES_HOST</span>
+<span class="p">}</span>
+
+<span class="n">wml_client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">)</span>
+<span class="n">wml_client</span><span class="o">.</span><span class="n">set</span><span class="o">.</span><span class="n">default_project</span><span class="p">(</span><span class="n">PROJECT_ID</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14366,7 +14329,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Each party must run their party configuration file to call out to the aggregator. Here is an example of a party configuration.</p>
-<p>Because you had already defined the training ID, RTS ID and data handler in the previous sections of this notebook, and the local training and protocol handler are all defined by the SDK, you will only need to define the information for the dataset file under <code>["data"]["info"]</code>.</p>
+<p>Because you had already defined the training ID, RTS ID and data handler in the previous sections of this notebook, and the local training and protocol handler are all defined by the SDK, you will only need to define the information for the dataset file under <code>wml_client.remote_training_systems.ConfigurationMetaNames.DATA_HANDLER</code>.</p>
 <p>In this tutorial, the data path is already defined as we have loaded the examplar Adult Income dataset from previous sections.</p>
 
 </div>
@@ -14384,28 +14347,12 @@ div#notebook {
 <span class="n">pwd</span> <span class="o">=</span> <span class="n">working_dir</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="n">party_config</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="s2">&quot;aggregator&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;ip&quot;</span><span class="p">:</span> <span class="n">WML_SERVICES_HOST</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/trainings/&quot;</span> <span class="o">+</span> <span class="n">TRAINING_ID</span>
-  <span class="p">},</span>
-  <span class="s2">&quot;connection&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">RTS_ID</span><span class="p">,</span>
-    <span class="p">}</span>
-  <span class="p">},</span>
-  <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">DATA_HANDLER</span><span class="p">:</span> <span class="p">{</span>
     <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;txt_file&quot;</span><span class="p">:</span> <span class="s2">&quot;./adult.csv&quot;</span>
     <span class="p">},</span>
     <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;AdultSklearnDataHandler&quot;</span><span class="p">,</span>
     <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;./adult_sklearn_data_handler.py&quot;</span>
-  <span class="p">},</span>
-  <span class="s2">&quot;local_training&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;XGBClassifierLocalTrainingHandler&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;ibmfl.party.training.xgboost_local_training_handler&quot;</span>
-  <span class="p">},</span>
-  <span class="s2">&quot;protocol_handler&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;PartyProtocolHandler&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;ibmfl.party.party_protocol_handler&quot;</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
@@ -14436,7 +14383,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Obtain-Cloud-Authentication-Token">Obtain Cloud Authentication Token<a class="anchor-link" href="#Obtain-Cloud-Authentication-Token">&#182;</a></h4>
+<h3 id="6.1-Create-the-party">6.1 Create the party<a class="anchor-link" href="#6.1-Create-the-party">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -14445,17 +14392,8 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning</span> <span class="kn">import</span> <span class="n">APIClient</span>
-
-
-<span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;apikey&quot;</span><span class="p">:</span> <span class="n">IAM_APIKEY</span><span class="p">,</span>
-    <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://&quot;</span> <span class="o">+</span> <span class="n">WML_SERVICES_HOST</span>
-<span class="p">}</span>
-
-<span class="n">wml_client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">)</span>
-<span class="n">IAMTOKEN</span> <span class="o">=</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">wml_token</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">IAMTOKEN</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">party</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">create_party</span><span class="p">(</span><span class="n">RTS_ID</span><span class="p">,</span> <span class="n">party_config</span><span class="p">)</span>
+<span class="n">party</span><span class="o">.</span><span class="n">monitor_logs</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -14466,7 +14404,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="6.1-Establish-Connection-To-Aggregator">6.1 Establish Connection To Aggregator<a class="anchor-link" href="#6.1-Establish-Connection-To-Aggregator">&#182;</a></h3>
+<h3 id="6.2-Connect-to-the-aggregator-and-start-training">6.2 Connect to the aggregator and start training<a class="anchor-link" href="#6.2-Connect-to-the-aggregator-and-start-training">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -14475,35 +14413,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">Party</span><span class="p">(</span> <span class="n">config_dict</span> <span class="o">=</span> <span class="n">party_config</span><span class="p">,</span> <span class="n">token</span> <span class="o">=</span> <span class="n">IAMTOKEN</span> <span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>After the message "Received Heartbeat from Aggregator" appears, then the Party is ready to start.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="6.2-Start-Training">6.2 Start Training<a class="anchor-link" href="#6.2-Start-Training">&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">party</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">aggregator_id</span><span class="o">=</span><span class="n">TRAINING_ID</span><span class="p">,</span> <span class="n">asynchronous</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
     </div>
