@@ -14259,12 +14259,12 @@ a.anchor-link {
 
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Use-Tensorflow-to-recognize-hand-written-digits-with-Watson-Machine-Learning-REST-API">Use Tensorflow to recognize hand-written digits with Watson Machine Learning REST API<a class="anchor-link" href="#Use-Tensorflow-to-recognize-hand-written-digits-with-Watson-Machine-Learning-REST-API">&#182;</a></h1>
+<h1 id="Use-PyTorch-to-recognize-hand-written-digits-with-Watson-Machine-Learning-REST-API">Use PyTorch to recognize hand-written digits with Watson Machine Learning REST API<a class="anchor-link" href="#Use-PyTorch-to-recognize-hand-written-digits-with-Watson-Machine-Learning-REST-API">&#182;</a></h1>
 </div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>This notebook contains steps and code to demonstrate support of Tensordlow Deep Learning experiments in Watson Machine Learning Service. It introduces commands for getting data, training experiments, persisting pipelines, publishing models, deploying models and scoring.</p>
+<p>This notebook contains steps and code to demonstrate support of PyTorch Deep Learning experiments in Watson Machine Learning Service. It introduces commands for getting data, training experiments, persisting pipelines, publishing models, deploying models and scoring.</p>
 <p>Some familiarity with cURL is helpful. This notebook uses cURL examples.</p>
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>The learning goals of this notebook are:</p>
 <ul>
@@ -14395,7 +14395,7 @@ curl -sk -X POST <span class="se">\</span>
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>env: TOKEN=eyJraWQiOiIyMDIwMDgyMzE4MzIiLCJhbGciOiJSUzI1NiJ9.eyJpYW1faWQiOiJJQk1pZC01NTAwMDA5MVZDIiwiaWQiOiJJQk1pZC01NTAwMDA5MVZDIiwicmVhbG1pZCI6IklCTWlkIiwiaWRlbnRpZmllciI6IjU1MDAwMDkxVkMiLCJnaXZlbl9uYW1lIjoiV01MIiwiZmFtaWx5X25hbWUiOiJXTUwtQmV0YSIsIm5hbWUiOiJXTUwgV01MLUJldGEiLCJlbWFpbCI6IldNTC1CZXRhQHBsLmlibS5jb20iLCJzdWIiOiJXTUwtQmV0YUBwbC5pYm0uY29tIiwiYWNjb3VudCI6eyJ2YWxpZCI6dHJ1ZSwiYnNzIjoiZTBmN2VjM2FjMWIyNGVjOWFlNzcxZWZkNzcyNTM4YTIiLCJpbXNfdXNlcl9pZCI6IjcxNzY5NDMiLCJmcm96ZW4iOnRydWUsImltcyI6IjE2ODQ3ODMifSwiaWF0IjoxNjAwMDkxNTMxLCJleHAiOjE2MDAwOTUxMzEsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTphcGlrZXkiLCJzY29wZSI6ImlibSBvcGVuaWQiLCJjbGllbnRfaWQiOiJkZWZhdWx0IiwiYWNyIjoxLCJhbXIiOlsicHdkIl19.YGcgaVPGcLhX2HqKvcgwFsDXUTQprLTWhNRWRyiYgD3-xg1MRQEwoQ35jrqVRU3iYhNRdog3MQF9pm-H-IhcTI3x0M_JCQykXmSQ0mf5Nk-6oPuYpIEirMSNt06kkqQmiJREccTb9qIyXdOhUGICsWC_-fiioThM7maS0TRY3Bd-dPA5kOUvOWCZQ5qdKZEV0nNL4blvK0HlFgDVKdX2y1MWeNBVYLHVNpSpm1nW6P831hS-LyXYzMd1O4N7LjDIwX5TfoGc0toVe0H7lo89Ts2xUuVTkl8jhAMO3go0jFk1td-qOO00CIQ9nb3Eo0Sc0YzVuRRA6WVuVo9h5w08fw
+<pre>env: TOKEN=eyJraWQiOiIyMDIwMDgyMzE4MzIiLCJhbGciOiJSUzI1NiJ9.eyJpYW1faWQiOiJJQk1pZC01NTAwMDA5MVZDIiwiaWQiOiJJQk1pZC01NTAwMDA5MVZDIiwicmVhbG1pZCI6IklCTWlkIiwianRpIjoiYTYyZDk3YjMtYTEyZS00ZjJiLWE3MzgtZjJhOTFjNWU1YTIwIiwiaWRlbnRpZmllciI6IjU1MDAwMDkxVkMiLCJnaXZlbl9uYW1lIjoiV01MIiwiZmFtaWx5X25hbWUiOiJXTUwtQmV0YSIsIm5hbWUiOiJXTUwgV01MLUJldGEiLCJlbWFpbCI6IldNTC1CZXRhQHBsLmlibS5jb20iLCJzdWIiOiJXTUwtQmV0YUBwbC5pYm0uY29tIiwiYWNjb3VudCI6eyJ2YWxpZCI6dHJ1ZSwiYnNzIjoiZTBmN2VjM2FjMWIyNGVjOWFlNzcxZWZkNzcyNTM4YTIiLCJpbXNfdXNlcl9pZCI6IjcxNzY5NDMiLCJmcm96ZW4iOnRydWUsImltcyI6IjE2ODQ3ODMifSwiaWF0IjoxNjAwMzM2NjI4LCJleHAiOjE2MDAzNDAyMjgsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTphcGlrZXkiLCJzY29wZSI6ImlibSBvcGVuaWQiLCJjbGllbnRfaWQiOiJkZWZhdWx0IiwiYWNyIjoxLCJhbXIiOlsicHdkIl19.Cq5DJbdH8wv6HVAb1Fqds2Mqacv9tboxL-IiUs4fjD779AfT4_UqpvvGfGCVuhYOiD5GJAX8Uje3ey--TyXOLAEOHtTew4vQ6vYsR9MtW6ZBZwk60g64S2yUoFDrj8eF0Yq46IawvOnDp-UFQGBxlGItSbCRegnYImkmaezhKnl6QKN5LNnTaSs4Idv_CkGv-rYh14H2j0zQayZZY2ilMlYNjxYiJSf94MLSFCy0vYCnP7z5pvxR4r7XSrcdOvlZ1S9skGU6tpR6qZHxJMRohHNs3E9IXYpuveNpEXJy1kezXY-e9WcejDZlvjsx3aBgrGaWdEI-6A9YkmA7voYA7A
 </pre>
 </div>
 </div>
@@ -14469,33 +14469,10 @@ curl -sk -X GET \
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash --out data_links
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-<span class="nb">declare</span> -a <span class="nv">data_links</span><span class="o">=(</span><span class="s1">&#39;https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/data/mnist/raw/train-images-idx3-ubyte.gz&#39;</span>
-                       <span class="s1">&#39;https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/data/mnist/raw/train-labels-idx1-ubyte.gz&#39;</span>
-                       <span class="s1">&#39;https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/data/mnist/raw/t10k-images-idx3-ubyte.gz&#39;</span>
-                       <span class="s1">&#39;https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/data/mnist/raw/t10k-labels-idx1-ubyte.gz&#39;</span><span class="o">)</span>
-
-<span class="nb">echo</span> <span class="si">${</span><span class="nv">data_links</span><span class="p">[@]</span><span class="si">}</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash -s <span class="s2">&quot;</span><span class="nv">$data_links</span><span class="s2">&quot;</span>
-
-<span class="k">for</span> data_link <span class="k">in</span> <span class="nv">$1</span>
-<span class="k">do</span>
-    wget -q <span class="nv">$data_link</span>
-<span class="k">done</span>
+wget -q https://s3.amazonaws.com/img-datasets/mnist.npz <span class="se">\</span>
+     -O mnist.npz
 </pre></div>
 
      </div>
@@ -14565,7 +14542,7 @@ curl -s -X <span class="s2">&quot;POST&quot;</span> <span class="s2">&quot;</spa
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>env: COS_TOKEN=eyJraWQiOiIyMDIwMDgyMzE4MzIiLCJhbGciOiJSUzI1NiJ9.eyJpYW1faWQiOiJpYW0tU2VydmljZUlkLTU3MzMwOTM3LWJkNTQtNDYyYi04ODUxLWY3OTFhZDYyYzY1OSIsImlkIjoiaWFtLVNlcnZpY2VJZC01NzMzMDkzNy1iZDU0LTQ2MmItODg1MS1mNzkxYWQ2MmM2NTkiLCJyZWFsbWlkIjoiaWFtIiwiaWRlbnRpZmllciI6IlNlcnZpY2VJZC01NzMzMDkzNy1iZDU0LTQ2MmItODg1MS1mNzkxYWQ2MmM2NTkiLCJuYW1lIjoiY3JlZGVudGlhbHNfMSIsInN1YiI6IlNlcnZpY2VJZC01NzMzMDkzNy1iZDU0LTQ2MmItODg1MS1mNzkxYWQ2MmM2NTkiLCJzdWJfdHlwZSI6IlNlcnZpY2VJZCIsImFjY291bnQiOnsidmFsaWQiOnRydWUsImJzcyI6ImUwZjdlYzNhYzFiMjRlYzlhZTc3MWVmZDc3MjUzOGEyIiwiZnJvemVuIjp0cnVlfSwiaWF0IjoxNjAwMDkxNTQxLCJleHAiOjE2MDAwOTUxNDEsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTphcGlrZXkiLCJzY29wZSI6ImlibSBvcGVuaWQiLCJjbGllbnRfaWQiOiJkZWZhdWx0IiwiYWNyIjoxLCJhbXIiOlsicHdkIl19.mxJNcPkAOgRvGChIE2fIOGZ2xib4hcCUEeGWvlMTF946jQWmdMendazkSCXODM9eE91L0pabkg8h4UJ_1BFR0E_NNEzBS-CmkFs3pweN87zTTg-HWpDTxk86dTFNIcJgWCedPOYdbxs-a6kD3caJW2plpWoqjrEjxwz-f7Xsyr88yF9C4LMtwlzLLOubqsgqcIEhYMpJ_GUzAJ0TLc3puyyQb1EtGn4FiXu8L6ILJE7SWhdMreof5PL8x1-LQ7IPBZEhNbFy00xJo37pFUbxeh9YalmwZQf7ACV6Qvna_B5lmhaxwpLPVo3pkvvgu15Cpg48ftialYlqag8Wy4GuwQ
+<pre>env: COS_TOKEN=eyJraWQiOiIyMDIwMDgyMzE4MzIiLCJhbGciOiJSUzI1NiJ9.eyJpYW1faWQiOiJpYW0tU2VydmljZUlkLTU3MzMwOTM3LWJkNTQtNDYyYi04ODUxLWY3OTFhZDYyYzY1OSIsImlkIjoiaWFtLVNlcnZpY2VJZC01NzMzMDkzNy1iZDU0LTQ2MmItODg1MS1mNzkxYWQ2MmM2NTkiLCJyZWFsbWlkIjoiaWFtIiwianRpIjoiYTViODM5YzEtZjEzOC00NmEyLWI1YmQtYmJkMDdmMmEwYjBhIiwiaWRlbnRpZmllciI6IlNlcnZpY2VJZC01NzMzMDkzNy1iZDU0LTQ2MmItODg1MS1mNzkxYWQ2MmM2NTkiLCJuYW1lIjoiY3JlZGVudGlhbHNfMSIsInN1YiI6IlNlcnZpY2VJZC01NzMzMDkzNy1iZDU0LTQ2MmItODg1MS1mNzkxYWQ2MmM2NTkiLCJzdWJfdHlwZSI6IlNlcnZpY2VJZCIsImFjY291bnQiOnsidmFsaWQiOnRydWUsImJzcyI6ImUwZjdlYzNhYzFiMjRlYzlhZTc3MWVmZDc3MjUzOGEyIiwiZnJvemVuIjp0cnVlfSwiaWF0IjoxNjAwMzM2NjMzLCJleHAiOjE2MDAzNDAyMzMsImlzcyI6Imh0dHBzOi8vaWFtLmNsb3VkLmlibS5jb20vaWRlbnRpdHkiLCJncmFudF90eXBlIjoidXJuOmlibTpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTphcGlrZXkiLCJzY29wZSI6ImlibSBvcGVuaWQiLCJjbGllbnRfaWQiOiJkZWZhdWx0IiwiYWNyIjoxLCJhbXIiOlsicHdkIl19.O7NWHYJ_5vAj4IgPIP7yvCaG9XtZ1yE0nIkZC3ltmNEfjtdjT7j_s_u24s1r3s8J9iWpomMzhoAQkVWTN4fTPoh2dsHsyNCWVdjbqfoaicTwG1cxg9P4_AEvgxR6gXHBZ1V_NSQbzBPB9kE_3DOwTWiY3h31nEfKhPEflYHET1-Zk1ff-v6mMkF7HOhmsTQ2medR1b2lfCUNeaQhvS7OWYr48ojfbPQ4J5l1d2W8x0giTBeDAugO-7ppCyBGzjKmQVP741RkaECSIuX3WLQJpiE8VwTQkEaBpHz564E37eQluW0D-2fVlY1kqpQatAr3gGiFw4Zbep7mU0DzWjD5_g
 </pre>
 </div>
 </div>
@@ -14588,24 +14565,25 @@ curl -s -X <span class="s2">&quot;POST&quot;</span> <span class="s2">&quot;</spa
 target="_blank" rel="noopener no referrer">Upload file to COS</a></p>
 
 </div>
+</div>
+<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>There should be an empty response when upload finished succesfully.</p>
+
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash -s <span class="s2">&quot;</span><span class="nv">$data_links</span><span class="s2">&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash 
 
-
-<span class="k">for</span> data_link <span class="k">in</span> <span class="nv">$1</span>
-<span class="k">do</span>
-    <span class="nv">file_name</span><span class="o">=</span><span class="si">${</span><span class="nv">data_link</span><span class="p">##*/</span><span class="si">}</span>
-    curl -sk -X PUT <span class="se">\</span>
+curl -sk -X PUT <span class="se">\</span>
     --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$COS_TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     --header <span class="s2">&quot;Content-Type: application/octet-stream&quot;</span> <span class="se">\</span>
-    --data-binary <span class="s2">&quot;@</span><span class="nv">$file_name</span><span class="s2">&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$COS_ENDPOINT</span><span class="s2">/</span><span class="nv">$COS_BUCKET</span><span class="s2">/</span><span class="nv">$file_name</span><span class="s2">&quot;</span>
-<span class="k">done</span>
+    --data-binary <span class="s2">&quot;@mnist.npz&quot;</span> <span class="se">\</span>
+    <span class="s2">&quot;</span><span class="nv">$COS_ENDPOINT</span><span class="s2">/</span><span class="nv">$COS_BUCKET</span><span class="s2">/mnist.npz&quot;</span>
 </pre></div>
 
      </div>
@@ -14613,12 +14591,6 @@ target="_blank" rel="noopener no referrer">Upload file to COS</a></p>
 </div>
 </div>
 
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>There should be an empty response when upload finished succesfully.</p>
-
-</div>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
@@ -14764,12 +14736,12 @@ target="_blank" rel="noopener no referrer">Store a model definition for Deep Lea
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash --out model_definition_payload
 
-<span class="nv">MODEL_DEFINITION_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;name&quot;: &quot;Hand-written Digit Recognition&quot;, &quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;description&quot;: &quot;Hand-written Digit Recognition&quot;, &quot;tags&quot;: [&quot;DL&quot;, &quot;TF&quot;], &quot;version&quot;: &quot;2.0&quot;, &quot;platform&quot;: {&quot;name&quot;: &quot;python&quot;, &quot;versions&quot;: [&quot;3.8&quot;]}, &quot;command&quot;: &quot;python convolutional_network.py --trainImagesFile train-images-idx3-ubyte.gz --trainLabelsFile train-labels-idx1-ubyte.gz --testImagesFile t10k-images-idx3-ubyte.gz --testLabelsFile t10k-labels-idx1-ubyte.gz --learningRate 0.001 --trainingIters 6000&quot;}&#39;</span>
+<span class="nv">MODEL_DEFINITION_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;name&quot;: &quot;PyTorch Hand-written Digit Recognition&quot;, &quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;description&quot;: &quot;PyTorch Hand-written Digit Recognition&quot;, &quot;tags&quot;: [&quot;DL&quot;, &quot;PyTorch&quot;], &quot;version&quot;: &quot;2.0&quot;, &quot;platform&quot;: {&quot;name&quot;: &quot;python&quot;, &quot;versions&quot;: [&quot;3.8&quot;]}, &quot;command&quot;: &quot;python3 torch_mnist.py --epochs 1&quot;}&#39;</span>
 <span class="nb">echo</span> <span class="nv">$MODEL_DEFINITION_PAYLOAD</span> <span class="p">|</span> python -m json.tool
 </pre></div>
 
@@ -14781,7 +14753,7 @@ target="_blank" rel="noopener no referrer">Store a model definition for Deep Lea
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">env</span> MODEL_DEFINITION_PAYLOAD=$model_definition_payload
@@ -14805,21 +14777,21 @@ target="_blank" rel="noopener no referrer">Store a model definition for Deep Lea
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>env: MODEL_DEFINITION_PAYLOAD={
-    &#34;name&#34;: &#34;Hand-written Digit Recognition&#34;,
+    &#34;name&#34;: &#34;PyTorch Hand-written Digit Recognition&#34;,
     &#34;space_id&#34;: &#34;&#34;,
-    &#34;description&#34;: &#34;Hand-written Digit Recognition&#34;,
+    &#34;description&#34;: &#34;PyTorch Hand-written Digit Recognition&#34;,
     &#34;tags&#34;: [
         &#34;DL&#34;,
-        &#34;TF&#34;
+        &#34;PyTorch&#34;
     ],
     &#34;version&#34;: &#34;2.0&#34;,
     &#34;platform&#34;: {
         &#34;name&#34;: &#34;python&#34;,
         &#34;versions&#34;: [
-            &#34;3.8&#34;
+            &#34;3.7&#34;
         ]
     },
-    &#34;command&#34;: &#34;python convolutional_network.py --trainImagesFile train-images-idx3-ubyte.gz --trainLabelsFile train-labels-idx1-ubyte.gz --testImagesFile t10k-images-idx3-ubyte.gz --testLabelsFile t10k-labels-idx1-ubyte.gz --learningRate 0.001 --trainingIters 6000&#34;
+    &#34;command&#34;: &#34;python3 torch_mnist.py --epochs 1&#34;
 }
 </pre>
 </div>
@@ -14876,7 +14848,7 @@ curl -sk -X POST <span class="se">\</span>
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>env: MODEL_DEFINITION_ID=9c561061-7485-4f85-8a31-8aad9920db08
+<pre>env: MODEL_DEFINITION_ID=e9374401-d405-4c89-992b-8aa6a9fb07e5
 </pre>
 </div>
 </div>
@@ -14896,19 +14868,19 @@ curl -sk -X POST <span class="se">\</span>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a href="https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/definitions/keras/mnist/MNIST.zip" 
-target="_blank" rel="noopener no referrer">Download tf-softmax-model.zip</a></p>
+target="_blank" rel="noopener no referrer">Download pytorch-model.zip</a></p>
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[33]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-wget https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/definitions/tensorflow/tf-softmax-model.zip <span class="se">\</span>
-     -O tf-softmax-model.zip
+wget https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/definitions/pytorch/mnist/pytorch-model.zip <span class="se">\</span>
+     -O pytorch-model.zip
 </pre></div>
 
      </div>
@@ -14928,21 +14900,21 @@ wget https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/def
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>--2020-09-14 15:52:48--  https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/definitions/tensorflow/tf-softmax-model.zip
-Resolving github.com... 140.82.121.3
-Connecting to github.com|140.82.121.3|:443... connected.
+<pre>--2020-09-17 10:17:22--  https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/definitions/pytorch/mnist/pytorch-model.zip
+Resolving github.com... 140.82.121.4
+Connecting to github.com|140.82.121.4|:443... connected.
 HTTP request sent, awaiting response... 302 Found
-Location: https://raw.githubusercontent.com/IBM/watson-machine-learning-samples/master/cloud/definitions/tensorflow/tf-softmax-model.zip [following]
---2020-09-14 15:52:49--  https://raw.githubusercontent.com/IBM/watson-machine-learning-samples/master/cloud/definitions/tensorflow/tf-softmax-model.zip
-Resolving raw.githubusercontent.com... 151.101.112.133
-Connecting to raw.githubusercontent.com|151.101.112.133|:443... connected.
+Location: https://raw.githubusercontent.com/IBM/watson-machine-learning-samples/master/cloud/definitions/pytorch/mnist/pytorch-model.zip [following]
+--2020-09-17 10:17:23--  https://raw.githubusercontent.com/IBM/watson-machine-learning-samples/master/cloud/definitions/pytorch/mnist/pytorch-model.zip
+Resolving raw.githubusercontent.com... 151.101.0.133, 151.101.64.133, 151.101.128.133, ...
+Connecting to raw.githubusercontent.com|151.101.0.133|:443... connected.
 HTTP request sent, awaiting response... 200 OK
-Length: 3847 (3.8K) [application/zip]
-Saving to: &#39;tf-softmax-model.zip&#39;
+Length: 1512 (1.5K) [application/zip]
+Saving to: &#39;pytorch-model.zip&#39;
 
-     0K ...                                                   100% 5.83M=0.001s
+     0K .                                                     100% 9.55M=0s
 
-2020-09-14 15:52:49 (5.83 MB/s) - &#39;tf-softmax-model.zip&#39; saved [3847/3847]
+2020-09-17 10:17:23 (9.55 MB/s) - &#39;pytorch-model.zip&#39; saved [1512/1512]
 
 </pre>
 </div>
@@ -14958,7 +14930,7 @@ Saving to: &#39;tf-softmax-model.zip&#39;
 <p><strong>Tip</strong>: Convert below cell to code and run it to see model deinition's code.</p>
 
 </div>
-</div>!unzip -oqd . tf-softmax-model.zip && cat convolutional_network.py
+</div>!unzip -oqd . pytorch-model.zip.zip && cat torch_mnist.py
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="def_upload"></a></p>
@@ -14974,7 +14946,7 @@ target="_blank" rel="noopener no referrer">Upload model for the model definition
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
@@ -14983,7 +14955,7 @@ curl -sk -X PUT <span class="se">\</span>
     --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
     --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
     --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    --data-binary <span class="s2">&quot;@tf-softmax-model.zip&quot;</span><span class="se">\</span>
+    --data-binary <span class="s2">&quot;@pytorch-model.zip&quot;</span> <span class="se">\</span>
     <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/model_definitions/</span><span class="nv">$MODEL_DEFINITION_ID</span><span class="s2">/model?version=2020-08-01&amp;space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span> <span class="se">\</span>
     <span class="p">|</span> python -m json.tool
 </pre></div>
@@ -15006,7 +14978,7 @@ curl -sk -X PUT <span class="se">\</span>
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>{
-    &#34;attachment_id&#34;: &#34;b3a4f770-88ba-4bc6-b15e-04530b61c95b&#34;,
+    &#34;attachment_id&#34;: &#34;86e603c2-24d8-4dfa-8c07-135167fa4ace&#34;,
     &#34;content_format&#34;: &#34;native&#34;,
     &#34;persisted&#34;: true
 }
@@ -15035,12 +15007,12 @@ target="_blank" rel="noopener no referrer">Schedule a training job for Deep Lear
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash --out training_payload
 
-<span class="nv">TRAINING_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;training_data_references&quot;: [{&quot;name&quot;: &quot;training_input_data&quot;, &quot;type&quot;: &quot;connection_asset&quot;, &quot;connection&quot;: {&quot;id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$CONNECTION_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}, &quot;location&quot;: {&quot;bucket&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$COS_BUCKET</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;file_name&quot;: &quot;.&quot;}, &quot;schema&quot;: {&quot;id&quot;: &quot;idmlp_schema&quot;, &quot;fields&quot;: [{&quot;name&quot;: &quot;text&quot;, &quot;type&quot;: &quot;string&quot;}]}}], &quot;results_reference&quot;: {&quot;name&quot;: &quot;TF results&quot;, &quot;connection&quot;: {&quot;id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$CONNECTION_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}, &quot;location&quot;: {&quot;bucket&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$COS_BUCKET</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;file_name&quot;: &quot;.&quot;}, &quot;type&quot;: &quot;connection_asset&quot;}, &quot;tags&quot;: [{&quot;value&quot;: &quot;tags_mnist&quot;, &quot;description&quot;: &quot;dome MNIST&quot;}], &quot;name&quot;: &quot;Hand-written Digit Recognition&quot;, &quot;description&quot;: &quot;Hand-written Digit Recognition&quot;, &quot;model_definition&quot;: {&quot;id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$MODEL_DEFINITION_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;command&quot;: &quot;python convolutional_network.py --trainImagesFile train-images-idx3-ubyte.gz --trainLabelsFile train-labels-idx1-ubyte.gz --testImagesFile t10k-images-idx3-ubyte.gz --testLabelsFile t10k-labels-idx1-ubyte.gz --learningRate 0.001 --trainingIters 6000&quot;, &quot;hardware_spec&quot;: {&quot;name&quot;: &quot;K80&quot;, &quot;nodes&quot;: 1}, &quot;software_spec&quot;: {&quot;name&quot;: &quot;tensorflow_2.4-py3.8&quot;}, &quot;parameters&quot;: {&quot;name&quot;: &quot;MNIST Tf&quot;, &quot;description&quot;: &quot;Tf DL model&quot;}}, &quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}&#39;</span>
+<span class="nv">TRAINING_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;training_data_references&quot;: [{&quot;name&quot;: &quot;training_input_data&quot;, &quot;type&quot;: &quot;connection_asset&quot;, &quot;connection&quot;: {&quot;id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$CONNECTION_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}, &quot;location&quot;: {&quot;bucket&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$COS_BUCKET</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;file_name&quot;: &quot;.&quot;}, &quot;schema&quot;: {&quot;id&quot;: &quot;idmlp_schema&quot;, &quot;fields&quot;: [{&quot;name&quot;: &quot;text&quot;, &quot;type&quot;: &quot;string&quot;}]}}], &quot;results_reference&quot;: {&quot;name&quot;: &quot;MNIST results&quot;, &quot;connection&quot;: {&quot;id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$CONNECTION_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}, &quot;location&quot;: {&quot;bucket&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$COS_BUCKET</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;file_name&quot;: &quot;.&quot;}, &quot;type&quot;: &quot;connection_asset&quot;}, &quot;tags&quot;: [{&quot;value&quot;: &quot;tags_pytorch&quot;, &quot;description&quot;: &quot;Tags PyTorch&quot;}], &quot;name&quot;: &quot;PyTorch hand-written Digit Recognition&quot;, &quot;description&quot;: &quot;PyTorch hand-written Digit Recognition&quot;, &quot;model_definition&quot;: {&quot;id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$MODEL_DEFINITION_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;hardware_spec&quot;: {&quot;name&quot;: &quot;K80&quot;, &quot;nodes&quot;: 1}, &quot;software_spec&quot;: {&quot;name&quot;: &quot;pytorch-onnx_1.7-py3.8&quot;}, &quot;parameters&quot;: {&quot;name&quot;: &quot;PyTorch_mnist&quot;, &quot;description&quot;: &quot;PyTorch mnist recognition&quot;}}, &quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}&#39;</span>
 <span class="nb">echo</span> <span class="nv">$TRAINING_PAYLOAD</span> <span class="p">|</span> python -m json.tool
 </pre></div>
 
@@ -15052,7 +15024,7 @@ target="_blank" rel="noopener no referrer">Schedule a training job for Deep Lear
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">env</span> TRAINING_PAYLOAD=$training_payload
@@ -15099,7 +15071,7 @@ target="_blank" rel="noopener no referrer">Schedule a training job for Deep Lear
         }
     ],
     &#34;results_reference&#34;: {
-        &#34;name&#34;: &#34;TF results&#34;,
+        &#34;name&#34;: &#34;MNIST results&#34;,
         &#34;connection&#34;: {
             &#34;id&#34;: &#34;&#34;
         },
@@ -15111,25 +15083,24 @@ target="_blank" rel="noopener no referrer">Schedule a training job for Deep Lear
     },
     &#34;tags&#34;: [
         {
-            &#34;value&#34;: &#34;tags_mnist&#34;,
-            &#34;description&#34;: &#34;dome MNIST&#34;
+            &#34;value&#34;: &#34;tags_pytorch&#34;,
+            &#34;description&#34;: &#34;Tags PyTorch&#34;
         }
     ],
-    &#34;name&#34;: &#34;Hand-written Digit Recognition&#34;,
-    &#34;description&#34;: &#34;Hand-written Digit Recognition&#34;,
+    &#34;name&#34;: &#34;PyTorch hand-written Digit Recognition&#34;,
+    &#34;description&#34;: &#34;PyTorch hand-written Digit Recognition&#34;,
     &#34;model_definition&#34;: {
         &#34;id&#34;: &#34;&#34;,
-        &#34;command&#34;: &#34;python convolutional_network.py --trainImagesFile train-images-idx3-ubyte.gz --trainLabelsFile train-labels-idx1-ubyte.gz --testImagesFile t10k-images-idx3-ubyte.gz --testLabelsFile t10k-labels-idx1-ubyte.gz --learningRate 0.001 --trainingIters 6000&#34;,
         &#34;hardware_spec&#34;: {
             &#34;name&#34;: &#34;K80&#34;,
             &#34;nodes&#34;: 1
         },
         &#34;software_spec&#34;: {
-            &#34;name&#34;: &#34;cuda-py3.8&#34;
+            &#34;name&#34;: &#34;pytorch-onnx_1.3-py3.7&#34;
         },
         &#34;parameters&#34;: {
-            &#34;name&#34;: &#34;MNIST Tf&#34;,
-            &#34;description&#34;: &#34;Tf DL model&#34;
+            &#34;name&#34;: &#34;PyTorch_mnist&#34;,
+            &#34;description&#34;: &#34;PyTorch mnist recognition&#34;
         }
     },
     &#34;space_id&#34;: &#34;&#34;
@@ -15145,7 +15116,7 @@ target="_blank" rel="noopener no referrer">Schedule a training job for Deep Lear
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash --out training_id
@@ -15166,7 +15137,7 @@ curl -sk -X  POST <span class="se">\</span>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">env</span> TRAINING_ID=$training_id
@@ -15189,7 +15160,7 @@ curl -sk -X  POST <span class="se">\</span>
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>env: TRAINING_ID=5a0886a5-1282-48eb-8daa-2c147285c5a4
+<pre>env: TRAINING_ID=f418ab46-d345-454e-a61e-d9e4a1c4e8a1
 </pre>
 </div>
 </div>
@@ -15228,7 +15199,7 @@ curl -sk -X GET \
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[22]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[27]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
@@ -15280,20 +15251,14 @@ Monitor <code>state</code> of your training by running above cell couple of time
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>If everything went right, you should be able to see your model under specified local path.</p>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="download_model"></a></p>
-<h3 id="Get-selected-model">Get selected model<a class="anchor-link" href="#Get-selected-model">&#182;</a></h3><p>Get a Tensorflow saved model location in COS from the Deep Learning training job.</p>
+<h3 id="Get-selected-model">Get selected model<a class="anchor-link" href="#Get-selected-model">&#182;</a></h3><p>Get a Keras saved model location in COS from the Deep Learning training job.</p>
 
 </div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[23]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[28]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash --out model_name
@@ -15318,7 +15283,7 @@ Monitor <code>state</code> of your training by running above cell couple of time
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[24]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[29]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">env</span> MODEL_NAME=$model_name
@@ -15341,7 +15306,7 @@ Monitor <code>state</code> of your training by running above cell couple of time
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>env: MODEL_NAME=training-HScA4DOMg
+<pre>env: MODEL_NAME=training-2qtO0AOGg
 </pre>
 </div>
 </div>
@@ -15454,12 +15419,12 @@ target="_blank" rel="noopener no referrer">Model storing</a></p>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[43]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[47]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash --out model_payload
 
-<span class="nv">MODEL_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;name&quot;: &quot;TF Mnist Model&quot;, &quot;description&quot;: &quot;TF model to predict had-written digits&quot;, &quot;type&quot;: &quot;tensorflow_2.4&quot;, &quot;software_spec&quot;: {&quot;name&quot;: &quot;tensorflow_2.4-py3.8&quot;}, &quot;content_location&quot;: { &quot;type&quot;: &quot;s3&quot;, &quot;contents&quot;: [ { &quot;content_format&quot;: &quot;native&quot;, &quot;file_name&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$MODEL_NAME</span><span class="s2">.zip&quot;</span><span class="s1">&#39;&quot;, &quot;location&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$TRAINING_ID</span><span class="s2">/assets/</span><span class="nv">$TRAINING_ID</span><span class="s2">/resources/wml_model/</span><span class="nv">$MODEL_NAME</span><span class="s2">.zip&quot;</span><span class="s1">&#39;&quot;}],&quot;connection&quot;: {&quot;endpoint_url&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$COS_ENDPOINT</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;access_key_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$COS_ACCESS_KEY_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;secret_access_key&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$COS_SECRET_ACCESS_KEY</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}, &quot;location&quot;: {&quot;bucket&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$COS_BUCKET</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}}}&#39;</span>
+<span class="nv">MODEL_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;name&quot;: &quot;PyTorch Mnist Model&quot;, &quot;description&quot;: &quot;PyTorch model to recognize hand-written digits&quot;, &quot;type&quot;: &quot;pytorch-onnx_1.7&quot;, &quot;software_spec&quot;: {&quot;name&quot;: &quot;pytorch-onnx_1.7-py3.8&quot;}, &quot;content_location&quot;: { &quot;type&quot;: &quot;s3&quot;, &quot;contents&quot;: [{ &quot;content_format&quot;: &quot;native&quot;, &quot;file_name&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$MODEL_NAME</span><span class="s2">.zip&quot;</span><span class="s1">&#39;&quot;, &quot;location&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$TRAINING_ID</span><span class="s2">/assets/</span><span class="nv">$TRAINING_ID</span><span class="s2">/resources/wml_model/</span><span class="nv">$MODEL_NAME</span><span class="s2">.zip&quot;</span><span class="s1">&#39;&quot;}],&quot;connection&quot;: {&quot;endpoint_url&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$COS_ENDPOINT</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;access_key_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$COS_ACCESS_KEY_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;secret_access_key&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$COS_SECRET_ACCESS_KEY</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}, &quot;location&quot;: {&quot;bucket&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$COS_BUCKET</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}}}&#39;</span>
 <span class="nb">echo</span> <span class="nv">$MODEL_PAYLOAD</span> <span class="p">|</span> python -m json.tool
 </pre></div>
 
@@ -15471,7 +15436,7 @@ target="_blank" rel="noopener no referrer">Model storing</a></p>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[44]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[48]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">env</span> MODEL_PAYLOAD=$model_payload
@@ -15496,19 +15461,19 @@ target="_blank" rel="noopener no referrer">Model storing</a></p>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>env: MODEL_PAYLOAD={
     &#34;space_id&#34;: &#34;d70a423e-bab5-4b24-943a-3b0b29ad7527&#34;,
-    &#34;name&#34;: &#34;TF Mnist Model&#34;,
-    &#34;description&#34;: &#34;TF model to predict had-written digits&#34;,
-    &#34;type&#34;: &#34;tensorflow_1.15&#34;,
+    &#34;name&#34;: &#34;PyTorch Mnist Model&#34;,
+    &#34;description&#34;: &#34;PyTorch model to recognize hand-written digits&#34;,
+    &#34;type&#34;: &#34;pytorch-onnx_1.2&#34;,
     &#34;software_spec&#34;: {
-        &#34;name&#34;: &#34;tensorflow_1.15-py3.6&#34;
+        &#34;name&#34;: &#34;pytorch-onnx_1.2-py3.6&#34;
     },
     &#34;content_location&#34;: {
         &#34;type&#34;: &#34;s3&#34;,
         &#34;contents&#34;: [
             {
                 &#34;content_format&#34;: &#34;native&#34;,
-                &#34;file_name&#34;: &#34;training-HScA4DOMg.zip&#34;,
-                &#34;location&#34;: &#34;5a0886a5-1282-48eb-8daa-2c147285c5a4/assets/5a0886a5-1282-48eb-8daa-2c147285c5a4/resources/wml_model/training-HScA4DOMg.zip&#34;
+                &#34;file_name&#34;: &#34;training-2qtO0AOGg.zip&#34;,
+                &#34;location&#34;: &#34;f418ab46-d345-454e-a61e-d9e4a1c4e8a1/assets/f418ab46-d345-454e-a61e-d9e4a1c4e8a1/resources/wml_model/training-2qtO0AOGg.zip&#34;
             }
         ],
         &#34;connection&#34;: {
@@ -15532,7 +15497,7 @@ target="_blank" rel="noopener no referrer">Model storing</a></p>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[27]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[32]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash --out model_id
@@ -15553,7 +15518,7 @@ curl -sk -X POST <span class="se">\</span>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[28]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[33]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">env</span> MODEL_ID=$model_id
@@ -15576,75 +15541,7 @@ curl -sk -X POST <span class="se">\</span>
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>env: MODEL_ID=17727a2c-d910-4617-a951-63a7c95e6f01
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a id="model_content_download"></a></p>
-<h3 id="Download-model-content">Download model content<a class="anchor-link" href="#Download-model-content">&#182;</a></h3><p>If you want to download your saved model, please make the following call.</p>
-
-</div>
-</div>
-<div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Models/models_filtered_download" 
-target="_blank" rel="noopener no referrer">Download model content</a></p>
-
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[29]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash
-
-curl -sk -X GET <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --output <span class="s2">&quot;model.tar.gz&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/download?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[30]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>ls -l model.tar.gz
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-
-<div class="jp-OutputArea-child">
-
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>-rw-r--r--  1 jansoltysik  staff  32833 Sep 14 15:56 model.tar.gz
+<pre>env: MODEL_ID=7c3f70ee-c4f8-4a08-8522-90e8b0f90cc0
 </pre>
 </div>
 </div>
@@ -15670,12 +15567,12 @@ target="_blank" rel="noopener no referrer">Create deployment</a></p>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[31]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[34]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash --out deployment_payload
 
-<span class="nv">DEPLOYMENT_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;,&quot;name&quot;: &quot;TF Mnist deploymen&quot;, &quot;description&quot;: &quot;TF model to predict had-written digits&quot;,&quot;online&quot;: {},&quot;hardware_spec&quot;: {&quot;name&quot;: &quot;S&quot;},&quot;asset&quot;: {&quot;id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$MODEL_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}}&#39;</span>
+<span class="nv">DEPLOYMENT_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;,&quot;name&quot;: &quot;PyTorch Mnist deployment&quot;, &quot;description&quot;: &quot;PyTorch model to recognize hand-written digits&quot;,&quot;online&quot;: {},&quot;hardware_spec&quot;: {&quot;name&quot;: &quot;S&quot;},&quot;asset&quot;: {&quot;id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$MODEL_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}}&#39;</span>
 <span class="nb">echo</span> <span class="nv">$DEPLOYMENT_PAYLOAD</span> <span class="p">|</span> python -m json.tool
 </pre></div>
 
@@ -15687,7 +15584,7 @@ target="_blank" rel="noopener no referrer">Create deployment</a></p>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[32]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[35]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">env</span> DEPLOYMENT_PAYLOAD=$deployment_payload
@@ -15712,14 +15609,14 @@ target="_blank" rel="noopener no referrer">Create deployment</a></p>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>env: DEPLOYMENT_PAYLOAD={
     &#34;space_id&#34;: &#34;d70a423e-bab5-4b24-943a-3b0b29ad7527&#34;,
-    &#34;name&#34;: &#34;TF Mnist deploymen&#34;,
-    &#34;description&#34;: &#34;TF model to predict had-written digits&#34;,
+    &#34;name&#34;: &#34;PyTorch Mnist deployment&#34;,
+    &#34;description&#34;: &#34;PyTorch model to recognize hand-written digits&#34;,
     &#34;online&#34;: {},
     &#34;hardware_spec&#34;: {
         &#34;name&#34;: &#34;S&#34;
     },
     &#34;asset&#34;: {
-        &#34;id&#34;: &#34;17727a2c-d910-4617-a951-63a7c95e6f01&#34;
+        &#34;id&#34;: &#34;7c3f70ee-c4f8-4a08-8522-90e8b0f90cc0&#34;
     }
 }
 </pre>
@@ -15733,7 +15630,7 @@ target="_blank" rel="noopener no referrer">Create deployment</a></p>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[33]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[37]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash --out deployment_id
@@ -15743,7 +15640,8 @@ curl -sk -X POST <span class="se">\</span>
     --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
     --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
     --data <span class="s2">&quot;</span><span class="nv">$DEPLOYMENT_PAYLOAD</span><span class="s2">&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments?version=2020-08-01&quot;</span> <span class="p">|</span> grep <span class="s1">&#39;&quot;id&quot;: &#39;</span> <span class="p">|</span> awk -F <span class="s1">&#39;&quot;&#39;</span> <span class="s1">&#39;{ print $4 }&#39;</span> <span class="p">|</span> sed -n 3p
+    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments?version=2020-08-01&quot;</span> <span class="se">\</span>
+    <span class="p">|</span> grep <span class="s1">&#39;&quot;id&quot;: &#39;</span> <span class="p">|</span> awk -F <span class="s1">&#39;&quot;&#39;</span> <span class="s1">&#39;{ print $4 }&#39;</span> <span class="p">|</span> sed -n 3p
 </pre></div>
 
      </div>
@@ -15754,7 +15652,7 @@ curl -sk -X POST <span class="se">\</span>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[34]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[38]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">env</span> DEPLOYMENT_ID=$deployment_id
@@ -15777,7 +15675,7 @@ curl -sk -X POST <span class="se">\</span>
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>env: DEPLOYMENT_ID=913d2497-6efc-4172-bb47-f24f450f5149
+<pre>env: DEPLOYMENT_ID=d66b07d1-857c-4128-8502-1970aca20f2c
 </pre>
 </div>
 </div>
@@ -15803,7 +15701,7 @@ target="_blank" rel="noopener no referrer">Get deployment details</a></p>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[35]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[39]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
@@ -15835,32 +15733,32 @@ curl -sk -X GET <span class="se">\</span>
 <pre>{
     &#34;entity&#34;: {
         &#34;asset&#34;: {
-            &#34;id&#34;: &#34;17727a2c-d910-4617-a951-63a7c95e6f01&#34;
+            &#34;id&#34;: &#34;7c3f70ee-c4f8-4a08-8522-90e8b0f90cc0&#34;
         },
         &#34;custom&#34;: {},
         &#34;deployed_asset_type&#34;: &#34;model&#34;,
-        &#34;description&#34;: &#34;TF model to predict had-written digits&#34;,
+        &#34;description&#34;: &#34;PyTorch model to recognize hand-written digits&#34;,
         &#34;hardware_spec&#34;: {
             &#34;id&#34;: &#34;Not_Applicable&#34;,
             &#34;name&#34;: &#34;S&#34;,
             &#34;num_nodes&#34;: 1
         },
-        &#34;name&#34;: &#34;TF Mnist deploymen&#34;,
+        &#34;name&#34;: &#34;PyTorch Mnist deployment&#34;,
         &#34;online&#34;: {},
         &#34;space_id&#34;: &#34;d70a423e-bab5-4b24-943a-3b0b29ad7527&#34;,
         &#34;status&#34;: {
             &#34;online_url&#34;: {
-                &#34;url&#34;: &#34;https://yp-qa.ml.cloud.ibm.com/ml/v4/deployments/913d2497-6efc-4172-bb47-f24f450f5149/predictions&#34;
+                &#34;url&#34;: &#34;https://yp-qa.ml.cloud.ibm.com/ml/v4/deployments/d66b07d1-857c-4128-8502-1970aca20f2c/predictions&#34;
             },
             &#34;state&#34;: &#34;ready&#34;
         }
     },
     &#34;metadata&#34;: {
-        &#34;created_at&#34;: &#34;2020-09-14T13:57:09.972Z&#34;,
-        &#34;description&#34;: &#34;TF model to predict had-written digits&#34;,
-        &#34;id&#34;: &#34;913d2497-6efc-4172-bb47-f24f450f5149&#34;,
-        &#34;modified_at&#34;: &#34;2020-09-14T13:57:09.972Z&#34;,
-        &#34;name&#34;: &#34;TF Mnist deploymen&#34;,
+        &#34;created_at&#34;: &#34;2020-09-17T10:31:33.805Z&#34;,
+        &#34;description&#34;: &#34;PyTorch model to recognize hand-written digits&#34;,
+        &#34;id&#34;: &#34;d66b07d1-857c-4128-8502-1970aca20f2c&#34;,
+        &#34;modified_at&#34;: &#34;2020-09-17T10:31:33.805Z&#34;,
+        &#34;name&#34;: &#34;PyTorch Mnist deployment&#34;,
         &#34;owner&#34;: &#34;IBMid-55000091VC&#34;,
         &#34;space_id&#34;: &#34;d70a423e-bab5-4b24-943a-3b0b29ad7527&#34;
     }
@@ -15883,21 +15781,7 @@ curl -sk -X GET <span class="se">\</span>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[36]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>wget -q https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/data/mnist/mnist.npz
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -15914,11 +15798,11 @@ curl -sk -X GET <span class="se">\</span>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">image_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">test_mnist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">/</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-<span class="n">image_2</span> <span class="o">=</span> <span class="p">(</span><span class="n">test_mnist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">/</span> <span class="mi">255</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">image_1</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_mnist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
+<span class="n">image_2</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_mnist</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
 </pre></div>
 
      </div>
@@ -15929,7 +15813,7 @@ curl -sk -X GET <span class="se">\</span>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
@@ -15944,7 +15828,7 @@ curl -sk -X GET <span class="se">\</span>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">image</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">test_mnist</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">test_mnist</span><span class="p">[</span><span class="mi">1</span><span class="p">]]):</span>
@@ -16000,7 +15884,7 @@ target="_blank" rel="noopener no referrer">Create deployment job</a></p>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[39]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[43]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash -s <span class="s2">&quot;</span><span class="nv">$image_1</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="nv">$image_2</span><span class="s2">&quot;</span>
@@ -16035,8 +15919,30 @@ curl -sk -X POST <span class="se">\</span>
     &#34;predictions&#34;: [
         {
             &#34;values&#34;: [
-                7,
-                2
+                [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    0.0,
+                    1.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.0
+                ]
             ]
         }
     ]
@@ -16175,7 +16081,7 @@ curl -sk -X DELETE \
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="summary"></a></p>
 <h2 id="8.-Summary-and-next-steps">8. Summary and next steps<a class="anchor-link" href="#8.-Summary-and-next-steps">&#182;</a></h2><p>You successfully completed this notebook!.</p>
-<p>You learned how to use <code>cURL</code> calls to store, deploy and score a Tensorfloow Deep Learning model in WML.</p>
+<p>You learned how to use <code>cURL</code> calls to store, deploy and score a PyTorch Deep Learning model in WML.</p>
 
 </div>
 </div>
