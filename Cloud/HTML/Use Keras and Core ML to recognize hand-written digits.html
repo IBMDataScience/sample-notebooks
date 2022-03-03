@@ -9,10 +9,10 @@
 
 
 <style type="text/css">
-    pre { line-height: 125%; margin: 0; }
-td.linenos pre { color: #000000; background-color: #f0f0f0; padding-left: 5px; padding-right: 5px; }
-span.linenos { color: #000000; background-color: #f0f0f0; padding-left: 5px; padding-right: 5px; }
-td.linenos pre.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+    pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
 span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
 .highlight .hll { background-color: var(--jp-cell-editor-active-background) }
 .highlight { background: var(--jp-cell-editor-background); color: var(--jp-mirror-editor-variable-color) }
@@ -14265,7 +14265,7 @@ a.anchor-link {
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>This notebook contains steps and code to demonstrate support of deep learning experiments in Watson Machine Learning Service. It introduces commands for getting data, training_definition persistance, experiment training, model persistance, model deployment and scoring.</p>
-<p>Some familiarity with Python is helpful. This notebook uses Python 3.</p>
+<p>Some familiarity with Python is helpful. This notebook uses Python 3.8</p>
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>The learning goals of this notebook are:</p>
 <ul>
 <li>Working with Watson Machine Learning service.</li>
@@ -14276,11 +14276,11 @@ a.anchor-link {
 <h2 id="Contents">Contents<a class="anchor-link" href="#Contents">&#182;</a></h2><p>This notebook contains the following parts:</p>
 <ol>
 <li><a href="#setup">Setup</a></li>
-<li><a href="#model_df">Create model definition</a></li>
+<li><a href="#upload">Create model definition</a></li>
 <li><a href="#training">Train model</a></li>
-<li><a href="#persist">Persist trained model</a></li>
-<li><a href="#deploy">Deploy the model via CoreML</a></li>
-<li><a href="#clean">Clean up</a></li>
+<li><a href="#deploy">Persist trained model</a></li>
+<li><a href="#score">Deploy the model via CoreML</a></li>
+<li><a href="#cleanup">Clean up</a></li>
 <li><a href="#summary">Summary and next steps</a></li>
 </ol>
 
@@ -14742,7 +14742,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a id="model_def"></a></p>
+<p><a id="upload"></a></p>
 <h1 id="2.-Create-model-definition">2. Create model definition<a class="anchor-link" href="#2.-Create-model-definition">&#182;</a></h1>
 </div>
 </div>
@@ -14795,7 +14795,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">filename_mnist</span> <span class="o">=</span> <span class="s1">&#39;MNIST.zip&#39;</span>
 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_mnist</span><span class="p">):</span>
-    <span class="n">filename_mnist</span> <span class="o">=</span> <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;https://github.com/pmservice/wml-sample-models/raw/master/keras/mnist/MNIST.zip&#39;</span><span class="p">)</span>
+    <span class="n">filename_mnist</span> <span class="o">=</span> <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/definitions/keras/mnist/MNIST.zip&#39;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14901,13 +14901,12 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
   <span class="p">},</span>
   <span class="n">client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">MODEL_DEFINITION</span><span class="p">:{</span>
         <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">model_definition_id</span><span class="p">,</span>
-        <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="s2">&quot;python3 mnist_cnn.py&quot;</span><span class="p">,</span>
         <span class="s2">&quot;hardware_spec&quot;</span><span class="p">:</span> <span class="p">{</span>
           <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;K80&quot;</span><span class="p">,</span>
           <span class="s2">&quot;nodes&quot;</span><span class="p">:</span> <span class="mi">1</span>
         <span class="p">},</span>
         <span class="s2">&quot;software_spec&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;tensorflow_2.1-py3.7&quot;</span>
+          <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;tensorflow_2.4-py3.8&quot;</span>
         <span class="p">},</span>
         <span class="s2">&quot;parameters&quot;</span><span class="p">:</span> <span class="p">{</span>
           <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;MNIST cnn&quot;</span><span class="p">,</span>
@@ -15051,7 +15050,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>client.training.cancel(training_id)
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a id="persist"></a></p>
+<p><a id="deploy"></a></p>
 <h1 id="4.-Persist-trained-model">4. Persist trained model<a class="anchor-link" href="#4.-Persist-trained-model">&#182;</a></h1>
 </div>
 </div>
@@ -15136,7 +15135,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">software_spec_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_uid_by_name</span><span class="p">(</span><span class="s1">&#39;default_py3.7&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">software_spec_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_uid_by_name</span><span class="p">(</span><span class="s1">&#39;default_py3.8&#39;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15152,7 +15151,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_meta_props</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s2">&quot;Keras MNIST_CNN&quot;</span><span class="p">,</span>
-                    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="s2">&quot;tensorflow_2.1&quot;</span><span class="p">,</span>
+                    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="s2">&quot;tensorflow_2.4&quot;</span><span class="p">,</span>
                     <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">SOFTWARE_SPEC_UID</span><span class="p">:</span> <span class="n">software_spec_uid</span>
 <span class="p">}</span>
 
@@ -15207,7 +15206,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a id="deploy"></a></p>
+<p><a id="score"></a></p>
 <h1 id="5.-Deploy-and-score">5. Deploy and score<a class="anchor-link" href="#5.-Deploy-and-score">&#182;</a></h1>
 </div>
 </div>
@@ -15475,7 +15474,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a id="clean"></a></p>
+<p><a id="cleanup"></a></p>
 <h1 id="6.-Clean-up">6. Clean up<a class="anchor-link" href="#6.-Clean-up">&#182;</a></h1>
 </div>
 </div>
@@ -15515,7 +15514,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Copyright © 2020 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright © 2020, 2021, 2022 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
