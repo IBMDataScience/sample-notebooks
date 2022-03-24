@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>Federated Learning XGBoost Demo Part 1 - for Admin</title>
+<title>notebook Federated_Learning_XGBoost_Demo_Part_1</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -14152,14 +14152,14 @@ div#notebook {
 <span class="n">IAM_TOKEN_URL</span> <span class="o">=</span> <span class="s2">&quot;https://iam.cloud.ibm.com/oidc/token&quot;</span>
 
 <span class="c1"># Name of your COS bucket</span>
-<span class="n">COS_BUCKET</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span> 
+<span class="n">COS_BUCKET</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> 
 
-<span class="n">IAM_APIKEY</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span>  
+<span class="n">IAM_APIKEY</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  
 
 <span class="c1"># Get this from Manage &lt; IAM &lt; Users, and check the URL. Your user ID should be in the format IBMid-&lt;xxx&gt;.</span>
 <span class="n">CLOUD_USERID</span> <span class="o">=</span> <span class="s2">&quot;IBMid-XXX&quot;</span> 
 
-<span class="n">PROJECT_ID</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span> <span class="c1"># Get this by going into your WS project and checking the URL, or create a project token and click &quot;Insert project token&quot;</span>
+<span class="n">PROJECT_ID</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># Get this by going into your WS project and checking the URL, or create a project token and click &quot;Insert project token&quot;</span>
 </pre></div>
 
     </div>
@@ -14329,6 +14329,9 @@ div#notebook {
 <span class="s2">      &quot;quorum&quot;: 1.0,</span>
 <span class="s2">      &quot;remote_training_systems&quot;: [ { &quot;id&quot; : &quot;$rts_one&quot;, &quot;required&quot; : true  } ]</span>
 <span class="s2">    },</span>
+<span class="s2">    &quot;software_spec&quot;: {</span>
+<span class="s2">      &quot;name&quot;: &quot;runtime-22.1-py3.9&quot;</span>
+<span class="s2">    },</span>
 <span class="s2">    &quot;hardware_spec&quot;: {</span>
 <span class="s2">      &quot;name&quot;: &quot;XS&quot;</span>
 <span class="s2">    }</span>
@@ -14442,6 +14445,141 @@ div#notebook {
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.-Save-Trained-Model-To-Project">6. Save Trained Model To Project<a class="anchor-link" href="#6.-Save-Trained-Model-To-Project">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Once training has completed, run the cells below to save the trained model into your project.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="6.1-Connection-to-COS">6.1 Connection to COS<a class="anchor-link" href="#6.1-Connection-to-COS">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">COS_ENDPOINT_URL</span> <span class="o">=</span> <span class="s2">&quot;http://s3.us.cloud-object-storage.appdomain.cloud&quot;</span> <span class="c1"># Go to your bucket and check Configurations &gt; Endpoints</span>
+
+<span class="c1"># Go into your COS instance (found in https://cloud.ibm.com/resources) and click Credentials. </span>
+<span class="c1"># Enter your bucket used by this project ex. myproject-donotdelete-pr-XXX. </span>
+<span class="c1"># Expand to find the access key ID and secret access key.</span>
+
+<span class="n">COS_ACCESS_KEY_ID</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> 
+<span class="n">COS_SECRET_ACCESS_KEY</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="n">BUCKET</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># bucket used by project ex. myproject-donotdelete-pr-XXX. To find this, go to your project, click Manage &gt; General and find your associated COS bucket </span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="6.2-Install-pre-req">6.2 Install pre-req<a class="anchor-link" href="#6.2-Install-pre-req">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install s3fs
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="6.3-Save-model-to-project">6.3 Save model to project<a class="anchor-link" href="#6.3-Save-model-to-project">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">s3fs</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+
+<span class="n">connection</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;endpoint_url&quot;</span><span class="p">:</span> <span class="n">COS_ENDPOINT_URL</span><span class="p">,</span>
+    <span class="s2">&quot;access_key_id&quot;</span><span class="p">:</span> <span class="n">COS_ACCESS_KEY_ID</span><span class="p">,</span>
+    <span class="s2">&quot;secret_access_key&quot;</span><span class="p">:</span> <span class="n">COS_SECRET_ACCESS_KEY</span>
+<span class="p">}</span>
+
+<span class="n">fs</span> <span class="o">=</span> <span class="n">s3fs</span><span class="o">.</span><span class="n">S3FileSystem</span><span class="p">(</span>
+    <span class="n">anon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">key</span><span class="o">=</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;access_key_id&quot;</span><span class="p">],</span>
+    <span class="n">secret</span><span class="o">=</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;secret_access_key&quot;</span><span class="p">],</span>
+    <span class="n">client_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;endpoint_url&#39;</span><span class="p">:</span> <span class="n">connection</span><span class="p">[</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">]}</span>
+<span class="p">)</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">BUCKET</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">training_id</span> <span class="o">+</span> <span class="s2">&quot;/assets/&quot;</span> <span class="o">+</span> <span class="n">training_id</span> <span class="o">+</span> <span class="s2">&quot;/resources/wml_model/request.json&quot;</span><span class="p">)</span>
+<span class="n">req</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">req</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Trained Adult Income Model&quot;</span>
+
+<span class="n">model_save_payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+
+<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Model save payload: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">model_save_payload</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_save_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/models&quot;</span><span class="p">,</span>
+                                <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">,</span>
+                                        <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
+                                        <span class="s2">&quot;content_format&quot;</span><span class="p">:</span> <span class="s2">&quot;native&quot;</span><span class="p">},</span>
+                                <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span>
+                                <span class="n">data</span><span class="o">=</span><span class="n">model_save_payload</span><span class="p">,</span>
+                                <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">model_save_resp</span><span class="p">)</span>
+<span class="n">status_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">model_save_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Save model response : &quot;</span><span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">status_json</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+
+<span class="n">model_id</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">model_save_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved model id: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">model_id</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
