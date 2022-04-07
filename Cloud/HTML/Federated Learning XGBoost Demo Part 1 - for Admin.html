@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>notebook Federated_Learning_XGBoost_Demo_Part_1</title>
+<title>Federated_Learning_XGBoost_Demo_Part_1-Apr6</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -14097,22 +14097,29 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Table-of-Contents">Table of Contents<a class="anchor-link" href="#Table-of-Contents">&#182;</a></h2><ul>
 <li><a href="#prequisites">1. Prequisites</a><ul>
-<li><a href="#var">1.2 Define variables</a></li>
+<li><a href="#var">1.1 Define variables</a></li>
+<li><a href="#tags">1.2 Define tags</a></li>
 <li><a href="#libraries">1.3 Import libraries</a></li>
-<li><a href="#cloud-auth">1.3 Obtain Cloud authentication token</a></li>
 </ul>
 </li>
-<li><a href="#load">2. Load the model</a><ul>
-<li><a href="#model">2.1 Create Untrained Model Asset</a></li>
-<li><a href="#init">2.2 Upload Initial Model</a></li>
-</ul>
-</li>
-<li><a href="#rts">3. Create a Remote Training System</a><ul>
-<li><a href="#create-rts">3.1 Create Remote Training System Asset</a></li>
-</ul>
-</li>
+<li><a href="#auth">2. Obtain IBM Cloud Token</a></li>
+<li><a href="#create-rts">3. Create a Remote Training System</a></li>
 <li><a href="#fl-job">4. Create FL Training Job</a><ul>
 <li><a href="#status">4.1 Get Training Job Status</a></li>
+</ul>
+</li>
+<li><a href="#party-notebook">5. Get Variables And Paste Into Party Notebook</a></li>
+<li><a href="#save-model">6. Save Trained Model</a><ul>
+<li><a href="#cos">6.1 COS connection</a></li>
+<li><a href="#cos-prereqs">6.2 Install pre-reqs</a></li>
+<li><a href="#save-to-project">6.3 Save model to project</a></li>
+</ul>
+</li>
+<li><a href="#cleanup">7. Save Trained Model</a><ul>
+<li><a href="#list-jobs">7.1 List all training jobs</a></li>
+<li><a href="#del-jobs">7.2 Delete training jobs</a></li>
+<li><a href="#list-rts">7.3 List all Remote Training Systems</a></li>
+<li><a href="#del-rts">7.4 Delete Remote Training Systems</a></li>
 </ul>
 </li>
 </ul>
@@ -14145,21 +14152,49 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">API_VERSION</span> <span class="o">=</span> <span class="s2">&quot;2019-10-25&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">API_VERSION</span> <span class="o">=</span> <span class="s2">&quot;2021-10-01&quot;</span>
 
 <span class="n">WML_SERVICES_HOST</span> <span class="o">=</span> <span class="s2">&quot;us-south.ml.cloud.ibm.com&quot;</span> <span class="c1"># or &quot;eu-de.ml.cloud.ibm.com&quot;</span>
+
 <span class="n">WML_SERVICES_URL</span> <span class="o">=</span> <span class="s2">&quot;https://&quot;</span> <span class="o">+</span> <span class="n">WML_SERVICES_HOST</span>
 <span class="n">IAM_TOKEN_URL</span> <span class="o">=</span> <span class="s2">&quot;https://iam.cloud.ibm.com/oidc/token&quot;</span>
-
-<span class="c1"># Name of your COS bucket</span>
-<span class="n">COS_BUCKET</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> 
-
-<span class="n">IAM_APIKEY</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  
+ 
+<span class="n">IAM_APIKEY</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span>  
 
 <span class="c1"># Get this from Manage &lt; IAM &lt; Users, and check the URL. Your user ID should be in the format IBMid-&lt;xxx&gt;.</span>
 <span class="n">CLOUD_USERID</span> <span class="o">=</span> <span class="s2">&quot;IBMid-XXX&quot;</span> 
 
-<span class="n">PROJECT_ID</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># Get this by going into your WS project and checking the URL, or create a project token and click &quot;Insert project token&quot;</span>
+<span class="n">PROJECT_ID</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span> <span class="c1"># Get this by going into your WS project and checking the URL.</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id = "tags"></a></p>
+<h3 id="1.2-Define-tags">1.2 Define tags<a class="anchor-link" href="#1.2-Define-tags">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Used to identify the assets created by this notebook</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">RTS_TAG</span> <span class="o">=</span> <span class="s2">&quot;wmlflxgbsamplerts&quot;</span>
+<span class="n">TRAINING_TAG</span> <span class="o">=</span> <span class="s2">&quot;wmlflxgbsampletraining&quot;</span>
 </pre></div>
 
     </div>
@@ -14171,7 +14206,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id = "libraries"></a></p>
-<h3 id="1.2-Import-libraries">1.2 Import libraries<a class="anchor-link" href="#1.2-Import-libraries">&#182;</a></h3>
+<h3 id="1.3-Import-libraries">1.3 Import libraries<a class="anchor-link" href="#1.3-Import-libraries">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -14253,7 +14288,7 @@ div#notebook {
 <span class="s2">  &quot;name&quot;: &quot;Remote Party 1&quot;,</span>
 <span class="s2">  &quot;project_id&quot;: &quot;$projectId&quot;,</span>
 <span class="s2">  &quot;description&quot;: &quot;Sample Remote Training System&quot;,</span>
-<span class="s2">  &quot;tags&quot;: [ &quot;Federated Learning&quot; ],</span>
+<span class="s2">  &quot;tags&quot;: [ &quot;$tag&quot; ],</span>
 <span class="s2">  &quot;organization&quot;: {</span>
 <span class="s2">    &quot;name&quot;: &quot;IBM&quot;,</span>
 <span class="s2">    &quot;region&quot;: &quot;US&quot;</span>
@@ -14270,7 +14305,8 @@ div#notebook {
 <span class="s2">  }</span>
 <span class="s2">}</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">userID</span> <span class="o">=</span> <span class="n">CLOUD_USERID</span><span class="p">,</span>
-                <span class="n">projectId</span> <span class="o">=</span> <span class="n">PROJECT_ID</span><span class="p">)</span>
+                <span class="n">projectId</span> <span class="o">=</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
+                <span class="n">tag</span> <span class="o">=</span> <span class="n">RTS_TAG</span><span class="p">)</span>
 
 
 <span class="n">wml_remote_training_system_one_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/remote_training_systems&quot;</span><span class="p">,</span> 
@@ -14311,12 +14347,7 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">training_payload</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="s2">&quot;&quot;&quot; </span>
 <span class="s2">{</span>
 <span class="s2">  &quot;name&quot;: &quot;FL Aggregator&quot;,</span>
-<span class="s2">  &quot;tags&quot;: [</span>
-<span class="s2">    {</span>
-<span class="s2">      &quot;value&quot;: &quot;tags_jobs_fl&quot;,</span>
-<span class="s2">      &quot;description&quot;: &quot;Sample FL Aggregator&quot;</span>
-<span class="s2">    }</span>
-<span class="s2">  ],</span>
+<span class="s2">  &quot;tags&quot;: [ &quot;$tag&quot; ],</span>
 <span class="s2">  &quot;federated_learning&quot;: {</span>
 <span class="s2">    &quot;fusion_type&quot;: &quot;xgb_classifier&quot;,</span>
 <span class="s2">    &quot;learning_rate&quot;: 0.1,</span>
@@ -14348,7 +14379,8 @@ div#notebook {
 <span class="s2">  &quot;project_id&quot;: &quot;$projectId&quot;  </span>
 <span class="s2">}</span>
 <span class="s2">&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">projectId</span> <span class="o">=</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
-                <span class="n">rts_one</span> <span class="o">=</span> <span class="n">wml_remote_training_system_one_asset_uid</span><span class="p">)</span>
+                <span class="n">rts_one</span> <span class="o">=</span> <span class="n">wml_remote_training_system_one_asset_uid</span><span class="p">,</span>
+                <span class="n">tag</span> <span class="o">=</span> <span class="n">TRAINING_TAG</span><span class="p">)</span>
 
 <span class="n">create_training_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/trainings&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">},</span>
                                      <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
@@ -14409,6 +14441,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><a id = "party-notebook"></a></p>
 <h2 id="5.-Get-Variables-And-Paste-Into-Party-Notebook">5. Get Variables And Paste Into Party Notebook<a class="anchor-link" href="#5.-Get-Variables-And-Paste-Into-Party-Notebook">&#182;</a></h2>
 </div>
 </div>
@@ -14441,7 +14474,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>As the Admin, you have now launched a Federated Learning experiment. Copy the output from the previous cell. Open Part 2 - WML Federated Learning with XGBoost and Adult Income dataset - Party and paste the output into the first code cell.</p>
+<p>As the Admin, you have now launched a Federated Learning experiment. Copy the output from the previous cell. Open Part 2 - WML Federated Learning with XGBoost and Adult Income dataset - Party and paste the output into the first code cell.  Run the Part 2 - Party notebook to the end.</p>
 
 </div>
 </div>
@@ -14449,6 +14482,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><a id = "save-model"></a></p>
 <h2 id="6.-Save-Trained-Model-To-Project">6. Save Trained Model To Project<a class="anchor-link" href="#6.-Save-Trained-Model-To-Project">&#182;</a></h2>
 </div>
 </div>
@@ -14464,7 +14498,27 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><a id = "cos"></a></p>
 <h3 id="6.1-Connection-to-COS">6.1 Connection to COS<a class="anchor-link" href="#6.1-Connection-to-COS">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This information is located in your Watson Studio project, under the Manage tab, on the General page.</p>
+<ol>
+<li>The bucket name is listed inside the Storage pane.</li>
+<li>To obtain the credentials click on the Manage in IBM Cloud link located inside the Storage pane.  From your COS instance click Service Credentials.  You can use an existing or create a new credential if needed.  </li>
+</ol>
+<ul>
+<li>COS_APIKEY - the "apikey" from your credentials</li>
+<li>COS_RESOURCE_INSTANCE_ID - the "resource_instance_id" from your credentials</li>
+</ul>
+<ol>
+<li>The COS endpoints are listed in your COS instance under Endpoints.</li>
+</ol>
+
 </div>
 </div>
 </div>
@@ -14473,15 +14527,13 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">COS_ENDPOINT_URL</span> <span class="o">=</span> <span class="s2">&quot;http://s3.us.cloud-object-storage.appdomain.cloud&quot;</span> <span class="c1"># Go to your bucket and check Configurations &gt; Endpoints</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">BUCKET</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># bucket used by project ex. myproject-donotdelete-pr-tdnvueqivxep8v. Go to your project &gt; Manage and check the bucket name under Cloud storage.</span>
 
-<span class="c1"># Go into your COS instance (found in https://cloud.ibm.com/resources) and click Credentials. </span>
-<span class="c1"># Enter your bucket used by this project ex. myproject-donotdelete-pr-XXX. </span>
-<span class="c1"># Expand to find the access key ID and secret access key.</span>
+<span class="n">COS_ENDPOINT</span> <span class="o">=</span> <span class="s2">&quot;https://s3.us.cloud-object-storage.appdomain.cloud&quot;</span> <span class="c1"># Current list available at https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints</span>
 
-<span class="n">COS_ACCESS_KEY_ID</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> 
-<span class="n">COS_SECRET_ACCESS_KEY</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-<span class="n">BUCKET</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># bucket used by project ex. myproject-donotdelete-pr-XXX. To find this, go to your project, click Manage &gt; General and find your associated COS bucket </span>
+<span class="c1"># Find these in cloud.ibm.com &gt; Storage &gt; Credentials &gt; &lt;Your COS bucket&gt; </span>
+<span class="n">COS_APIKEY</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># eg &quot;W00YixxxxxxxxxxMB-odB-2ySfTrFBIQQWanc--P3byk&quot; </span>
+<span class="n">COS_RESOURCE_INSTANCE_ID</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># eg &quot;crn:v1:bluemix:public:cloud-object-storage:global:a/3bf0d9003xxxxxxxxxx1c3e97696b71c:d6f04d83-6c4f-4a62-a165-696756d63903::&quot;</span>
 </pre></div>
 
     </div>
@@ -14492,6 +14544,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><a id = "cos-prereqs"></a></p>
 <h3 id="6.2-Install-pre-req">6.2 Install pre-req<a class="anchor-link" href="#6.2-Install-pre-req">&#182;</a></h3>
 </div>
 </div>
@@ -14501,7 +14554,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install s3fs
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install ibm-cos-sdk
 </pre></div>
 
     </div>
@@ -14512,6 +14565,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><a id = "save-to-project"></a></p>
 <h3 id="6.3-Save-model-to-project">6.3 Save model to project<a class="anchor-link" href="#6.3-Save-model-to-project">&#182;</a></h3>
 </div>
 </div>
@@ -14521,31 +14575,25 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">s3fs</span>
-<span class="kn">import</span> <span class="nn">json</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">ibm_boto3</span>
+<span class="kn">from</span> <span class="nn">ibm_botocore.client</span> <span class="kn">import</span> <span class="n">Config</span><span class="p">,</span> <span class="n">ClientError</span>
 
-
-<span class="n">connection</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;endpoint_url&quot;</span><span class="p">:</span> <span class="n">COS_ENDPOINT_URL</span><span class="p">,</span>
-    <span class="s2">&quot;access_key_id&quot;</span><span class="p">:</span> <span class="n">COS_ACCESS_KEY_ID</span><span class="p">,</span>
-    <span class="s2">&quot;secret_access_key&quot;</span><span class="p">:</span> <span class="n">COS_SECRET_ACCESS_KEY</span>
-<span class="p">}</span>
-
-<span class="n">fs</span> <span class="o">=</span> <span class="n">s3fs</span><span class="o">.</span><span class="n">S3FileSystem</span><span class="p">(</span>
-    <span class="n">anon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">key</span><span class="o">=</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;access_key_id&quot;</span><span class="p">],</span>
-    <span class="n">secret</span><span class="o">=</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;secret_access_key&quot;</span><span class="p">],</span>
-    <span class="n">client_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;endpoint_url&#39;</span><span class="p">:</span> <span class="n">connection</span><span class="p">[</span><span class="s2">&quot;endpoint_url&quot;</span><span class="p">]}</span>
+<span class="n">cos</span> <span class="o">=</span> <span class="n">ibm_boto3</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s2">&quot;s3&quot;</span><span class="p">,</span>
+    <span class="n">ibm_api_key_id</span><span class="o">=</span><span class="n">COS_APIKEY</span><span class="p">,</span>
+    <span class="n">ibm_service_instance_id</span><span class="o">=</span><span class="n">COS_RESOURCE_INSTANCE_ID</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">Config</span><span class="p">(</span><span class="n">signature_version</span><span class="o">=</span><span class="s2">&quot;oauth&quot;</span><span class="p">),</span>
+    <span class="n">endpoint_url</span><span class="o">=</span><span class="n">COS_ENDPOINT</span>
 <span class="p">)</span>
 
-<span class="n">f</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">BUCKET</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">training_id</span> <span class="o">+</span> <span class="s2">&quot;/assets/&quot;</span> <span class="o">+</span> <span class="n">training_id</span> <span class="o">+</span> <span class="s2">&quot;/resources/wml_model/request.json&quot;</span><span class="p">)</span>
-<span class="n">req</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">ITEM_NAME</span> <span class="o">=</span> <span class="n">training_id</span> <span class="o">+</span> <span class="s2">&quot;/assets/&quot;</span> <span class="o">+</span> <span class="n">training_id</span> <span class="o">+</span> <span class="s2">&quot;/resources/wml_model/request.json&quot;</span>
+
+<span class="n">file</span> <span class="o">=</span> <span class="n">cos</span><span class="o">.</span><span class="n">Object</span><span class="p">(</span><span class="n">BUCKET</span><span class="p">,</span> <span class="n">ITEM_NAME</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="n">req</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s2">&quot;Body&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
 
 <span class="n">req</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Trained Adult Income Model&quot;</span>
 
 <span class="n">model_save_payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
-
 <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Model save payload: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">model_save_payload</span><span class="p">)</span>
 </pre></div>
 
@@ -14584,8 +14632,175 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<p><a id = "cleanup"></a></p>
+<h2 id="7.-Clean-Up-Project">7. Clean Up Project<a class="anchor-link" href="#7.-Clean-Up-Project">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Use this section to delete the training jobs and assets created by this notebook.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id = "list-jobs"></a></p>
+<h3 id="7.1-List-all-training-jobs-in-project">7.1 List all training jobs in project<a class="anchor-link" href="#7.1-List-all-training-jobs-in-project">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_training_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/trainings&quot;</span><span class="p">,</span>
+                                 <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+                                          <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span>
+                                 <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">,</span>
+                                         <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="n">PROJECT_ID</span><span class="p">},</span>
+                                 <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">get_training_resp</span><span class="p">)</span>
+<span class="n">status_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">get_training_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Get training response : &quot;</span><span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">status_json</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id = "del-jobs"></a></p>
+<h3 id="7.2-Delete-all-training-jobs-in-this-project-created-by-this-notebook">7.2 Delete all training jobs in this project created by this notebook<a class="anchor-link" href="#7.2-Delete-all-training-jobs-in-this-project-created-by-this-notebook">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This will stop all running aggregators created using this notebook.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_training_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/trainings&quot;</span><span class="p">,</span>
+                                 <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+                                          <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span>
+                                 <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">,</span>
+                                         <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
+                                         <span class="s2">&quot;tag.value&quot;</span><span class="p">:</span> <span class="n">TRAINING_TAG</span><span class="p">},</span>
+                                 <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">training_list_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">get_training_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<span class="n">training_resources</span><span class="o">=</span><span class="n">training_list_json</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">training</span> <span class="ow">in</span> <span class="n">training_resources</span><span class="p">:</span>
+    <span class="n">training_id</span> <span class="o">=</span> <span class="n">training</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deleting Training ID: &quot;</span> <span class="o">+</span> <span class="n">training_id</span><span class="p">)</span>
+    <span class="n">delete_training_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/trainings/&quot;</span> <span class="o">+</span> <span class="n">training_id</span><span class="p">,</span>
+                                           <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+                                                    <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span>
+                                           <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">,</span>
+                                                   <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
+                                                   <span class="s2">&quot;hard_delete&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                                           <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">delete_training_resp</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id = "list-rts"></a></p>
+<h3 id="7.3-List-all-remote-training-systems-in-project">7.3 List all remote training systems in project<a class="anchor-link" href="#7.3-List-all-remote-training-systems-in-project">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_rts_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/remote_training_systems&quot;</span><span class="p">,</span> 
+                            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+                                     <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span> 
+                            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">,</span>
+                                    <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="n">PROJECT_ID</span><span class="p">},</span> 
+                            <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">get_rts_resp</span><span class="p">)</span>
+<span class="n">rts_list_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">get_rts_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Remote Training Systems in Project : &quot;</span><span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">rts_list_json</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><a id = "del-rts"></a></p>
+<h3 id="7.4-Delete-all-remote-training-systems-in-this-project-created-by-this-notebook">7.4 Delete all remote training systems in this project created by this notebook<a class="anchor-link" href="#7.4-Delete-all-remote-training-systems-in-this-project-created-by-this-notebook">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_rts_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/remote_training_systems&quot;</span><span class="p">,</span> 
+                            <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+                                     <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span> 
+                            <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">,</span>
+                                    <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
+                                    <span class="s2">&quot;tag.value&quot;</span><span class="p">:</span> <span class="n">RTS_TAG</span><span class="p">},</span> 
+                            <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">rts_list_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">get_rts_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<span class="n">rts_resources</span><span class="o">=</span><span class="n">rts_list_json</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">rts</span> <span class="ow">in</span> <span class="n">rts_resources</span><span class="p">:</span>
+    <span class="n">rts_id</span> <span class="o">=</span> <span class="n">rts</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deleting RTS ID: &quot;</span> <span class="o">+</span> <span class="n">rts_id</span><span class="p">)</span>
+    <span class="n">delete_rts_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/remote_training_systems/&quot;</span> <span class="o">+</span> <span class="n">rts_id</span><span class="p">,</span> 
+                                      <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+                                               <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span> 
+                                      <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">,</span>
+                                              <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="n">PROJECT_ID</span><span class="p">},</span> 
+                                      <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">delete_rts_resp</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h1><hr></h1>
-<p>Copyright © 2020 IBM. This notebook and its source code are released under the terms of the MIT License.
+<p>Copyright © 2020-2022 IBM. This notebook and its source code are released under the terms of the MIT License.
  <br><br></p>
 <div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
 <span style="font-size:18px;color:#152935;">Love this notebook? </span>
