@@ -12947,8 +12947,13 @@ ul.typeahead-list  > li > a.pull-right {
 /*# sourceMappingURL=style.min.css.map */
     </style>
 <style type="text/css">
-    .highlight .hll { background-color: #ffffcc }
-.highlight  { background: #f8f8f8; }
+    pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
 .highlight .c { color: #408080; font-style: italic } /* Comment */
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
@@ -14056,7 +14061,7 @@ div#notebook {
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Use-Decision-Optimization-to-plan-your-diet-with-ibm-watson-machine-learning">Use Decision Optimization to plan your diet with <code>ibm-watson-machine-learning</code><a class="anchor-link" href="#Use-Decision-Optimization-to-plan-your-diet-with-ibm-watson-machine-learning">&#182;</a></h1><p>This notebook facilitates Decision Optimization and Watson Machine Learning services. It contains steps and code to work with <a href="https://pypi.python.org/pypi/ibm-watson-machine-learning">ibm-watson-machine-learning</a> library available in PyPI repository. It also introduces commands for getting model and training data, persisting model, deploying model and scoring it.</p>
-<p>Some familiarity with Python is helpful. This notebook uses Python 3.8.</p>
+<p>Some familiarity with Python is helpful.</p>
 
 </div>
 </div>
@@ -14136,11 +14141,11 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">api_key</span> <span class="o">=</span> <span class="s1">&#39;XXX&#39;</span>
-<span class="n">location</span> <span class="o">=</span> <span class="s1">&#39;us-south&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">api_key</span> <span class="o">=</span> <span class="s1">&#39;PASTE YOUR PLATFORM API KEY HERE&#39;</span>
+<span class="n">location</span> <span class="o">=</span> <span class="s1">&#39;PASTE YOUR INSTANCE LOCATION HERE&#39;</span>
 </pre></div>
 
     </div>
@@ -14150,7 +14155,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
@@ -14174,7 +14179,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install -U ibm-watson-machine-learning
@@ -14185,65 +14190,10 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Requirement already satisfied: ibm-watson-machine-learning in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (1.0.118)
-Collecting ibm-watson-machine-learning
-  Downloading ibm_watson_machine_learning-1.0.122-py3-none-any.whl (1.9 MB)
-     |████████████████████████████████| 1.9 MB 20.9 MB/s eta 0:00:01
-Requirement already satisfied: tabulate in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-watson-machine-learning) (0.8.9)
-Requirement already satisfied: ibm-cos-sdk==2.7.* in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-watson-machine-learning) (2.7.0)
-Requirement already satisfied: pandas&lt;1.3.0,&gt;=0.24.2 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-watson-machine-learning) (1.2.4)
-Requirement already satisfied: requests in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-watson-machine-learning) (2.25.1)
-Requirement already satisfied: packaging in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-watson-machine-learning) (20.9)
-Requirement already satisfied: urllib3 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-watson-machine-learning) (1.26.6)
-Requirement already satisfied: lomond in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-watson-machine-learning) (0.3.3)
-Requirement already satisfied: certifi in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-watson-machine-learning) (2021.5.30)
-Requirement already satisfied: jmespath&lt;1.0.0,&gt;=0.7.1 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-cos-sdk==2.7.*-&gt;ibm-watson-machine-learning) (0.10.0)
-Requirement already satisfied: ibm-cos-sdk-s3transfer==2.7.0 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-cos-sdk==2.7.*-&gt;ibm-watson-machine-learning) (2.7.0)
-Requirement already satisfied: ibm-cos-sdk-core==2.7.0 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-cos-sdk==2.7.*-&gt;ibm-watson-machine-learning) (2.7.0)
-Requirement already satisfied: python-dateutil&lt;3.0.0,&gt;=2.1 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-cos-sdk-core==2.7.0-&gt;ibm-cos-sdk==2.7.*-&gt;ibm-watson-machine-learning) (2.8.1)
-Requirement already satisfied: docutils&lt;0.16,&gt;=0.10 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from ibm-cos-sdk-core==2.7.0-&gt;ibm-cos-sdk==2.7.*-&gt;ibm-watson-machine-learning) (0.15.2)
-Requirement already satisfied: pytz&gt;=2017.3 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from pandas&lt;1.3.0,&gt;=0.24.2-&gt;ibm-watson-machine-learning) (2021.1)
-Requirement already satisfied: numpy&gt;=1.16.5 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from pandas&lt;1.3.0,&gt;=0.24.2-&gt;ibm-watson-machine-learning) (1.19.2)
-Requirement already satisfied: six&gt;=1.5 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from python-dateutil&lt;3.0.0,&gt;=2.1-&gt;ibm-cos-sdk-core==2.7.0-&gt;ibm-cos-sdk==2.7.*-&gt;ibm-watson-machine-learning) (1.15.0)
-Requirement already satisfied: chardet&lt;5,&gt;=3.0.2 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from requests-&gt;ibm-watson-machine-learning) (3.0.4)
-Requirement already satisfied: idna&lt;3,&gt;=2.5 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from requests-&gt;ibm-watson-machine-learning) (2.8)
-Requirement already satisfied: pyparsing&gt;=2.0.2 in /opt/conda/envs/Python-3.8-main/lib/python3.8/site-packages (from packaging-&gt;ibm-watson-machine-learning) (2.4.7)
-Installing collected packages: ibm-watson-machine-learning
-  Attempting uninstall: ibm-watson-machine-learning
-    Found existing installation: ibm-watson-machine-learning 1.0.118
-    Uninstalling ibm-watson-machine-learning-1.0.118:
-      Successfully uninstalled ibm-watson-machine-learning-1.0.118
-Successfully installed ibm-watson-machine-learning-1.0.122
-Collecting wget
-  Downloading wget-3.2.zip (10 kB)
-Building wheels for collected packages: wget
-  Building wheel for wget (setup.py) ... done
-  Created wheel for wget: filename=wget-3.2-py3-none-any.whl size=9681 sha256=32939ce2c9d1055f5bb26380fab3d9db7d936b1b3ab929b9328a6e309f9ea842
-  Stored in directory: /tmp/wsuser/.cache/pip/wheels/bd/a8/c3/3cf2c14a1837a4e04bd98631724e81f33f462d86a1d895fae0
-Successfully built wget
-Installing collected packages: wget
-Successfully installed wget-3.2
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning</span> <span class="kn">import</span> <span class="n">APIClient</span>
@@ -14275,10 +14225,10 @@ Successfully installed wget-3.2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">space_id</span> <span class="o">=</span> <span class="s1">&#39;XXX&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">space_id</span> <span class="o">=</span> <span class="s1">&#39;PASTE YOUR SPACE ID HERE&#39;</span>
 </pre></div>
 
     </div>
@@ -14317,33 +14267,13 @@ Successfully installed wget-3.2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="o">.</span><span class="n">default_space</span><span class="p">(</span><span class="n">space_id</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[7]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;SUCCESS&#39;</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -14359,7 +14289,7 @@ Successfully installed wget-3.2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -14422,10 +14352,10 @@ Successfully installed wget-3.2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sofware_spec_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_uid_by_name</span><span class="p">(</span><span class="s2">&quot;do_12.9&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sofware_spec_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_uid_by_name</span><span class="p">(</span><span class="s2">&quot;do_20.1&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14443,7 +14373,7 @@ Successfully installed wget-3.2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">output_data_schema</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;stest&#39;</span><span class="p">,</span>
@@ -14485,12 +14415,12 @@ Successfully installed wget-3.2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_meta_props</span> <span class="o">=</span> <span class="p">{</span>
                         <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s2">&quot;LOCALLY created DO model&quot;</span><span class="p">,</span>
-                        <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="s2">&quot;do-docplex_12.9&quot;</span><span class="p">,</span>
+                        <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="s2">&quot;do-docplex_20.1&quot;</span><span class="p">,</span>
                         <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">SOFTWARE_SPEC_UID</span><span class="p">:</span> <span class="n">sofware_spec_uid</span><span class="p">,</span>
                         <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">OUTPUT_DATA_SCHEMA</span><span class="p">:</span> <span class="n">output_data_schema</span>
                     <span class="p">}</span>
@@ -14519,175 +14449,17 @@ Successfully installed wget-3.2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
 
-<span class="n">published_model_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_model_uid</span><span class="p">(</span><span class="n">published_model</span><span class="p">)</span>
+<span class="n">published_model_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_model_id</span><span class="p">(</span><span class="n">published_model</span><span class="p">)</span>
 <span class="n">model_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_details</span><span class="p">(</span><span class="n">published_model_uid</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">model_details</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{
-  &#34;entity&#34;: {
-    &#34;schemas&#34;: {
-      &#34;input&#34;: [],
-      &#34;output&#34;: [
-        {
-          &#34;fields&#34;: [
-            {
-              &#34;name&#34;: &#34;age&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;sex&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;cp&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;restbp&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;chol&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;fbs&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;restecg&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;thalach&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;exang&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;oldpeak&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;slope&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;ca&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;thal&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            }
-          ],
-          &#34;id&#34;: &#34;stest&#34;,
-          &#34;type&#34;: &#34;list&#34;
-        },
-        {
-          &#34;fields&#34;: [
-            {
-              &#34;name&#34;: &#34;age&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;sex&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;cp&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;restbp&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;chol&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;fbs&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;restecg&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;thalach&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;exang&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;oldpeak&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;slope&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;ca&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            },
-            {
-              &#34;name&#34;: &#34;thal&#34;,
-              &#34;type&#34;: &#34;float&#34;
-            }
-          ],
-          &#34;id&#34;: &#34;teste2&#34;,
-          &#34;type&#34;: &#34;test&#34;
-        }
-      ]
-    },
-    &#34;software_spec&#34;: {
-      &#34;id&#34;: &#34;75a3a4b0-6aa0-41b3-a618-48b1f56332a6&#34;,
-      &#34;name&#34;: &#34;do_12.9&#34;
-    },
-    &#34;type&#34;: &#34;do-docplex_12.9&#34;
-  },
-  &#34;metadata&#34;: {
-    &#34;created_at&#34;: &#34;2021-08-19T15:52:11.141Z&#34;,
-    &#34;id&#34;: &#34;cf9c0eb0-9188-4dfc-b06e-46277684015f&#34;,
-    &#34;modified_at&#34;: &#34;2021-08-19T15:52:13.315Z&#34;,
-    &#34;name&#34;: &#34;LOCALLY created DO model&#34;,
-    &#34;owner&#34;: &#34;IBMid-550003P291&#34;,
-    &#34;space_id&#34;: &#34;47c5c0ba-95cf-4683-9d35-54e2d58599f8&#34;
-  },
-  &#34;system&#34;: {
-    &#34;warnings&#34;: []
-  }
-}
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -14731,7 +14503,7 @@ Successfully installed wget-3.2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">meta_data</span> <span class="o">=</span> <span class="p">{</span>
@@ -14747,39 +14519,6 @@ Successfully installed wget-3.2
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>
-#######################################################################################
-
-Synchronous deployment creation for uid: &#39;cf9c0eb0-9188-4dfc-b06e-46277684015f&#39; started
-
-#######################################################################################
-
-
-ready.
-
-
-------------------------------------------------------------------------------------------------
-Successfully finished deployment creation, deployment_uid=&#39;b5396889-f290-47ac-b45d-8da12c3ad69f&#39;
-------------------------------------------------------------------------------------------------
-
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -14791,7 +14530,7 @@ Successfully finished deployment creation, deployment_uid=&#39;b5396889-f290-47a
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">deployment_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_uid</span><span class="p">(</span><span class="n">deployment_details</span><span class="p">)</span>
@@ -14862,7 +14601,7 @@ Successfully finished deployment creation, deployment_uid=&#39;b5396889-f290-47a
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -14906,7 +14645,7 @@ Successfully finished deployment creation, deployment_uid=&#39;b5396889-f290-47a
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">job_payload_ref</span> <span class="o">=</span> <span class="p">{</span>
@@ -14947,7 +14686,7 @@ Successfully finished deployment creation, deployment_uid=&#39;b5396889-f290-47a
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create_job</span><span class="p">(</span><span class="n">deployment_uid</span><span class="p">,</span> <span class="n">meta_props</span><span class="o">=</span><span class="n">job_payload_ref</span><span class="p">)</span>
@@ -14968,7 +14707,7 @@ Successfully finished deployment creation, deployment_uid=&#39;b5396889-f290-47a
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
@@ -14988,24 +14727,6 @@ Successfully finished deployment creation, deployment_uid=&#39;b5396889-f290-47a
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>KPI: 2000.0
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
