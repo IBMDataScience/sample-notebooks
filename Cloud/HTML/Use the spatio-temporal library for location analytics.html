@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>Public PySpark Example - All Spatial Functionality</title>
+<title>Use the spatio-temporal library for location analy</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -12947,8 +12947,13 @@ ul.typeahead-list  > li > a.pull-right {
 /*# sourceMappingURL=style.min.css.map */
     </style>
 <style type="text/css">
-    .highlight .hll { background-color: #ffffcc }
-.highlight  { background: #f8f8f8; }
+    pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
 .highlight .c { color: #408080; font-style: italic } /* Comment */
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
@@ -13018,47 +13023,7 @@ ul.typeahead-list  > li > a.pull-right {
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style type="text/css">
-    
-/* Temporary definitions which will become obsolete with Notebook release 5.0 */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-bold { font-weight: bold; }
-
-    </style>
-<style type="text/css">
-
-/*
+    /*
  * Licensed Materials - Property of IBM
  * 5737-C49
  * 5737-B37
@@ -13071,8 +13036,8 @@ ul.typeahead-list  > li > a.pull-right {
  * Above notice applies only to the contents of "custom.css" itself,
  * not to the the rest of the notebooks in which the file is embedded.
  */
- 
-/*for the error , connecting & renaming window*/
+
+/*for the error, connecting & renaming window*/
 
 [dir="rtl"] .modal-footer {
   text-align : left !important;
@@ -13087,29 +13052,112 @@ content: "\f048";
 }
 
 
-/*.notebook_app only adresses stuff on the notebook ui not the tree*/
-
 /*GENERAL NOTEBOOK SITE*/
+
+/* COLOURS */
+/* CARBON 10 GRAY 10 */
+html {
+	--carbon-ui-background: #F4F4F4;
+	--carbon-interactive-01: #0F62FE;
+	--carbon-interactive-02: #393939;
+	--carbon-interactive-03: #0F62FE;
+	--carbon-interactive-04: #0F62FE;
+	--carbon-hover-primary: #0353e9;
+	--carbon-hover-ui: #E5E5E5;
+	--carbon-danger: #DA1E28;
+	--carbon-ui-01: #FFFFFF;
+	--carbon-ui-02: #F4F4F4;
+	--carbon-ui-03: #E0E0E0;
+	--carbon-ui-04: #8D8D8D;
+	--carbon-ui-05: #161616;
+	--carbon-text-01: #161616;
+	--carbon-text-02: #393939;
+	--carbon-text-03: #A8A8A8;
+	--carbon-text-04: #FFFFFF;
+	--carbon-text-05: #6F6F6F;
+	--carbon-link-01: #0F62FE;
+	--carbon-inverse-link: #78A9FF;
+	--carbon-icon-01: #161616;
+	--carbon-icon-02: #525252;
+	--carbon-icon-03: #FFFFFF;
+	--carbon-field-01: #FFFFFF;
+	--carbon-field-02: #F4F4F4;
+	--carbon-inverse-01: #FFFFFF;
+	--carbon-inverse-02: #393939;
+	--carbon-support-01: #DA1E28;
+	--carbon-support-02: #24A148;
+	--carbon-support-03: #F1C21B;
+	--carbon-support-04: #0043CE;
+	--carbon-inverse-support-01: #FA4D56;
+	--carbon-inverse-support-02: #42BE65;
+	--carbon-inverse-support-03: #F1C21B;
+	--carbon-inverse-support-04: #4589FF;
+	--carbon-overlay-01: rgba(22, 22, 22, 0.5);
+	--carbon-overlay-02: rgba(22, 22, 22, 0.05);
+}
+
+/* CARBON 10 GRAY 90 */
+/* html {
+	--carbon-ui-background: #262626;
+	--carbon-interactive-01: #0f62fe;
+	--carbon-interactive-02: #6f6f6f;
+	--carbon-interactive-03: #ffffff;
+	--carbon-interactive-04: #4589ff;
+	--carbon-hover-primary: #0353e9;
+	--carbon-hover-ui: #4c4c4c;
+	--carbon-danger: #da1e28;
+	--carbon-ui-01: #393939;
+	--carbon-ui-02: #525252;
+	--carbon-ui-03: #525252;
+	--carbon-ui-04: #8d8d8d;
+	--carbon-ui-05: #f4f4f4;
+	--carbon-text-01: #f4f4f4;
+	--carbon-text-02: #c6c6c6;
+	--carbon-text-03: #6f6f6f;
+	--carbon-text-04: #ffffff;
+	--carbon-text-05: #8d8d8d;
+	--carbon-link-01: #78a9ff;
+	--carbon-inverse-link: #0f62fe;
+	--carbon-icon-01: #f4f4f4;
+	--carbon-icon-02: #c6c6c6;
+	--carbon-icon-03: #ffffff;
+	--carbon-field-01: #393939;
+	--carbon-field-02: #525252;
+	--carbon-inverse-01: #161616;
+	--carbon-inverse-02: #f4f4f4;
+	--carbon-support-01: #fa4d56;
+	--carbon-support-02: #42be65;
+	--carbon-support-03: #f1c21b;
+	--carbon-support-04: #4589ff;
+	--carbon-inverse-support-01: #da1e28;
+	--carbon-inverse-support-02: #24a148;
+	--carbon-inverse-support-03: #f1c21b;
+	--carbon-inverse-support-04: #0f62fe;
+	--carbon-overlay-01: rgba(22, 22, 22, 0.7);
+	--carbon-overlay-02: rgba(22, 22, 22, 0.2);
+} */
 
 html, body {
 /*Return the root to 16px for safe usage of rem unit*/
 font-size: 100%;
 height: 100%;
 width: 100%;
-background-color: #f5f7fa;
+background-color: var(--carbon-ui-background);
 }
 
 body {
 margin: 0;
 padding: 0;
 border: 0;
-color: #5a6872;
+color: var(--carbon-text-02);
 font-weight: 400;
 /* Font-size fix for bluemix header (part 1) */
 font-size: 100%;
 line-height: 1.68;
 font-family: 'ibm-plex-sans', 'Helvetica Neue for IBM', 'Helvetica Neue', Helvetica, Arial, Roboto, sans-serif;
 }
+
+/*.notebook_app only adresses stuff on the notebook ui not the tree*/
 
 .notebook_app {
 font-size: 0.875rem;
@@ -13131,7 +13179,7 @@ display: none !important;
 }
 
 .notebook_app #header {
-background-color: #f5f7fa;
+background-color: var(--carbon-ui-background);
 box-shadow: none;
 }
 
@@ -13144,35 +13192,35 @@ display: none;
 }
 
 .notebook_app .navbar-default {
-background-color: #f5f7fa;
+background-color: var(--carbon-ui-background);
 border: none;
 }
 
-.notebook_app .navbar-default .navbar-nav>li>a {
-color: #5a6872;
+.notebook_app .navbar-default .navbar-nav > li > a {
+color: var(--carbon-text-02);
 padding-left: 0;
 padding-right: 1.5rem;
 padding-top: 0;
 background-color: transparent;
 }
 
-.notebook_app .navbar-default .navbar-nav>li>a:hover,
-.notebook_app .navbar-default .navbar-nav>.open>a {
-color: #152934;
+.notebook_app .navbar-default .navbar-nav > li > a:hover,
+.notebook_app .navbar-default .navbar-nav > .open > a {
+color: var(--carbon-text-02);
 background-color: transparent;
 }
 
 .notebook_app .navbar-default .btn-default {
-color: #5a6872;
+color: var(--carbon-text-02);
 }
 
 .notebook_app .navbar-default .btn-default:hover {
-color: #152934;
+color: var(--carbon-text-02);
 background-color: transparent;
 }
 
 .notebook_app #kernel_indicator {
-color: #5a6872;
+color: var(--carbon-text-02);
 text-align: right;
 margin-right: 3em;
 line-height: normal;
@@ -13197,7 +13245,7 @@ width: 100% !important;
 
 .notebook_app .btn-group {
 margin: 0;
-border-right: solid 1px #dfe3e6;
+border-right: solid 1px var(--carbon-ui-03);
 /* height: 3em; */
 display: inline-flex;
 display: -webkit-inline-box;  /* OLD - iOS 6-, Safari 3.1-6, BB7 */
@@ -13222,14 +13270,14 @@ padding-left: 0;
   padding: 0;
   border-width: 0;
   font: inherit;
-  fill: #3d70b2;
-  color: #5a6872;
+  fill: var(--carbon-interactive-01);
+  color: var(--carbon-text-02);
 }
 
 .notebook_app .btn-group button:hover,
 .notebook_app .btn-group button:active,
 .notebook_app .btn-group button:focus {
-  fill: #5596e6;
+  fill: var(--carbon-hover-primary);
   background-color: transparent;
 }
 
@@ -13238,14 +13286,14 @@ padding-left: 0;
 }
 
 .notebook_app .toolbar .btn-group .btn .fa {
-  color: #3d70b2;
+  color: var(--carbon-interactive-01);
   font-size: 1rem;
 }
 
 .notebook_app .toolbar .btn-group .btn:hover .fa,
 .notebook_app .toolbar .btn-group .btn:active .fa,
 .notebook_app .toolbar .btn-group .btn:focus .fa {
-  color: #5596e6;
+  color: var(--carbon-hover-primary);
 }
 
 /*ICONS*/
@@ -13280,7 +13328,7 @@ height: 0;
 content: '';
 border-left: 0.3125rem solid transparent;
 border-right: 0.3125rem solid transparent; 
-border-top: 0.3125rem solid #3d70b2;
+border-top: 0.3125rem solid var(--carbon-interactive-01);
 z-index: -1;
 }
 
@@ -13295,9 +13343,9 @@ line-height: 1.68;
 -webkit-appearance: none;
 -moz-appearance: none;
 appearance: none;
-background-color: rgba(60, 112, 178, .1);
+background-color: var(--carbon-overlay-02);
 border: none;
-color: #5a6872;
+color: var(--carbon-text-02);
 margin: 0;
 padding: 0;
 padding-left: 0.5rem;
@@ -13326,32 +13374,32 @@ margin-right: .5rem;
 
 /*MENUS*/
 .notebook_app .dropdown-menu {
-background-color: #ffffff;
-border-color: #dfe3e6;
+background-color: var(--carbon-ui-01);
+border-color: var(--carbon-ui-03);
 box-sizing: border-box;
 }
 
 .notebook_app .dropdown-menu li a {
-color: #152934;
+color: var(--carbon-text-02);
 padding-left: 1rem;
 }
 
 .notebook_app .dropdown-menu li a:hover {
-background-color: #3d70b2;
-color: #ffffff;
+background-color: var(--carbon-interactive-04);
+color: var(--carbon-ui-01);
 }
 
 .notebook_app .dropdown-menu li.disabled a {
 background-color: transparent;
-color: #aeaeae;
+color: var(--carbon-text-03);
 }
 
 .notebook_app .dropdown-submenu > a::after {
-color: #152934;
+color: var(--carbon-text-02);
 }
 
 .notebook_app .dropdown-menu .divider {
-background-color: #dfe3e6;
+background-color: var(--carbon-ui-03);
 }
 
 .notebook_app .dropdown-submenu > .dropdown-menu {
@@ -13360,9 +13408,9 @@ margin-left: 0;
 
 /*NOTEBOOK CONTAINER*/
 .notebook_app #notebook-container {
-color: #5a6872;
+color: var(--carbon-text-02);
 box-shadow: none;
-border: solid thin #dfe3e6;
+border: solid thin var(--carbon-ui-03);
 }
 
 .notebook_app .btn:active {
@@ -13370,7 +13418,7 @@ box-shadow: none;
 }
 
 .notebook_app #notebook-container .celltoolbar {
-background-color: #f5f7fa;
+background-color: var(--carbon-ui-02);
 height: initial;
 padding: 3px;
 }
@@ -13393,27 +13441,27 @@ box-sizing: border-box;
 }
 
 .notebook_app #notebook-container .celltoolbar .tags-input input:focus {
-border-color: #3d70b2;
+border-color: var(--carbon-interactive-04);
 }
 
 .notebook_app #notebook-container .btn-xs {
 padding: 0 0.5rem;
 line-height: 1;
-color: #3d70b2;
+color: var(--carbon-interactive-04);
 font-weight: 600;
 text-decoration: none;
 transition: all .2s ease-in-out;
 cursor: pointer;
 height: 1.68rem;
-border: 0.125rem solid #3d70b2;
+border: 0.125rem solid var(--carbon-interactive-04);
 background-color: transparent;
 }
 
 .notebook_app #notebook-container .btn-xs:hover,
 .notebook_app #notebook-container .btn-xs:active,
 .notebook_app #notebook-container .btn-xs:focus {
-background-color: #3d70b2;
-color: #ffffff;
+background-color: var(--carbon-interactive-04);
+color: var(--carbon-ui-01);
 }
 
 .notebook_app #notebook-container .btn-xs.tags-dialog-btn {
@@ -13423,11 +13471,11 @@ display: none;
 }
 
 .notebook_app #notebook-container .cell-tag {
-color: #152934;
+color: var(--carbon-text-02);
 padding-right: 0.5rem;
 padding-left: 0.5rem;
 line-height: 1.5;
-background-color: #dfe3e6;
+background-color: var(--carbon-ui-03);
 border-radius: 0.9375rem;
 }
 
@@ -13436,12 +13484,12 @@ display: none;
 }
 
 .notebook_app #notebook-container .cell-tag .remove-tag-btn {
-color: #3d70b2;
+color: var(--carbon-interactive-01);
 cursor: pointer;
 }
 
 .notebook_app #notebook-container .cell-tag .remove-tag-btn:hover {
-color: #5596e6;
+color: var(--carbon-hover-primary);
 }
 
 .notebook_app #notebook-container .input .run_this_cell {
@@ -13449,11 +13497,11 @@ color: #5596e6;
   padding-top: 0.125rem;
   width: initial;
   align-self: flex-start;
-  fill: #3d70b2;
+  fill: var(--carbon-interactive-01);
 }
 
 .notebook_app #notebook-container .input .run_this_cell:hover {
-  fill: #5596e6;
+  fill: var(--carbon-hover-primary);
 }
 
 .notebook_app #notebook-container .input .prompt {
@@ -13466,7 +13514,7 @@ color: #5596e6;
 
 /*DIALOGS*/
 .notebook_app .modal-dialog {
-color: #5a6872;
+color: var(--carbon-text-02);
 font-family: 'ibm-plex-sans', 'Helvetica Neue for IBM', 'Helvetica Neue', Helvetica, Arial, Roboto, sans-serif;
 width: 50%;
 }
@@ -13478,7 +13526,7 @@ visibility: hidden;
 
 .notebook_app .modal-content {
 border-width: 0;
-border-top: 0.375rem solid #3d70b2;
+border-top: 0.375rem solid var(--carbon-interactive-01);
 border-radius: 0;
 }
 
@@ -13490,14 +13538,10 @@ padding-bottom: 0;
 border: none;
 }
 
-.notebook_app .modal-header button.close {
-display: none;
-}
-
 .notebook_app .modal-title {
 font-size: 2.618em;
 font-weight: 300;
-color: #1d3649;
+color: var(--carbon-text-01);
 }
 
 .notebook_app .modal-body {
@@ -13506,13 +13550,13 @@ padding: 1rem 4.99469%;
 
 .notebook_app .modal-footer {
 border: none;
-background-color: #f5f7fa;
+background-color: var(--carbon-ui-background);
 padding-right: 4.99469%;
 padding-left: 4.99469%;
 }
 
 .notebook_app .modal-body a {
-color: #3d70b2;
+color: var(--carbon-link-01);
 text-decoration: none;
 background-color: transparent;
 }
@@ -13523,7 +13567,7 @@ text-decoration: underline;
 }
 
 .notebook_app .modal-body a:active {
-color: #5596e6;
+color: var(--carbon-hover-primary);
 }
 
 .notebook_app .modal-dialog .btn {
@@ -13542,21 +13586,23 @@ font-family: inherit;
 .notebook_app .modal-dialog .btn-default {
 transition: all .2s ease-in-out;
 background-color: transparent;
-color: #3d70b2;
+color: var(--carbon-interactive-01);
 border: none;
 }
 
 .notebook_app .modal-dialog .btn-default:hover,
 .notebook_app .modal-dialog .btn-default:focus,
 .notebook_app .modal-dialog .btn-default:active  {
-background-color: #3d70b2;
-color: #ffffff;
+background-color: var(--carbon-hover-ui);
+color: var(--carbon-hover-primary);
 }
 
 .notebook_app .modal-dialog .btn-primary,
 .notebook_app .modal-dialog .btn-danger,
 .notebook_app .modal-dialog .btn-danger:focus {
-border: 2px solid #3d70b2;
+border: 2px solid var(--carbon-interactive-01);
+background-color: var(--carbon-interactive-01);
+color: var(--carbon-text-04);
 }
 
 .notebook_app .modal-dialog .btn-primary:hover,
@@ -13564,9 +13610,9 @@ border: 2px solid #3d70b2;
 .notebook_app .modal-dialog .btn-primary:active,
 .notebook_app .modal-dialog .btn-danger:hover,
 .notebook_app .modal-dialog .btn-danger:active {
-background-color: #3d70b2;
-border-color: #3d70b2;
-color: #ffffff;
+background-color: var(--carbon-hover-primary);
+border-color: var(--carbon-hover-primary);
+color: var(--carbon-text-04);
 }
 
 .notebook_app .modal-dialog .item-buttons .btn-default.btn-xs {
@@ -13583,7 +13629,7 @@ height: initial;
 .notebook_app .modal-dialog .item-buttons .btn-default.btn-danger:hover,
 .notebook_app .modal-dialog .item-buttons .btn-default.btn-danger:focus {
 background-color: transparent;
-color: #5596e6;
+color: var(--carbon-hover-primary);
 }
 
 .notification_widget.ax_notebook_saved {
@@ -13595,7 +13641,7 @@ margin-right: 0;
 margin-bottom: 0.375rem;
 line-height: normal;
 font-size: 0.875rem;
-color: #5aa700;
+color: var(--carbon-support-02);
 border: none;
 }
 
@@ -13612,7 +13658,7 @@ margin-right: 0;
 margin-bottom: 0.375rem;
 line-height: normal;
 font-size: 0.875rem;
-color: #5aa700;
+color: var(--carbon-support-02);
 border: none;
 }
 
@@ -13632,14 +13678,14 @@ margin-right: 0;
 margin-bottom: 0.375rem;
 line-height: normal;
 font-size: 0.875rem;
-color: #3d70b2;
+color: var(--carbon-interactive-04);
 border: none;
 }
 
 #notification_trusted:hover,
 #notification_trusted:active,
 #notification_trusted:focus {
-  color: #5596e6;
+  color: var(--carbon-hover-primary);
 }
 
 /*
@@ -13705,8 +13751,8 @@ color: black;
 display: table;
 table-layout: fixed;
 width: 100%;
-background-color: #ffffff;
-border: 2px solid #d8d8d8;
+background-color: var(--carbon-ui-01);
+border: 2px solid var(--carbon-ui-03);
 }
 
 .spark_table_thead {
@@ -13721,21 +13767,21 @@ border-color: inherit;
 }
 
 .spark_table_tr.spark_table_header {
-border-bottom: 2px solid #d8d8d8;
-background-color: #eaeaea;
+border-bottom: 2px solid var(--carbon-ui-03);
+background-color: var(--carbon-ui-01);
 }
 
 .spark_table_tr.spark_table_job_tr.black_side {
-border-bottom: 1px solid #d8d8d8;
+border-bottom: 1px solid var(--carbon-ui-03);
 }
 
 .spark_table_tr.spark_table_job_tr {
-border-bottom: 2px solid #d8d8d8;
-border-top: 2px solid #d8d8d8;
+border-bottom: 2px solid var(--carbon-ui-03);
+border-top: 2px solid var(--carbon-ui-03);
 }
 
 .spark_table_tr.stage_row {
-border-bottom: 1px solid #d8d8d8;
+border-bottom: 1px solid var(--carbon-ui-03);
 }
 
 .st_header_cell {
@@ -13811,7 +13857,7 @@ width: 100%;
 }
 
 .progress_bar_border {
-border: 1px solid #dfe3e6;
+border: 1px solid var(--carbon-ui-03);
 }
 
 .progress_bar_border_shape {
@@ -13819,7 +13865,7 @@ border-radius: 8px;
 }
 
 .progress_bar {
-background-color: #f5f7fa;
+background-color:  var(--carbon-ui-02);
 height: 100%;
 line-height: inherit;
 }
@@ -13856,7 +13902,7 @@ margin-top: -0.27em;
 height: 0.6rem;
 vertical-align: middle;
 width: 1.25rem;
-fill: #5a6872;
+fill: var(--carbon-text-02);
 }
 
 .state_label_wrapper {
@@ -13867,7 +13913,7 @@ overflow: hidden;
 }
 
 .state_label_wrapper.error_label {
-color: #e71d32;
+color: var(--carbon-support-01);
 }
 
 .icon_style {
@@ -13877,7 +13923,7 @@ width: 1.25rem;
 }
 
 .black_side {
-border-left: 2px solid #3d70b2;
+border-left: 2px solid var(--carbon-interactive-04);
 }
 
 .state_right {
@@ -13893,7 +13939,7 @@ min-width: 35rem;
 }
 
 .error_icon {
-fill: #e71d32;
+fill: var(--carbon-support-01);
 }
 
 .upper_header {
@@ -13932,7 +13978,7 @@ padding-right: 0.3rem;
 }
 
 .header_underline {
-border-top: 2px solid #dfe3e6;
+border-top: 2px solid var(--carbon-ui-03);
 }
 
 .upper_header_icon_up {
@@ -13944,17 +13990,14 @@ transform: rotate(180deg);
 }
 
 .spark_monitor_button {
-stroke: #3d70b2;
+stroke: var(--carbon-interactive-04);
 }
 
 .spark_monitor_button:hover {
-stroke: #5596e6;
+stroke: var(--carbon-hover-primary);
 }
-/*
-*
-*     End Spark Monitoring Style
-*
-*/
+
+/* end of file "custom.css" */
 
     </style>
 
@@ -13990,7 +14033,7 @@ div#notebook {
 
 <!-- Loading mathjax macro -->
 <!-- Load mathjax -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS_HTML"></script>
     <!-- MathJax configuration -->
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -14026,7 +14069,7 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This notebook shows you how to work with the spatio-temporal library that is pre-installed on all Spark environments in Watson Studio. You can use the spatio-temporal library to expand your data science analysis in Python notebooks to include location analytics by gathering, manipulating, and displaying imagery, GPS, satellite photography and historical data.</p>
 <p>In this notebook, you will learn how to get started with using the library, how to read and write data using <code>pyst</code> which supports most of the common geospatial formats, which includes shapefile, GeoJSON and Well-Known Text (WKT). You will learn how to use topological relations to confine the returned results of your location data analysis, which geohashing functions to use for proximity search (encoding latitude and longitude and grouping nearby points), and how to calculate the distance between points using ellipsoidal metrics.</p>
-<p>This notebook runs on Python 3.6 with Spark.</p>
+<p>This notebook runs on the latest Python and Spark.</p>
 <h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><ol>
 <li><a href="#createContext">Create a spatial context</a></li>
 <li><a href="#io">Read and write data</a><br></li>
@@ -14051,35 +14094,15 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyst</span> <span class="k">import</span> <span class="n">STContext</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyst</span> <span class="kn">import</span> <span class="n">STContext</span>
 <span class="c1"># Register STContext, which is the main entry point</span>
 <span class="n">stc</span> <span class="o">=</span> <span class="n">STContext</span><span class="p">(</span><span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_gateway</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Waiting for a Spark session to start...
-Spark Initialization Done! ApplicationId = app-20191104224341-0000
-KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -14113,7 +14136,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geojson_reader</span> <span class="o">=</span> <span class="n">stc</span><span class="o">.</span><span class="n">geojson_reader</span><span class="p">()</span>
@@ -14138,10 +14161,10 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span> wget -q https://api.dataplatform.cloud.ibm.com/v2/gallery-assets/entries/1ec43d48a694c6c1d052ddca4d68bdc4/data?accessKey<span class="o">=</span>1ec43d48a694c6c1d052ddca4d69054c -O counties.geojson
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>wget -q <span class="s2">&quot;https://api.dataplatform.cloud.ibm.com/v2/gallery-assets/entries/1ec43d48a694c6c1d052ddca4d68bdc4/data?accessKey=c6a5e2bce9822ecbff831eedc9a8dde7&quot;</span> -O counties.geojson
 </pre></div>
 
     </div>
@@ -14151,7 +14174,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">geojson_reader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;counties.geojson&#39;</span><span class="p">)</span>
@@ -14159,97 +14182,6 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[4]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>AFFGEOID</th>
-      <th>ALAND</th>
-      <th>AWATER</th>
-      <th>COUNTYFP</th>
-      <th>COUNTYNS</th>
-      <th>GEOID</th>
-      <th>LSAD</th>
-      <th>NAME</th>
-      <th>STATEFP</th>
-      <th>geometry</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0500000US37017</td>
-      <td>2265887723</td>
-      <td>33010866</td>
-      <td>017</td>
-      <td>01026336</td>
-      <td>37017</td>
-      <td>06</td>
-      <td>Bladen</td>
-      <td>37</td>
-      <td>MultiPolygon(Polygon: Boundary: Ring(LineSegme...</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0500000US37167</td>
-      <td>1023370459</td>
-      <td>25242751</td>
-      <td>167</td>
-      <td>01025844</td>
-      <td>37167</td>
-      <td>06</td>
-      <td>Stanly</td>
-      <td>37</td>
-      <td>MultiPolygon(Polygon: Boundary: Ring(LineSegme...</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0500000US39153</td>
-      <td>1069181981</td>
-      <td>18958267</td>
-      <td>153</td>
-      <td>01074088</td>
-      <td>39153</td>
-      <td>06</td>
-      <td>Summit</td>
-      <td>39</td>
-      <td>MultiPolygon(Polygon: Boundary: Ring(LineSegme...</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -14266,7 +14198,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
@@ -14279,7 +14211,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;counties.geojson&#39;</span><span class="p">))</span>
@@ -14292,7 +14224,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">geojson_reader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -14300,212 +14232,6 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[7]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>AFFGEOID</th>
-      <th>ALAND</th>
-      <th>AWATER</th>
-      <th>COUNTYFP</th>
-      <th>COUNTYNS</th>
-      <th>GEOID</th>
-      <th>LSAD</th>
-      <th>NAME</th>
-      <th>STATEFP</th>
-      <th>geometry</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0500000US37017</td>
-      <td>2265887723</td>
-      <td>33010866</td>
-      <td>017</td>
-      <td>01026336</td>
-      <td>37017</td>
-      <td>06</td>
-      <td>Bladen</td>
-      <td>37</td>
-      <td>MultiPolygon(Polygon: Boundary: Ring(LineSegme...</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0500000US37167</td>
-      <td>1023370459</td>
-      <td>25242751</td>
-      <td>167</td>
-      <td>01025844</td>
-      <td>37167</td>
-      <td>06</td>
-      <td>Stanly</td>
-      <td>37</td>
-      <td>MultiPolygon(Polygon: Boundary: Ring(LineSegme...</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0500000US39153</td>
-      <td>1069181981</td>
-      <td>18958267</td>
-      <td>153</td>
-      <td>01074088</td>
-      <td>39153</td>
-      <td>06</td>
-      <td>Summit</td>
-      <td>39</td>
-      <td>MultiPolygon(Polygon: Boundary: Ring(LineSegme...</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<ul>
-<li>Read data directly from an securely encrypted URL that points to a GeoJSON file:</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">geojson_reader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;https://api.dataplatform.cloud.ibm.com/v2/gallery-assets/entries/1ec43d48a694c6c1d052ddca4d68bdc4/data?accessKey=1ec43d48a694c6c1d052ddca4d69054c&#39;</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[8]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>AFFGEOID</th>
-      <th>ALAND</th>
-      <th>AWATER</th>
-      <th>COUNTYFP</th>
-      <th>COUNTYNS</th>
-      <th>GEOID</th>
-      <th>LSAD</th>
-      <th>NAME</th>
-      <th>STATEFP</th>
-      <th>geometry</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0500000US37017</td>
-      <td>2265887723</td>
-      <td>33010866</td>
-      <td>017</td>
-      <td>01026336</td>
-      <td>37017</td>
-      <td>06</td>
-      <td>Bladen</td>
-      <td>37</td>
-      <td>MultiPolygon(Polygon: Boundary: Ring(LineSegme...</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0500000US37167</td>
-      <td>1023370459</td>
-      <td>25242751</td>
-      <td>167</td>
-      <td>01025844</td>
-      <td>37167</td>
-      <td>06</td>
-      <td>Stanly</td>
-      <td>37</td>
-      <td>MultiPolygon(Polygon: Boundary: Ring(LineSegme...</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0500000US39153</td>
-      <td>1069181981</td>
-      <td>18958267</td>
-      <td>153</td>
-      <td>01074088</td>
-      <td>39153</td>
-      <td>06</td>
-      <td>Summit</td>
-      <td>39</td>
-      <td>MultiPolygon(Polygon: Boundary: Ring(LineSegme...</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -14522,7 +14248,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">geojson_reader</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s1">&#39;counties.geojson&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
@@ -14530,97 +14256,6 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[9]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>AFFGEOID</th>
-      <th>ALAND</th>
-      <th>AWATER</th>
-      <th>COUNTYFP</th>
-      <th>COUNTYNS</th>
-      <th>GEOID</th>
-      <th>LSAD</th>
-      <th>NAME</th>
-      <th>STATEFP</th>
-      <th>geometry</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0500000US37017</td>
-      <td>2265887723</td>
-      <td>33010866</td>
-      <td>017</td>
-      <td>01026336</td>
-      <td>37017</td>
-      <td>06</td>
-      <td>Bladen</td>
-      <td>37</td>
-      <td>MultiPolygon(Polygon: Boundary: Ring(LineSegme...</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0500000US37167</td>
-      <td>1023370459</td>
-      <td>25242751</td>
-      <td>167</td>
-      <td>01025844</td>
-      <td>37167</td>
-      <td>06</td>
-      <td>Stanly</td>
-      <td>37</td>
-      <td>MultiPolygon(Polygon: Boundary: Ring(LineSegme...</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0500000US39153</td>
-      <td>1069181981</td>
-      <td>18958267</td>
-      <td>153</td>
-      <td>01074088</td>
-      <td>39153</td>
-      <td>06</td>
-      <td>Summit</td>
-      <td>39</td>
-      <td>MultiPolygon(Polygon: Boundary: Ring(LineSegme...</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -14637,7 +14272,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># @hidden cell</span>
@@ -14672,7 +14307,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">wkt_reader</span> <span class="o">=</span> <span class="n">stc</span><span class="o">.</span><span class="n">wkt_reader</span><span class="p">()</span>
@@ -14694,7 +14329,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester_WKT</span> <span class="o">=</span> <span class="s1">&#39;POLYGON((-73.984 41.325,-73.948 41.33,-73.78 41.346,-73.625 41.363,-73.545 41.37,-73.541 41.368,-73.547 41.297,-73.485 41.223,-73.479 41.215,-73.479 41.211,-73.493 41.203,-73.509 41.197,-73.623 41.144,-73.628 41.143,-73.632 41.14,-73.722 41.099,-73.714 41.091,-73.701 41.073,-73.68 41.049,-73.68 41.047,-73.673 41.041,-73.672 41.038,-73.668 41.035,-73.652 41.015,-73.651 41.011,-73.656 41,-73.655 40.998,-73.656 40.995,-73.654 40.994,-73.654 40.987,-73.617 40.952,-73.618 40.946,-73.746 40.868,-73.751 40.868,-73.821 40.887,-73.826 40.886,-73.84 40.89,-73.844 40.896,-73.844 40.9,-73.85 40.903,-73.853 40.903,-73.854 40.9,-73.859 40.896,-73.909 40.911,-73.92 40.912,-73.923 40.914,-73.923 40.918,-73.901 40.979,-73.894 41.023,-73.893 41.043,-73.896 41.071,-73.894 41.137,-73.94 41.207,-73.965 41.24,-73.973 41.244,-73.975 41.247,-73.976 41.257,-73.973 41.266,-73.95 41.288,-73.966 41.296,-73.98 41.309,-73.984 41.311,-73.987 41.315,-73.987 41.322,-73.984 41.325))&#39;</span>
@@ -14708,7 +14343,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">area</span><span class="p">()</span>
@@ -14718,30 +14353,10 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[13]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>1363618331.5760047</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">centroid</span><span class="p">()</span>
@@ -14751,56 +14366,16 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[14]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Point(41.15551622739597, -73.7592843233704)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">get_bounding_box</span><span class="p">()</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[15]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>BoundingBox: Lower Corner: Point(40.86800000000001, -73.987), Upper Corner: Point(41.36999999999998, -73.479)</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -14815,33 +14390,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">wkt_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">westchester</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[16]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;POLYGON ((-73.984 41.325, -73.987 41.322, -73.987 41.315, -73.984 41.311, -73.98 41.309, -73.966 41.296, -73.95 41.288, -73.973 41.266, -73.976 41.257, -73.975 41.247, -73.973 41.244, -73.965 41.24, -73.94 41.207, -73.894 41.137, -73.896 41.071, -73.893 41.043, -73.894 41.023, -73.901 40.979, -73.923 40.918, -73.923 40.914, -73.92 40.912, -73.909 40.911, -73.859 40.896, -73.854 40.9, -73.853 40.903, -73.85 40.903, -73.844 40.9, -73.844 40.896, -73.84 40.89, -73.826 40.886, -73.821 40.887, -73.751 40.868, -73.746 40.868, -73.618 40.946, -73.617 40.952, -73.654 40.987, -73.654 40.994, -73.656 40.995, -73.655 40.998, -73.656 41.0, -73.651 41.011, -73.652 41.015, -73.668 41.035, -73.672 41.038, -73.673 41.041, -73.68 41.047, -73.68 41.049, -73.701 41.073, -73.714 41.091, -73.722 41.099, -73.632 41.14, -73.628 41.143, -73.623 41.144, -73.509 41.197, -73.493 41.203, -73.479 41.211, -73.479 41.215, -73.485 41.223, -73.547 41.297, -73.541 41.368, -73.545 41.37, -73.625 41.363, -73.78 41.346, -73.948 41.33, -73.984 41.325))&#39;</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -14887,7 +14442,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">point_1</span> <span class="o">=</span> <span class="n">stc</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="mf">37.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">74.4</span><span class="p">)</span>
@@ -14907,7 +14462,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">poly</span><span class="o">.</span><span class="n">area</span><span class="p">()</span>
@@ -14917,30 +14472,10 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[18]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>1179758985.44891</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">multi_points</span>
@@ -14950,30 +14485,10 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[19]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>MultiPoint(Point(37.5, -74.1), Point(38.1, -74.4), Point(37.3, -74.4))</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">next</span><span class="p">(</span><span class="n">multi_points</span><span class="p">)</span>
@@ -14983,30 +14498,10 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[20]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Point(37.5, -74.1)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">next</span><span class="p">(</span><span class="n">multi_points</span><span class="p">)</span>
@@ -15016,56 +14511,16 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[21]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Point(38.1, -74.4)</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">next</span><span class="p">(</span><span class="n">multi_points</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[22]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Point(37.3, -74.4)</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15089,7 +14544,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester_WKT</span> <span class="o">=</span> <span class="s1">&#39;POLYGON((-73.984 41.325,-73.948 41.33,-73.78 41.346,-73.625 41.363,-73.545 41.37,-73.541 41.368,-73.547 41.297,-73.485 41.223,-73.479 41.215,-73.479 41.211,-73.493 41.203,-73.509 41.197,-73.623 41.144,-73.628 41.143,-73.632 41.14,-73.722 41.099,-73.714 41.091,-73.701 41.073,-73.68 41.049,-73.68 41.047,-73.673 41.041,-73.672 41.038,-73.668 41.035,-73.652 41.015,-73.651 41.011,-73.656 41,-73.655 40.998,-73.656 40.995,-73.654 40.994,-73.654 40.987,-73.617 40.952,-73.618 40.946,-73.746 40.868,-73.751 40.868,-73.821 40.887,-73.826 40.886,-73.84 40.89,-73.844 40.896,-73.844 40.9,-73.85 40.903,-73.853 40.903,-73.854 40.9,-73.859 40.896,-73.909 40.911,-73.92 40.912,-73.923 40.914,-73.923 40.918,-73.901 40.979,-73.894 41.023,-73.893 41.043,-73.896 41.071,-73.894 41.137,-73.94 41.207,-73.965 41.24,-73.973 41.244,-73.975 41.247,-73.976 41.257,-73.973 41.266,-73.95 41.288,-73.966 41.296,-73.98 41.309,-73.984 41.311,-73.987 41.315,-73.987 41.322,-73.984 41.325))&#39;</span>
@@ -15125,33 +14580,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">white_plains</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[24]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15168,33 +14603,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">white_plains</span><span class="o">.</span><span class="n">within</span><span class="p">(</span><span class="n">westchester</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[25]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15211,33 +14626,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">intersects</span><span class="p">(</span><span class="n">manhattan</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[26]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>False</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15254,33 +14649,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">disjoint</span><span class="p">(</span><span class="n">manhattan</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[27]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15297,33 +14672,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">touch</span><span class="p">(</span><span class="n">manhattan</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[28]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15340,33 +14695,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">overlap</span><span class="p">(</span><span class="n">white_plains</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[29]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15383,33 +14718,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">white_plains</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[30]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>False</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15426,33 +14741,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">equality</span><span class="p">(</span><span class="n">westchester</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[31]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15477,7 +14772,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">white_plains</span><span class="p">)</span>
@@ -15487,56 +14782,16 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[32]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Polygon: Boundary: Ring(LineSegment(Point(41.031, -73.794), Point(41.024, -73.792)), LineSegment(Point(41.024, -73.792), Point(41.018, -73.788)), LineSegment(Point(41.018, -73.788), Point(41.006, -73.775)), ...) Interiors: </pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">white_plains</span><span class="p">)</span><span class="o">.</span><span class="n">equality</span><span class="p">(</span><span class="n">white_plains</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[33]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15553,7 +14808,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">white_plains</span><span class="p">)</span>
@@ -15563,56 +14818,16 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[34]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Polygon: Boundary: Ring(LineSegment(Point(41.288, -73.95), Point(41.266, -73.973)), LineSegment(Point(41.266, -73.973), Point(41.257, -73.976)), LineSegment(Point(41.257, -73.976), Point(41.247, -73.975)), ...) Interiors: </pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">white_plains</span><span class="p">)</span><span class="o">.</span><span class="n">equality</span><span class="p">(</span><span class="n">westchester</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[35]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15629,33 +14844,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">white_plains</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[36]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Polygon: Boundary: Ring(LineSegment(Point(41.099, -73.722), Point(41.14, -73.632)), LineSegment(Point(41.14, -73.632), Point(41.143, -73.628)), LineSegment(Point(41.143, -73.628), Point(41.144, -73.623)), ...) Interiors: Ring(LineSegment(Point(41.069, -73.748), Point(41.056, -73.746)), LineSegment(Point(41.056, -73.746), Point(41.056, -73.742)), LineSegment(Point(41.056, -73.742), Point(41.053, -73.74)), ...)</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15672,33 +14867,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span><span class="n">white_plains</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[37]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Polygon: Boundary: Ring(LineSegment(Point(41.018, -73.788), Point(41.024, -73.792)), LineSegment(Point(41.024, -73.792), Point(41.031, -73.794)), LineSegment(Point(41.031, -73.794), Point(41.046, -73.779)), ...) Interiors: Ring(LineSegment(Point(40.998, -73.655), Point(41.0, -73.656)), LineSegment(Point(41.0, -73.656), Point(41.011, -73.651)), LineSegment(Point(41.011, -73.651), Point(41.015, -73.652)), ...)</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15715,33 +14890,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[38]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">centroid</span><span class="p">()</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[38]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Point(41.15551622739597, -73.7592843233704)</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15758,7 +14913,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -15768,56 +14923,16 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[39]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Polygon: Boundary: Ring(LineSegment(Point(40.99406990365141, -73.65392429915933), Point(40.994089831517904, -73.65395070143225)), LineSegment(Point(40.994089831517904, -73.65395070143225), Point(40.99408983152284, -73.65396415360182)), LineSegment(Point(40.99408983152284, -73.65396415360182), Point(40.995039764828334, -73.65586401802119)), ...) Interiors: </pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[40]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">westchester</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[40]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>True</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15834,33 +14949,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">westchester</span><span class="o">.</span><span class="n">get_bounding_box</span><span class="p">()</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[41]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>BoundingBox: Lower Corner: Point(40.86800000000001, -73.987), Upper Corner: Point(41.36999999999998, -73.479)</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15885,33 +14980,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">white_plains</span><span class="o">.</span><span class="n">area</span><span class="p">()</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[42]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>36349150.276403755</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15928,33 +15003,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">white_plains</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">manhattan</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[43]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>17751.46528792161</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -15971,33 +15026,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">white_plains</span><span class="o">.</span><span class="n">get_topological_dimensionality</span><span class="p">()</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[44]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>2</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16022,7 +15057,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[45]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">white_plains_bbox</span> <span class="o">=</span> <span class="n">white_plains</span><span class="o">.</span><span class="n">get_bounding_box</span><span class="p">()</span>
@@ -16049,7 +15084,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[46]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">white_plains_points</span> <span class="o">=</span> <span class="n">white_plains</span><span class="o">.</span><span class="n">get_exterior_ring</span><span class="p">()</span><span class="o">.</span><span class="n">get_points</span><span class="p">()</span>
@@ -16077,7 +15112,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[47]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span> <span class="o">=</span> <span class="n">stc</span><span class="o">.</span><span class="n">geohash</span>
@@ -16098,7 +15133,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[48]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">stc</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="o">-</span><span class="mi">74</span><span class="p">)</span>
@@ -16119,33 +15154,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[49]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span><span class="o">.</span><span class="n">string_hash_encode</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[49]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;dqe6kpdue5btnubpm9npcd0000&#39;</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16160,33 +15175,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[50]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span><span class="o">.</span><span class="n">string_hash_encode</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[50]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;dqe6k&#39;</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16201,33 +15196,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[51]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span><span class="o">.</span><span class="n">number_hash_encode</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[51]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>BitVector(01100101100110100110100101010101100110100110100101010101100110100110100101010101100110100110100101010101101100000000000000000000)</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16249,33 +15224,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[52]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span><span class="o">.</span><span class="n">string_hash_decode</span><span class="p">(</span><span class="s1">&#39;dqeh4&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[52]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Point(37.265625, -74.443359375)</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16290,7 +15245,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[53]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">bv</span> <span class="o">=</span> <span class="n">geohash</span><span class="o">.</span><span class="n">number_hash_encode</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
@@ -16298,26 +15253,6 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[53]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Point(37.0, -74.0)</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16340,41 +15275,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[54]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span><span class="o">.</span><span class="n">get_all_neighbors</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[54]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[BitVector(0111110000001111100101010),
- BitVector(0111110000001111100101011),
- BitVector(0111110000001111100101110),
- BitVector(0111110000001111110000000),
- BitVector(0111110000001111110000001),
- BitVector(0111110000001111110000100),
- BitVector(0111110000001111110000010),
- BitVector(0111110000001111110000011),
- BitVector(0111110000001111110000110)]</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16389,36 +15296,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[55]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span><span class="o">.</span><span class="n">get_all_neighbors</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">distance_precision</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[55]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[BitVector(0111110000001111110000001),
- BitVector(0111110000001111110000100),
- BitVector(0111110000001111110000011),
- BitVector(0111110000001111110000110)]</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16443,41 +15327,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[56]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="s1">&#39;ezs42&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[56]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;ezefp&#39;,
- &#39;ezs40&#39;,
- &#39;ezs41&#39;,
- &#39;ezefr&#39;,
- &#39;ezs42&#39;,
- &#39;ezs43&#39;,
- &#39;ezefx&#39;,
- &#39;ezs48&#39;,
- &#39;ezs49&#39;]</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16494,33 +15350,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[57]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="s1">&#39;ezs42&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[57]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[&#39;ezefp&#39;, &#39;ezs40&#39;, &#39;ezs41&#39;, &#39;ezefr&#39;, &#39;ezs43&#39;, &#39;ezefx&#39;, &#39;ezs48&#39;, &#39;ezs49&#39;]</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16537,33 +15373,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[58]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span><span class="o">.</span><span class="n">get_east</span><span class="p">(</span><span class="s1">&#39;ezs42&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[58]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;ezs43&#39;</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16580,7 +15396,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[59]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">bv</span> <span class="o">=</span> <span class="n">geohash</span><span class="o">.</span><span class="n">number_hash_encode</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
@@ -16594,7 +15410,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[60]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">bv</span><span class="p">)</span>
@@ -16604,38 +15420,10 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[60]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[BitVector(0110010110011010011000101),
- BitVector(0110010110011010011010000),
- BitVector(0110010110011010011010001),
- BitVector(0110010110011010011000111),
- BitVector(0110010110011010011010010),
- BitVector(0110010110011010011010011),
- BitVector(0110010110011010011001101),
- BitVector(0110010110011010011011000),
- BitVector(0110010110011010011011001)]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[61]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">bv</span><span class="p">)</span>
@@ -16645,63 +15433,16 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[61]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>[BitVector(0110010110011010011000101),
- BitVector(0110010110011010011010000),
- BitVector(0110010110011010011010001),
- BitVector(0110010110011010011000111),
- BitVector(0110010110011010011010011),
- BitVector(0110010110011010011001101),
- BitVector(0110010110011010011011000),
- BitVector(0110010110011010011011001)]</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[62]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">geohash</span><span class="o">.</span><span class="n">get_north</span><span class="p">(</span><span class="n">bv</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[62]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>BitVector(0110010110011010011011000)</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16723,7 +15464,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[63]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">test_wkt</span> <span class="o">=</span> <span class="s1">&#39;POLYGON((-73.76223024988917 41.04173285255264,-73.7749331917837 41.04121496082817,-73.78197130823878 41.02748934524744,-73.76476225519923 41.023733725449326,-73.75218805933741 41.031633228865495,-73.7558787789419 41.03752486433286,-73.76223024988917 41.04173285255264))&#39;</span>
@@ -16744,7 +15485,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[64]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">cover</span> <span class="o">=</span> <span class="n">geohash</span><span class="o">.</span><span class="n">geohash_cover_at_bit_depth</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="mi">36</span><span class="p">)</span>
@@ -16764,7 +15505,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[65]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">buffered_cover</span> <span class="o">=</span> <span class="n">stc</span><span class="o">.</span><span class="n">geohash</span><span class="o">.</span><span class="n">geohash_cover_at_bit_depth</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="mi">36</span><span class="p">,</span> <span class="n">distance</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
@@ -16784,7 +15525,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[66]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">raw_cover</span> <span class="o">=</span> <span class="n">geohash</span><span class="o">.</span><span class="n">geohash_cover_at_bit_depth</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="mi">36</span><span class="p">)</span>
@@ -16808,7 +15549,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[67]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">eg_metric</span> <span class="o">=</span> <span class="n">stc</span><span class="o">.</span><span class="n">eg_metric</span>
@@ -16832,7 +15573,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[68]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">p1</span> <span class="o">=</span> <span class="n">stc</span><span class="o">.</span><span class="n">point</span><span class="p">(</span><span class="mf">47.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">73.5</span><span class="p">)</span>
@@ -16841,26 +15582,6 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[68]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.6802979449118038</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16877,33 +15598,13 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[69]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">eg_metric</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[69]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>71730.66213673435</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16920,7 +15621,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[70]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">point</span> <span class="o">=</span> <span class="n">p1</span>
@@ -16930,26 +15631,6 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[70]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>Point(47.60000000001233, -72.89999999998498)</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -16980,7 +15661,7 @@ KERNEL_ID = 665a36c2-ce7b-4efb-8932-d0c45b8483a4
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Copyright © 2019 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright © 2019-2022 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
