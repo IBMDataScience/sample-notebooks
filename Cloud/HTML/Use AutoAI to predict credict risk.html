@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
 
-<title>Use AutoAI predict credit risk</title>
+<title>Use AutoAI to predict credit risk</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -12948,8 +12947,13 @@ ul.typeahead-list  > li > a.pull-right {
 /*# sourceMappingURL=style.min.css.map */
     </style>
 <style type="text/css">
-    .highlight .hll { background-color: #ffffcc }
-.highlight  { background: #f8f8f8; }
+    pre { line-height: 125%; }
+td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f8f8f8; }
 .highlight .c { color: #408080; font-style: italic } /* Comment */
 .highlight .err { border: 1px solid #FF0000 } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
@@ -14066,7 +14070,7 @@ div#notebook {
 <p>This notebook demonstrates how to deploy in Watson Machine Learning service an AutoAI model created in <code>Generated Scikit-learn Notebook</code><br>
 which is composed
 during autoai experiments (in order to learn more about AutoAI experiments go to <a href="https://github.com/IBM/watson-machine-learning-samples/tree/master/cloud/notebooks/python_sdk/experiments/autoai">experiments/autoai</a>).</p>
-<p>Some familiarity with bash is helpful. This notebook uses Python 3.8.</p>
+<p>Some familiarity with bash is helpful. This notebook uses Python.</p>
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>The learning goals of this notebook are:</p>
 <ul>
 <li>Working with the Watson Machine Learning instance</li>
@@ -14143,7 +14147,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
@@ -14180,7 +14184,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning</span> <span class="kn">import</span> <span class="n">APIClient</span>
@@ -14210,6 +14214,19 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">space_id</span> <span class="o">=</span> <span class="s1">&#39;PASTE YOUR SPACE ID HERE&#39;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -14231,19 +14248,6 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">space_id</span> <span class="o">=</span> <span class="s1">&#39;PASTE YOUR SPACE ID HERE&#39;</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
@@ -14254,7 +14258,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="o">.</span><span class="n">default_space</span><span class="p">(</span><span class="n">space_id</span><span class="p">)</span>
@@ -14264,34 +14268,14 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[5]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;SUCCESS&#39;</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><a id="upload"></a></p>
 <h2 id="2.-Upload-model">2. Upload model<a class="anchor-link" href="#2.-Upload-model">&#182;</a></h2><p>In this section you will learn how to upload the model to the Cloud.</p>
-<h4 id="Download-the-data-as-an-pandas-DataFrame-and-AutoAI-saved-as-scikit-pipeline-model-using-wget.">Download the data as an pandas DataFrame and AutoAI saved as scikit pipeline model using <code>wget</code>.<a class="anchor-link" href="#Download-the-data-as-an-pandas-DataFrame-and-AutoAI-saved-as-scikit-pipeline-model-using-wget.">&#182;</a></h4><p><strong>Hint</strong>: To install required packages execute command <code>!pip install pandas wget numpy</code>.</p>
-<p>We can extract the model from an executed AutoAI experiment using <code>ibm-watson-machine-learning</code> with the following command: <code>experiment.optimizer(...).get_pipeline(astype='sklearn')</code>.</p>
+<h4 id="Download-the-data-as-an-pandas-DataFrame-and-AutoAI-saved-as-scikit-pipeline-model-using-wget.">Download the data as an pandas DataFrame and AutoAI saved as scikit pipeline model using <code>wget</code>.<a class="anchor-link" href="#Download-the-data-as-an-pandas-DataFrame-and-AutoAI-saved-as-scikit-pipeline-model-using-wget.">&#182;</a></h4><p><strong>Hint</strong>: To install required packages, execute command <code>!pip install pandas wget numpy</code>.</p>
+<p>We can extract model from the executed AutoAI experiment using <code>ibm-watson-machine-learning</code> with following command: <code>experiment.optimizer(...).get_pipeline(astype='sklearn')</code>.</p>
 
 </div>
 </div>
@@ -14311,7 +14295,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">wget</span>
@@ -14339,205 +14323,21 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[2]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>CheckingStatus</th>
-      <th>LoanDuration</th>
-      <th>CreditHistory</th>
-      <th>LoanPurpose</th>
-      <th>LoanAmount</th>
-      <th>ExistingSavings</th>
-      <th>EmploymentDuration</th>
-      <th>InstallmentPercent</th>
-      <th>Sex</th>
-      <th>OthersOnLoan</th>
-      <th>...</th>
-      <th>OwnsProperty</th>
-      <th>Age</th>
-      <th>InstallmentPlans</th>
-      <th>Housing</th>
-      <th>ExistingCreditsCount</th>
-      <th>Job</th>
-      <th>Dependents</th>
-      <th>Telephone</th>
-      <th>ForeignWorker</th>
-      <th>Risk</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0_to_200</td>
-      <td>31</td>
-      <td>credits_paid_to_date</td>
-      <td>other</td>
-      <td>1889</td>
-      <td>100_to_500</td>
-      <td>less_1</td>
-      <td>3</td>
-      <td>female</td>
-      <td>none</td>
-      <td>...</td>
-      <td>savings_insurance</td>
-      <td>32</td>
-      <td>none</td>
-      <td>own</td>
-      <td>1</td>
-      <td>skilled</td>
-      <td>1</td>
-      <td>none</td>
-      <td>yes</td>
-      <td>No Risk</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>less_0</td>
-      <td>18</td>
-      <td>credits_paid_to_date</td>
-      <td>car_new</td>
-      <td>462</td>
-      <td>less_100</td>
-      <td>1_to_4</td>
-      <td>2</td>
-      <td>female</td>
-      <td>none</td>
-      <td>...</td>
-      <td>savings_insurance</td>
-      <td>37</td>
-      <td>stores</td>
-      <td>own</td>
-      <td>2</td>
-      <td>skilled</td>
-      <td>1</td>
-      <td>none</td>
-      <td>yes</td>
-      <td>No Risk</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>less_0</td>
-      <td>15</td>
-      <td>prior_payments_delayed</td>
-      <td>furniture</td>
-      <td>250</td>
-      <td>less_100</td>
-      <td>1_to_4</td>
-      <td>2</td>
-      <td>male</td>
-      <td>none</td>
-      <td>...</td>
-      <td>real_estate</td>
-      <td>28</td>
-      <td>none</td>
-      <td>own</td>
-      <td>2</td>
-      <td>skilled</td>
-      <td>1</td>
-      <td>yes</td>
-      <td>no</td>
-      <td>No Risk</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>0_to_200</td>
-      <td>28</td>
-      <td>credits_paid_to_date</td>
-      <td>retraining</td>
-      <td>3693</td>
-      <td>less_100</td>
-      <td>greater_7</td>
-      <td>3</td>
-      <td>male</td>
-      <td>none</td>
-      <td>...</td>
-      <td>savings_insurance</td>
-      <td>32</td>
-      <td>none</td>
-      <td>own</td>
-      <td>1</td>
-      <td>skilled</td>
-      <td>1</td>
-      <td>none</td>
-      <td>yes</td>
-      <td>No Risk</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>no_checking</td>
-      <td>28</td>
-      <td>prior_payments_delayed</td>
-      <td>education</td>
-      <td>6235</td>
-      <td>500_to_1000</td>
-      <td>greater_7</td>
-      <td>3</td>
-      <td>male</td>
-      <td>none</td>
-      <td>...</td>
-      <td>unknown</td>
-      <td>57</td>
-      <td>none</td>
-      <td>own</td>
-      <td>2</td>
-      <td>skilled</td>
-      <td>1</td>
-      <td>none</td>
-      <td>yes</td>
-      <td>Risk</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 21 columns</p>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Custom-software_specification">Custom software_specification<a class="anchor-link" href="#Custom-software_specification">&#182;</a></h4><p>Create new software specification based on default Python 3.7 environment extended by autoai-libs package.</p>
+<h4 id="Custom-software_specification">Custom software_specification<a class="anchor-link" href="#Custom-software_specification">&#182;</a></h4><p>Create new software specification based on default Python 3.9 environment extended by autoai-libs package.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">base_sw_spec_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_uid_by_name</span><span class="p">(</span><span class="s2">&quot;default_py3.8&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">base_sw_spec_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_uid_by_name</span><span class="p">(</span><span class="s2">&quot;runtime-22.1-py3.9&quot;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -14547,7 +14347,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/IBM/watson-machine-learning-samples/master/cloud/configs/config.yaml&#39;</span>
@@ -14562,37 +14362,13 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>cat config.yaml
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>name: python38
-channels:
-  - defaults
-dependencies:
-  - pip:
-    - autoai-libs
-
-prefix: /opt/anaconda3/envs/python38</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -14607,7 +14383,7 @@ prefix: /opt/anaconda3/envs/python38</pre>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">meta_prop_pkg_extn</span> <span class="o">=</span> <span class="p">{</span>
@@ -14625,25 +14401,6 @@ prefix: /opt/anaconda3/envs/python38</pre>
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Creating package extensions
-SUCCESS
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -14654,7 +14411,7 @@ SUCCESS
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">meta_prop_sw_spec</span> <span class="o">=</span> <span class="p">{</span>
@@ -14670,37 +14427,6 @@ SUCCESS
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>SUCCESS
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[11]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;SUCCESS&#39;</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -14740,7 +14466,7 @@ SUCCESS
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">load</span>
@@ -14762,12 +14488,12 @@ SUCCESS
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_props</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s2">&quot;AutoAI model&quot;</span><span class="p">,</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="s1">&#39;scikit-learn_0.23&#39;</span><span class="p">,</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="s1">&#39;scikit-learn_1.0&#39;</span><span class="p">,</span>
     <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">SOFTWARE_SPEC_UID</span><span class="p">:</span> <span class="n">sw_spec_uid</span>
     
 <span class="p">}</span>
@@ -14781,7 +14507,7 @@ SUCCESS
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">published_model</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_model</span><span class="p">(</span>
@@ -14801,7 +14527,7 @@ SUCCESS
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">published_model_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_model_id</span><span class="p">(</span><span class="n">published_model</span><span class="p">)</span>
@@ -14821,71 +14547,13 @@ SUCCESS
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_details</span><span class="p">(</span><span class="n">published_model_uid</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[17]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>{&#39;entity&#39;: {&#39;label_column&#39;: &#39;Risk&#39;,
-  &#39;software_spec&#39;: {&#39;id&#39;: &#39;26e0f147-c5e4-4c38-800e-fe2495db0313&#39;,
-   &#39;name&#39;: &#39;Mitigated AutoAI bases on scikit spec&#39;},
-  &#39;training_data_references&#39;: [{&#39;connection&#39;: {&#39;access_key_id&#39;: &#39;not_applicable&#39;,
-     &#39;endpoint_url&#39;: &#39;not_applicable&#39;,
-     &#39;secret_access_key&#39;: &#39;not_applicable&#39;},
-    &#39;id&#39;: &#39;1&#39;,
-    &#39;location&#39;: {},
-    &#39;schema&#39;: {&#39;fields&#39;: [{&#39;name&#39;: &#39;CheckingStatus&#39;, &#39;type&#39;: &#39;str&#39;},
-      {&#39;name&#39;: &#39;LoanDuration&#39;, &#39;type&#39;: &#39;int&#39;},
-      {&#39;name&#39;: &#39;CreditHistory&#39;, &#39;type&#39;: &#39;str&#39;},
-      {&#39;name&#39;: &#39;LoanPurpose&#39;, &#39;type&#39;: &#39;str&#39;},
-      {&#39;name&#39;: &#39;LoanAmount&#39;, &#39;type&#39;: &#39;int&#39;},
-      {&#39;name&#39;: &#39;ExistingSavings&#39;, &#39;type&#39;: &#39;str&#39;},
-      {&#39;name&#39;: &#39;EmploymentDuration&#39;, &#39;type&#39;: &#39;str&#39;},
-      {&#39;name&#39;: &#39;InstallmentPercent&#39;, &#39;type&#39;: &#39;int&#39;},
-      {&#39;name&#39;: &#39;Sex&#39;, &#39;type&#39;: &#39;str&#39;},
-      {&#39;name&#39;: &#39;OthersOnLoan&#39;, &#39;type&#39;: &#39;str&#39;},
-      {&#39;name&#39;: &#39;CurrentResidenceDuration&#39;, &#39;type&#39;: &#39;int&#39;},
-      {&#39;name&#39;: &#39;OwnsProperty&#39;, &#39;type&#39;: &#39;str&#39;},
-      {&#39;name&#39;: &#39;Age&#39;, &#39;type&#39;: &#39;int&#39;},
-      {&#39;name&#39;: &#39;InstallmentPlans&#39;, &#39;type&#39;: &#39;str&#39;},
-      {&#39;name&#39;: &#39;Housing&#39;, &#39;type&#39;: &#39;str&#39;},
-      {&#39;name&#39;: &#39;ExistingCreditsCount&#39;, &#39;type&#39;: &#39;int&#39;},
-      {&#39;name&#39;: &#39;Job&#39;, &#39;type&#39;: &#39;str&#39;},
-      {&#39;name&#39;: &#39;Dependents&#39;, &#39;type&#39;: &#39;int&#39;},
-      {&#39;name&#39;: &#39;Telephone&#39;, &#39;type&#39;: &#39;str&#39;},
-      {&#39;name&#39;: &#39;ForeignWorker&#39;, &#39;type&#39;: &#39;str&#39;}],
-     &#39;id&#39;: &#39;1&#39;,
-     &#39;type&#39;: &#39;ndarray&#39;},
-    &#39;type&#39;: &#39;s3&#39;}],
-  &#39;type&#39;: &#39;scikit-learn_0.23&#39;},
- &#39;metadata&#39;: {&#39;created_at&#39;: &#39;2020-12-10T12:32:35.495Z&#39;,
-  &#39;id&#39;: &#39;3ceddf9e-dd23-4641-ae18-9deea936d3c8&#39;,
-  &#39;modified_at&#39;: &#39;2020-12-10T12:32:38.925Z&#39;,
-  &#39;name&#39;: &#39;AutoAI model&#39;,
-  &#39;owner&#39;: &#39;IBMid-5500067NJD&#39;,
-  &#39;space_id&#39;: &#39;d44bbfd5-3d6f-4a61-b6fd-07625244c896&#39;},
- &#39;system&#39;: {&#39;warnings&#39;: []}}</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -14922,7 +14590,7 @@ SUCCESS
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
@@ -14937,40 +14605,6 @@ SUCCESS
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>
-#######################################################################################
-
-Synchronous deployment creation for uid: &#39;3ceddf9e-dd23-4641-ae18-9deea936d3c8&#39; started
-
-#######################################################################################
-
-
-initializing........................................................................
-ready
-
-
-------------------------------------------------------------------------------------------------
-Successfully finished deployment creation, deployment_uid=&#39;10fb561b-b198-4ebe-8024-4723d5f5725d&#39;
-------------------------------------------------------------------------------------------------
-
-
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
@@ -14982,7 +14616,7 @@ Successfully finished deployment creation, deployment_uid=&#39;10fb561b-b198-4eb
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">deployment_id</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_uid</span><span class="p">(</span><span class="n">created_deployment</span><span class="p">)</span>
@@ -14990,24 +14624,6 @@ Successfully finished deployment creation, deployment_uid=&#39;10fb561b-b198-4eb
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>10fb561b-b198-4ebe-8024-4723d5f5725d
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -15023,7 +14639,7 @@ Successfully finished deployment creation, deployment_uid=&#39;10fb561b-b198-4eb
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">values</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">values</span>
@@ -15042,7 +14658,7 @@ Successfully finished deployment creation, deployment_uid=&#39;10fb561b-b198-4eb
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">predictions</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">deployment_id</span><span class="p">,</span> <span class="n">scoring_payload</span><span class="p">)</span>
@@ -15050,31 +14666,6 @@ Successfully finished deployment creation, deployment_uid=&#39;10fb561b-b198-4eb
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[22]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>{&#39;predictions&#39;: [{&#39;fields&#39;: [&#39;prediction&#39;, &#39;probability&#39;],
-   &#39;values&#39;: [[&#39;No Risk&#39;, [0.8386276960372925, 0.16137228906154633]],
-    [&#39;No Risk&#39;, [0.9069419503211975, 0.0930580273270607]],
-    [&#39;No Risk&#39;, [0.9069419503211975, 0.0930580273270607]],
-    [&#39;No Risk&#39;, [0.8035027980804443, 0.19649720191955566]],
-    [&#39;No Risk&#39;, [0.6937689185142517, 0.3062310814857483]]]}]}</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
