@@ -150,7 +150,7 @@ class AdultSklearnDataHandler(DataHandler):
                                     'class']
 
         # filter out columns unused in training, and reorder columns
-        training_dataset = training_data[['race', 'sex', 'age', 'education-num', 'class']]
+        training_dataset = training_data.loc[:,['race', 'sex', 'age', 'education-num', 'class']]
 
         # map 'sex' and 'race' feature values based on sensitive attribute privileged/unpriveleged groups
         training_dataset['sex'] = training_dataset['sex'].map({' Female': 0, ' Male': 1})
