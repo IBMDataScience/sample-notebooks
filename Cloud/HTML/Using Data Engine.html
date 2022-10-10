@@ -203,6 +203,10 @@ background-color: transparent;
 width: 100% !important;
 }
 
+.jupyter-resource-usage-hide {
+display: none !important;
+}
+
 .notebook_app #notebook {
 padding-top: 0;
 }
@@ -15557,7 +15561,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Using-IBM-Data-Engine">Using IBM Data Engine<a class="anchor-link" href="#Using-IBM-Data-Engine">&#182;</a></h1>
+<h1 id="Using-IBM-Data-Engine-(f.k.a.-IBM-SQL-Query)">Using IBM Data Engine (f.k.a. IBM SQL Query)<a class="anchor-link" href="#Using-IBM-Data-Engine-(f.k.a.-IBM-SQL-Query)">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -15568,12 +15572,21 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><div class="pull-left"><left><img style="float: right;" src="https://s3.eu-de.cloud-object-storage.appdomain.cloud/dataengine-downloads/dataengine.svg" width="100" margin=50></left></div>
-IBM Data Engine, previously IBM SQL Query, is IBM's core service for serverless data lakes. It provides both data lake processing and data lake metadata management.</p>
-<h4 id="Processing">Processing<a class="anchor-link" href="#Processing">&#182;</a></h4><p>IBM Data Engine allows you to ingest, prepare, index, curate and query data on Cloud Object Storage (COS). It exposes an ANSI SQL interface to work on Parquet, CSV, JSON, ORC and AVRO data sets. You can use it to run your analytic queries, and to conduct complex transformations and write the result in any desired data format, partitioning and layout. IBM Data Engine also allows you to continuously ready data from Kafka topics and write to COS. IBM Data Engine is based on Apache Spark SQL as the scale-out processing engine in the background. You do not have to provision any Apache Spark instance or service. You can craft and run a direct SQL job using the IBM Data Engine Web UI or use a Python client tool like the IBM Watson Studio Notebook. For more information, see the <a href="https://console.bluemix.net/docs/services/sql-query/getting-started.html#getting-started-tutorial" target="_blank">IBM Data Engine documentation</a>.</p>
-<h4 id="Meta-Data">Meta Data<a class="anchor-link" href="#Meta-Data">&#182;</a></h4><p>IBM Data Engine comes with a built-in table catalog that is compatible with Hive Metastore. The Hive Metastore can be accessed directly in IBM Data Engine via DDL statements, and can also be used by other big data runtimes and services, such as your custom deployment of Apache Spark, by configuring it to connect to IBM Data Engine as a Hive Metastore to use for Spark SQL statements.</p>
-<p>This notebook is a getting started guide to using the IBM Data Engine API to run SQL statements in a programmatic way. The notebook uses the <a href="https://github.com/IBM-Cloud/sql-query-clients/tree/master/Python" target="_blank">ibmcloudsql</a> Python library for this purpose. The first section shows you how to setup the appropriate libraries, how to edit and generate SQL statements using the sql-magic module, how to execute the SQL statements, and finally how to work with the results. The later sections include topcis for the more advanced user, including a section that demonstrates the usage of a custom Spark runtime with the Hive Metastore of IBM Data Engine.</p>
-<p>For information on using the ibmcloudsql Python library, see the  <a href="https://ibm-cloud.github.io/sql-query-clients/intro.html#ibmcloudsql" target="_blank"> ibmcloudsql documentation</a>.</p>
+<p><div class="pull-left"><left><img style="float: right;" src="https://s3.eu-de.cloud-object-storage.appdomain.cloud/dataengine-downloads/dataengine.svg" width="100" margin=50></left></div></p>
+<p><div style="text-align:left">
+IBM Data Engine is IBM's core service for serverless data lakes. It provides both, data lake processing and data lake metadata management.</p>
+<p><h4>1. Processing</h4>
+It allows to ingest, prepare, index, curate and query data on Cloud Object Storage (COS). It exposes and ANSI SQL interface to work on Parquet, CSV, JSON, ORC and AVRO data sets. You can use it to run your analytic queries, and you can use it to conduct complex transformations and write the result in any desired data format, partitioning and layout. Data Engine also allows to continuously ready data from Kafka topics and write to COS. Data Engine is based on Apache Spark SQL as the scale-out processing engine in the background. You do not have to provision any Apache Spark instance or service. For more background information, check out the Data Engine <a href="https://console.bluemix.net/docs/services/sql-query/getting-started.html#getting-started-tutorial" target="_blank">documentation</a>.
+As mentioned in that documentation, you can craft and run a direct SQL job using the Data Engine Web UI or using a simple Python client tool (like the IBM Watson Studio Notebook) is sufficient.</p>
+<p><h4>2. Meta Data</h4>
+Data Engine comes with a built-in table catalog that is compatible with Hive Metastore. It can be accessed directly in Data Engine via DDL statements. But it can also be used by other big data runtimes and services, such as your custom deployment of Apache Spark by configuring it to connect to Data Engine as Hive Metastore to use for Spark SQL statements.
+<br><br>&lt;/div&gt;</p>
+<p><div>
+This notebook is meant to be a generic starter to use the Data Engine API in order to run SQL statements in a programmatic way. It uses the <a href="https://github.com/IBM-Cloud/sql-query-clients/tree/master/Python" target="_blank">ibmcloudsql</a> Python library for this purpose. In the first section it is demonstrated how to setup the appropriate libraries, how to edit respectively generate SQL statements using the so-called sql-magic module, how to execute the SQL statements and finally how to work with the resulte. 
+The later sections deals with topcis for the more advanced user. 
+For information about using ibmcloudsql Python library, check out the <a href="https://ibm-cloud.github.io/sql-query-clients/intro.html#ibmcloudsql" target="_blank">documentation</a>. 
+</div><br>
+At the very end the notebook also includes a section that demonstrates the usage of a custom Spark runtime with the Hive Metastore of Data Engine.</p>
 
 </div>
 </div>
@@ -15636,12 +15649,11 @@ IBM Data Engine, previously IBM SQL Query, is IBM's core service for serverless 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Run the cells in this section at least once in your notebook environment to install the required libraries:</p>
-<ul>
-<li>pyarrow - provides rich, powerful features for working with columnar data</li>
-<li>sqlparse - a non-validating SQL parser </li>
-<li>ibmcloudsql - Data Engine client library </li>
-</ul>
+<p>Run the following sequence of cells at least once in your notebook environment in order to install required packages:</p>
+
+<pre><code>- pyarrow - provides rich, powerful features for working with columnar data
+- sqlparse - a non-validating SQL parser 
+- ibmcloudsql - Data Engine client library </code></pre>
 
 </div>
 </div>
@@ -15656,6 +15668,7 @@ IBM Data Engine, previously IBM SQL Query, is IBM's core service for serverless 
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install pyarrow 
 <span class="o">!</span>pip install sqlparse
+<span class="o">!</span>pip uninstall --yes autoai-libs tensorflow-text numba
 </pre></div>
 
      </div>
@@ -15671,23 +15684,7 @@ IBM Data Engine, previously IBM SQL Query, is IBM's core service for serverless 
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip uninstall --yes autoai-libs tensorflow-text
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install --upgrade --user  ibmcloudsql
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install --upgrade ibmcloudsql
 </pre></div>
 
      </div>
@@ -15702,18 +15699,12 @@ IBM Data Engine, previously IBM SQL Query, is IBM's core service for serverless 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><strong>NOTE</strong>: Before importing the following libraries, you must restart the kernel:</p>
-<ol>
-<li>Click <strong>Kernel</strong></li>
-<li>Click <strong>Restart</strong></li>
-</ol>
-<p>Libraries you will be importing:</p>
-<ul>
-<li>ibmcloudsql - IBM Data Engine python client</li>
-<li>sqlparse - a non-validating SQL parser </li>
-<li>pandas - an open source data manipulation and analysis tool </li>
-<li>pygments - a syntax highlighter library used to pretty print the SQL statements</li>
-</ul>
+<p>Import (load) the following packages:</p>
+
+<pre><code>- ibmcloudsql - IBM Data Engine python client
+- sqlparse - a non-validating SQL parser 
+- pandas - an open source data manipulation and analysis tool 
+- pygments - a syntax highlighter library used to pretty print the SQL statements</code></pre>
 
 </div>
 </div>
@@ -15726,9 +15717,7 @@ IBM Data Engine, previously IBM SQL Query, is IBM's core service for serverless 
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Make sure you restarted the kernel before running this cell.</span>
-
-<span class="kn">import</span> <span class="nn">ibmcloudsql</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">ibmcloudsql</span>
 <span class="kn">import</span> <span class="nn">sqlparse</span> 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">getpass</span>
@@ -15756,23 +15745,17 @@ IBM Data Engine, previously IBM SQL Query, is IBM's core service for serverless 
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="-2.-Configure-the-Data-Engine-client"><a id="configure" /> 2. Configure the Data Engine client<a class="anchor-link" href="#-2.-Configure-the-Data-Engine-client">&#182;</a></h1><p><a href="#toc">Home</a></p>
-<p>To configure the Data Engine client, you need:</p>
 <ol>
-<li><p>An <strong>API key</strong> for an IBM cloud identity: This single key provides you accesses to both your Cloud Object Storage (COS) bucket for writing SQL results and to your Data Engine instance. <br>
-To create API keys:</p>
-<ol>
-<li>Log on to the IBM Cloud console and go to <a href="https://console.bluemix.net/iam/#/apikeys" target="_blank">Manage->Access (IAM)</a>, then select API Keys.</li>
-<li>Click the <code>Create an IBM Cloud API key</code> button.</li>
-<li>Give the key a custom name and click <code>Create</code>. </li>
-<li>In the next dialog click <code>Show</code> and copy the key to your clipboard and paste it below in this notebook.</li>
-</ol>
+<li><p>You need an <strong>API key</strong> for an IBM cloud identity. This single key provides you accesses to both your Cloud Object Storage (COS) bucket for writing SQL results and to your Data Engine instance. To create API keys log on to the IBM Cloud console and go to <a href="https://console.bluemix.net/iam/#/apikeys" target="_blank">Manage->Access (IAM): then select API Keys</a>, click the <code>Create an IBM Cloud API key</code> button, give the key a custom name and click <code>Create</code>. In the next dialog click <code>Show</code> and copy the key to your clipboard and paste it below in this notebook.</p>
 </li>
-<li><p>The <strong>instance CRN</strong> for the Data Engine instance: If you don't have an Data Engine instance created yet, <a href="https://console.bluemix.net/catalog/services/sql-query" target="_blank">create one</a> first. If you already have one, you can find it in the <a href="https://console.bluemix.net/dashboard/apps" target="_blank">IBM Cloud console dashboard</a>. Make sure you select the right <code>Resource Groups</code> for <strong>Group</strong>. In the section <code>Services</code> you can see different types of services (created for the selected Group), and Data Engine instances have the icon like the one at the top of this notebook. Select the instance of Data Engine that you want to use. In the Data Engine dashboard page that opens up you find a section titled <strong>Overview</strong> with <em>Deployment Details</em> and copy the text after <strong>CRN</strong>. Click the button to copy the CRN into your clipboard and paste it here into the notebook.</p>
+<li><p>You need the <strong>instance CRN</strong> for the Data Engine instance. If you don't have an Data Engine instance created yet, <a href="https://console.bluemix.net/catalog/services/sql-query" target="_blank">create one</a> first. If you already have one, you can find it in the <a href="https://console.bluemix.net/dashboard/apps" target="_blank">IBM Cloud console dashboard</a>. Make sure you select the right <code>Resource Groups</code> for <strong>Group</strong>. In the section <code>Services</code> you can see different types of services (created for the selected Group), and Data Engine instances have the icon like the one at the top of this notebook. Select the instance of Data Engine that you want to use. In the Data Engine dashboard page that opens up you find a section titled <strong>Overview</strong> with <em>Deployment Details</em> and copy the text after <strong>CRN</strong>. Click the button to copy the CRN into your clipboard and paste it here into the notebook.</p>
 </li>
-<li><p>The location on COS where your <strong>query results</strong> should be written: This is because Data Engine instance, to process an ETL SQL statement, needs to store queried data on COS.
-This COS location comprises three parts of information that you can find in the Cloud Object Storage UI for your instance in the IBM Cloud console. You need to provide it as a <strong>target_cos_url</strong> using the format <code>cos://&lt;endpoint&gt;/&lt;bucket&gt;/[&lt;prefix&gt;]</code>. If you want to use the <strong>cloud object storage bucket that is associated with your Watson Studio project</strong> as target location for your query results, you can make use of the project token for access and construct the target_cos_url - see section <strong>2.1 Using the project bucket</strong>.</p>
+<li><p>You need to specify the location on COS where your <strong>query results</strong> should be written.This is because Data Engine instance, to process an ETL SQL statement, needs to store queried data on COS.
+This COS location comprises three parts of information that you can find in the Cloud Object Storage UI for your instance in the IBM Cloud console. You need to provide it as a <strong>target_cos_url</strong> using the format <code>cos://&lt;endpoint&gt;/&lt;bucket&gt;/[&lt;prefix&gt;]</code>.</p>
 </li>
 </ol>
+<p>In case you want to use the <strong>cloud object storage bucket that is associated with your Watson Studio project</strong> as target location for your query results you can make use of the project token for access and construct the target_cos_url as follows:<br>
+<br/></p>
 
 </div>
 </div>
@@ -15786,7 +15769,7 @@ This COS location comprises three parts of information that you can find in the 
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="-2.1-Using-the-project-bucket"><a id="projectbucket" /> 2.1 Using the project bucket<a class="anchor-link" href="#-2.1-Using-the-project-bucket">&#182;</a></h2><p><strong>Only</strong> follow the instructions in this section when you want to write your SQL query results to the bucket that has been created for the project for which you have created this notebook. In any other case proceed directly with section <strong>2.2</strong>.
 <br><br>
-<strong>Action required - Inserting the project token</strong>:<br>
+<strong>Inserting the project token</strong>:<br>
 Click the <code>More</code> option in the toolbar above (the three stacked dots) and select <code>Insert project token</code>.</p>
 <ul>
 <li>If you haven't created an access token for this project before, you will see a dialog that asks you to create one first. Follow the link to open your project settings, scroll down to <code>Access tokens</code> and click <code>New token</code>. Give the token a custom name and make sure you select <code>Editor</code> as <code>Access role for project</code>. After you created your access token you can come back to this notebook, select the empty cell below and again select <code>Insert project token</code> from the toolbar at the top.</li>
@@ -15798,7 +15781,7 @@ Click the <code>More</code> option in the toolbar above (the three stacked dots)
 from project_lib import Project
 project = Project(project_id='&lt;some id&gt;', project_access_token='&lt;some access token&gt;')
 pc = project.project_context</code></pre>
-<p><strong>Leave that cell content as inserted and run the cell. Then then proceed with the following cell below</strong>:</p>
+<p>Leave that cell content as inserted and run the cell. Then then proceed with the following cell below:</p>
 
 </div>
 </div>
@@ -15828,9 +15811,9 @@ pc = project.project_context</code></pre>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="-2.2-Setting-the-Data-Engine-parameters"><a id="parameters" /> 2.2 Setting the Data Engine parameters<a class="anchor-link" href="#-2.2-Setting-the-Data-Engine-parameters">&#182;</a></h2><p>Now let's instantiate and configure an Data Engine Client. During instantiation, the client accesses the Data Engine instance you selected and returns the link to the Data Engine service instance web console. You can use this link later to author an SQL statement interactively.</p>
+<h2 id="-2.2-Setting-the-Data-Engine-parameters"><a id="parameters" /> 2.2 Setting the Data Engine parameters<a class="anchor-link" href="#-2.2-Setting-the-Data-Engine-parameters">&#182;</a></h2><p>Now let's instantiate and configure an Data Engine Client. During instantiation the client accesses the Data Engine instance you selected and returns the link to the Data Engine service instance web console. You can use this link later to author an SQL statement interactively.</p>
 <p>In addition to the parameters entered interactively here, there is two more optional parameters <strong>max_concurrent_jobs</strong> (from version 0.4) and  <strong>max_tries</strong><br>
-    For details, refer to the <a href="https://ibm-cloud.github.io/sql-query-clients/ibmcloudsql.html#ibmcloudsql.SQLQuery.SQLQuery">ibmcloudsql documentation</a>.</p>
+    For details see  <a href="https://ibm-cloud.github.io/sql-query-clients/ibmcloudsql.html#ibmcloudsql.SQLQuery.SQLQuery">use</a>.</p>
 
 </div>
 </div>
@@ -15893,7 +15876,7 @@ pc = project.project_context</code></pre>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="-3.-Get-the-schema-of-your-data"><a id="schema" /> 3. Get the schema of your data<a class="anchor-link" href="#-3.-Get-the-schema-of-your-data">&#182;</a></h1><p><a href="#toc">Home</a></p>
-<p>In order to work with your data using Data Engine, you need to know the schema of your data. Starting with <code>ibmcloudsql</code> version 0.4, you can query the <a href="https://ibm-cloud.github.io/sql-query-clients/ibmcloudsql.html#ibmcloudsql.SQLQuery.SQLQuery.get_schema_data">schema of the data</a>. Let's have a look at the employees.parquet dataset provided with Data Engine as a sample dataset. Note, that the first invocation uses the parameter <code>dry_run=True</code> which is done here to demonstrate you can get a preview of the statement being executed.</p>
+<p>In order to work with your data using Data Engine you need to know the schema of your data. Since <code>ibmcloudsql</code> version 0.4, you can directly query the <a href="https://ibm-cloud.github.io/sql-query-clients/ibmcloudsql.html#ibmcloudsql.SQLQuery.SQLQuery.get_schema_data">schema of the data</a>. Let's have a look at the employees.parquet dataset provided with Data Engine as a sample dataset. Note, that the first invocation uses the parameter <code>dry_run=True</code> which is done here to demonstrate you can get a preview of the statement being executed.</p>
 <p><strong>NOTE</strong>: If you want to work with <a href="#catalog">hive table</a>, there is another API: <code>describe_table()</code> that returns the schema of your defined table.</p>
 
 </div>
@@ -15925,7 +15908,7 @@ pc = project.project_context</code></pre>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="-4.-Create-your-SQL-statement"><a id="sql" /> 4. Create your SQL statement<a class="anchor-link" href="#-4.-Create-your-SQL-statement">&#182;</a></h1><p><a href="#toc">Home</a></p>
-<p>Now that you know the dataset schema, you can create an SQL statement in <strong>string</strong> format. A sample SQL statement, which runs against the dataset provided in IBM Data Engine, is included in the next cell. You can either use that sample statement for the subsequent steps, or copy and paste your own statement, which you may have authored using the Data Engine Web Console (<strong>link above</strong>) of your Data Engine service instance.</p>
+<p>Now that we know the schema of our data sets we can create an SQL statement to be executed on these data. You provide the SQL statement in the form of a <strong>string</strong>. In the subsequent cell a sample SQL statement on the above listed example datasets provided with Data Engine is given. You can either use that sample statement for the subsequent steps or copy and paste your own statement, which you may have authored using the Data Engine Web Console (<strong>link above</strong>) of your Data Engine service instance.</p>
 
 </div>
 </div>
@@ -15968,7 +15951,7 @@ pc = project.project_context</code></pre>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Starting with version 0.4, <em>ibmcloudsql</em> provides an alternartive way to construct your SQL statement, using the functionality called <a href="https://github.com/IBM-Cloud/sql-query-clients/blob/master/Python/ibmcloudsql/sql_magic.py">*sql_magic*</a>. The documentation is available <a href="https://ibm-cloud.github.io/sql-query-clients/sql_magic.html#sqlmagic">here</a>. The same example SQL statement provided in the previous cell can be generated with the sql_magic api as demonstrated in the following code.</p>
+<p>Since version 0.4, <em>ibmcloudsql</em> provides a new alternartive way to construct your SQL statement, using the functionality called <a href="https://github.com/IBM-Cloud/sql-query-clients/blob/master/Python/ibmcloudsql/sql_magic.py">*sql_magic*</a>. The documentation is available <a href="https://ibm-cloud.github.io/sql-query-clients/sql_magic.html#sqlmagic">here</a>. The same example SQL statement as above, can be generated with the sql_magic api as demonstrated in the following code.</p>
 
 </div>
 </div>
@@ -16028,7 +16011,7 @@ pc = project.project_context</code></pre>
 <li><p><a href="#execute_sql"><strong>Synchronously with optional result dataframe</strong></a> - submit, wait (until the query is completed), and return a tuple (data, job_id), where data is the optional result dataframe: <code>execute_sql()</code>  (<code>run()</code> when using <em>sql_magic</em>)</p>
 </li>
 </ol>
-<p>The last option is useful to help avoid Python runtime memory overload. Another alternative to deal with big result sets is to paginate the result i.e. use the <code>pagesize</code> option, for details see <a href="#paginated"><strong>paginated result</strong></a>.</p>
+<p>The last option is useful to help avoiding Python runtime memory overload. Another alternative to deal with big result sets is to paginate the result i.e. use the <code>pagesize</code> option, for details see <a href="#paginated"><strong>paginated result</strong></a>.</p>
 <p>A Data Engine instance with free Lite plan can process one query at a time. A standard plan instance can by default process 5 concurrent queries, which can be increased via support ticket. When the maximum has been reached the Python SDK will retry (with progressive backup timing) as many times as has been specified in the <strong>max_tries</strong> when initializing the client.</p>
 
 </div>
@@ -16041,7 +16024,7 @@ pc = project.project_context</code></pre>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="-5.1-Synchronous-Execution()"><a id="synchronous" /> 5.1 Synchronous Execution()<a class="anchor-link" href="#-5.1-Synchronous-Execution()">&#182;</a></h2><p>This method provides a synchronous SQL execution mechanism. In the subsequent cell, the previously constructed SQL statement is submitted. The method waits for the excution to be finish. The queried data are returned synchronously as a dataframe.</p>
+<h2 id="-5.1-Synchronous-Execution()"><a id="synchronous" /> 5.1 Synchronous Execution()<a class="anchor-link" href="#-5.1-Synchronous-Execution()">&#182;</a></h2><p>This method provides a synchronous SQL execution mechanism. In the subsequent cell the above SQL statement is submitted. The method waits for the excution to be finish. The queried data are returned synchronously as a dataframe.</p>
 
 </div>
 </div>
@@ -16117,7 +16100,7 @@ pc = project.project_context</code></pre>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="-5.2-Asynchronous-Execution"><a id="lowlevel" /> 5.2 Asynchronous Execution<a class="anchor-link" href="#-5.2-Asynchronous-Execution">&#182;</a></h2><p>In the subsequent cell, the earlier created SQL statement is submitted. The method returns right away without waiting for the completion of the job execution.</p>
+<h2 id="-5.2-Asynchronous-Execution"><a id="lowlevel" /> 5.2 Asynchronous Execution<a class="anchor-link" href="#-5.2-Asynchronous-Execution">&#182;</a></h2><p>In the subsequent cell the earlier created SQL statement is submitted. The method returns right away without waiting for the completion of the job execution.</p>
 <p><code>submit_sql()</code> runs the given SQL string,  while <code>submit()</code> runs the internally via <code>sql_magic</code> module generated SQL string .</p>
 
 </div>
@@ -16722,88 +16705,6 @@ This reveals the fact that the execution engine leverages the hive style partiti
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="-6.1-Using-analyze()-for-partitioning-recommendation"><a id="analyze" /> 6.1 Using analyze() for partitioning recommendation<a class="anchor-link" href="#-6.1-Using-analyze()-for-partitioning-recommendation">&#182;</a></h2><p><a href="#toc">Home</a></p>
-<p>The <code>ibmcloudsql</code> SDK provides the <code>analyze()</code> on an existing job <code>job_id</code> and returns hints on how to partition data.
-Below is an example in that we first query and store data in CSV format, before using the result in another query. Because of the data (from the first query) is not partitioned, the second query takes a few minutes. To understand how it can be improved, we call <code>analyze(job_id)</code>, which suggests that we can partition the data using either <em>PARTITIONED INTO</em> or <em>PARTITIONED EVERY</em> with the recommended value.</p>
-
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">etl_sql</span><span class="o">=</span><span class="s1">&#39;SELECT * FROM cos://us-geo/sql/oklabdata/parquet/sds011/2017/07/ STORED AS PARQUET INTO </span><span class="si">{cos_out_url}</span><span class="s1"> STORED AS CSV&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cos_out_url</span><span class="o">=</span><span class="n">targeturl</span><span class="p">)</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">sqlClient</span><span class="o">.</span><span class="n">execute_sql</span><span class="p">(</span><span class="n">etl_sql</span><span class="p">,</span> <span class="n">get_result</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">job_details</span> <span class="o">=</span> <span class="n">sqlClient</span><span class="o">.</span><span class="n">get_job</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">job_id</span><span class="p">)</span>
- 
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-<span class="n">sql</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">SELECT COUNT(sid_sds011) as count_sids_sds011 </span>
-<span class="s2">FROM (SELECT DISTINCT sensor_id as sid_sds011 FROM </span><span class="si">{cos_in_url}</span><span class="s2"> STORED AS CSV)&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cos_in_url</span><span class="o">=</span><span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;resultset_location&#39;</span><span class="p">])</span>
-<span class="n">sqlClient</span><span class="o">.</span><span class="n">run_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
-<span class="n">toc</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total time  in </span><span class="si">{</span><span class="n">toc</span> <span class="o">-</span> <span class="n">tic</span><span class="si">:</span><span class="s2">0.4f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;==========&quot;</span><span class="p">)</span>
-<span class="n">sqlClient</span><span class="o">.</span><span class="n">analyze</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">job_id</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>In the next cell we apply the suggested partition size of 2006029 rows and repartition the data accordingly (<code>pagesize=2006029</code>) before we run a query against the repartitioned data, which now finishes in much less time (typically 1/4 to 1/2 of the time).</p>
-
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">etl_sql</span><span class="o">=</span><span class="s1">&#39;SELECT * FROM cos://us-geo/sql/oklabdata/parquet/sds011/2017/07/ STORED AS PARQUET INTO </span><span class="si">{cos_out_url}</span><span class="s1"> STORED AS CSV&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cos_out_url</span><span class="o">=</span><span class="n">targeturl</span><span class="p">)</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">sqlClient</span><span class="o">.</span><span class="n">execute_sql</span><span class="p">(</span><span class="n">etl_sql</span><span class="p">,</span> <span class="n">get_result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pagesize</span><span class="o">=</span><span class="mi">2006029</span><span class="p">)</span>
-<span class="n">job_details</span> <span class="o">=</span> <span class="n">sqlClient</span><span class="o">.</span><span class="n">get_job</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">job_id</span><span class="p">)</span>
-
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-<span class="n">sql</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">SELECT COUNT(sid_sds011) as count_sids_sds011 </span>
-<span class="s2">FROM (SELECT DISTINCT sensor_id as sid_sds011 FROM </span><span class="si">{cos_in_url}</span><span class="s2"> STORED AS CSV)&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cos_in_url</span><span class="o">=</span><span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;resultset_location&#39;</span><span class="p">])</span>
-<span class="n">sqlClient</span><span class="o">.</span><span class="n">run_sql</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
-<span class="n">toc</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total time  in </span><span class="si">{</span><span class="n">toc</span> <span class="o">-</span> <span class="n">tic</span><span class="si">:</span><span class="s2">0.4f</span><span class="si">}</span><span class="s2"> seconds&quot;</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="-7.-Work-with-result-objects"><a id="results" /> 7. Work with result objects<a class="anchor-link" href="#-7.-Work-with-result-objects">&#182;</a></h1><p><a href="#toc">Home</a></p>
 <p>The result set, apart from being returned to the client as pandas.Dataframe, is also stored permanently on cloud object storage in the form of cloud object storage objects. There is a set of methods that allow you to work with the results on an object level.</p>
 
@@ -17069,7 +16970,7 @@ Below is an example in that we first query and store data in CSV format, before 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="-8.2.-Batch-automation-of-SQL-jobs"><a id="many_queries" /> 8.2. Batch automation of SQL jobs<a class="anchor-link" href="#-8.2.-Batch-automation-of-SQL-jobs">&#182;</a></h2><p><a href="#toc">Home</a></p>
+<h3 id="-8.2.-Batch-automation-of-SQL-jobs"><a id="many_queries" /> 8.2. Batch automation of SQL jobs<a class="anchor-link" href="#-8.2.-Batch-automation-of-SQL-jobs">&#182;</a></h3><p><a href="#toc">Home</a></p>
 
 </div>
 </div>
@@ -17085,7 +16986,7 @@ Below is an example in that we first query and store data in CSV format, before 
 <p>Since <code>ibmcloudsql</code> 0.4, if you're using Watson Studio,there is also the possibility to retry jobs which did not complete within the session they have been started in. At a later point in time when you start a new session you may want to  restart those jobs which did not complete. You do so by connecting to the <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/project-lib-python.html">Project-Lib</a>, and save the list of jobs submitted in a file in the project bucket. When you re-run the session, the status of the execution of all jobs is updated and the jobs which did not complete in the previous session are  re-executed.</p>
 <p>The following code in the following cell demonstrates this behaviour. Re-run the cell a couple of times and check the file "tracked_jobs_new.json" in the project bucket to observe the behavior.</p>
 <p>This can be used in Watson Studio with ProjectLib activated using a file stored as an asset in the project, or it can also be used using a file from a local machine.</p>
-<p>The API documentation can be found here: <a href="https://ibm-cloud.github.io/sql-query-clients/ibmcloudsql.html#ibmcloudsql.SQLQuery.SQLQuery.submit_and_track_sql">https://ibm-cloud.github.io/sql-query-clients/ibmcloudsql.html#ibmcloudsql.SQLQuery.SQLQuery.submit_and_track_sql</a>.</p>
+<p>REF: The API docs is provided via <a href="https://ibm-cloud.github.io/sql-query-clients/ibmcloudsql.html#ibmcloudsql.SQLQuery.SQLQuery.submit_and_track_sql">this link</a>.</p>
 
 </div>
 </div>
@@ -17156,7 +17057,7 @@ Below is an example in that we first query and store data in CSV format, before 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="9.-Work-with-hive-tables"><a id="catalog" />9. Work with hive tables<a class="anchor-link" href="#9.-Work-with-hive-tables">&#182;</a></h1><p><a href="#toc">Home</a></p>
+<h1 id="9-Work-with-hive-tables"><a id="catalog" />9 Work with hive tables<a class="anchor-link" href="#9-Work-with-hive-tables">&#182;</a></h1><p><a href="#toc">Home</a></p>
 <p>So far all SQL statements used cloud object storage URLs to specify the input data of an SQL statement. This can be cumbersome. That's why ibmcloudsql has dedicated functions for hive meta store support of Data Engine. This enables the usage of table names in SQL statements rather than cloud object storage URLs. The hive meta store is a catalog  which holds for each table all related metadata including the table name, the schema, the backing cloud object storage objects, partitioning information etc.</p>
 <p>NOTE: Using this requires Standard Plan for Data Engine.</p>
 <p>One can create tables, list tables, drop tables etc. The APIs for catalog management can be found <a href="https://ibm-cloud.github.io/sql-query-clients/sql_query.html#f-manage-table-catalog"> here </a>.</p>
@@ -17259,7 +17160,14 @@ Below is an example in that we first query and store data in CSV format, before 
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sqlClient</span><span class="o">.</span><span class="n">create_partitioned_table</span><span class="p">(</span><span class="s2">&quot;customers_partitioned&quot;</span><span class="p">,</span> <span class="n">cos_url</span><span class="o">=</span><span class="s2">&quot;cos://us-geo/sql/customers_partitioned.csv&quot;</span><span class="p">,</span> <span class="n">format_type</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span> <span class="n">force_recreate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">sqlClient</span><span class="o">.</span><span class="n">show_tables</span><span class="p">()</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">found</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;tableName&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s2">&quot;customers_partitioned&quot;</span><span class="p">)]</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+    <span class="n">found</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">found</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">sqlClient</span><span class="o">.</span><span class="n">drop_table</span><span class="p">(</span><span class="s2">&quot;customers_partitioned&quot;</span><span class="p">)</span>
+<span class="n">sqlClient</span><span class="o">.</span><span class="n">create_partitioned_table</span><span class="p">(</span><span class="s2">&quot;customers_partitioned&quot;</span><span class="p">,</span> <span class="n">cos_url</span><span class="o">=</span><span class="s2">&quot;cos://us-geo/sql/customers_partitioned.csv&quot;</span><span class="p">,</span> <span class="n">format_type</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">)</span>
 <span class="n">customers_partitioned_schema</span> <span class="o">=</span> <span class="n">sqlClient</span><span class="o">.</span><span class="n">describe_table</span><span class="p">(</span><span class="s2">&quot;customers_partitioned&quot;</span><span class="p">)</span>
 <span class="n">customers_partitioned_schema</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
@@ -17349,7 +17257,7 @@ Below is an example in that we first query and store data in CSV format, before 
 <ol>
     <li>How to <b>set up</b> the Data Engine extensions</li>
     <li>How to <b>configure</b> and <b>use</b> your Spark session with Data Engine as Hive Metastore</li>
-</ol><h2 id="-10.1.-Set-up-Data-Engine-libraries"><a id="hms_setup" /> 10.1. Set up Data Engine libraries<a class="anchor-link" href="#-10.1.-Set-up-Data-Engine-libraries">&#182;</a></h2><p><strong>Note</strong> The steps in this sub section are only required if you're not using one of Watson Studio Spark environment or Analytics Engine serverless Spark. In those services the Data Engine libraries are already configured out of the box.</p>
+</ol><h2 id="-10.1.-Set-up-Data-Engine-libraries-(when-using-your-own-Spark-runtimes)"><a id="hms_setup" /> 10.1. Set up Data Engine libraries (when using your own Spark runtimes)<a class="anchor-link" href="#-10.1.-Set-up-Data-Engine-libraries-(when-using-your-own-Spark-runtimes)">&#182;</a></h2><p><strong>Note</strong> The steps in this sub section are only required if you're not using one of Watson Studio Spark environment or Analytics Engine serverless Spark. In those services the Data Engine libraries are already configured out of the box and you can immediately proceed with <a href="#hms_usage">section 10.2</a> below.</p>
 <p><strong>Download Hive client</strong> library for Spark to connect to Hive Metastore in Data Engine. The download directory needs to be specified to Data Engine's Spark session builder later on:</p>
 
 </div>
@@ -17396,7 +17304,7 @@ Below is an example in that we first query and store data in CSV format, before 
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">dataengine_spark_version</span><span class="o">=</span><span class="s2">&quot;1.0.10&quot;</span>
 <span class="o">!</span>wget https://us.sql-query.cloud.ibm.com/download/catalog/dataengine-spark-integration-<span class="o">{</span>dataengine_spark_version<span class="o">}</span>.jar -O user-libs/spark2/dataengine-spark.jar
 <span class="o">!</span>wget https://us.sql-query.cloud.ibm.com/download/catalog/dataengine_spark-<span class="o">{</span>dataengine_spark_version<span class="o">}</span>-py3-none-any.whl -O /tmp/dataengine_spark-<span class="o">{</span>dataengine_spark_version<span class="o">}</span>-py3-none-any.whl
-<span class="o">!</span>pip install --force-reinstall /tmp/dataengine_spark-<span class="o">{</span>dataengine_spark_version<span class="o">}</span>-py3-none-any.whl
+<span class="o">!</span>pip install --user --force-reinstall /tmp/dataengine_spark-<span class="o">{</span>dataengine_spark_version<span class="o">}</span>-py3-none-any.whl
 </pre></div>
 
      </div>
@@ -17411,19 +17319,10 @@ Below is an example in that we first query and store data in CSV format, before 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Before-you-continue-in-the-next-sub-section:-Restart-Kernel-now!--Select:-Kernel--%3E-Restart">Before you continue in the next sub section: <font color="red">Restart Kernel now! </font> Select: Kernel -&gt; Restart<a class="anchor-link" href="#Before-you-continue-in-the-next-sub-section:-Restart-Kernel-now!--Select:-Kernel--%3E-Restart">&#182;</a></h3><p>Also make sure that you run the cells to set <code>instancecrn</code> and <code>apikey</code> in section <a href="#parameters">2.2 Setting the Data Engine parameters</a> again after restarting the kernel.</p>
+<h3 id="Before-you-continue-in-the-next-sub-section:-Restart-Kernel-now!--Select:-Kernel--%3E-Restart">Before you continue in the next sub section: <font color="red">Restart Kernel now! </font> Select: Kernel -&gt; Restart<a class="anchor-link" href="#Before-you-continue-in-the-next-sub-section:-Restart-Kernel-now!--Select:-Kernel--%3E-Restart">&#182;</a></h3><p>Also make sure that you run the cells to set <code>instancecrn</code> and <code>apikey</code> in section <a href="#parameters">2.2 Setting the Data Engine parameters</a> again after restarting the kernel.
+<br><br>
+Now set up a Spark session with the hive client library that you just downloaded above into the in <code>hive_client_dir</code> directory:</p>
 
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="-10.2.-Run-Custom-Spark-job-with-Data-Engine-as-Table-Catalog"><a id="hms_usage" /> 10.2. Run Custom Spark job with Data Engine as Table Catalog<a class="anchor-link" href="#-10.2.-Run-Custom-Spark-job-with-Data-Engine-as-Table-Catalog">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -17435,7 +17334,9 @@ Below is an example in that we first query and store data in CSV format, before 
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hive_client_dir</span><span class="o">=</span><span class="s2">&quot;/tmp/dataengine_jars&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">dataengine</span> <span class="kn">import</span> <span class="n">SparkSessionWithDataengine</span>
+<span class="n">session_builder</span> <span class="o">=</span> <span class="n">SparkSessionWithDataengine</span><span class="o">.</span><span class="n">enableDataengine</span><span class="p">(</span><span class="n">instancecrn</span><span class="p">,</span> <span class="n">apikey</span><span class="p">,</span> <span class="s2">&quot;public&quot;</span><span class="p">,</span> <span class="n">hive_client_dir</span><span class="p">)</span>
+<span class="n">spark</span> <span class="o">=</span> <span class="n">session_builder</span><span class="o">.</span><span class="n">appName</span><span class="p">(</span><span class="s2">&quot;Spark DataEngine integration&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
 </pre></div>
 
      </div>
@@ -17443,6 +17344,17 @@ Below is an example in that we first query and store data in CSV format, before 
 </div>
 </div>
 
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h2 id="-10.2.-Run-Custom-Spark-job-with-Data-Engine-as-Table-Catalog"><a id="hms_usage" /> 10.2. Run Custom Spark job with Data Engine as Table Catalog<a class="anchor-link" href="#-10.2.-Run-Custom-Spark-job-with-Data-Engine-as-Table-Catalog">&#182;</a></h2>
+</div>
+</div>
+</div>
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -17458,7 +17370,8 @@ Use a <b>custom Spark</b> application kernel with Jupyter notebook to run SQL qu
 </div></p>
 <p><div class="row">
 <br></p>
-<p>Set up a <strong>Data Eninge session</strong> for Spark:</p>
+<p>In case you want to run only this noebook section here with a fresh notebook runtime, you must make sure that you first run the cells to set <code>instancecrn</code> and <code>apikey</code> in section <a href="#parameters">2.2 Setting the Data Engine parameters</a> because we need these variables to configure the Hive client with your Data Engine instance.</p>
+<p>Set up a <strong>Data Eninge session</strong> for Spark (don't run this cell if you went through sectioon 10.1. using your own Spark runtime because there we already configured your Spark session):</p>
 
 </div>
 </div>
@@ -17638,6 +17551,22 @@ Use a <b>custom Spark</b> application kernel with Jupyter notebook to run SQL qu
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>Copyright © IBM Corp. 2020-2022. This notebook and its source code are released under the terms of the MIT License.</p>
 
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
+<span style="font-size:18px;color:#152935;">Love this notebook? </span>
+<span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
+<span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+</div>
 </div>
 </div>
 </div>
