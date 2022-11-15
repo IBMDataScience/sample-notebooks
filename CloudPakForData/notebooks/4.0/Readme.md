@@ -20,4 +20,4 @@ This notebook is part of a Federated Learning tutorial that demonstrates how to 
 
 **Working with the IBM Watson Studio library**
 
-This notebook demonstrates using functionalities from the IBM Watson Studio library.
+This notebook demonstrates using functionalities from the IBM Watson Studio library. The library provides access to data and connection assets in projects or spaces in Watson Studio. 
