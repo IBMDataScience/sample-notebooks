@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>FHE-gallery-pt copy</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Federated Learning FHE</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -15446,6 +15446,10 @@ a.anchor-link {
   display: none;
 }
 
+.highlight  {
+  margin: 0.4em;
+}
+
 /* Input area styling */
 .jp-InputArea {
   overflow: hidden;
@@ -15455,26 +15459,9 @@ a.anchor-link {
   overflow: hidden;
 }
 
-.CodeMirror.cm-s-jupyter .highlight pre {
-/* weird, but --jp-code-padding defined to be 5px but 4px horizontal padding is hardcoded for pre.CodeMirror-line */
-  padding: var(--jp-code-padding) 4px;
+.CodeMirror pre {
   margin: 0;
-
-  font-family: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  color: inherit;
-
-}
-
-.jp-OutputArea-output pre {
-  line-height: inherit;
-  font-family: inherit;
-}
-
-.jp-RenderedText pre {
-  color: var(--jp-content-font-color1);
-  font-size: var(--jp-code-font-size);
+  padding: 0;
 }
 
 /* Using table instead of flexbox so that we can use break-inside property */
@@ -15518,10 +15505,6 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 /* Hiding the collapser by default */
 .jp-Collapser {
   display: none;
-}
-
-@page {
-    margin: 0.5in; /* Margin for each printed piece of paper */
 }
 
 @media print {
@@ -15719,12 +15702,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p>IBM Federated Learning further includes homomorphic encryption capabilities, to enhance the parties’ data privacy and security in settings where the aggregator operates in an environment which is less trusted, and the parties wish to avoid revealing the local models and the aggregated models to the aggregator.</p>
 <p>Homomorphic encryption (HE) is a form of encryption that enables performing computations on the encrypted data without decrypting it. The results of the computations remain in encrypted form which, when decrypted, results in an output that is the same as the output produced had the computations been performed on the unencrypted data.</p>
 <p>In federated learning, homomorphic encryption enables the parties to homomorphically encrypt their local model updates before sending them to the aggregator. The aggregator sees only the homomorphically encrypted local model updates, and therefore cannot learn anything from this information. Specifically, the aggregator is not able to reverse-engineer the local model updates to discover information on local training data. The aggregator fuses the local model updates in their encrypted form, obtaining an encrypted aggregated model. Then the aggregator sends the encrypted aggregated model to the parties, which decrypt it and continue with the next round of training.</p>
-<img src="https://raw.githubusercontent.com/IBMDataScience/sample-notebooks/master/Files/fhe_1.jpg" width="500"/>
+<p><img src="https://raw.githubusercontent.com/IBMDataScience/sample-notebooks/master/Files/fhe_1.jpg" width="500"/></p>
 <p>Homomorphic encryption is a form of public key cryptography. It uses a public key for encryption and a private key for decryption.
 In IBM Federated Learning with homomorphic encryption, the parties (also named “remote training systems”) share the private HE key, and the aggregator has only the public HE key. Each party encrypts its local model update using the public HE key, and sends its encrypted local model update to the aggregator. Since the aggregator does not have the private HE key, it cannot decrypt the encrypted local model updates.</p>
-<img src="https://raw.githubusercontent.com/IBMDataScience/sample-notebooks/master/Files/fhe_2.jpg" width="500"/>
+<p><img src="https://raw.githubusercontent.com/IBMDataScience/sample-notebooks/master/Files/fhe_2.jpg" width="500"/></p>
 <p>The aggregator uses its public HE key to fuse the encrypted local model updates into a new encrypted aggregated model. This encrypted aggregated model is sent to the parties, which decrypt it using their private HE key, and continue the model training process.</p>
-<img src="https://raw.githubusercontent.com/IBMDataScience/sample-notebooks/master/Files/fhe_3.jpg" width="500"/>
+<p><img src="https://raw.githubusercontent.com/IBMDataScience/sample-notebooks/master/Files/fhe_3.jpg" width="500"/></p>
 <p>IBM Federated Learning makes it easy to use homomorphic encryption in model training, by specifying simple parameters in the configurations of the aggregator and the parties. IBM Federated Learning includes a mechanism that generates and distributes automatically and securely homomorphic encryption keys among the parties participating in a training experiment.</p>
 
 </div>
@@ -15750,24 +15733,19 @@ In IBM Federated Learning with homomorphic encryption, the parties (also named �
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <ol>
-<li>The currently supported operating system and architecture for running parties in Federated Learning experiments with homomorphic encryption is Linux x86. Therefore, this notebook must run on a Linux x86 platform.</li>
-</ol>
-<p><br/><br/></p>
-<ol>
-<li>Install the IBM Watson Machine Learning Python client package with homomorphic encryption support, within the Python environment in which this notebook runs. Use the following command within your Python environment:</li>
-</ol>
-<p><code>pip install -i https://pypi.org/simple/ --upgrade 'ibm_watson_machine_learning[fl-rt22.2-py3.10,fl-crypto]'</code>.<br />
+<li>The currently supported operating system and architecture for running parties in Federated Learning experiments with homomorphic encryption is Linux x86. Therefore, this notebook must run on a Linux x86 platform.
+<br/><br/></li>
+<li>Install the IBM Watson Machine Learning Python client package with homomorphic encryption support, within the Python environment in which this notebook runs. Use the following command within your Python environment:<br>
+<code>pip install 'ibm_watson_machine_learning[fl-rt22.2-py3.10,fl-crypto]'</code>.<br>
+You can use the installation cell in the next section of this notebook to perform this installation.<br>
 This installation is required for any Python environment that will be used for running parties in Federated Learning experiments with homomorphic encryption.
-<br/><br/></p>
-<ol>
+<br/><br/></li>
 <li>In your <a href="https://cloud.ibm.com/">IBM cloud account</a>:<ol>
-<li>Obtain your cloud user <em>IAM ID</em> by accessing the <a href="https://cloud.ibm.com/iam/users">Users</a> page, clicking on the relevant user, clicking on <em>Details</em> and copying the <em>IAM ID</em>. The format of the <em>IAM ID</em> is <em>IBMid-&lt;aaa&gt;</em>.</li>
-<li>Generate and obtain an API key from the <a href="https://cloud.ibm.com/iam/apikeys">API keys</a> page.</li>
+<li>Obtain your cloud user <em>IAM ID</em> by accessing the <a href="https://cloud.ibm.com/iam/users">Users</a> page, clicking on the relevant user, clicking on <em>Details</em> and copying the <em>IAM ID</em>. The format of the <em>IAM ID</em> is <em>IBMid-\&lt;aaa&gt;</em>. </li>
+<li>Generate and obtain an API key from the <a href="https://cloud.ibm.com/iam/apikeys">API keys</a> page.
+<br/><br/></li>
 </ol>
 </li>
-</ol>
-<p><br/><br/></p>
-<ol>
 <li>Create a <a href="https://cloud.ibm.com/catalog/services/watson-machine-learning">Watson Machine Learning service instance</a>. A free plan is offered. In your Watson Machine Learning service instance:<ol>
 <li>Create a project or use an existing project, for use with this notebook. Access the <a href="https://dataplatform.cloud.ibm.com/projects">Projects</a> page, and click <em>New project</em> to create a new project. For additional details see: <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/projects.html?context=cpdaas&amp;audience=wdp">Creating a project</a>. Obtain the ID of the project to be used from <em>Projects &gt; Specific project &gt; Manage &gt; Project ID</em>.</li>
 <li>Associate your project with the Watson Machine Learning service, by accessing <em>Projects &gt; Specific project &gt; Manage &gt; Services &amp; integrations &gt; Associate service</em>. For additional details see: <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/assoc-services.html?context=cpdaas&amp;audience=wdp">Associating services</a>.</li>
@@ -15798,8 +15776,7 @@ This installation is required for any Python environment that will be used for r
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>This section applies base definitions for the notebook.</p>
-<p><strong>User action:</strong> Before running the following cell, replace the mandatory TBDs in the cell with your information and review the optional TBDs.</p>
+<p>Install the IBM Watson Machine Learning Python client package with homomorphic encryption support, within the Python environment in which this notebook runs, if this package is not yet installed in this environment.</p>
 
 </div>
 </div>
@@ -15812,7 +15789,7 @@ This installation is required for any Python environment that will be used for r
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">i</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">pypi</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">simple</span><span class="o">/</span> <span class="o">--</span><span class="n">upgrade</span> <span class="s1">&#39;ibm_watson_machine_learning[fl-rt22.2-py3.10,fl-crypto]&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">pip</span> install 'ibm_watson_machine_learning[fl-rt22.2-py3.10,fl-crypto]'
 </pre></div>
 
      </div>
@@ -15820,6 +15797,19 @@ This installation is required for any Python environment that will be used for r
 </div>
 </div>
 
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>The following cell applies base definitions for the notebook.</p>
+<p><strong>User action:</strong> Before running the following cell, replace the mandatory TBDs in the cell with your information and review the optional TBDs.</p>
+
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -15834,18 +15824,18 @@ This installation is required for any Python environment that will be used for r
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">()</span>
 
-<span class="n">cmd</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s2">&quot;pip list | grep &#39;ibm-watson-machine-learning&#39;&quot;</span><span class="p">,</span> 
+<span class="n">cmd</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s2">"pip list | grep 'ibm-watson-machine-learning'"</span><span class="p">,</span> 
     <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span>
 <span class="n">wml_installed</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">wml_installed</span><span class="p">:</span>
-    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;ibm-watson-machine-learning package must be installed in the environment&#39;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">'ibm-watson-machine-learning package must be installed in the environment'</span><span class="p">)</span>
 
 <span class="n">base_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span> <span class="c1"># TBD [optional] A base directory under which the notebook work directory will be created. Default is the current work directory.</span>
-<span class="n">nb_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">&#39;fl_fhe_nb&#39;</span><span class="p">)</span>
-<span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nb_dir</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
-<span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nb_dir</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">)</span>
-<span class="n">crypto_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nb_dir</span><span class="p">,</span> <span class="s1">&#39;crypto&#39;</span><span class="p">)</span>
-<span class="n">exec_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nb_dir</span><span class="p">,</span> <span class="s1">&#39;exec&#39;</span><span class="p">)</span>
+<span class="n">nb_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_dir</span><span class="p">,</span> <span class="s1">'fl_fhe_nb'</span><span class="p">)</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nb_dir</span><span class="p">,</span> <span class="s1">'data'</span><span class="p">)</span>
+<span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nb_dir</span><span class="p">,</span> <span class="s1">'model'</span><span class="p">)</span>
+<span class="n">crypto_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nb_dir</span><span class="p">,</span> <span class="s1">'crypto'</span><span class="p">)</span>
+<span class="n">exec_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nb_dir</span><span class="p">,</span> <span class="s1">'exec'</span><span class="p">)</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_path</span><span class="p">):</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">model_path</span><span class="p">):</span>
@@ -15856,35 +15846,35 @@ This installation is required for any Python environment that will be used for r
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">exec_path</span><span class="p">)</span>
 <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">exec_path</span><span class="p">)</span>
 
-<span class="n">PROJECT_ID</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="c1"># TBD [mandatory] See the prerequisites section for details.</span>
-<span class="n">CLOUD_USERID</span> <span class="o">=</span> <span class="s1">&#39;IBMid&#39;</span> <span class="c1"># TBD [mandatory] See the prerequisites section for details.</span>
-<span class="n">IAM_APIKEY</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="c1"># TBD [mandatory] See the prerequisites section for details.</span>
-<span class="n">WML_SERVICES_LOCATION</span> <span class="o">=</span> <span class="s1">&#39;us-south&#39;</span> <span class="c1"># TBD [mandatory] See the prerequisites section for details.</span>
-<span class="n">WML_SERVICES_URL</span> <span class="o">=</span> <span class="s1">&#39;https://&#39;</span> <span class="o">+</span> <span class="n">WML_SERVICES_LOCATION</span> <span class="o">+</span> <span class="s1">&#39;.ml.cloud.ibm.com&#39;</span>
+<span class="n">PROJECT_ID</span> <span class="o">=</span> <span class="s1">''</span> <span class="c1"># TBD [mandatory] See the prerequisites section for details.</span>
+<span class="n">CLOUD_USERID</span> <span class="o">=</span> <span class="s1">''</span> <span class="c1"># TBD [mandatory] See the prerequisites section for details.</span>
+<span class="n">IAM_APIKEY</span> <span class="o">=</span> <span class="s1">''</span> <span class="c1"># TBD [mandatory] See the prerequisites section for details.</span>
+<span class="n">WML_SERVICES_LOCATION</span> <span class="o">=</span> <span class="s1">''</span> <span class="c1"># TBD [mandatory] See the prerequisites section for details.</span>
+<span class="n">WML_SERVICES_URL</span> <span class="o">=</span> <span class="s1">'https://'</span> <span class="o">+</span> <span class="n">WML_SERVICES_LOCATION</span> <span class="o">+</span> <span class="s1">'.ml.cloud.ibm.com'</span>
 <span class="n">NUM_RTS</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># TBD [optional] This parameter enables to specify the number of parties for a training experiment.</span>
-<span class="n">SW_SPEC_NAME</span> <span class="o">=</span> <span class="s1">&#39;runtime-22.2-py3.10&#39;</span>
-<span class="n">HW_SPEC_NAME</span> <span class="o">=</span> <span class="s1">&#39;S&#39;</span>
-<span class="n">RSC_TAGS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;wml_fl_fhe_nb_example&#39;</span><span class="p">]</span>
+<span class="n">SW_SPEC_NAME</span> <span class="o">=</span> <span class="s1">'runtime-22.2-py3.10'</span>
+<span class="n">HW_SPEC_NAME</span> <span class="o">=</span> <span class="s1">'S'</span>
+<span class="n">RSC_TAGS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'wml_fl_fhe_nb_example'</span><span class="p">]</span>
 <span class="n">TIMEOUT_TRAINING_SEC</span> <span class="o">=</span> <span class="mi">600</span>
-<span class="n">crypto_file_ext</span> <span class="o">=</span> <span class="s1">&#39;v1&#39;</span>
-<span class="n">asym_file_is</span> <span class="o">=</span> <span class="n">crypto_path</span> <span class="o">+</span> <span class="s2">&quot;/is_asym_&quot;</span> <span class="o">+</span> <span class="n">crypto_file_ext</span> <span class="o">+</span> <span class="s2">&quot;.pem&quot;</span>
-<span class="n">cert_file_is</span> <span class="o">=</span> <span class="n">crypto_path</span> <span class="o">+</span> <span class="s2">&quot;/is_cert_&quot;</span> <span class="o">+</span> <span class="n">crypto_file_ext</span> <span class="o">+</span> <span class="s2">&quot;.pem&quot;</span>
-<span class="n">asym_file_sb</span> <span class="o">=</span> <span class="n">crypto_path</span> <span class="o">+</span> <span class="s2">&quot;/sb_asym_&quot;</span> <span class="o">+</span> <span class="n">crypto_file_ext</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
-<span class="n">csr_file_sb</span> <span class="o">=</span> <span class="n">crypto_path</span> <span class="o">+</span> <span class="s2">&quot;/sb_csr_&quot;</span> <span class="o">+</span> <span class="n">crypto_file_ext</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
-<span class="n">cert_file_sb</span> <span class="o">=</span> <span class="n">crypto_path</span> <span class="o">+</span> <span class="s2">&quot;/sb_cert_&quot;</span> <span class="o">+</span> <span class="n">crypto_file_ext</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
-<span class="n">prt_data_file_prefix</span> <span class="o">=</span> <span class="s1">&#39;data_party_&#39;</span>
+<span class="n">crypto_file_ext</span> <span class="o">=</span> <span class="s1">'v1'</span>
+<span class="n">asym_file_is</span> <span class="o">=</span> <span class="n">crypto_path</span> <span class="o">+</span> <span class="s2">"/is_asym_"</span> <span class="o">+</span> <span class="n">crypto_file_ext</span> <span class="o">+</span> <span class="s2">".pem"</span>
+<span class="n">cert_file_is</span> <span class="o">=</span> <span class="n">crypto_path</span> <span class="o">+</span> <span class="s2">"/is_cert_"</span> <span class="o">+</span> <span class="n">crypto_file_ext</span> <span class="o">+</span> <span class="s2">".pem"</span>
+<span class="n">asym_file_sb</span> <span class="o">=</span> <span class="n">crypto_path</span> <span class="o">+</span> <span class="s2">"/sb_asym_"</span> <span class="o">+</span> <span class="n">crypto_file_ext</span> <span class="o">+</span> <span class="s2">"_"</span>
+<span class="n">csr_file_sb</span> <span class="o">=</span> <span class="n">crypto_path</span> <span class="o">+</span> <span class="s2">"/sb_csr_"</span> <span class="o">+</span> <span class="n">crypto_file_ext</span> <span class="o">+</span> <span class="s2">"_"</span>
+<span class="n">cert_file_sb</span> <span class="o">=</span> <span class="n">crypto_path</span> <span class="o">+</span> <span class="s2">"/sb_cert_"</span> <span class="o">+</span> <span class="n">crypto_file_ext</span> <span class="o">+</span> <span class="s2">"_"</span>
+<span class="n">prt_data_file_prefix</span> <span class="o">=</span> <span class="s1">'data_party_'</span>
 <span class="n">NUM_MODELS</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">MODEL_NAME</span> <span class="o">=</span> <span class="s1">&#39;pytorch&#39;</span>
-<span class="n">MODEL_TYPE</span> <span class="o">=</span> <span class="s1">&#39;pytorch-onnx_1.12&#39;</span>
-<span class="n">INIT_MODEL_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;pt_mnist_init_model.zip&#39;</span>
-<span class="n">INIT_MODEL_URL</span> <span class="o">=</span> <span class="s1">&#39;https://github.com/IBMDataScience/sample-notebooks/raw/master/Files/pt_mnist_init_model.zip&#39;</span>
-<span class="n">DATA_HANDLER_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;mnist_pytorch_data_handler.py&#39;</span>
-<span class="n">DATA_HANDLER_CLASS_NAME</span> <span class="o">=</span> <span class="s1">&#39;MnistPytorchDataHandler&#39;</span>
-<span class="n">DATASET_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;mnist.npz&#39;</span>
-<span class="n">DATASET_URL</span> <span class="o">=</span> <span class="s1">&#39;https://api.dataplatform.cloud.ibm.com/v2/gallery-assets/entries/85ae67d0cf85df6cf114d0664194dc3b/data&#39;</span>
+<span class="n">MODEL_NAME</span> <span class="o">=</span> <span class="s1">'pytorch'</span>
+<span class="n">MODEL_TYPE</span> <span class="o">=</span> <span class="s1">'pytorch-onnx_1.12'</span>
+<span class="n">INIT_MODEL_FILE_NAME</span> <span class="o">=</span> <span class="s1">'pt_mnist_init_model.zip'</span>
+<span class="n">INIT_MODEL_URL</span> <span class="o">=</span> <span class="s1">'https://github.com/IBMDataScience/sample-notebooks/raw/master/Files/pt_mnist_init_model.zip'</span>
+<span class="n">DATA_HANDLER_FILE_NAME</span> <span class="o">=</span> <span class="s1">'mnist_pytorch_data_handler.py'</span>
+<span class="n">DATA_HANDLER_CLASS_NAME</span> <span class="o">=</span> <span class="s1">'MnistPytorchDataHandler'</span>
+<span class="n">DATASET_FILE_NAME</span> <span class="o">=</span> <span class="s1">'mnist.npz'</span>
+<span class="n">DATASET_URL</span> <span class="o">=</span> <span class="s1">'https://api.dataplatform.cloud.ibm.com/v2/gallery-assets/entries/85ae67d0cf85df6cf114d0664194dc3b/data'</span>
 
-<span class="n">hearbeat_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/wml_services/training/heartbeat&quot;</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Heartbeat response </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">hearbeat_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<span class="n">hearbeat_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">"/wml_services/training/heartbeat"</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Heartbeat response </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">hearbeat_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span>
 </pre></div>
 
      </div>
@@ -15927,8 +15917,8 @@ This installation is required for any Python environment that will be used for r
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning</span> <span class="kn">import</span> <span class="n">APIClient</span>
 
 <span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">WML_SERVICES_URL</span><span class="p">,</span>
-    <span class="s2">&quot;apikey&quot;</span><span class="p">:</span> <span class="n">IAM_APIKEY</span>
+    <span class="s2">"url"</span><span class="p">:</span> <span class="n">WML_SERVICES_URL</span><span class="p">,</span>
+    <span class="s2">"apikey"</span><span class="p">:</span> <span class="n">IAM_APIKEY</span>
 <span class="p">}</span>
 <span class="n">wml_client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">)</span>
 <span class="n">wml_client</span><span class="o">.</span><span class="n">set</span><span class="o">.</span><span class="n">default_project</span><span class="p">(</span><span class="n">PROJECT_ID</span><span class="p">)</span>
@@ -15958,7 +15948,7 @@ This installation is required for any Python environment that will be used for r
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>The WML assets created in this notebook are initial models and remote training systems.<br />
+<p>The WML assets created in this notebook are initial models and remote training systems.<br>
 In this section you can either create new assets, or reuse assets that were created in a previous session of this notebook and not removed.</p>
 
 </div>
@@ -15993,8 +15983,8 @@ In this section you can either create new assets, or reuse assets that were crea
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Initial untrained model assets are required for Federated Learning.<br />
-In this notebook, an untrained Pytorch model is used.<br />
+<p>Initial untrained model assets are required for Federated Learning.<br>
+In this notebook, an untrained Pytorch model is used.<br>
 For additional details see the documentation on <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fl-models.html?audience=wdp">creating initial models</a>.</p>
 <p>First, we download a pre-built initial model.</p>
 
@@ -16010,13 +16000,13 @@ For additional details see the documentation on <a href="https://dataplatform.cl
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">shutil</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Downloading initial model&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Downloading initial model"</span><span class="p">)</span>
 <span class="n">init_model_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">INIT_MODEL_FILE_NAME</span><span class="p">)</span>
 <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">INIT_MODEL_URL</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">init_model_file_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">init_model_file_path</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Model stored in: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">init_model_file_path</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Model stored in: '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">init_model_file_path</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Done"</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16044,7 +16034,7 @@ For additional details see the documentation on <a href="https://dataplatform.cl
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Storing initial model&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Storing initial model"</span><span class="p">)</span>
 <span class="n">sw_spec_id</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_id_by_name</span><span class="p">(</span><span class="n">SW_SPEC_NAME</span><span class="p">)</span>
 <span class="n">untrained_model_ids</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">model_metadata</span> <span class="o">=</span> <span class="p">{</span>
@@ -16055,8 +16045,8 @@ For additional details see the documentation on <a href="https://dataplatform.cl
 <span class="p">}</span>
 <span class="n">untrained_model_details</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">store_model</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="n">INIT_MODEL_FILE_NAME</span><span class="p">),</span> <span class="n">model_metadata</span><span class="p">)</span>
 <span class="n">untrained_model_ids</span><span class="p">[</span><span class="n">MODEL_NAME</span><span class="p">]</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_model_id</span><span class="p">(</span><span class="n">untrained_model_details</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Model id: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">untrained_model_ids</span><span class="p">[</span><span class="n">MODEL_NAME</span><span class="p">]))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Model id: '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">untrained_model_ids</span><span class="p">[</span><span class="n">MODEL_NAME</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Done'</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16082,7 +16072,7 @@ For additional details see the documentation on <a href="https://dataplatform.cl
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>A Remote Training System (RTS) asset defines a party that connects to the aggregator for a training experiment.<br />
+<p>A Remote Training System (RTS) asset defines a party that connects to the aggregator for a training experiment.<br>
 For additional details see the corresponding <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fl-agg.html?audience=wdp">documentation</a> page.</p>
 
 </div>
@@ -16096,21 +16086,21 @@ For additional details see the corresponding <a href="https://dataplatform.cloud
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Creating Remote Training Systems&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Creating Remote Training Systems"</span><span class="p">)</span>
 <span class="n">remote_training_systems</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUM_RTS</span><span class="p">):</span>
     <span class="n">rts_metadata</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s2">&quot;Party_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
+        <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s2">"Party_"</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
         <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">TAGS</span><span class="p">:</span> <span class="n">RSC_TAGS</span><span class="p">,</span>
-        <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">ORGANIZATION</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span> <span class="p">:</span> <span class="s2">&quot;IBM&quot;</span><span class="p">,</span> <span class="s2">&quot;region&quot;</span><span class="p">:</span> <span class="s2">&quot;US&quot;</span><span class="p">},</span>
-        <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">ALLOWED_IDENTITIES</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">CLOUD_USERID</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">}],</span>
-        <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">REMOTE_ADMIN</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">CLOUD_USERID</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span><span class="s2">&quot;user&quot;</span><span class="p">}</span>
+        <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">ORGANIZATION</span><span class="p">:</span> <span class="p">{</span><span class="s2">"name"</span> <span class="p">:</span> <span class="s2">"IBM"</span><span class="p">,</span> <span class="s2">"region"</span><span class="p">:</span> <span class="s2">"US"</span><span class="p">},</span>
+        <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">ALLOWED_IDENTITIES</span><span class="p">:</span> <span class="p">[{</span><span class="s2">"id"</span><span class="p">:</span> <span class="n">CLOUD_USERID</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">}],</span>
+        <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">REMOTE_ADMIN</span><span class="p">:</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="n">CLOUD_USERID</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">:</span><span class="s2">"user"</span><span class="p">}</span>
     <span class="p">}</span>
     <span class="n">rts</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">rts_metadata</span><span class="p">)</span>
     <span class="n">rts_id</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="n">rts</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Remote training system Party_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; id: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rts_id</span><span class="p">))</span>
-    <span class="n">remote_training_systems</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">rts_id</span><span class="p">,</span> <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Remote training system Party_'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' id: '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rts_id</span><span class="p">))</span>
+    <span class="n">remote_training_systems</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'id'</span><span class="p">:</span> <span class="n">rts_id</span><span class="p">,</span> <span class="s1">'required'</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Done'</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16136,7 +16126,7 @@ For additional details see the corresponding <a href="https://dataplatform.cloud
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Run the following cell if you are reusing WML assets that were created in previous sessions.<br />
+<p>Run the following cell if you are reusing WML assets that were created in previous sessions.<br>
 This code enables to build internal notebook lists from existing assets. These lists are used in later operations of this notebook.</p>
 
 </div>
@@ -16154,37 +16144,37 @@ This code enables to build internal notebook lists from existing assets. These l
 
 <span class="n">FORCE_REBUILD_DS</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Models:&quot;</span><span class="p">)</span>
-<span class="k">if</span> <span class="s1">&#39;untrained_model_ids&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">FORCE_REBUILD_DS</span> <span class="ow">or</span> \
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Models:"</span><span class="p">)</span>
+<span class="k">if</span> <span class="s1">'untrained_model_ids'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">FORCE_REBUILD_DS</span> <span class="ow">or</span> \
     <span class="nb">len</span><span class="p">(</span><span class="n">untrained_model_ids</span><span class="p">)</span> <span class="o">!=</span> <span class="n">NUM_MODELS</span><span class="p">:</span>
     <span class="n">untrained_model_ids</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">load_models_dict</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">load_models_dict</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">models</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_model_details</span><span class="p">(</span><span class="n">get_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span><span class="p">[</span><span class="s1">&#39;resources&#39;</span><span class="p">]:</span>
-    <span class="n">md</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;tags&#39;</span> <span class="ow">in</span> <span class="n">md</span> <span class="ow">or</span> <span class="n">md</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">RSC_TAGS</span><span class="p">:</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span><span class="p">[</span><span class="s1">'resources'</span><span class="p">]:</span>
+    <span class="n">md</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s1">'metadata'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="s1">'tags'</span> <span class="ow">in</span> <span class="n">md</span> <span class="ow">or</span> <span class="n">md</span><span class="p">[</span><span class="s1">'tags'</span><span class="p">]</span> <span class="o">!=</span> <span class="n">RSC_TAGS</span><span class="p">:</span>
         <span class="k">continue</span>
     <span class="k">if</span> <span class="n">load_models_dict</span><span class="p">:</span>
-        <span class="n">untrained_model_ids</span><span class="p">[</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">md</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]))</span>
+        <span class="n">untrained_model_ids</span><span class="p">[</span><span class="n">md</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]]</span> <span class="o">=</span> <span class="n">md</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">'name'</span><span class="p">],</span><span class="n">md</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Remote Training Systems:&quot;</span><span class="p">)</span>
-<span class="k">if</span> <span class="s1">&#39;remote_training_systems&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">FORCE_REBUILD_DS</span> <span class="ow">or</span> \
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Remote Training Systems:"</span><span class="p">)</span>
+<span class="k">if</span> <span class="s1">'remote_training_systems'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span> <span class="ow">or</span> <span class="n">FORCE_REBUILD_DS</span> <span class="ow">or</span> \
     <span class="nb">len</span><span class="p">(</span><span class="n">remote_training_systems</span><span class="p">)</span> <span class="o">!=</span> <span class="n">NUM_RTS</span><span class="p">:</span>
     <span class="n">remote_training_systems</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">load_rts_lst</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">load_rts_lst</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">rts</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">get_details</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rts</span><span class="p">[</span><span class="s1">&#39;resources&#39;</span><span class="p">]:</span>
-    <span class="n">md</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;tags&#39;</span> <span class="ow">in</span> <span class="n">md</span> <span class="ow">or</span> <span class="n">md</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">RSC_TAGS</span><span class="p">:</span>
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rts</span><span class="p">[</span><span class="s1">'resources'</span><span class="p">]:</span>
+    <span class="n">md</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">'metadata'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="s1">'tags'</span> <span class="ow">in</span> <span class="n">md</span> <span class="ow">or</span> <span class="n">md</span><span class="p">[</span><span class="s1">'tags'</span><span class="p">]</span> <span class="o">!=</span> <span class="n">RSC_TAGS</span><span class="p">:</span>
         <span class="k">continue</span>
     <span class="k">if</span> <span class="n">load_rts_lst</span><span class="p">:</span>
-        <span class="n">remote_training_systems</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">md</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="s1">&#39;required&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]))</span>
+        <span class="n">remote_training_systems</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'id'</span><span class="p">:</span> <span class="n">md</span><span class="p">[</span><span class="s1">'id'</span><span class="p">],</span> <span class="s1">'required'</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">'name'</span><span class="p">],</span><span class="n">md</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]))</span>
 </pre></div>
 
      </div>
@@ -16211,7 +16201,7 @@ This code enables to build internal notebook lists from existing assets. These l
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>This section downloads the MNIST data set and splits it into subsets for the parties.<br />
+<p>This section downloads the MNIST data set and splits it into subsets for the parties.<br>
 Then, it defines and stores a data handler.</p>
 
 </div>
@@ -16241,8 +16231,8 @@ Then, it defines and stores a data handler.</p>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 
-<span class="k">def</span> <span class="nf">load_mnist</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">download_dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span> <span class="nf">load_mnist</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">download_dir</span><span class="o">=</span><span class="s1">''</span><span class="p">):</span>
+    <span class="sd">"""</span>
 <span class="sd">    Download MNIST training data from source used in `keras.datasets.load_mnist`</span>
 <span class="sd">    :param normalize: whether or not to normalize data</span>
 <span class="sd">    :type normalize: bool</span>
@@ -16250,30 +16240,30 @@ Then, it defines and stores a data handler.</p>
 <span class="sd">    :type download_dir: `str`</span>
 <span class="sd">    :return: 2 tuples containing training and testing data respectively</span>
 <span class="sd">    :rtype (`np.ndarray`, `np.ndarray`), (`np.ndarray`, `np.ndarray`)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">local_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">download_dir</span><span class="p">,</span> <span class="n">DATASET_FILE_NAME</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">local_file</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">DATASET_URL</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">r</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">local_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">local_file</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">local_file</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">mnist</span><span class="p">:</span>
-            <span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">&#39;x_train&#39;</span><span class="p">],</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">&#39;y_train&#39;</span><span class="p">]</span>
-            <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">&#39;x_test&#39;</span><span class="p">],</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">&#39;y_test&#39;</span><span class="p">]</span>
+            <span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">'x_train'</span><span class="p">],</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">'y_train'</span><span class="p">]</span>
+            <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">'x_test'</span><span class="p">],</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">'y_test'</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
-                <span class="n">x_train</span> <span class="o">=</span> <span class="n">x_train</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-                <span class="n">x_test</span> <span class="o">=</span> <span class="n">x_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+                <span class="n">x_train</span> <span class="o">=</span> <span class="n">x_train</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float32'</span><span class="p">)</span>
+                <span class="n">x_test</span> <span class="o">=</span> <span class="n">x_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float32'</span><span class="p">)</span>
                 <span class="n">x_train</span> <span class="o">/=</span> <span class="mi">255</span>
                 <span class="n">x_test</span> <span class="o">/=</span> <span class="mi">255</span>
         <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">local_file</span><span class="p">,</span> <span class="n">x_train</span><span class="o">=</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="o">=</span><span class="n">y_train</span><span class="p">,</span>
                  <span class="n">x_test</span><span class="o">=</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="o">=</span><span class="n">y_test</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">local_file</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">mnist</span><span class="p">:</span>
-            <span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">&#39;x_train&#39;</span><span class="p">],</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">&#39;y_train&#39;</span><span class="p">]</span>
-            <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">&#39;x_test&#39;</span><span class="p">],</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">&#39;y_test&#39;</span><span class="p">]</span>
+            <span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">'x_train'</span><span class="p">],</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">'y_train'</span><span class="p">]</span>
+            <span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">'x_test'</span><span class="p">],</span> <span class="n">mnist</span><span class="p">[</span><span class="s1">'y_test'</span><span class="p">]</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">save_mnist_party_data</span><span class="p">(</span><span class="n">nb_dp_per_party</span><span class="p">,</span> <span class="n">should_stratify</span><span class="p">,</span> <span class="n">party_folder</span><span class="p">,</span> <span class="n">dataset_folder</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">"""</span>
 <span class="sd">    Saves MNIST party data</span>
 <span class="sd">    :param nb_dp_per_party: the number of data points each party should have</span>
 <span class="sd">    :type nb_dp_per_party: `list[int]`</span>
@@ -16285,7 +16275,7 @@ Then, it defines and stores a data handler.</p>
 <span class="sd">    :type data_path: `str`</span>
 <span class="sd">    :param dataset_folder: folder to save dataset</span>
 <span class="sd">    :type dataset_folder: `str`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dataset_folder</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dataset_folder</span><span class="p">)</span>
     <span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span> <span class="o">=</span> <span class="n">load_mnist</span><span class="p">(</span><span class="n">download_dir</span><span class="o">=</span><span class="n">dataset_folder</span><span class="p">)</span>
@@ -16317,16 +16307,16 @@ Then, it defines and stores a data handler.</p>
         <span class="n">y_train_pi</span> <span class="o">=</span> <span class="n">y_train</span><span class="p">[</span><span class="n">train_indices</span><span class="p">]</span>
         <span class="n">x_test_pi</span> <span class="o">=</span> <span class="n">x_test</span><span class="p">[</span><span class="n">test_indices</span><span class="p">]</span>
         <span class="n">y_test_pi</span> <span class="o">=</span> <span class="n">y_test</span><span class="p">[</span><span class="n">test_indices</span><span class="p">]</span>
-        <span class="n">name_file</span> <span class="o">=</span> <span class="n">prt_data_file_prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.npz&#39;</span>
+        <span class="n">name_file</span> <span class="o">=</span> <span class="n">prt_data_file_prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">+</span> <span class="s1">'.npz'</span>
         <span class="n">name_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">party_folder</span><span class="p">,</span> <span class="n">name_file</span><span class="p">)</span>
         <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">name_file</span><span class="p">,</span> <span class="n">x_train</span><span class="o">=</span><span class="n">x_train_pi</span><span class="p">,</span> <span class="n">y_train</span><span class="o">=</span><span class="n">y_train_pi</span><span class="p">,</span>
                  <span class="n">x_test</span><span class="o">=</span><span class="n">x_test_pi</span><span class="p">,</span> <span class="n">y_test</span><span class="o">=</span><span class="n">y_test_pi</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Data saved in &#39;</span> <span class="o">+</span> <span class="n">party_folder</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Data saved in '</span> <span class="o">+</span> <span class="n">party_folder</span><span class="p">)</span>
     <span class="k">return</span>
 
 <span class="n">save_mnist_party_data</span><span class="p">(</span><span class="n">nb_dp_per_party</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUM_RTS</span><span class="p">)],</span> <span class="n">should_stratify</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
     <span class="n">party_folder</span><span class="o">=</span><span class="n">data_path</span><span class="p">,</span> <span class="n">dataset_folder</span><span class="o">=</span><span class="n">data_path</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Done'</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16352,7 +16342,7 @@ Then, it defines and stores a data handler.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>This section creates a data handler Python file for the MNIST dataset to train using PyTorch.<br />
+<p>This section creates a data handler Python file for the MNIST dataset to train using PyTorch.<br>
 For additional details see the corresponding <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fl-handler.html?audience=wdp">documentation</a> page.</p>
 
 </div>
@@ -16371,32 +16361,32 @@ For additional details see the corresponding <a href="https://dataplatform.cloud
 <span class="kn">from</span> <span class="nn">ibmfl.data.data_handler</span> <span class="kn">import</span> <span class="n">DataHandler</span>
 
 <span class="k">class</span> <span class="nc">MnistPytorchDataHandler</span><span class="p">(</span><span class="n">DataHandler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="sd">"""</span>
 <span class="sd">    Data handler for the MNIST dataset to train using PyTorch.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">data_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;npz_file&#39;</span> <span class="ow">in</span> <span class="n">data_config</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="n">data_config</span><span class="p">[</span><span class="s1">&#39;npz_file&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">'npz_file'</span> <span class="ow">in</span> <span class="n">data_config</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="n">data_config</span><span class="p">[</span><span class="s1">'npz_file'</span><span class="p">]</span>
         <span class="c1"># Load the datasets.</span>
         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_train</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_test</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_test</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">()</span>
         <span class="c1"># Pre-process the datasets.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">preprocess</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">"""</span>
 <span class="sd">        Gets pre-process mnist training and testing data.</span>
 
 <span class="sd">        :return: training data</span>
 <span class="sd">        :rtype: `tuple`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_train</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_test</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_test</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">load_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nb_points</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">"""</span>
 <span class="sd">        Loads the training and testing datasets from a given local path.</span>
 <span class="sd">        If no local path is provided, it will download the original MNIST \</span>
 <span class="sd">        dataset online, and reduce the dataset size to contain \</span>
@@ -16410,32 +16400,32 @@ For additional details see the corresponding <a href="https://dataplatform.cloud
 <span class="sd">        :type nb_points: `int`</span>
 <span class="sd">        :return: training and testing datasets</span>
 <span class="sd">        :rtype: `tuple`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
-            <span class="n">x_train</span> <span class="o">=</span> <span class="n">data_train</span><span class="p">[</span><span class="s1">&#39;x_train&#39;</span><span class="p">]</span>
-            <span class="n">y_train</span> <span class="o">=</span> <span class="n">data_train</span><span class="p">[</span><span class="s1">&#39;y_train&#39;</span><span class="p">]</span>
-            <span class="n">x_test</span> <span class="o">=</span> <span class="n">data_train</span><span class="p">[</span><span class="s1">&#39;x_test&#39;</span><span class="p">]</span>
-            <span class="n">y_test</span> <span class="o">=</span> <span class="n">data_train</span><span class="p">[</span><span class="s1">&#39;y_test&#39;</span><span class="p">]</span>
+            <span class="n">x_train</span> <span class="o">=</span> <span class="n">data_train</span><span class="p">[</span><span class="s1">'x_train'</span><span class="p">]</span>
+            <span class="n">y_train</span> <span class="o">=</span> <span class="n">data_train</span><span class="p">[</span><span class="s1">'y_train'</span><span class="p">]</span>
+            <span class="n">x_test</span> <span class="o">=</span> <span class="n">data_train</span><span class="p">[</span><span class="s1">'x_test'</span><span class="p">]</span>
+            <span class="n">y_test</span> <span class="o">=</span> <span class="n">data_train</span><span class="p">[</span><span class="s1">'y_test'</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;Unable to load training data from path &#39;</span>
-                            <span class="s1">&#39;provided in config file: &#39;</span> <span class="o">+</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">'Unable to load training data from path '</span>
+                            <span class="s1">'provided in config file: '</span> <span class="o">+</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">),</span> <span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+        <span class="sd">"""</span>
 <span class="sd">        Preprocesses the training and testing dataset, \</span>
 <span class="sd">        e.g., reshape the images according to self.channels_first; \</span>
 <span class="sd">        convert the labels to binary class matrices.</span>
 
 <span class="sd">        :return: None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span> <span class="o">=</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">x_train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_train</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">x_test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span><span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y_test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_train</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float32'</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float32'</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span><span class="n">img_rows</span><span class="p">,</span> <span class="n">img_cols</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int64'</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_test</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_test</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'int64'</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16452,7 +16442,7 @@ For additional details see the corresponding <a href="https://dataplatform.cloud
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">shutil</span>
-<span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">DATA_HANDLER_FILE_NAME</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">DATA_HANDLER_FILE_NAME</span><span class="p">))</span>
+<span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'.'</span><span class="p">,</span> <span class="n">DATA_HANDLER_FILE_NAME</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">DATA_HANDLER_FILE_NAME</span><span class="p">))</span>
 </pre></div>
 
      </div>
@@ -16479,9 +16469,9 @@ For additional details see the corresponding <a href="https://dataplatform.cloud
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>This section creates the certificate and key files required for running a Federated Learning training experiment with encryption.<br />
+<p>This section creates the certificate and key files required for running a Federated Learning training experiment with encryption.<br>
 Two methods are provided in this section for creating the cryptographic files - using the Python <em>cryptography</em> package, or using <em>openssl</em>. Use either one of these methods.</p>
-<p>Homomorphic encryption keys are generated and distributed automatically and securely among the parties for each experiment. Only the parties participating in an experiment have access to the homomorphic encryption private key generated for the experiment.<br />
+<p>Homomorphic encryption keys are generated and distributed automatically and securely among the parties for each experiment. Only the parties participating in an experiment have access to the homomorphic encryption private key generated for the experiment.<br>
 To facilitate this generation and distribution process, the following steps must be performed before an experiment:</p>
 <ul>
 <li>All the parties participating in the experiment must agree on a single Certificate Authority.</li>
@@ -16501,7 +16491,7 @@ To facilitate this generation and distribution process, the following steps must
 <ul>
 <li>Certificate of the Certificate Authority.</li>
 <li>Certificate of the party issued by the Certificate Authority (includes the <em>RSA</em> public key of the party).</li>
-<li><em>RSA</em> private key of the party.</li>
+<li><em>RSA</em> private key of the party. </li>
 </ul>
 <p>Further details on this configuration are provided in the notebook section <a href="#launch-parties">Launch parties</a>.</p>
 <p>In this notebook, we generate and provision self-signed certificates.</p>
@@ -16552,29 +16542,29 @@ To facilitate this generation and distribution process, the following steps must
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">private_key</span>
 
-    <span class="k">def</span> <span class="nf">get_public_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;obj&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_public_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"obj"</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">private_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;self.private_key is None&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;obj&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"self.private_key is None"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">"obj"</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">private_key</span><span class="o">.</span><span class="n">public_key</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;pem&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">"pem"</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">private_key</span><span class="o">.</span><span class="n">public_key</span><span class="p">()</span><span class="o">.</span><span class="n">public_bytes</span><span class="p">(</span>
                 <span class="n">encoding</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">PEM</span><span class="p">,</span>
                 <span class="nb">format</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">PublicFormat</span><span class="o">.</span><span class="n">SubjectPublicKeyInfo</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Invalid type=&quot;</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">type</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Invalid type="</span> <span class="o">+</span> <span class="nb">repr</span><span class="p">(</span><span class="nb">type</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">write_key_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">private_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;self.private_key is None&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"self.private_key is None"</span><span class="p">)</span>
         <span class="n">pem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">private_key</span><span class="o">.</span><span class="n">private_bytes</span><span class="p">(</span>
             <span class="n">encoding</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">PEM</span><span class="p">,</span>
             <span class="nb">format</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">PrivateFormat</span><span class="o">.</span><span class="n">PKCS8</span><span class="p">,</span>
             <span class="n">encryption_algorithm</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">NoEncryption</span><span class="p">()</span>
         <span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">key_file</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">key_file</span><span class="p">:</span>
             <span class="n">key_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pem</span><span class="p">)</span>
         <span class="k">return</span>
 
@@ -16582,18 +16572,18 @@ To facilitate this generation and distribution process, the following steps must
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">crypto_path</span><span class="p">)</span>
 
 <span class="n">issuer</span> <span class="o">=</span> <span class="n">x509</span><span class="o">.</span><span class="n">Name</span><span class="p">([</span>
-    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">COUNTRY_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;US&quot;</span><span class="p">),</span>
-    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">STATE_OR_PROVINCE_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;California&quot;</span><span class="p">),</span>
-    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">LOCALITY_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;San Francisco&quot;</span><span class="p">),</span>
-    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">ORGANIZATION_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;Issuer Company&quot;</span><span class="p">),</span>
-    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">COMMON_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;mysite.com&quot;</span><span class="p">),</span>
+    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">COUNTRY_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">"US"</span><span class="p">),</span>
+    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">STATE_OR_PROVINCE_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">"California"</span><span class="p">),</span>
+    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">LOCALITY_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">"San Francisco"</span><span class="p">),</span>
+    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">ORGANIZATION_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">"Issuer Company"</span><span class="p">),</span>
+    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">COMMON_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">"mysite.com"</span><span class="p">),</span>
 <span class="p">])</span>
 <span class="n">subject</span> <span class="o">=</span> <span class="n">x509</span><span class="o">.</span><span class="n">Name</span><span class="p">([</span>
-    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">COUNTRY_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;US&quot;</span><span class="p">),</span>
-    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">STATE_OR_PROVINCE_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;California&quot;</span><span class="p">),</span>
-    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">LOCALITY_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;San Francisco&quot;</span><span class="p">),</span>
-    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">ORGANIZATION_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;Subject Company&quot;</span><span class="p">),</span>
-    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">COMMON_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">&quot;mysite.com&quot;</span><span class="p">),</span>
+    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">COUNTRY_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">"US"</span><span class="p">),</span>
+    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">STATE_OR_PROVINCE_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">"California"</span><span class="p">),</span>
+    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">LOCALITY_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">"San Francisco"</span><span class="p">),</span>
+    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">ORGANIZATION_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">"Subject Company"</span><span class="p">),</span>
+    <span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">COMMON_NAME</span><span class="p">,</span> <span class="sa">u</span><span class="s2">"mysite.com"</span><span class="p">),</span>
 <span class="p">])</span>
 
 <span class="n">issuer_key</span> <span class="o">=</span> <span class="n">CryptoRsa</span><span class="p">()</span>
@@ -16612,15 +16602,15 @@ To facilitate this generation and distribution process, the following steps must
 <span class="p">)</span><span class="o">.</span><span class="n">not_valid_after</span><span class="p">(</span>
     <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 <span class="p">)</span><span class="o">.</span><span class="n">add_extension</span><span class="p">(</span>
-    <span class="n">x509</span><span class="o">.</span><span class="n">SubjectAlternativeName</span><span class="p">([</span><span class="n">x509</span><span class="o">.</span><span class="n">DNSName</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;localhost&quot;</span><span class="p">)]),</span>
+    <span class="n">x509</span><span class="o">.</span><span class="n">SubjectAlternativeName</span><span class="p">([</span><span class="n">x509</span><span class="o">.</span><span class="n">DNSName</span><span class="p">(</span><span class="sa">u</span><span class="s2">"localhost"</span><span class="p">)]),</span>
     <span class="n">critical</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">issuer_key</span><span class="o">.</span><span class="n">private_key</span><span class="p">,</span> <span class="n">CryptoRsa</span><span class="o">.</span><span class="n">CRYPTO_HASH</span><span class="p">)</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cert_file_is</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cert_file_is</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cert_is</span><span class="o">.</span><span class="n">public_bytes</span><span class="p">(</span><span class="n">serialization</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">PEM</span><span class="p">))</span>
 
 <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUM_RTS</span><span class="p">):</span>
-    <span class="n">asym_file_path</span> <span class="o">=</span> <span class="n">asym_file_sb</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.pem&quot;</span>
-    <span class="n">cert_file_path</span> <span class="o">=</span> <span class="n">cert_file_sb</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.pem&quot;</span>
+    <span class="n">asym_file_path</span> <span class="o">=</span> <span class="n">asym_file_sb</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s2">".pem"</span>
+    <span class="n">cert_file_path</span> <span class="o">=</span> <span class="n">cert_file_sb</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s2">".pem"</span>
     <span class="n">subject_key</span> <span class="o">=</span> <span class="n">CryptoRsa</span><span class="p">()</span>
     <span class="n">subject_key</span><span class="o">.</span><span class="n">write_key_file</span><span class="p">(</span><span class="n">asym_file_path</span><span class="p">)</span>
     <span class="n">cert_sb</span> <span class="o">=</span> <span class="n">x509</span><span class="o">.</span><span class="n">CertificateBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">subject_name</span><span class="p">(</span>
@@ -16636,13 +16626,13 @@ To facilitate this generation and distribution process, the following steps must
     <span class="p">)</span><span class="o">.</span><span class="n">not_valid_after</span><span class="p">(</span>
         <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
     <span class="p">)</span><span class="o">.</span><span class="n">add_extension</span><span class="p">(</span>
-        <span class="n">x509</span><span class="o">.</span><span class="n">SubjectAlternativeName</span><span class="p">([</span><span class="n">x509</span><span class="o">.</span><span class="n">DNSName</span><span class="p">(</span><span class="sa">u</span><span class="s2">&quot;localhost&quot;</span><span class="p">)]),</span>
+        <span class="n">x509</span><span class="o">.</span><span class="n">SubjectAlternativeName</span><span class="p">([</span><span class="n">x509</span><span class="o">.</span><span class="n">DNSName</span><span class="p">(</span><span class="sa">u</span><span class="s2">"localhost"</span><span class="p">)]),</span>
         <span class="n">critical</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">issuer_key</span><span class="o">.</span><span class="n">private_key</span><span class="p">,</span> <span class="n">CryptoRsa</span><span class="o">.</span><span class="n">CRYPTO_HASH</span><span class="p">)</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cert_file_path</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cert_file_path</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cert_sb</span><span class="o">.</span><span class="n">public_bytes</span><span class="p">(</span><span class="n">serialization</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">PEM</span><span class="p">))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Done'</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16669,31 +16659,31 @@ To facilitate this generation and distribution process, the following steps must
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import os</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 
-<span class="c1"># if not os.path.exists(cert_file_is):</span>
-<span class="c1">#     ret = os.system(&quot;openssl req -x509 -newkey rsa:4096 -sha256 -days 365 -nodes &quot;</span>
-<span class="c1">#         &quot;-subj \&quot;/C=US/ST=California/L=San Francisco/O=Issuer Company/OU=Org/CN=www.iscompany.com\&quot; -keyout &quot; + </span>
-<span class="c1">#         str(asym_file_is) + &quot; -out &quot; + str(cert_file_is))</span>
-<span class="c1">#     if ret != 0:</span>
-<span class="c1">#         raise Exception(&quot;openssl for issuer failed: {}&quot;.format(ret))</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cert_file_is</span><span class="p">):</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"openssl req -x509 -newkey rsa:4096 -sha256 -days 365 -nodes "</span>
+        <span class="s2">"-subj </span><span class="se">\"</span><span class="s2">/C=US/ST=California/L=San Francisco/O=Issuer Company/OU=Org/CN=www.iscompany.com</span><span class="se">\"</span><span class="s2"> -keyout "</span> <span class="o">+</span> 
+        <span class="nb">str</span><span class="p">(</span><span class="n">asym_file_is</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" -out "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cert_file_is</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"openssl for issuer failed: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
 
-<span class="c1"># for idx in range(NUM_RTS):</span>
-<span class="c1">#     asym_file_path = asym_file_sb+str(idx)+&quot;.pem&quot;</span>
-<span class="c1">#     csr_file_path = csr_file_sb+str(idx)+&quot;.pem&quot;</span>
-<span class="c1">#     cert_file_path = cert_file_sb+str(idx)+&quot;.pem&quot;</span>
-<span class="c1">#     if not os.path.exists(cert_file_path):</span>
-<span class="c1">#         ret = os.system(&quot;openssl req -newkey rsa:4096 -nodes -subj &quot;</span>
-<span class="c1">#             &quot;\&quot;/C=US/ST=California/L=San Francisco/O=SB Company/OU=Org/CN=www.sbcompany.com\&quot; -keyout &quot; +</span>
-<span class="c1">#             str(asym_file_path) + &quot; -out &quot; + str(csr_file_path))</span>
-<span class="c1">#         if ret != 0:</span>
-<span class="c1">#             raise Exception(&quot;openssl for subject step 1 failed: {}&quot;.format(ret))</span>
-<span class="c1">#         ret = os.system(&quot;openssl x509 -req -CAcreateserial -CA &quot; + str(cert_file_is) + &quot; -CAkey &quot; + str(asym_file_is) +</span>
-<span class="c1">#             &quot; -sha256 -days 365 -in &quot; + str(csr_file_path) + &quot; -out &quot; + str(cert_file_path))</span>
-<span class="c1">#         if ret != 0:</span>
-<span class="c1">#             raise Exception(&quot;openssl for subject step 2 failed: {}&quot;.format(ret))</span>
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">NUM_RTS</span><span class="p">):</span>
+    <span class="n">asym_file_path</span> <span class="o">=</span> <span class="n">asym_file_sb</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s2">".pem"</span>
+    <span class="n">csr_file_path</span> <span class="o">=</span> <span class="n">csr_file_sb</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s2">".pem"</span>
+    <span class="n">cert_file_path</span> <span class="o">=</span> <span class="n">cert_file_sb</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s2">".pem"</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cert_file_path</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"openssl req -newkey rsa:4096 -nodes -subj "</span>
+            <span class="s2">"</span><span class="se">\"</span><span class="s2">/C=US/ST=California/L=San Francisco/O=SB Company/OU=Org/CN=www.sbcompany.com</span><span class="se">\"</span><span class="s2"> -keyout "</span> <span class="o">+</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">asym_file_path</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" -out "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">csr_file_path</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"openssl for subject step 1 failed: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">"openssl x509 -req -CAcreateserial -CA "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cert_file_is</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" -CAkey "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">asym_file_is</span><span class="p">)</span> <span class="o">+</span>
+            <span class="s2">" -sha256 -days 365 -in "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">csr_file_path</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" -out "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">cert_file_path</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">ret</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"openssl for subject step 2 failed: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span>
 
-<span class="c1"># print(&#39;Done&#39;)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Done'</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16721,15 +16711,15 @@ To facilitate this generation and distribution process, the following steps must
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>This section launches the Federated Learning aggregator for the experiment.</p>
-<p>To run the experiment with homomorphic encryption, the aggregator’s configuration must specify the following fusion type:<br />
-<code>&quot;fusion_type&quot;: &quot;crypto_iter_avg&quot;</code>.</p>
+<p>To run the experiment with homomorphic encryption, the aggregator’s configuration must specify the following fusion type:<br>
+<code>"fusion_type": "crypto_iter_avg"</code>.</p>
 <p>The aggregator’s configuration may also include a <code>crypto</code> object, that specifies the required encryption level. For example:</p>
-<pre><code>&quot;crypto&quot;: {
-    &quot;cipher_spec&quot;: &quot;encryption_level_1&quot;
-}
-</code></pre>
+
+<pre><code>"crypto": {
+    "cipher_spec": "encryption_level_1"
+}</code></pre>
 <p>If this object is not specified then the default of <code>encryption_level_1</code> is used.</p>
-<p>There are four possible encryption levels, ranging from level 1 to level 4. Higher encryption levels increase security and precision, and require higher resource consumption (e.g. computation, memory, network bandwidth). The security level corresponds to the strength of the encryption system, typically measured by the number of operations that an attacker must perform to break the system. The precision level corresponds to the precision of the encryption system's outcomes. Higher precision level means that cryptographic operations are accurate up to a larger number of digits before and after the floating point. Higher precision levels reduce loss of accuracy of the model due to the encryption operations.<br />
+<p>There are four possible encryption levels, ranging from level 1 to level 4. Higher encryption levels increase security and precision, and require higher resource consumption (e.g. computation, memory, network bandwidth). The security level corresponds to the strength of the encryption system, typically measured by the number of operations that an attacker must perform to break the system. The precision level corresponds to the precision of the encryption system's outcomes. Higher precision level means that cryptographic operations are accurate up to a larger number of digits before and after the floating point. Higher precision levels reduce loss of accuracy of the model due to the encryption operations.<br>
 Following is a description of the encryption levels:</p>
 <ul>
 <li>Encryption level 1 provides high security and good precision, and is the default level.</li>
@@ -16751,53 +16741,53 @@ Following is a description of the encryption levels:</p>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">fl_conf</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">MODEL_NAME</span><span class="p">,</span>
-      <span class="s2">&quot;spec&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">untrained_model_ids</span><span class="p">[</span><span class="n">MODEL_NAME</span><span class="p">]</span>
+    <span class="s2">"model"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">"type"</span><span class="p">:</span> <span class="n">MODEL_NAME</span><span class="p">,</span>
+      <span class="s2">"spec"</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">"id"</span><span class="p">:</span> <span class="n">untrained_model_ids</span><span class="p">[</span><span class="n">MODEL_NAME</span><span class="p">]</span>
       <span class="p">},</span>
-      <span class="s2">&quot;model_file&quot;</span><span class="p">:</span> <span class="s2">&quot;pytorch_sequence.pt&quot;</span>
+      <span class="s2">"model_file"</span><span class="p">:</span> <span class="s2">"pytorch_sequence.pt"</span>
     <span class="p">},</span>
-    <span class="s2">&quot;fusion_type&quot;</span><span class="p">:</span> <span class="s2">&quot;crypto_iter_avg&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;crypto&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s2">&quot;cipher_spec&quot;</span><span class="p">:</span> <span class="s2">&quot;encryption_level_1&quot;</span>
+    <span class="s2">"fusion_type"</span><span class="p">:</span> <span class="s2">"crypto_iter_avg"</span><span class="p">,</span>
+    <span class="s2">"crypto"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">"cipher_spec"</span><span class="p">:</span> <span class="s2">"encryption_level_1"</span>
     <span class="p">},</span>
-    <span class="s2">&quot;epochs&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;rounds&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
-    <span class="s2">&quot;metrics&quot;</span><span class="p">:</span> <span class="s2">&quot;accuracy&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;remote_training&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s2">&quot;max_timeout&quot;</span><span class="p">:</span> <span class="n">TIMEOUT_TRAINING_SEC</span><span class="p">,</span>
-      <span class="s2">&quot;quorum&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="s2">&quot;remote_training_systems&quot;</span><span class="p">:</span> <span class="n">remote_training_systems</span><span class="p">,</span>
+    <span class="s2">"epochs"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">"rounds"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="s2">"metrics"</span><span class="p">:</span> <span class="s2">"accuracy"</span><span class="p">,</span>
+    <span class="s2">"remote_training"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">"max_timeout"</span><span class="p">:</span> <span class="n">TIMEOUT_TRAINING_SEC</span><span class="p">,</span>
+      <span class="s2">"quorum"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s2">"remote_training_systems"</span><span class="p">:</span> <span class="n">remote_training_systems</span><span class="p">,</span>
     <span class="p">},</span>
-    <span class="s2">&quot;software_spec&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">SW_SPEC_NAME</span>
+    <span class="s2">"software_spec"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">"name"</span><span class="p">:</span> <span class="n">SW_SPEC_NAME</span>
     <span class="p">},</span>
-    <span class="s2">&quot;hardware_spec&quot;</span><span class="p">:</span> <span class="p">{</span>
-      <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">HW_SPEC_NAME</span>
+    <span class="s2">"hardware_spec"</span><span class="p">:</span> <span class="p">{</span>
+      <span class="s2">"name"</span><span class="p">:</span> <span class="n">HW_SPEC_NAME</span>
     <span class="p">}</span>
 <span class="p">}</span>
 <span class="n">aggregator_metadata</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s1">&#39;aggregator_he&#39;</span><span class="p">,</span>
-    <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">DESCRIPTION</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s1">'aggregator_he'</span><span class="p">,</span>
+    <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">DESCRIPTION</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
     <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">TAGS</span><span class="p">:</span> <span class="n">RSC_TAGS</span><span class="p">,</span>
     <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">TRAINING_DATA_REFERENCES</span><span class="p">:</span> <span class="p">[],</span>
     <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">TRAINING_RESULTS_REFERENCE</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;container&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;outputData&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;connection&quot;</span><span class="p">:</span> <span class="p">{},</span>
-        <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">{</span>
-          <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;.&quot;</span>
+        <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"container"</span><span class="p">,</span>
+        <span class="s2">"name"</span><span class="p">:</span> <span class="s2">"outputData"</span><span class="p">,</span>
+        <span class="s2">"connection"</span><span class="p">:</span> <span class="p">{},</span>
+        <span class="s2">"location"</span><span class="p">:</span> <span class="p">{</span>
+          <span class="s2">"path"</span><span class="p">:</span> <span class="s2">"."</span>
         <span class="p">}</span>
     <span class="p">},</span>
     <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">FEDERATED_LEARNING</span><span class="p">:</span> <span class="n">fl_conf</span>
 <span class="p">}</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Prepared config for aggregator with model type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Prepared config for aggregator with model type </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">))</span>
 <span class="n">aggregator</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">aggregator_metadata</span><span class="p">,</span> <span class="n">asynchronous</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Created Aggregator&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Created Aggregator"</span><span class="p">)</span>
 <span class="n">training_id</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">get_id</span><span class="p">(</span><span class="n">aggregator</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training id: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">training_id</span><span class="p">))</span>
-<span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;RTS: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">remote_training_systems</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Training id: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">training_id</span><span class="p">))</span>
+<span class="nb">print</span> <span class="p">(</span><span class="s2">"RTS: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">remote_training_systems</span><span class="p">))</span>
 </pre></div>
 
      </div>
@@ -16831,49 +16821,6 @@ Following is a description of the encryption levels:</p>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Check-if-you-are-on-Linux-x86">Check if you are on Linux x86<a class="anchor-link" href="#Check-if-you-are-on-Linux-x86">&#182;</a></h3>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>uname -r
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>uname -m
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16887,14 +16834,14 @@ Following is a description of the encryption levels:</p>
 <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">prt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">remote_training_systems</span><span class="p">):</span>
     <span class="n">party_metadata</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">LOCAL_TRAINING</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;crypto&quot;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s2">&quot;key_manager&quot;</span><span class="p">:</span> <span class="p">{</span>
-                        <span class="s2">&quot;key_mgr_info&quot;</span><span class="p">:</span> <span class="p">{</span>
-                            <span class="s2">&quot;distribution&quot;</span><span class="p">:</span> <span class="p">{</span>
-                				<span class="s2">&quot;ca_cert_file_path&quot;</span><span class="p">:</span> <span class="n">cert_file_is</span><span class="p">,</span>
-                				<span class="s2">&quot;my_cert_file_path&quot;</span><span class="p">:</span> <span class="n">cert_file_sb</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.pem&#39;</span><span class="p">,</span>
-                				<span class="s2">&quot;asym_key_file_path&quot;</span><span class="p">:</span> <span class="n">asym_file_sb</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.pem&#39;</span>
+            <span class="s2">"info"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"crypto"</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">"key_manager"</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">"key_mgr_info"</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">"distribution"</span><span class="p">:</span> <span class="p">{</span>
+                				<span class="s2">"ca_cert_file_path"</span><span class="p">:</span> <span class="n">cert_file_is</span><span class="p">,</span>
+                				<span class="s2">"my_cert_file_path"</span><span class="p">:</span> <span class="n">cert_file_sb</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s1">'.pem'</span><span class="p">,</span>
+                				<span class="s2">"asym_key_file_path"</span><span class="p">:</span> <span class="n">asym_file_sb</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s1">'.pem'</span>
                             <span class="p">}</span>
                         <span class="p">}</span>
                     <span class="p">}</span>
@@ -16902,19 +16849,19 @@ Following is a description of the encryption levels:</p>
             <span class="p">}</span>
         <span class="p">},</span>
         <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">DATA_HANDLER</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;npz_file&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">prt_data_file_prefix</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.npz&#39;</span><span class="p">)</span>
+            <span class="s2">"info"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"npz_file"</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">prt_data_file_prefix</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">+</span><span class="s1">'.npz'</span><span class="p">)</span>
             <span class="p">},</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">DATA_HANDLER_CLASS_NAME</span><span class="p">,</span>
-            <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">DATA_HANDLER_FILE_NAME</span><span class="p">)</span>
+            <span class="s2">"name"</span><span class="p">:</span> <span class="n">DATA_HANDLER_CLASS_NAME</span><span class="p">,</span>
+            <span class="s2">"path"</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">DATA_HANDLER_FILE_NAME</span><span class="p">)</span>
         <span class="p">}</span>
     <span class="p">}</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connecting party id </span><span class="si">{}</span><span class="s2"> to aggregator id </span><span class="si">{}</span><span class="s2">, model type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prt</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">training_id</span><span class="p">,</span> <span class="n">MODEL_NAME</span><span class="p">))</span>
-    <span class="n">party</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">create_party</span><span class="p">(</span><span class="n">prt</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">party_metadata</span><span class="p">)</span>
-    <span class="n">party</span><span class="o">.</span><span class="n">monitor_logs</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Connecting party id </span><span class="si">{}</span><span class="s2"> to aggregator id </span><span class="si">{}</span><span class="s2">, model type </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prt</span><span class="p">[</span><span class="s1">'id'</span><span class="p">],</span> <span class="n">training_id</span><span class="p">,</span> <span class="n">MODEL_NAME</span><span class="p">))</span>
+    <span class="n">party</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">create_party</span><span class="p">(</span><span class="n">prt</span><span class="p">[</span><span class="s1">'id'</span><span class="p">],</span> <span class="n">party_metadata</span><span class="p">)</span>
+    <span class="n">party</span><span class="o">.</span><span class="n">monitor_logs</span><span class="p">(</span><span class="s2">"ERROR"</span><span class="p">)</span>
     <span class="n">party</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">aggregator_id</span><span class="o">=</span><span class="n">training_id</span><span class="p">,</span> <span class="n">asynchronous</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Party </span><span class="si">{}</span><span class="s2"> is running&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prt</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Party </span><span class="si">{}</span><span class="s2"> is running"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prt</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Done'</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16959,30 +16906,30 @@ Following is a description of the encryption levels:</p>
 <span class="kn">import</span> <span class="nn">json</span>
 
 <span class="k">def</span> <span class="nf">monitor_training</span><span class="p">(</span><span class="n">training_id</span><span class="p">):</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Monitoring training id: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">training_id</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Monitoring training id: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">training_id</span><span class="p">))</span>
     <span class="n">MAX_ITER</span> <span class="o">=</span> <span class="mi">240</span>
     <span class="n">SLP_TIME_SEC</span> <span class="o">=</span> <span class="mi">10</span>
     <span class="n">aggregator_status</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">training_id</span><span class="p">)</span>
-    <span class="n">aggregator_state</span> <span class="o">=</span> <span class="n">aggregator_status</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span>
+    <span class="n">aggregator_state</span> <span class="o">=</span> <span class="n">aggregator_status</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span>
     <span class="nb">iter</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="nb">iter</span> <span class="o">&lt;</span> <span class="n">MAX_ITER</span> <span class="ow">and</span> <span class="s1">&#39;completed&#39;</span> <span class="o">!=</span> <span class="n">aggregator_state</span> <span class="ow">and</span> <span class="s1">&#39;failed&#39;</span> <span class="o">!=</span> <span class="n">aggregator_state</span> <span class="ow">and</span> <span class="s1">&#39;canceled&#39;</span> <span class="o">!=</span> <span class="n">aggregator_state</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Elapsed time: </span><span class="si">{}</span><span class="s2"> seconds, State: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">iter</span><span class="o">*</span><span class="n">SLP_TIME_SEC</span><span class="p">,</span> <span class="n">aggregator_state</span><span class="p">))</span>
+    <span class="k">while</span> <span class="nb">iter</span> <span class="o">&lt;</span> <span class="n">MAX_ITER</span> <span class="ow">and</span> <span class="s1">'completed'</span> <span class="o">!=</span> <span class="n">aggregator_state</span> <span class="ow">and</span> <span class="s1">'failed'</span> <span class="o">!=</span> <span class="n">aggregator_state</span> <span class="ow">and</span> <span class="s1">'canceled'</span> <span class="o">!=</span> <span class="n">aggregator_state</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Elapsed time: </span><span class="si">{}</span><span class="s2"> seconds, State: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">iter</span><span class="o">*</span><span class="n">SLP_TIME_SEC</span><span class="p">,</span> <span class="n">aggregator_state</span><span class="p">))</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">SLP_TIME_SEC</span><span class="p">)</span>
         <span class="n">aggregator_status</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="n">training_id</span><span class="p">)</span>
-        <span class="n">aggregator_state</span> <span class="o">=</span> <span class="n">aggregator_status</span><span class="p">[</span><span class="s1">&#39;state&#39;</span><span class="p">]</span>
+        <span class="n">aggregator_state</span> <span class="o">=</span> <span class="n">aggregator_status</span><span class="p">[</span><span class="s1">'state'</span><span class="p">]</span>
         <span class="nb">iter</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="nb">iter</span> <span class="o">&gt;=</span> <span class="n">MAX_ITER</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Training did not finish after </span><span class="si">{}</span><span class="s2"> seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">iter</span><span class="o">*</span><span class="n">SLP_TIME_SEC</span><span class="p">))</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Final status: &quot;</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">aggregator_status</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Training did not finish after </span><span class="si">{}</span><span class="s2"> seconds"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">iter</span><span class="o">*</span><span class="n">SLP_TIME_SEC</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Final status: "</span> <span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">aggregator_status</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
 
-<span class="k">if</span> <span class="s1">&#39;training_id&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
+<span class="k">if</span> <span class="s1">'training_id'</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
     <span class="n">monitor_training</span><span class="p">(</span><span class="n">training_id</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">trn</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">get_details</span><span class="p">(</span><span class="n">get_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">trn</span><span class="p">[</span><span class="s1">&#39;resources&#39;</span><span class="p">]:</span>
-        <span class="n">md</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s1">&#39;tags&#39;</span> <span class="ow">in</span> <span class="n">md</span> <span class="ow">and</span> <span class="n">md</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">RSC_TAGS</span><span class="p">:</span>
-            <span class="n">monitor_training</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">trn</span><span class="p">[</span><span class="s1">'resources'</span><span class="p">]:</span>
+        <span class="n">md</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">'metadata'</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">'tags'</span> <span class="ow">in</span> <span class="n">md</span> <span class="ow">and</span> <span class="n">md</span><span class="p">[</span><span class="s1">'tags'</span><span class="p">]</span> <span class="o">==</span> <span class="n">RSC_TAGS</span><span class="p">:</span>
+            <span class="n">monitor_training</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">'id'</span><span class="p">])</span>
 </pre></div>
 
      </div>
@@ -17044,14 +16991,14 @@ Following is a description of the encryption levels:</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Removing training jobs&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">'Removing training jobs'</span><span class="p">)</span>
 <span class="n">trn</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">get_details</span><span class="p">(</span><span class="n">get_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">trn</span><span class="p">[</span><span class="s1">&#39;resources&#39;</span><span class="p">]:</span>
-    <span class="n">md</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="s1">&#39;tags&#39;</span> <span class="ow">in</span> <span class="n">md</span> <span class="ow">and</span> <span class="n">md</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">RSC_TAGS</span><span class="p">:</span>
-        <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">cancel</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span> <span class="n">hard_delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Deleted </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">trn</span><span class="p">[</span><span class="s1">'resources'</span><span class="p">]:</span>
+    <span class="n">md</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="s1">'metadata'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">'tags'</span> <span class="ow">in</span> <span class="n">md</span> <span class="ow">and</span> <span class="n">md</span><span class="p">[</span><span class="s1">'tags'</span><span class="p">]</span> <span class="o">==</span> <span class="n">RSC_TAGS</span><span class="p">:</span>
+        <span class="n">wml_client</span><span class="o">.</span><span class="n">training</span><span class="o">.</span><span class="n">cancel</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">'id'</span><span class="p">],</span> <span class="n">hard_delete</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Deleted </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">'name'</span><span class="p">],</span><span class="n">md</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Done'</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -17078,23 +17025,23 @@ Following is a description of the encryption levels:</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Removing remote training systems&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s1">'Removing remote training systems'</span><span class="p">)</span>
 <span class="n">rts</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">remote_training_systems</span><span class="o">.</span><span class="n">get_details</span><span class="p">(</span><span class="n">get_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rts</span><span class="p">[</span><span class="s1">&#39;resources&#39;</span><span class="p">]:</span>
-    <span class="n">md</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="s1">&#39;tags&#39;</span> <span class="ow">in</span> <span class="n">md</span> <span class="ow">and</span> <span class="n">md</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">RSC_TAGS</span><span class="p">:</span>
-        <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Deleted </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]))</span>
+<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rts</span><span class="p">[</span><span class="s1">'resources'</span><span class="p">]:</span>
+    <span class="n">md</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="s1">'metadata'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">'tags'</span> <span class="ow">in</span> <span class="n">md</span> <span class="ow">and</span> <span class="n">md</span><span class="p">[</span><span class="s1">'tags'</span><span class="p">]</span> <span class="o">==</span> <span class="n">RSC_TAGS</span><span class="p">:</span>
+        <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">'id'</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Deleted </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">'name'</span><span class="p">],</span><span class="n">md</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Removing models&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Removing models'</span><span class="p">)</span>
 <span class="n">models</span> <span class="o">=</span> <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">get_model_details</span><span class="p">(</span><span class="n">get_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span><span class="p">[</span><span class="s1">&#39;resources&#39;</span><span class="p">]:</span>
-    <span class="n">md</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="s1">&#39;tags&#39;</span> <span class="ow">in</span> <span class="n">md</span> <span class="ow">and</span> <span class="n">md</span><span class="p">[</span><span class="s1">&#39;tags&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">RSC_TAGS</span><span class="p">:</span>
-        <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">])</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Deleted </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span><span class="n">md</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]))</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">models</span><span class="p">[</span><span class="s1">'resources'</span><span class="p">]:</span>
+    <span class="n">md</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s1">'metadata'</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">'tags'</span> <span class="ow">in</span> <span class="n">md</span> <span class="ow">and</span> <span class="n">md</span><span class="p">[</span><span class="s1">'tags'</span><span class="p">]</span> <span class="o">==</span> <span class="n">RSC_TAGS</span><span class="p">:</span>
+        <span class="n">wml_client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">'id'</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Deleted </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="s1">'name'</span><span class="p">],</span><span class="n">md</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]))</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Done'</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -17163,7 +17110,8 @@ Following is a description of the encryption levels:</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <hr>
-<p>Copyright © IBM Corp. 2022. This notebook and its source code are released under the terms of the MIT License.</p>
+
+<p>Copyright &copy; IBM Corp. 2022. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
