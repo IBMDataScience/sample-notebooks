@@ -1,7 +1,9 @@
 
 ### Watson Studio on Cloud Pak for Data sample projects
 
-#### 
+#### Federated Learning Demo for CP4D
+
+The project contains the following notebooks:
 
 **Federated Learning Tensorflow Tutorial - Part 1**
 
