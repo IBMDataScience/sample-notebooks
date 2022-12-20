@@ -2,6 +2,9 @@
 
 # Watson Studio on Cloud Pak for Data sample notebooks
 
+**Deploying a Decision Optimization Model with Watson**
+
+
 
 **Federated Learning Tensorflow Tutorial - Part 1**
 
