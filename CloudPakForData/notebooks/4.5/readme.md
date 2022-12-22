@@ -4,7 +4,21 @@
 
 **Deploying a Decision Optimization Model with Watson**
 
+**Save compress and deploy a Keras model**
 
+**Train model on cloud and deploy on local cluster**
+
+**Use PMML to predict species of irises**
+
+**Use Python function feature to scrape a webpage**
+
+**Use XGBoost to classify tumors**
+
+**Use scikit-learn to predict car price**
+
+**Use scikit-learn to predict handwritten digits**
+
+**Watson OpenScale and ML Engine**
 
 **Federated Learning Tensorflow Tutorial - Part 1**
 
