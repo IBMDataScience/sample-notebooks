@@ -8,7 +8,7 @@ This notebook shows you how to deploy a Decision Optimization model, create and 
 
 **Save compress and deploy a Keras model**
 
-
+Learn to compress and deploy a basic Keras model.
 
 **Train model on cloud and deploy on local cluster**
 
