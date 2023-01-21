@@ -203,6 +203,10 @@ background-color: transparent;
 width: 100% !important;
 }
 
+.jupyter-resource-usage-hide {
+display: none !important;
+}
+
 .notebook_app #notebook {
 padding-top: 0;
 }
@@ -15442,10 +15446,6 @@ a.anchor-link {
   display: none;
 }
 
-.highlight  {
-  margin: 0.4em;
-}
-
 /* Input area styling */
 .jp-InputArea {
   overflow: hidden;
@@ -15455,9 +15455,26 @@ a.anchor-link {
   overflow: hidden;
 }
 
-.CodeMirror pre {
+.CodeMirror.cm-s-jupyter .highlight pre {
+/* weird, but --jp-code-padding defined to be 5px but 4px horizontal padding is hardcoded for pre.CodeMirror-line */
+  padding: var(--jp-code-padding) 4px;
   margin: 0;
-  padding: 0;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+}
+
+.jp-OutputArea-output pre {
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.jp-RenderedText pre {
+  color: var(--jp-content-font-color1);
+  font-size: var(--jp-code-font-size);
 }
 
 /* Using table instead of flexbox so that we can use break-inside property */
@@ -15501,6 +15518,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 /* Hiding the collapser by default */
 .jp-Collapser {
   display: none;
+}
+
+@page {
+    margin: 0.5in; /* Margin for each printed piece of paper */
 }
 
 @media print {
@@ -15569,7 +15590,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>This notebook contains steps and code to create a predictive model, and deploy it on WML. This notebook introduces commands for pipeline creation, model training, model persistance to Watson Machine Learning repository, model deployment, and scoring.</p>
-<p>Some familiarity with Python is helpful. This notebook uses Latest Python and Apache® Spark.</p>
+<p>Some familiarity with Python is helpful. This notebook uses latest Python and Apache® Spark.</p>
 <p>You will use <strong>car_rental_training</strong> dataset.</p>
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>The learning goals of this notebook are:</p>
 <ul>
@@ -15604,18 +15625,6 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><strong>Note:</strong> This notebook works correctly with kernel <code>Python 3.9 with Spark 3.0</code>, please <strong>do not change kernel</strong>.</p>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="setup"></a></p>
 <h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
@@ -15635,14 +15644,14 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <h3 id="Connection-to-WML">Connection to WML<a class="anchor-link" href="#Connection-to-WML">&#182;</a></h3><p>Authenticate the Watson Machine Learning service on IBM Cloud. You need to provide platform <code>api_key</code> and instance <code>location</code>.</p>
 <p>You can use <a href="https://cloud.ibm.com/docs/cli/index.html">IBM Cloud CLI</a> to retrieve platform API Key and instance location.</p>
 <p>API Key can be generated in the following way:</p>
-
 <pre><code>ibmcloud login
-ibmcloud iam api-key-create API_KEY_NAME</code></pre>
+ibmcloud iam api-key-create API_KEY_NAME
+</code></pre>
 <p>In result, get the value of <code>api_key</code> from the output.</p>
 <p>Location of your WML instance can be retrieved in the following way:</p>
-
 <pre><code>ibmcloud login --apikey API_KEY -a https://cloud.ibm.com
-ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
+ibmcloud resource service-instance WML_INSTANCE_NAME
+</code></pre>
 <p>In result, get the value of <code>location</code> from the output.</p>
 
 </div>
@@ -16728,13 +16737,12 @@ ibmcloud resource service-instance WML_INSTANCE_NAME</code></pre>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><strong>Note</strong>: The above connection can be initialized alternatively with <code>api_key</code> and <code>resource_instance_id</code>.<br>
+<p><strong>Note</strong>: The above connection can be initialized alternatively with <code>api_key</code> and <code>resource_instance_id</code>.<br />
 The above cell can be replaced with:</p>
-
 <pre><code>conn_meta_props= {
-    client.connections.ConfigurationMetaNames.NAME: f"Connection to Database - {db_name} ",
+    client.connections.ConfigurationMetaNames.NAME: f&quot;Connection to Database - {db_name} &quot;,
     client.connections.ConfigurationMetaNames.DATASOURCE_TYPE: client.connections.get_datasource_type_uid_by_name(db_name),
-    client.connections.ConfigurationMetaNames.DESCRIPTION: "Connection to external Database",
+    client.connections.ConfigurationMetaNames.DESCRIPTION: &quot;Connection to external Database&quot;,
     client.connections.ConfigurationMetaNames.PROPERTIES: {
         'bucket': bucket_name,
         'api_key': cos_credentials['apikey'],
@@ -16744,7 +16752,9 @@ The above cell can be replaced with:</p>
     }
 }
 
-conn_details = client.connections.create(meta_props=conn_meta_props)</code></pre>
+conn_details = client.connections.create(meta_props=conn_meta_props)
+
+</code></pre>
 
 </div>
 </div>
@@ -16816,8 +16826,8 @@ conn_details = client.connections.create(meta_props=conn_meta_props)</code></pre
     <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> 
     <span class="n">meta_props</span><span class="o">=</span><span class="p">{</span>
         <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span><span class="s2">&quot;CARS4U - Business Area Prediction Modeljj&quot;</span><span class="p">,</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="s2">&quot;mllib_3.2&quot;</span><span class="p">,</span>
-        <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">SOFTWARE_SPEC_UID</span><span class="p">:</span> <span class="n">client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_id_by_name</span><span class="p">(</span><span class="s1">&#39;spark-mllib_3.2&#39;</span><span class="p">),</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="s2">&quot;mllib_3.3&quot;</span><span class="p">,</span>
+        <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">SOFTWARE_SPEC_UID</span><span class="p">:</span> <span class="n">client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_id_by_name</span><span class="p">(</span><span class="s1">&#39;spark-mllib_3.3&#39;</span><span class="p">),</span>
         <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TRAINING_DATA_REFERENCES</span><span class="p">:</span> <span class="n">training_data_references</span><span class="p">,</span>
         <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">LABEL_FIELD</span><span class="p">:</span> <span class="s2">&quot;Business_Area&quot;</span><span class="p">,</span>
     <span class="p">},</span>  
