@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Federated Learning XGBoost Demo Part 1 - for Admin</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Federated Learning Tensorflow 2 Demo Part 1 - for Admin</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -15591,7 +15591,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Part-1---WML-Federated-Learning-with-XGBoost-and-Adult-Income-dataset---Aggregator">Part 1 - WML Federated Learning with XGBoost and Adult Income dataset - Aggregator<a class="anchor-link" href="#Part-1---WML-Federated-Learning-with-XGBoost-and-Adult-Income-dataset---Aggregator">&#182;</a></h1>
+<h1 id="Part-1---WML-Federated-Learning-with-MNIST-for-Admin">Part 1 - WML Federated Learning with MNIST for Admin<a class="anchor-link" href="#Part-1---WML-Federated-Learning-with-MNIST-for-Admin">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -15603,12 +15603,13 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>With IBM Federated Learning, you can combine data from multiple sources to train a model from the collective data without having to actually share them. This allows enterprises to train data with other companies without delegating resources for security. Another advantage is the remote data does not have to be centralized in one location, eliminates the needs to move potentially large datasets. This notebook demonstrates how to start Federated Learning with the Python client. For more details setting up Federated Learning, terminology, and running Federated Learning from the UI, see <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fed-lea.html">Federated Learning documentation</a>.</p>
-<h3 id="Learning-Goals">Learning Goals<a class="anchor-link" href="#Learning-Goals">&#182;</a></h3><p>When you complete the Part 1 - WML Federated Learning with XGBoost and Adult Income dataset - Aggregator notebook, you should know how to:</p>
+<h3 id="Learning-Goals">Learning Goals<a class="anchor-link" href="#Learning-Goals">&#182;</a></h3><p>When you complete the Part 1 - WML Federated Learning with MNIST for Admin notebook, you should know how to:</p>
 <ul>
+<li>Load an untrained model</li>
 <li>Create a Remote Training System</li>
 <li>Start a training job</li>
 </ul>
-<p>Once you complete this notebook, please open <a href="https://dataplatform.cloud.ibm.com/">Part 2 - WML Federated Learning with XGBoost and Adult Income dataset - Party</a>.</p>
+<p>Once you complete this notebook, please open <a href="https://dataplatform.cloud.ibm.com/exchange/public/entry/view/029d77a73d72a4134c81383d6f020f6f">Part 2 - WML Federated Learning with MNIST for Party</a>.</p>
 
 </div>
 </div>
@@ -15639,24 +15640,31 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <li><a href="#libraries">1.3 Import libraries</a></li>
 </ul>
 </li>
-<li><a href="#auth">2. Obtain IBM Cloud Token</a></li>
-<li><a href="#create-rts">3. Create a Remote Training System</a></li>
-<li><a href="#fl-job">4. Create FL Training Job</a><ul>
-<li><a href="#status">4.1 Get Training Job Status</a></li>
+<li><a href="#cloud-auth">2. Obtain Cloud authentication token</a></li>
+<li><a href="#load">3. Load the model</a><ul>
+<li><a href="#model">3.1 Create Untrained Model Asset</a></li>
+<li><a href="#init">3.2 Upload Initial Model</a></li>
 </ul>
 </li>
-<li><a href="#party-notebook">5. Get Variables And Paste Into Party Notebook</a></li>
-<li><a href="#save-model">6. Save Trained Model</a><ul>
-<li><a href="#cos">6.1 COS connection</a></li>
-<li><a href="#cos-prereqs">6.2 Install pre-reqs</a></li>
-<li><a href="#save-to-project">6.3 Save model to project</a></li>
+<li><a href="#create-rts">4. Create Remote Training System</a></li>
+<li><a href="#fl-job">5. Create FL Training Job</a><ul>
+<li><a href="#status">5.1 Get Training Job Status</a></li>
 </ul>
 </li>
-<li><a href="#cleanup">7. Save Trained Model</a><ul>
-<li><a href="#list-jobs">7.1 List all training jobs</a></li>
-<li><a href="#del-jobs">7.2 Delete training jobs</a></li>
-<li><a href="#list-rts">7.3 List all Remote Training Systems</a></li>
-<li><a href="#del-rts">7.4 Delete Remote Training Systems</a></li>
+<li><a href="#party">6. Get Variables for Party Notebook</a></li>
+<li><a href="#save-model">7. Save Trained Model</a><ul>
+<li><a href="#cos">7.1 COS connection</a></li>
+<li><a href="#cos-prereqs">7.2 Install pre-reqs</a></li>
+<li><a href="#save-to-project">7.3 Save model to project</a></li>
+</ul>
+</li>
+<li><a href="#cleanup">8. Cleanup</a><ul>
+<li><a href="#list-jobs">8.1 List all training jobs</a></li>
+<li><a href="#del-jobs">8.2 Delete training jobs</a></li>
+<li><a href="#list-rts">8.3 List all Remote Training Systems</a></li>
+<li><a href="#del-rts">8.4 Delete Remote Training Systems</a></li>
+<li><a href="#list-models">8.5 List all Models</a></li>
+<li><a href="#del-models">8.6 Delete Untrained Models</a></li>
 </ul>
 </li>
 </ul>
@@ -15674,6 +15682,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p><a id = "prequisites"></a></p>
 <h2 id="1.-Prequisites">1. Prequisites<a class="anchor-link" href="#1.-Prequisites">&#182;</a></h2><p>Before you proceed, you need to have:</p>
 <ul>
+<li>A Cloud Object Storage bucket. You can create one from your Cloud Object Storage instance in your <a href="https://cloud.ibm.com/resources">IBM Cloud Services</a>.</li>
+<li>A Cloud Object Storage service credential with HMAC enabled. To create one, go to your <strong>Cloud Object Storage &lt; Service Credentials</strong> and click <strong>New credentials</strong>. Give writer access and click <strong>Advanced options</strong> and turn <em>Include HMAC Credential</em> to on.</li>
 <li>An IAM API Key. To create a new one, go to <a href="https://cloud.ibm.com">IBM Cloud homepage</a>. In your account, go to <strong>Manage &lt; IAM &lt; API Keys</strong>. Click <strong>Create an IBM Cloud API Key</strong>.</li>
 </ul>
 
@@ -15752,8 +15762,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">RTS_TAG</span> <span class="o">=</span> <span class="s2">&quot;wmlflxgbsamplerts&quot;</span>
-<span class="n">TRAINING_TAG</span> <span class="o">=</span> <span class="s2">&quot;wmlflxgbsampletraining&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">MODEL_TAG</span> <span class="o">=</span> <span class="s2">&quot;wmlfltf2samplemodel&quot;</span>
+<span class="n">RTS_TAG</span> <span class="o">=</span> <span class="s2">&quot;wmlfltf2samplerts&quot;</span>
+<span class="n">TRAINING_TAG</span> <span class="o">=</span> <span class="s2">&quot;wmlfltf2sampletraining&quot;</span>
 </pre></div>
 
      </div>
@@ -15801,7 +15812,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a id = "auth"></a></p>
+<p><a id = "cloud-auth"></a></p>
 <h2 id="2.-Obtain-Cloud-authentication-token">2. Obtain Cloud authentication token<a class="anchor-link" href="#2.-Obtain-Cloud-authentication-token">&#182;</a></h2>
 </div>
 </div>
@@ -15816,9 +15827,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">payload</span> <span class="o">=</span> <span class="s2">&quot;grant_type=urn:ibm:params:oauth:grant-type:apikey&amp;apikey=&quot;</span> <span class="o">+</span> <span class="n">IAM_APIKEY</span>
 <span class="n">token_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">IAM_TOKEN_URL</span> <span class="p">,</span>
-                          <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span><span class="p">},</span> 
-                          <span class="n">data</span> <span class="o">=</span> <span class="n">payload</span><span class="p">,</span>
-                          <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                           <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/x-www-form-urlencoded&quot;</span><span class="p">},</span> 
+                           <span class="n">data</span> <span class="o">=</span> <span class="n">payload</span><span class="p">,</span>
+                           <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">token_resp</span><span class="p">)</span>
 
@@ -15838,8 +15849,161 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p><a id = "load"></a></p>
+<h2 id="3.-Load-the-model">3. Load the model<a class="anchor-link" href="#3.-Load-the-model">&#182;</a></h2>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>You need an untrained model asset for Federated Learning to work with. In this tutorial, an untrained Tensorflow 2 Keras model is provided for you. Federated Learning supports Scikit-learn and Tensorflow 2, which are free machine learning packages with tutorials. Additionally IBM docs provide some details on how to configure an untrained model for Federated Learning. See:</p>
+<ul>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fl-imp-det.html#sklearn-config">Scikit-learn model configuration</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fl-imp-det.html#tf-config">Tensorflow 2 model configuration</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p><a id = "model"></a></p>
+<h3 id="3.1-Create-Untrained-Model-Asset">3.1 Create Untrained Model Asset<a class="anchor-link" href="#3.1-Create-Untrained-Model-Asset">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Creates an untrained model asset in your project.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">base_model_save_payload</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">{</span>
+<span class="s2">    &quot;name&quot;: &quot;Untrained MNIST Model&quot;,</span>
+<span class="s2">    &quot;tags&quot;: [ &quot;$tag&quot; ],</span>
+<span class="s2">    &quot;type&quot;: &quot;tensorflow_2.9&quot;,</span>
+<span class="s2">    &quot;software_spec&quot;: {</span>
+<span class="s2">        &quot;name&quot;: &quot;runtime-22.2-py3.10&quot;</span>
+<span class="s2">    },</span>
+<span class="s2">    &quot;custom&quot;: {</span>
+<span class="s2">        &quot;untrained&quot; : true</span>
+<span class="s2">    },</span>
+<span class="s2">    &quot;project_id&quot;: &quot;$projectId&quot;</span>
+<span class="s2">}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">projectId</span> <span class="o">=</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
+                <span class="n">tag</span> <span class="o">=</span> <span class="n">MODEL_TAG</span><span class="p">)</span>
+
+<span class="n">base_model_save_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/models&quot;</span><span class="p">,</span>
+                                     <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+                                              <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span>
+                                     <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">},</span>
+                                     <span class="n">data</span><span class="o">=</span><span class="n">base_model_save_payload</span><span class="p">,</span>
+                                     <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">base_model_save_resp</span><span class="p">)</span>
+<span class="n">status_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">base_model_save_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Create model asset response : &quot;</span><span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">status_json</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+
+<span class="n">base_model_id</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">base_model_save_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model asset id: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">base_model_id</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p><a id = "init"></a></p>
+<h3 id="3.2-Upload-Initial-Model">3.2 Upload Initial Model<a class="anchor-link" href="#3.2-Upload-Initial-Model">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>You need to upload the initial model into your project. In this tutorial, an untrained model example is provided and and downloaded from <a href="https://github.com/IBMDataScience/sample-notebooks/blob/master/Files/tf_mnist_model.zip">GitHub</a>.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">base_model_content_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://github.com/IBMDataScience/sample-notebooks/raw/master/Files/tf_mnist_model.zip&quot;</span><span class="p">,</span>
+                                       <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/octet-stream&quot;</span><span class="p">})</span>
+
+<span class="n">base_model_content_uri</span> <span class="o">=</span> <span class="s2">&quot;/ml/v4/models/&quot;</span><span class="o">+</span> <span class="n">base_model_id</span> <span class="o">+</span> <span class="s2">&quot;/content&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Host URL = &quot;</span> <span class="o">+</span> <span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="n">base_model_content_uri</span><span class="p">)</span>
+
+<span class="n">base_model_put_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="n">base_model_content_uri</span><span class="p">,</span>
+                                   <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+                                            <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span>
+                                   <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">,</span>
+                                           <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
+                                           <span class="s2">&quot;content_format&quot;</span><span class="p">:</span> <span class="s2">&quot;native&quot;</span><span class="p">},</span>
+                                   <span class="n">data</span><span class="o">=</span><span class="n">base_model_content_resp</span><span class="o">.</span><span class="n">content</span><span class="p">,</span>
+                                   <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">base_model_put_resp</span><span class="p">)</span>
+<span class="n">status_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">base_model_put_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Upload model response : &quot;</span><span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">status_json</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id = "create-rts"></a></p>
-<h2 id="3.-Create-Remote-Training-System-Asset">3. Create Remote Training System Asset<a class="anchor-link" href="#3.-Create-Remote-Training-System-Asset">&#182;</a></h2>
+<h2 id="4.-Create-Remote-Training-System-Asset">4. Create Remote Training System Asset<a class="anchor-link" href="#4.-Create-Remote-Training-System-Asset">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -15922,7 +16086,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id = "fl-job"></a></p>
-<h2 id="4.-Create-FL-Training-Job">4. Create FL Training Job<a class="anchor-link" href="#4.-Create-FL-Training-Job">&#182;</a></h2><p>In this section, you will launch the Federated Learning experiment.</p>
+<h2 id="5.-Create-FL-Training-Job">5. Create FL Training Job<a class="anchor-link" href="#5.-Create-FL-Training-Job">&#182;</a></h2><p>In this section, you will launch the Federated Learning experiment.</p>
 
 </div>
 </div>
@@ -15940,13 +16104,14 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="s2">  &quot;name&quot;: &quot;FL Aggregator&quot;,</span>
 <span class="s2">  &quot;tags&quot;: [ &quot;$tag&quot; ],</span>
 <span class="s2">  &quot;federated_learning&quot;: {</span>
-<span class="s2">    &quot;fusion_type&quot;: &quot;xgb_classifier&quot;,</span>
-<span class="s2">    &quot;learning_rate&quot;: 0.1,</span>
-<span class="s2">    &quot;loss&quot;: &quot;binary_crossentropy&quot;,</span>
-<span class="s2">    &quot;max_bins&quot;: 255,</span>
-<span class="s2">    &quot;rounds&quot;: 3,</span>
-<span class="s2">    &quot;num_classes&quot;: 2,</span>
-<span class="s2">    &quot;metrics&quot;: &quot;loss&quot;,</span>
+<span class="s2">    &quot;model&quot;: {</span>
+<span class="s2">      &quot;spec&quot;: {</span>
+<span class="s2">        &quot;id&quot;: &quot;$modelID&quot;</span>
+<span class="s2">      },</span>
+<span class="s2">      &quot;type&quot;: &quot;tensorflow&quot;</span>
+<span class="s2">    },</span>
+<span class="s2">    &quot;fusion_type&quot;: &quot;iter_avg&quot;,</span>
+<span class="s2">    &quot;rounds&quot;: 5,</span>
 <span class="s2">    &quot;remote_training&quot; : {</span>
 <span class="s2">      &quot;quorum&quot;: 1.0,</span>
 <span class="s2">      &quot;remote_training_systems&quot;: [ { &quot;id&quot; : &quot;$rts_one&quot;, &quot;required&quot; : true  } ]</span>
@@ -15969,7 +16134,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="s2">  },</span>
 <span class="s2">  &quot;project_id&quot;: &quot;$projectId&quot;  </span>
 <span class="s2">}</span>
-<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">projectId</span> <span class="o">=</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">modelID</span> <span class="o">=</span> <span class="n">base_model_id</span><span class="p">,</span>
+                <span class="n">projectId</span> <span class="o">=</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
                 <span class="n">rts_one</span> <span class="o">=</span> <span class="n">wml_remote_training_system_one_asset_uid</span><span class="p">,</span>
                 <span class="n">tag</span> <span class="o">=</span> <span class="n">TRAINING_TAG</span><span class="p">)</span>
 
@@ -16000,7 +16166,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id = "status"></a></p>
-<h3 id="4.1-Get-Training-Job-Status">4.1 Get Training Job Status<a class="anchor-link" href="#4.1-Get-Training-Job-Status">&#182;</a></h3>
+<h3 id="5.1-Get-Training-Job-Status">5.1 Get Training Job Status<a class="anchor-link" href="#5.1-Get-Training-Job-Status">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -16048,8 +16214,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a id = "party-notebook"></a></p>
-<h2 id="5.-Get-Variables-And-Paste-Into-Party-Notebook">5. Get Variables And Paste Into Party Notebook<a class="anchor-link" href="#5.-Get-Variables-And-Paste-Into-Party-Notebook">&#182;</a></h2>
+<p><a id = "party"></a></p>
+<h2 id="6.-Get-Variables-And-Paste-Into-Party-Notebook">6. Get Variables And Paste Into Party Notebook<a class="anchor-link" href="#6.-Get-Variables-And-Paste-Into-Party-Notebook">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -16092,7 +16258,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>As the Admin, you have now launched a Federated Learning experiment. Copy the output from the previous cell. Open Part 2 - WML Federated Learning with XGBoost and Adult Income dataset - Party and paste the output into the first code cell.  Run the Part 2 - Party notebook to the end.</p>
+<p>As the Admin, you have now launched a Federated Learning experiment. Copy the output from the previous cell. Open Part 2 - WML Federated Learning with MNIST for Party and paste the output into the first code cell. Run the Part 2 - Party notebook to the end.</p>
 
 </div>
 </div>
@@ -16105,7 +16271,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id = "save-model"></a></p>
-<h2 id="6.-Save-Trained-Model-To-Project">6. Save Trained Model To Project<a class="anchor-link" href="#6.-Save-Trained-Model-To-Project">&#182;</a></h2>
+<h2 id="7.-Save-Trained-Model-To-Project">7. Save Trained Model To Project<a class="anchor-link" href="#7.-Save-Trained-Model-To-Project">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -16129,7 +16295,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id = "cos"></a></p>
-<h3 id="6.1-Connection-to-COS">6.1 Connection to COS<a class="anchor-link" href="#6.1-Connection-to-COS">&#182;</a></h3>
+<h3 id="7.1-Connection-to-COS">7.1 Connection to COS<a class="anchor-link" href="#7.1-Connection-to-COS">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -16143,7 +16309,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p>This information is located in your Watson Studio project, under the Manage tab, on the General page.</p>
 <ol>
 <li>The bucket name is listed inside the Storage pane.</li>
-<li>To obtain the credentials click on the Manage in IBM Cloud link located inside the Storage pane.  From your COS instance click Service Credentials.  You can use an existing or create a new credential if needed.</li>
+<li>To obtain the credentials click on the Manage in IBM Cloud link located inside the Storage pane. From your COS instance click Service Credentials. You can use an existing or create a new credential if needed.</li>
 </ol>
 <ul>
 <li>COS_APIKEY - the &quot;apikey&quot; from your credentials</li>
@@ -16164,13 +16330,11 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">BUCKET</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># bucket used by project ex. myproject-donotdelete-pr-tdnvueqivxep8v. Go to your project &gt; Manage and check the bucket name under Cloud storage.</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">BUCKET</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span> <span class="c1"># bucket used by project ex. myproject-donotdelete-pr-tdnvueqivxep8v</span>
 
-<span class="n">COS_ENDPOINT</span> <span class="o">=</span> <span class="s2">&quot;https://s3.us.cloud-object-storage.appdomain.cloud&quot;</span> <span class="c1"># Current list available at https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints</span>
-
-<span class="c1"># Find these in cloud.ibm.com &gt; Storage &gt; Credentials &gt; &lt;Your COS bucket&gt; </span>
-<span class="n">COS_APIKEY</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># eg &quot;W00YixxxxxxxxxxMB-odB-2ySfTrFBIQQWanc--P3byk&quot; </span>
-<span class="n">COS_RESOURCE_INSTANCE_ID</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># eg &quot;crn:v1:bluemix:public:cloud-object-storage:global:a/3bf0d9003xxxxxxxxxx1c3e97696b71c:d6f04d83-6c4f-4a62-a165-696756d63903::&quot;</span>
+<span class="n">COS_ENDPOINT</span> <span class="o">=</span> <span class="s2">&quot;https://s3.us.cloud-object-storage.appdomain.cloud&quot;</span> <span class="c1"># Current list avaiable at https://control.cloud-object-storage.cloud.ibm.com/v2/endpoints</span>
+<span class="n">COS_APIKEY</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span> <span class="c1"># eg &quot;W00YixxxxxxxxxxMB-odB-2ySfTrFBIQQWanc--P3byk&quot;</span>
+<span class="n">COS_RESOURCE_INSTANCE_ID</span> <span class="o">=</span> <span class="s2">&quot;XXX&quot;</span> <span class="c1"># eg &quot;crn:v1:bluemix:public:cloud-object-storage:global:a/3bf0d9003xxxxxxxxxx1c3e97696b71c:d6f04d83-6c4f-4a62-a165-696756d63903::&quot;</span>
 </pre></div>
 
      </div>
@@ -16186,7 +16350,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id = "cos-prereqs"></a></p>
-<h3 id="6.2-Install-pre-req">6.2 Install pre-req<a class="anchor-link" href="#6.2-Install-pre-req">&#182;</a></h3>
+<h3 id="7.2-Install-pre-req">7.2 Install pre-req<a class="anchor-link" href="#7.2-Install-pre-req">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -16214,7 +16378,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id = "save-to-project"></a></p>
-<h3 id="6.3-Save-model-to-project">6.3 Save model to project<a class="anchor-link" href="#6.3-Save-model-to-project">&#182;</a></h3>
+<h3 id="7.3-Save-model-to-project">7.3 Save model to project<a class="anchor-link" href="#7.3-Save-model-to-project">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -16242,7 +16406,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="n">req</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">file</span><span class="p">[</span><span class="s2">&quot;Body&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
 
-<span class="n">req</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Trained Adult Income Model&quot;</span>
+<span class="n">req</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Trained MNIST Model&quot;</span>
 
 <span class="n">model_save_payload</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
 <span class="nb">print</span> <span class="p">(</span><span class="s2">&quot;Model save payload: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">model_save_payload</span><span class="p">)</span>
@@ -16291,7 +16455,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id = "cleanup"></a></p>
-<h2 id="7.-Clean-Up-Project">7. Clean Up Project<a class="anchor-link" href="#7.-Clean-Up-Project">&#182;</a></h2>
+<h2 id="8.-Clean-Up-Project">8. Clean Up Project<a class="anchor-link" href="#8.-Clean-Up-Project">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -16315,7 +16479,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id = "list-jobs"></a></p>
-<h3 id="7.1-List-all-training-jobs-in-project">7.1 List all training jobs in project<a class="anchor-link" href="#7.1-List-all-training-jobs-in-project">&#182;</a></h3>
+<h3 id="8.1-List-all-training-jobs-in-project">8.1 List all training jobs in project<a class="anchor-link" href="#8.1-List-all-training-jobs-in-project">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -16352,7 +16516,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id = "del-jobs"></a></p>
-<h3 id="7.2-Delete-all-training-jobs-in-this-project-created-by-this-notebook">7.2 Delete all training jobs in this project created by this notebook<a class="anchor-link" href="#7.2-Delete-all-training-jobs-in-this-project-created-by-this-notebook">&#182;</a></h3>
+<h3 id="8.2-Delete-all-training-jobs-in-this-project-created-by-this-notebook">8.2 Delete all training jobs in this project created by this notebook<a class="anchor-link" href="#8.2-Delete-all-training-jobs-in-this-project-created-by-this-notebook">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -16385,7 +16549,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
                                  <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">training_list_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">get_training_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
-<span class="n">training_resources</span><span class="o">=</span><span class="n">training_list_json</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">]</span>
+<span class="n">training_resources</span> <span class="o">=</span> <span class="n">training_list_json</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">training</span> <span class="ow">in</span> <span class="n">training_resources</span><span class="p">:</span>
     <span class="n">training_id</span> <span class="o">=</span> <span class="n">training</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
@@ -16413,7 +16577,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id = "list-rts"></a></p>
-<h3 id="7.3-List-all-remote-training-systems-in-project">7.3 List all remote training systems in project<a class="anchor-link" href="#7.3-List-all-remote-training-systems-in-project">&#182;</a></h3>
+<h3 id="8.3-List-all-remote-training-systems-in-project">8.3 List all remote training systems in project<a class="anchor-link" href="#8.3-List-all-remote-training-systems-in-project">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -16450,7 +16614,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id = "del-rts"></a></p>
-<h3 id="7.4-Delete-all-remote-training-systems-in-this-project-created-by-this-notebook">7.4 Delete all remote training systems in this project created by this notebook<a class="anchor-link" href="#7.4-Delete-all-remote-training-systems-in-this-project-created-by-this-notebook">&#182;</a></h3>
+<h3 id="8.4-Delete-all-remote-training-systems-in-this-project-created-by-this-notebook">8.4 Delete all remote training systems in this project created by this notebook<a class="anchor-link" href="#8.4-Delete-all-remote-training-systems-in-this-project-created-by-this-notebook">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -16471,7 +16635,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
                             <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">rts_list_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">get_rts_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
-<span class="n">rts_resources</span><span class="o">=</span><span class="n">rts_list_json</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">]</span>
+<span class="n">rts_resources</span> <span class="o">=</span> <span class="n">rts_list_json</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">rts</span> <span class="ow">in</span> <span class="n">rts_resources</span><span class="p">:</span>
     <span class="n">rts_id</span> <span class="o">=</span> <span class="n">rts</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
@@ -16497,9 +16661,105 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p><a id = "list-models"></a></p>
+<h3 id="8.5-List-all-models-in-project">8.5 List all models in project<a class="anchor-link" href="#8.5-List-all-models-in-project">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_model_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/models&quot;</span><span class="p">,</span> 
+                              <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+                                       <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span> 
+                              <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">,</span>
+                                      <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="n">PROJECT_ID</span><span class="p">},</span> 
+                              <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">get_model_resp</span><span class="p">)</span>
+<span class="n">model_list_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">get_model_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Models in Project : &quot;</span><span class="o">+</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">model_list_json</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p><a id = "del-models"></a></p>
+<h3 id="8.6-Delete-all-untrained-models-in-this-project-created-by-this-notebook">8.6 Delete all untrained models in this project created by this notebook<a class="anchor-link" href="#8.6-Delete-all-untrained-models-in-this-project-created-by-this-notebook">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_model_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/models&quot;</span><span class="p">,</span> 
+                              <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+                                       <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span> 
+                              <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">,</span>
+                                      <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="n">PROJECT_ID</span><span class="p">,</span>
+                                      <span class="s2">&quot;tag.value&quot;</span><span class="p">:</span> <span class="n">MODEL_TAG</span><span class="p">},</span> 
+                              <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">model_list_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">get_model_resp</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+<span class="n">model_resources</span> <span class="o">=</span> <span class="n">model_list_json</span><span class="p">[</span><span class="s2">&quot;resources&quot;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">model_resources</span><span class="p">:</span>
+    <span class="n">model_id</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="s2">&quot;metadata&quot;</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deleting Model ID: &quot;</span> <span class="o">+</span> <span class="n">model_id</span><span class="p">)</span>
+    <span class="n">delete_model_resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">WML_SERVICES_URL</span> <span class="o">+</span> <span class="s2">&quot;/ml/v4/models/&quot;</span> <span class="o">+</span> <span class="n">model_id</span><span class="p">,</span> 
+                                        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
+                                                 <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">},</span> 
+                                        <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">API_VERSION</span><span class="p">,</span>
+                                                <span class="s2">&quot;project_id&quot;</span><span class="p">:</span> <span class="n">PROJECT_ID</span><span class="p">},</span> 
+                                        <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">delete_model_resp</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>As the Admin, you have now launched a Federated Learning experiment. Copy the output from the previous cell. Open Part 2 - WML Federated Learning with MNIST for Party and paste the output into the first code cell.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1><hr></h1>
-<p>Copyright © 2020-2022 IBM. This notebook and its source code are released under the terms of the MIT License.
- 
+<p>Copyright © 2020 IBM. This notebook and its source code are released under the terms of the MIT License.
 <br><br></p>
 <div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
 <span style="font-size:18px;color:#152935;">Love this notebook? </span>
