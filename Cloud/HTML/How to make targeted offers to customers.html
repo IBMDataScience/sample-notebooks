@@ -36,6 +36,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -201,6 +202,10 @@ background-color: transparent;
 
 .notebook_app .container {
 width: 100% !important;
+}
+
+.jupyter-resource-usage-hide {
+display: none !important;
 }
 
 .notebook_app #notebook {
@@ -15442,10 +15447,6 @@ a.anchor-link {
   display: none;
 }
 
-.highlight  {
-  margin: 0.4em;
-}
-
 /* Input area styling */
 .jp-InputArea {
   overflow: hidden;
@@ -15455,9 +15456,26 @@ a.anchor-link {
   overflow: hidden;
 }
 
-.CodeMirror pre {
+.CodeMirror.cm-s-jupyter .highlight pre {
+/* weird, but --jp-code-padding defined to be 5px but 4px horizontal padding is hardcoded for pre.CodeMirror-line */
+  padding: var(--jp-code-padding) 4px;
   margin: 0;
-  padding: 0;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+}
+
+.jp-OutputArea-output pre {
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.jp-RenderedText pre {
+  color: var(--jp-content-font-color1);
+  font-size: var(--jp-code-font-size);
 }
 
 /* Using table instead of flexbox so that we can use break-inside property */
@@ -15501,6 +15519,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 /* Hiding the collapser by default */
 .jp-Collapser {
   display: none;
+}
+
+@page {
+    margin: 0.5in; /* Margin for each printed piece of paper */
 }
 
 @media print {
@@ -15561,6 +15583,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p>Table of contents:</p>
 <ul>
 <li><a href="#Describe-the-business-problem">Describe the business problem</a></li>
+</ul>
+<ul>
 <li><a href="#How-decision-optimization-can-help">How decision optimization (prescriptive analytics) can help</a></li>
 <li><a href="#Prepare-the-data">Prepare the data</a></li>
 <li><a href="#Use-IBM-Decision-Optimization-CPLEX-Modeling-for-Python">Use decision optimization</a><ul>
@@ -15571,6 +15595,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <li><a href="#Solve-with-Decision-Optimization">Solve with Decision Optimization</a></li>
 </ul>
 </li>
+</ul>
+<ul>
 <li><a href="#Step-2:-Analyze-the-solution">Step 2: Analyze the solution and run an example analysis</a></li>
 </ul>
 </li>
@@ -15589,14 +15615,14 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Describe-the-business-problem">Describe the business problem<a class="anchor-link" href="#Describe-the-business-problem">&#182;</a></h2><ul>
 <li>The Self-Learning Response Model (SLRM) node enables you to build a model that you can continually update. Such updates are useful when building a model that assists with predicting which offers are most appropriate for customers and the probability of offers being accepted. These sorts of models are most beneficial in customer relationship management, such as marketing applications or call centers.</li>
-<li>This example is based on a fictional banking company. </li>
-<li>The marketing department wants to achieve more profitable results in future campaigns by matching the right offer of financial services to each customer. </li>
-<li>In particular, the data science department identified the characteristics of customers who are most likely to respond favorably based on previous offers and responses and to promote the best current offer based on the results and now need to compute the best offering plan.
-<br></li>
+<li>This example is based on a fictional banking company.</li>
+<li>The marketing department wants to achieve more profitable results in future campaigns by matching the right offer of financial services to each customer.</li>
+<li>In particular, the data science department identified the characteristics of customers who are most likely to respond favorably based on previous offers and responses and to promote the best current offer based on the results and now need to compute the best offering plan.</li>
 </ul>
+<br>
 <p>A set of business constraints have to be respected:</p>
 <ul>
-<li>You have a limited budget to run a marketing campaign based on "gifts", "newsletter", "seminar"...</li>
+<li>You have a limited budget to run a marketing campaign based on &quot;gifts&quot;, &quot;newsletter&quot;, &quot;seminar&quot;...</li>
 <li>You want to determine which is the best way to contact the customers.</li>
 <li>You need to identify which customers to contact.</li>
 </ul>
@@ -15616,11 +15642,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </li>
 <li><p>Prescriptive analytics is the next step on the path to insight-based actions. It creates value through synergy with predictive analytics, which analyzes data to predict future outcomes.</p>
 </li>
-<li><p>Prescriptive analytics takes that insight to the next level by suggesting the optimal way to handle that future situation. Organizations that can act fast in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.<br>
-<br/></p>
+<li><p>Prescriptive analytics takes that insight to the next level by suggesting the optimal way to handle that future situation. Organizations that can act fast in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.</p>
 </li>
-<li><p>For example:</p>
+</ul>
+<br/>
 <ul>
+<li>For example:<ul>
 <li>Automate complex decisions and trade-offs to better manage limited resources.</li>
 <li>Take advantage of a future opportunity or mitigate a future risk.</li>
 <li>Proactively update recommendations based on changing events.</li>
@@ -15641,9 +15668,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Prepare-the-data">Prepare the data<a class="anchor-link" href="#Prepare-the-data">&#182;</a></h2><p>The predictions show which offers a customer is most likely to accept, and the confidence level that they will accept, depending on each customer’s details.</p>
 <p>For example:
-(139987, "Pension", 0.13221, "Mortgage", 0.10675) indicates that customer Id=139987 will certainly not buy a <em>Pension</em> as the level is only 13.2%, 
+(139987, &quot;Pension&quot;, 0.13221, &quot;Mortgage&quot;, 0.10675) indicates that customer Id=139987 will certainly not buy a <em>Pension</em> as the level is only 13.2%, 
 whereas
-(140030, "Savings", 0.95678, "Pension", 0.84446) is more than likely to buy <em>Savings</em> and a <em>Pension</em> as the rates are 95.7% and 84.4%.</p>
+(140030, &quot;Savings&quot;, 0.95678, &quot;Pension&quot;, 0.84446) is more than likely to buy <em>Savings</em> and a <em>Pension</em> as the rates are 95.7% and 84.4%.</p>
 <p>This data is taken from a SPSS example, except that the names of the customers were modified.</p>
 <p>A Python data analysis library, <a href="http://pandas.pydata.org" target="_blank" rel="noopener noreferrer">pandas</a>, is used to store the data. Let's set up and declare the data.</p>
 
@@ -15817,9 +15844,7 @@ whereas
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15830,9 +15855,7 @@ whereas
 </pre>
 </div>
 </div>
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -16235,9 +16258,7 @@ whereas
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -16370,9 +16391,7 @@ whereas
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -16382,9 +16401,7 @@ whereas
 </pre>
 </div>
 </div>
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -16580,9 +16597,7 @@ whereas
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -16593,9 +16608,7 @@ whereas
 </pre>
 </div>
 </div>
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -16697,7 +16710,7 @@ whereas
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="References">References<a class="anchor-link" href="#References">&#182;</a></h2><ul>
 <li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization CPLEX Modeling for Python documentation</a></li>
-<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html" target="_blank" rel="noopener noreferrer">Cloud Pak for Data documentation</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html" target="_blank" rel="noopener noreferrer">Platform documentation</a></li>
 </ul>
 
 </div>
@@ -16710,8 +16723,8 @@ whereas
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><hr>
-Copyright © 2017-2021. This notebook and its source code are released under the terms of the MIT License.</p>
+<hr>
+Copyright © 2017-2021. This notebook and its source code are released under the terms of the MIT License.
 
 </div>
 </div>
