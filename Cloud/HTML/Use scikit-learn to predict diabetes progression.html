@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>diabetes_test</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Use scikit-learn to predict diabetes progression</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -36,6 +36,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -201,6 +202,10 @@ background-color: transparent;
 
 .notebook_app .container {
 width: 100% !important;
+}
+
+.jupyter-resource-usage-hide {
+display: none !important;
 }
 
 .notebook_app #notebook {
@@ -15442,10 +15447,6 @@ a.anchor-link {
   display: none;
 }
 
-.highlight  {
-  margin: 0.4em;
-}
-
 /* Input area styling */
 .jp-InputArea {
   overflow: hidden;
@@ -15455,9 +15456,26 @@ a.anchor-link {
   overflow: hidden;
 }
 
-.CodeMirror pre {
+.CodeMirror.cm-s-jupyter .highlight pre {
+/* weird, but --jp-code-padding defined to be 5px but 4px horizontal padding is hardcoded for pre.CodeMirror-line */
+  padding: var(--jp-code-padding) 4px;
   margin: 0;
-  padding: 0;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+}
+
+.jp-OutputArea-output pre {
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.jp-RenderedText pre {
+  color: var(--jp-content-font-color1);
+  font-size: var(--jp-code-font-size);
 }
 
 /* Using table instead of flexbox so that we can use break-inside property */
@@ -15501,6 +15519,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 /* Hiding the collapser by default */
 .jp-Collapser {
   display: none;
+}
+
+@page {
+    margin: 0.5in; /* Margin for each printed piece of paper */
 }
 
 @media print {
@@ -15581,13 +15603,13 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </ul>
 <h2 id="Contents">Contents<a class="anchor-link" href="#Contents">&#182;</a></h2><p>This notebook contains the following parts:</p>
 <ol>
-<li><a href="#setup">Setup</a>  </li>
-<li><a href="#wml_repository">WML Repository</a>   </li>
-<li><a href="#deploy_and_score">Model Deployment and Scoring</a>   </li>
+<li><a href="#setup">Setup</a></li>
+<li><a href="#wml_repository">WML Repository</a></li>
+<li><a href="#deploy_and_score">Model Deployment and Scoring</a></li>
 <li><a href="#update_model">Persist new version of the model</a></li>
 <li><a href="#redeploy">Redeploy and score new version of the model</a></li>
-<li><a href="#cleaning">Cleaning</a>  </li>
-<li><a href="#summary">Summary</a>  </li>
+<li><a href="#cleaning">Cleaning</a></li>
+<li><a href="#summary">Summary</a></li>
 </ol>
 
 </div>
@@ -15603,7 +15625,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p><a id="setup"></a></p>
 <h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html?context=analytics" target="_blank" rel="noopener no referrer">here</a>).</li>
+<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html" target="_blank" rel="noopener no referrer">here</a>).</li>
 </ul>
 <p>You can find your COS credentials in COS instance dashboard under the <strong>Service credentials</strong> tab.
 Go to the <strong>Endpoint</strong> tab in the COS instance's dashboard to get the endpoint information.</p>
@@ -15694,15 +15716,15 @@ Go to the <strong>Endpoint</strong> tab in the COS instance's dashboard to get t
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash --out token
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash<span class="w"> </span>--out<span class="w"> </span>token
 
-curl -sk -X POST <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/x-www-form-urlencoded&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    --data-urlencode <span class="s2">&quot;grant_type=urn:ibm:params:oauth:grant-type:apikey&quot;</span> <span class="se">\</span>
-    --data-urlencode <span class="s2">&quot;apikey=</span><span class="nv">$API_KEY</span><span class="s2">&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$AUTH_ENDPOINT</span><span class="s2">&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> cut -d <span class="s1">&#39;&quot;&#39;</span> -f <span class="m">4</span>
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/x-www-form-urlencoded&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data-urlencode<span class="w"> </span><span class="s2">&quot;grant_type=urn:ibm:params:oauth:grant-type:apikey&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data-urlencode<span class="w"> </span><span class="s2">&quot;apikey=</span><span class="nv">$API_KEY</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$AUTH_ENDPOINT</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;&quot;&#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">4</span>
 </pre></div>
 
      </div>
@@ -15802,7 +15824,7 @@ curl -sk -X GET \
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<hr>
+<hr />
 
 </div>
 </div>
@@ -15833,19 +15855,6 @@ curl -sk -X GET \
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Models/models_create" 
-target="_blank" rel="noopener no referrer">Model storing</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -15854,10 +15863,10 @@ target="_blank" rel="noopener no referrer">Model storing</a></p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash --out model_payload
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash<span class="w"> </span>--out<span class="w"> </span>model_payload
 
-<span class="nv">MODEL_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;,&quot;name&quot;: &quot;scikit_diabetes_model&quot;,&quot;description&quot;: &quot;This is description&quot;,&quot;type&quot;: &quot;scikit-learn_1.0&quot;, &quot;software_spec&quot;: {&quot;name&quot;: &quot;runtime-22.1-py3.9&quot;}}&#39;</span>
-<span class="nb">echo</span> <span class="nv">$MODEL_PAYLOAD</span>
+<span class="nv">MODEL_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;,&quot;name&quot;: &quot;scikit_diabetes_model&quot;,&quot;description&quot;: &quot;This is description&quot;,&quot;type&quot;: &quot;scikit-learn_1.0&quot;, &quot;software_spec&quot;: {&quot;name&quot;: &quot;runtime-22.2-py3.10&quot;}}&#39;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$MODEL_PAYLOAD</span>
 </pre></div>
 
      </div>
@@ -15905,14 +15914,14 @@ target="_blank" rel="noopener no referrer">Model storing</a></p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash --out model_id -s <span class="s2">&quot;</span><span class="nv">$model_payload</span><span class="s2">&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash<span class="w"> </span>--out<span class="w"> </span>model_id<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$model_payload</span><span class="s2">&quot;</span>
 
-curl -sk -X POST <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    --data <span class="s2">&quot;</span><span class="nv">$MODEL_PAYLOAD</span><span class="s2">&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models?version=2020-08-01&quot;</span> <span class="p">|</span> grep <span class="s1">&#39;&quot;id&quot;: &#39;</span> <span class="p">|</span> awk -F <span class="s1">&#39;&quot;&#39;</span> <span class="s1">&#39;{ print $4 }&#39;</span> <span class="p">|</span> sed -n 2p
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$MODEL_PAYLOAD</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models?version=2020-08-01&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;&quot;id&quot;: &#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F<span class="w"> </span><span class="s1">&#39;&quot;&#39;</span><span class="w"> </span><span class="s1">&#39;{ print $4 }&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span>-n<span class="w"> </span>2p
 </pre></div>
 
      </div>
@@ -15947,19 +15956,6 @@ curl -sk -X POST <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Models/models_create_revision" 
-target="_blank" rel="noopener no referrer">Model revision</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -15968,10 +15964,10 @@ target="_blank" rel="noopener no referrer">Model revision</a></p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash --out revision_payload
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash<span class="w"> </span>--out<span class="w"> </span>revision_payload
 
 <span class="nv">REVISION_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;commit_message&quot;: &quot;Initial model.&quot;}&#39;</span>
-<span class="nb">echo</span> <span class="nv">$REVISION_PAYLOAD</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$REVISION_PAYLOAD</span>
 </pre></div>
 
      </div>
@@ -16021,13 +16017,13 @@ target="_blank" rel="noopener no referrer">Model revision</a></p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X POST <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    --data <span class="s2">&quot;</span><span class="nv">$REVISION_PAYLOAD</span><span class="s2">&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/revisions?version=2020-08-01&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> python -m json.tool
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$REVISION_PAYLOAD</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/revisions?version=2020-08-01&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </pre></div>
 
      </div>
@@ -16048,19 +16044,6 @@ curl -sk -X POST <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Models/models_upload_content" 
-target="_blank" rel="noopener no referrer">Upload model content</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16069,7 +16052,7 @@ target="_blank" rel="noopener no referrer">Upload model content</a></p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>wget -q https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/models/scikit/diabetes/model/diabetes_model.tar.gz <span class="err">\</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>wget<span class="w"> </span>-q<span class="w"> </span>https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/models/scikit/diabetes/model/diabetes_model.tar.gz<span class="w"> </span><span class="err">\</span>
     <span class="o">-</span><span class="n">O</span> <span class="n">diabetes_model</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
 </pre></div>
 
@@ -16086,15 +16069,15 @@ target="_blank" rel="noopener no referrer">Upload model content</a></p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash --out attachment_id
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash<span class="w"> </span>--out<span class="w"> </span>attachment_id
 
-curl -sk -X PUT <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/gzip&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    --data-binary <span class="s2">&quot;@diabetes_model.tar.gz&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/content?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&amp;content_format=native&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> grep <span class="s2">&quot;attachment_id&quot;</span> <span class="p">|</span> awk -F <span class="s1">&#39;&quot;&#39;</span> <span class="s1">&#39;{ print $4 }&#39;</span>
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/gzip&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data-binary<span class="w"> </span><span class="s2">&quot;@diabetes_model.tar.gz&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/content?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&amp;content_format=native&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;attachment_id&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F<span class="w"> </span><span class="s1">&#39;&quot;&#39;</span><span class="w"> </span><span class="s1">&#39;{ print $4 }&#39;</span>
 </pre></div>
 
      </div>
@@ -16131,19 +16114,6 @@ curl -sk -X PUT <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Models/models_filtered_download" 
-target="_blank" rel="noopener no referrer">Download model content</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16154,10 +16124,10 @@ target="_blank" rel="noopener no referrer">Download model content</a></p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X GET <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --output <span class="s2">&quot;model.tar.gz&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/download?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span>
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--output<span class="w"> </span><span class="s2">&quot;model.tar.gz&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/download?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span>
 </pre></div>
 
      </div>
@@ -16173,7 +16143,7 @@ curl -sk -X GET <span class="se">\</span>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>ls -l model.tar.gz
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>ls<span class="w"> </span>-l<span class="w"> </span>model.tar.gz
 </pre></div>
 
      </div>
@@ -16207,19 +16177,6 @@ curl -sk -X GET <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Deployments/deployments_create" 
-target="_blank" rel="noopener no referrer">Create deployment</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16228,10 +16185,10 @@ target="_blank" rel="noopener no referrer">Create deployment</a></p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash --out deployment_payload
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash<span class="w"> </span>--out<span class="w"> </span>deployment_payload
 
 <span class="nv">DEPLOYMENT_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;,&quot;name&quot;: &quot;Diabetes deployment&quot;, &quot;description&quot;: &quot;This is description&quot;,&quot;online&quot;: {},&quot;hardware_spec&quot;: {&quot;name&quot;: &quot;S&quot;},&quot;asset&quot;: {&quot;id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$MODEL_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}}&#39;</span>
-<span class="nb">echo</span> <span class="nv">$DEPLOYMENT_PAYLOAD</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$DEPLOYMENT_PAYLOAD</span>
 </pre></div>
 
      </div>
@@ -16279,14 +16236,14 @@ target="_blank" rel="noopener no referrer">Create deployment</a></p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash --out deployment_id
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash<span class="w"> </span>--out<span class="w"> </span>deployment_id
 
-curl -sk -X POST <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    --data <span class="s2">&quot;</span><span class="nv">$DEPLOYMENT_PAYLOAD</span><span class="s2">&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments?version=2020-08-01&quot;</span> <span class="p">|</span> grep <span class="s1">&#39;&quot;id&quot;: &#39;</span> <span class="p">|</span> awk -F <span class="s1">&#39;&quot;&#39;</span> <span class="s1">&#39;{ print $4 }&#39;</span> <span class="p">|</span> sed -n 3p
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$DEPLOYMENT_PAYLOAD</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments?version=2020-08-01&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;&quot;id&quot;: &#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>awk<span class="w"> </span>-F<span class="w"> </span><span class="s1">&#39;&quot;&#39;</span><span class="w"> </span><span class="s1">&#39;{ print $4 }&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span>-n<span class="w"> </span>3p
 </pre></div>
 
      </div>
@@ -16323,19 +16280,6 @@ curl -sk -X POST <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Deployments/deployments_get" 
-target="_blank" rel="noopener no referrer">Get deployment details</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16346,11 +16290,11 @@ target="_blank" rel="noopener no referrer">Get deployment details</a></p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X GET <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments/</span><span class="nv">$DEPLOYMENT_ID</span><span class="s2">?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> python -m json.tool
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments/</span><span class="nv">$DEPLOYMENT_ID</span><span class="s2">?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </pre></div>
 
      </div>
@@ -16371,19 +16315,6 @@ curl -sk -X GET <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Deployments/deployments_compute_predictions" 
-target="_blank" rel="noopener no referrer">Score your deployment</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16392,10 +16323,10 @@ target="_blank" rel="noopener no referrer">Score your deployment</a></p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash --out scoring_payload
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash<span class="w"> </span>--out<span class="w"> </span>scoring_payload
 
 <span class="nv">SCORING_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;space_id&quot;: &quot;$SPACE_ID&quot;,&quot;input_data&quot;: [{&quot;fields&quot;: [&quot;age&quot;, &quot;sex&quot;, &quot;bmi&quot;, &quot;bp&quot;, &quot;s1&quot;, &quot;s2&quot;, &quot;s3&quot;, &quot;s4&quot;, &quot;s5&quot;, &quot;s6&quot;], &quot;values&quot;: [[-0.00188201652779104, -0.044641636506989, -0.0514740612388061, -0.0263278347173518, -0.00844872411121698, -0.019163339748222, 0.0744115640787594, -0.0394933828740919, -0.0683297436244215, -0.09220404962683], [0.0852989062966783, 0.0506801187398187, 0.0444512133365941, -0.00567061055493425, -0.0455994512826475, -0.0341944659141195, -0.0323559322397657, -0.00259226199818282, 0.00286377051894013, -0.0259303389894746]]}]}&#39;</span>
-<span class="nb">echo</span> <span class="nv">$SCORING_PAYLOAD</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$SCORING_PAYLOAD</span>
 </pre></div>
 
      </div>
@@ -16445,13 +16376,13 @@ target="_blank" rel="noopener no referrer">Score your deployment</a></p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X POST <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    --data <span class="s2">&quot;</span><span class="nv">$SCORING_PAYLOAD</span><span class="s2">&quot;</span><span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments/</span><span class="nv">$DEPLOYMENT_ID</span><span class="s2">/predictions?version=2020-08-01&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> python -m json.tool
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SCORING_PAYLOAD</span><span class="s2">&quot;</span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments/</span><span class="nv">$DEPLOYMENT_ID</span><span class="s2">/predictions?version=2020-08-01&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </pre></div>
 
      </div>
@@ -16471,19 +16402,6 @@ curl -sk -X POST <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Deployments/deployments_list" 
-target="_blank" rel="noopener no referrer">List deployments details</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16494,11 +16412,11 @@ target="_blank" rel="noopener no referrer">List deployments details</a></p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X GET <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> python -m json.tool
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </pre></div>
 
      </div>
@@ -16554,19 +16472,6 @@ curl -sk -X GET <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Models/models_list_revisions" 
-target="_blank" rel="noopener no referrer">List revisions</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16577,12 +16482,12 @@ target="_blank" rel="noopener no referrer">List revisions</a></p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X GET <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/revisions?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> python -m json.tool
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/revisions?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </pre></div>
 
      </div>
@@ -16601,19 +16506,6 @@ curl -sk -X GET <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Models/models_create_revision" 
-target="_blank" rel="noopener no referrer">Create model revision</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16622,10 +16514,10 @@ target="_blank" rel="noopener no referrer">Create model revision</a></p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash --out revision_payload
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash<span class="w"> </span>--out<span class="w"> </span>revision_payload
 
 <span class="nv">REVISION_PAYLOAD</span><span class="o">=</span><span class="s1">&#39;{&quot;space_id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$SPACE_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;, &quot;commit_message&quot;: &quot;Updated model.&quot;}&#39;</span>
-<span class="nb">echo</span> <span class="nv">$REVISION_PAYLOAD</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$REVISION_PAYLOAD</span>
 </pre></div>
 
      </div>
@@ -16675,13 +16567,13 @@ target="_blank" rel="noopener no referrer">Create model revision</a></p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X POST <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    --data <span class="s2">&quot;</span><span class="nv">$REVISION_PAYLOAD</span><span class="s2">&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/revisions?version=2020-08-01&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> python -m json.tool
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$REVISION_PAYLOAD</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/revisions?version=2020-08-01&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </pre></div>
 
      </div>
@@ -16701,19 +16593,6 @@ curl -sk -X POST <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Models/models_update" 
-target="_blank" rel="noopener no referrer">Patch model</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16722,9 +16601,9 @@ target="_blank" rel="noopener no referrer">Patch model</a></p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash --out update_payload
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash<span class="w"> </span>--out<span class="w"> </span>update_payload
 
-<span class="nb">echo</span> <span class="s1">&#39;[{&quot;op&quot;: &quot;add&quot;, &quot;path&quot;: &quot;/name&quot;, &quot;value&quot;: &quot;updated scikit model&quot;}]&#39;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;[{&quot;op&quot;: &quot;add&quot;, &quot;path&quot;: &quot;/name&quot;, &quot;value&quot;: &quot;updated scikit model&quot;}]&#39;</span>
 </pre></div>
 
      </div>
@@ -16758,13 +16637,13 @@ target="_blank" rel="noopener no referrer">Patch model</a></p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X PATCH <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    --data <span class="s2">&quot;</span><span class="nv">$UPDATE_PAYLOAD</span><span class="s2">&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> python -m json.tool
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$UPDATE_PAYLOAD</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </pre></div>
 
      </div>
@@ -16791,7 +16670,7 @@ curl -sk -X PATCH <span class="se">\</span>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>wget -q https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/models/scikit/diabetes/model/new_diabetes_model.tar.gz <span class="err">\</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>wget<span class="w"> </span>-q<span class="w"> </span>https://github.com/IBM/watson-machine-learning-samples/raw/master/cloud/models/scikit/diabetes/model/new_diabetes_model.tar.gz<span class="w"> </span><span class="err">\</span>
     <span class="o">-</span><span class="n">O</span> <span class="n">new_diabetes_model</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
 </pre></div>
 
@@ -16800,19 +16679,6 @@ curl -sk -X PATCH <span class="se">\</span>
 </div>
 </div>
 
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Models/models_upload_content" 
-target="_blank" rel="noopener no referrer">Upload model content</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16823,13 +16689,13 @@ target="_blank" rel="noopener no referrer">Upload model content</a></p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X PUT <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/gzip&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    --data-binary <span class="s2">&quot;@new_diabetes_model.tar.gz&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/content?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&amp;content_format=native&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> python -m json.tool
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>PUT<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/gzip&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data-binary<span class="w"> </span><span class="s2">&quot;@new_diabetes_model.tar.gz&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/content?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&amp;content_format=native&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </pre></div>
 
      </div>
@@ -16848,19 +16714,6 @@ curl -sk -X PUT <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Models/models_list_revisions" 
-target="_blank" rel="noopener no referrer">List revisions</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16871,12 +16724,12 @@ target="_blank" rel="noopener no referrer">List revisions</a></p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X GET <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/revisions?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> python -m json.tool
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">/revisions?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </pre></div>
 
      </div>
@@ -16896,19 +16749,6 @@ curl -sk -X GET <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Models/models_get" 
-target="_blank" rel="noopener no referrer">Get model details</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16919,12 +16759,12 @@ target="_blank" rel="noopener no referrer">Get model details</a></p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X GET <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> python -m json.tool
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/models/</span><span class="nv">$MODEL_ID</span><span class="s2">?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </pre></div>
 
      </div>
@@ -16956,19 +16796,6 @@ curl -sk -X GET <span class="se">\</span>
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a href="https://watson-ml-v4-api.mybluemix.net/wml-restapi-cloud.html#/Deployments/deployments_update" 
-target="_blank" rel="noopener no referrer">Deployment update</a></p>
-
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -16977,9 +16804,9 @@ target="_blank" rel="noopener no referrer">Deployment update</a></p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span>%%bash --out redeploy_payload
+<div class=" highlight hl-ipython3"><pre><span></span>%%bash<span class="w"> </span>--out<span class="w"> </span>redeploy_payload
 
-<span class="nb">echo</span> <span class="s1">&#39;[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/asset&quot;, &quot;value&quot;: {&quot;id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$MODEL_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}}]&#39;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;[{&quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/asset&quot;, &quot;value&quot;: {&quot;id&quot;: &quot;&#39;</span><span class="s2">&quot;</span><span class="nv">$MODEL_ID</span><span class="s2">&quot;</span><span class="s1">&#39;&quot;}}]&#39;</span>
 </pre></div>
 
      </div>
@@ -17013,13 +16840,13 @@ target="_blank" rel="noopener no referrer">Deployment update</a></p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X PATCH <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    --data <span class="s2">&quot;</span><span class="nv">$REDEPLOY_PAYLOAD</span><span class="s2">&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments/</span><span class="nv">$DEPLOYMENT_ID</span><span class="s2">?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> python -m json.tool
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$REDEPLOY_PAYLOAD</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments/</span><span class="nv">$DEPLOYMENT_ID</span><span class="s2">?space_id=</span><span class="nv">$SPACE_ID</span><span class="s2">&amp;version=2020-08-01&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </pre></div>
 
      </div>
@@ -17048,13 +16875,13 @@ curl -sk -X PATCH <span class="se">\</span>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span>%%bash
 
-curl -sk -X POST <span class="se">\</span>
-    --header <span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Content-Type: application/json&quot;</span> <span class="se">\</span>
-    --header <span class="s2">&quot;Accept: application/json&quot;</span> <span class="se">\</span>
-    --data <span class="s2">&quot;</span><span class="nv">$SCORING_PAYLOAD</span><span class="s2">&quot;</span> <span class="se">\</span>
-    <span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments/</span><span class="nv">$DEPLOYMENT_ID</span><span class="s2">/predictions?version=2020-08-01&quot;</span> <span class="se">\</span>
-    <span class="p">|</span> python -m json.tool
+curl<span class="w"> </span>-sk<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--header<span class="w"> </span><span class="s2">&quot;Accept: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--data<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SCORING_PAYLOAD</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="s2">&quot;</span><span class="nv">$WML_ENDPOINT_URL</span><span class="s2">/ml/v4/deployments/</span><span class="nv">$DEPLOYMENT_ID</span><span class="s2">/predictions?version=2020-08-01&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>python<span class="w"> </span>-m<span class="w"> </span>json.tool
 </pre></div>
 
      </div>
@@ -17097,11 +16924,11 @@ Just convert below cells into the <code>code</code> and run them.</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>%%bash</p>
-<p>curl -sk -X DELETE \
-    --header "Authorization: Bearer $TOKEN" \
+<p>curl -sk -X DELETE <br />
+    --header &quot;Authorization: Bearer $TOKEN" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
-    "$WML_ENDPOINT_URL/ml/v4/deployments/$DEPLOYMENT_ID?space_id=$SPACE_ID&amp;version=2020-08-01"</p>
+    "$WML_ENDPOINT_URL/ml/v4/deployments/$DEPLOYMENT_ID?space_id=$SPACE_ID&amp;version=2020-08-01&quot;</p>
 
 </div>
 </div>
@@ -17140,10 +16967,10 @@ target="_blank" rel="noopener no referrer">Delete model from repository</a></p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>%%bash</p>
-<p>curl -sk -X DELETE \
-    --header "Authorization: Bearer $TOKEN" \
+<p>curl -sk -X DELETE <br />
+    --header &quot;Authorization: Bearer $TOKEN" \
     --header "Content-Type: application/json" \
-    "$WML_ENDPOINT_URL/ml/v4/models/$MODEL_ID?space_id=$SPACE_ID&amp;version=2020-08-01"</p>
+    "$WML_ENDPOINT_URL/ml/v4/models/$MODEL_ID?space_id=$SPACE_ID&amp;version=2020-08-01&quot;</p>
 
 </div>
 </div>
@@ -17169,7 +16996,7 @@ target="_blank" rel="noopener no referrer">Delete model from repository</a></p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Amadeusz Masny</strong>, Python Software Developer in Watson Machine Learning at IBM<br>
+<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Amadeusz Masny</strong>, Python Software Developer in Watson Machine Learning at IBM<br />
 <strong>Jan Sołtysik</strong>, Intern in Watson Machine Learning at IBM</p>
 
 </div>
