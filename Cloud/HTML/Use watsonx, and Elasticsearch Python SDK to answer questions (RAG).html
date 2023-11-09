@@ -16196,20 +16196,74 @@ Model inferencing.</p>
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="elastic_conn"></a></p>
 <h2 id="Basic-information-how-to-connect-to-Elasticsearch">Basic information how to connect to Elasticsearch<a class="anchor-link" href="#Basic-information-how-to-connect-to-Elasticsearch">&#182;</a></h2><p><strong>This notebook focuses on self-managed cluster using <a href="https://cloud.ibm.com/docs/databases-for-elasticsearch?topic=databases-for-elasticsearch-getting-started" target="_blank" rel="noopener no referrer">IBM Cloud® Databases for Elasticsearch.</a></strong></p>
+<p>The following cell retrieves the Elasticsearch users, password, host and port from the environment if available and prompts you otherwise.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">esuser</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ESUSER&quot;</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+    <span class="n">esuser</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter your Elasticsearch user name (hit enter): &quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">espassword</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ESPASSWORD&quot;</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+    <span class="n">espassword</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="s2">&quot;Please enter your Elasticsearch password (hit enter): &quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">eshost</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ESHOST&quot;</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+    <span class="n">eshost</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter your Elasticsearch hostname (hit enter): &quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">esport</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ESPORT&quot;</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+    <span class="n">esport</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter your Elasticsearch port number (hit enter): &quot;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>By default Elasticsearch will start with security features like authentication and TLS enabled. To connect to the Elasticsearch cluster you’ll need to configure the Python Elasticsearch client to use HTTPS with the generated CA certificate in order to make requests successfully. Details can be found <a href="https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/connecting.html#connect-self-managed-new" target="_blank" rel="noopener no referrer">here</a>. In this notebook certificate fingerprints will be used for authentication.</p>
 <p><strong>Verifying HTTPS with certificate fingerprints (Python 3.10 or later)</strong> If you don’t have access to the generated CA file from Elasticsearch you can use the following script to output the root CA fingerprint of the Elasticsearch instance with openssl s_client <a href="https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/connecting.html#_verifying_https_with_certificate_fingerprints_python_3_10_or_later" target="_blank" rel="noopener no referrer"> (docs)</a>:</p>
-<p>Replace the values of 'hostname' and '9200' to the
-corresponding host and port values for the cluster.</p>
-<pre><code>openssl s_client -connect hostname:9200 -showcerts &lt;/dev/null 2&gt;/dev/null | openssl x509 -fingerprint -sha256 -noout -in /dev/stdin
-
-</code></pre>
-<p>The output of openssl x509 will look something like this:</p>
-<p>SHA256 Fingerprint=A5:2D:D9:35:11:E8:C6:04:5E:21:F1:66:54:B7:7C:9E:E0:F3:4A:EA:26:D9:F4:03:20:B5:31:C4:74:67:62:28</p>
-<p>Copy this value and this is your <code>ssl_assert_fingerprint</code></p>
+<p>The following cell retrieves the fingerprint information using a shell command and stores it in variable <code>ssl_assert_fingerprint</code>.</p>
 
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">es_ssl_fingerprint</span> <span class="o">=</span> <span class="o">!</span>openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span><span class="nv">$eshost</span>:<span class="nv">$esport</span><span class="w">  </span>-showcerts<span class="w"> </span>&lt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>x509<span class="w"> </span>-fingerprint<span class="w"> </span>-sha256<span class="w"> </span>-noout<span class="w"> </span>-in<span class="w"> </span>/dev/stdin
+<span class="n">es_ssl_fingerprint</span> <span class="o">=</span> <span class="n">es_ssl_fingerprint</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">es_ssl_fingerprint</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16244,12 +16298,10 @@ corresponding host and port values for the cluster.</p>
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">elasticsearch</span> <span class="kn">import</span> <span class="n">Elasticsearch</span>
 
-<span class="n">elastic_client</span> <span class="o">=</span> <span class="n">Elasticsearch</span><span class="p">(</span>
-                                <span class="n">hosts</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;&lt;ENTER ELASTICSEARCH INSTANCE URL&gt;&quot;</span><span class="p">],</span> 
-                                <span class="n">basic_auth</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;&lt;ENTER ELASTICSEARCH USER&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;ENTER ELASTICSEARCH INSTANCE PASSWORD&gt;&quot;</span><span class="p">),</span> 
-                                <span class="n">request_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-                                <span class="n">ssl_assert_fingerprint</span><span class="o">=</span><span class="s2">&quot;&lt;ENTER CERTIFICATE FINGERPRINT&gt;&quot;</span>
-                            <span class="p">)</span>
+<span class="n">elastic_client</span> <span class="o">=</span> <span class="n">Elasticsearch</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;https://</span><span class="si">{</span><span class="n">esuser</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">espassword</span><span class="si">}</span><span class="s2">@</span><span class="si">{</span><span class="n">eshost</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">esport</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+                              <span class="n">basic_auth</span><span class="o">=</span><span class="p">(</span><span class="n">esuser</span><span class="p">,</span> <span class="n">espassword</span><span class="p">),</span>
+                              <span class="n">request_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">ssl_assert_fingerprint</span><span class="o">=</span><span class="n">es_ssl_fingerprint</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16360,7 +16412,10 @@ corresponding host and port values for the cluster.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[24]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">elastic_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index_name</span><span class="p">,</span> <span class="n">mappings</span><span class="o">=</span><span class="n">mapping</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="n">elastic_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index_name</span><span class="p">):</span>
+    <span class="n">elastic_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index_name</span><span class="p">)</span>
+    
+<span class="n">elastic_client</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index_name</span><span class="p">,</span> <span class="n">mappings</span><span class="o">=</span><span class="n">mapping</span><span class="p">)</span>
 </pre></div>
 
      </div>

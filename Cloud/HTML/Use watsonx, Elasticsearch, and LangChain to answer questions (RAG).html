@@ -15657,6 +15657,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>langchain<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>elasticsearch<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>sentence_transformers<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>humanize<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>pandas<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>rouge_score<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>nltk<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
@@ -15675,11 +15676,13 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[46]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">getpass</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">humanize</span>
+<span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span>
 </pre></div>
 
@@ -15697,8 +15700,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="watsonx-API-connection">watsonx API connection<a class="anchor-link" href="#watsonx-API-connection">&#182;</a></h3><p>This cell defines the credentials required to work with watsonx API for Foundation
 Model inferencing.</p>
-<p><strong>Action:</strong> Provide the IBM Cloud user API key. For details, see
-<a href="https://cloud.ibm.com/docs/account?topic=account-userapikey&amp;interface=ui">documentation</a>.</p>
+<p><strong>Action:</strong> Provide the IBM Cloud user API key. For details, see <a href="https://cloud.ibm.com/docs/account?topic=account-userapikey&interface=ui" target="_blank" rel="noopener no referrer">documentation</a>.</p>
 
 </div>
 </div>
@@ -15941,8 +15943,8 @@ Model inferencing.</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Build-up-knowledge-base">Build up knowledge base<a class="anchor-link" href="#Build-up-knowledge-base">&#182;</a></h3><p>The current state-of-the-art in RAG is to create dense vector representations of the knowledge base in order to calculate the semantic similarity to a given user query.</p>
-<p>We can generate dense vector representations using embedding models. In this notebook, we use <a href="https://www.google.com/search?client=safari&amp;rls=en&amp;q=sentencetransformers&amp;ie=UTF-8&amp;oe=UTF-8">SentenceTransformers</a> <a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2">all-MiniLM-L6-v2</a> to embed both the knowledge base passages and user queries. <code>all-MiniLM-L6-v2</code> is a performant open-source model that is small enough to run locally.</p>
-<p>A vector database is optimized for dense vector indexing and retrieval. This notebook uses <a href="https://python.langchain.com/docs/integrations/vectorstores/elasticsearch#basic-example">Elasticsearch</a>, a distributed, RESTful search and analytics engine, capable of performing both vector and lexical search. It is built on top of the Apache Lucene library, which offers good speed and performance with all-MiniLM-L6-v2 embedding model.</p>
+<p>We can generate dense vector representations using embedding models. In this notebook, we use <a href="https://www.sbert.net/" target="_blank" rel="noopener no referrer">Sentence Transformers</a> <a href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2" target="_blank" rel="noopener no referrer">all-MiniLM-L6-v2</a> to embed both the knowledge base passages and user queries. <code>all-MiniLM-L6-v2</code> is a performant open-source model that is small enough to run locally.</p>
+<p>A vector database is optimized for dense vector indexing and retrieval. This notebook uses <a href="https://python.langchain.com/docs/integrations/vectorstores/elasticsearch#basic-example" target="_blank" rel="noopener no referrer">Elasticsearch</a>, a distributed, RESTful search and analytics engine, capable of performing both vector and lexical search. It is built on top of the Apache Lucene library, which offers good speed and performance with all-MiniLM-L6-v2 embedding model.</p>
 
 </div>
 </div>
@@ -16032,7 +16034,7 @@ Model inferencing.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[51]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">documents</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">knowledge_base_dir</span><span class="si">}</span><span class="s2">/psgs.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -16195,30 +16197,8 @@ Model inferencing.</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="elastic_conn"></a></p>
-<h2 id="Basic-information-how-to-connect-to-Elasticsearch-(applies-to-both-scenarios)">Basic information how to connect to Elasticsearch (applies to both scenarios)<a class="anchor-link" href="#Basic-information-how-to-connect-to-Elasticsearch-(applies-to-both-scenarios)">&#182;</a></h2><p><strong>This notebook focuses on self-managed cluster using <a href="https://cloud.ibm.com/docs/databases-for-elasticsearch?topic=databases-for-elasticsearch-getting-started" target="_blank" rel="noopener no referrer">IBM Cloud® Databases for Elasticsearch.</a></strong></p>
-<p>By default Elasticsearch will start with security features like authentication and TLS enabled. To connect to the Elasticsearch cluster you’ll need to configure the Python Elasticsearch client to use HTTPS with the generated CA certificate in order to make requests successfully. Details can be found <a href="https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/connecting.html#connect-self-managed-new" target="_blank" rel="noopener no referrer">here</a>. In this notebook certificate fingerprints will be used for authentication.</p>
-<p><strong>Verifying HTTPS with certificate fingerprints (Python 3.10 or later)</strong> If you don’t have access to the generated CA file from Elasticsearch you can use the following script to output the root CA fingerprint of the Elasticsearch instance with openssl s_client <a href="https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/connecting.html#_verifying_https_with_certificate_fingerprints_python_3_10_or_later" target="_blank" rel="noopener no referrer"> (docs)</a>:</p>
-<p>Replace the values of 'hostname' and '9200' to the
-corresponding host and port values for the cluster.</p>
-<pre><code>openssl s_client -connect hostname:9200 -showcerts &lt;/dev/null 2&gt;/dev/null | openssl x509 -fingerprint -sha256 -noout -in /dev/stdin
-
-</code></pre>
-<p>The output of openssl x509 will look something like this:</p>
-<p>SHA256 Fingerprint=A5:2D:D9:35:11:E8:C6:04:5E:21:F1:66:54:B7:7C:9E:E0:F3:4A:EA:26:D9:F4:03:20:B5:31:C4:74:67:62:28</p>
-<p>Copy this value and this is your <code>ssl_assert_fingerprint</code></p>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a id="elasticsearchstore"></a></p>
-<h2 id="Set-up-ElasticsearchStore-(Langchain)">Set up ElasticsearchStore (Langchain)<a class="anchor-link" href="#Set-up-ElasticsearchStore-(Langchain)">&#182;</a></h2><p>Upserting a document means update the document even if it exists in the database. Otherwise re-inserting a document throws an error. This is useful for experimentation purpose.</p>
+<h2 id="Set-up-connectivity-information-to-Elasticsearch">Set up connectivity information to Elasticsearch<a class="anchor-link" href="#Set-up-connectivity-information-to-Elasticsearch">&#182;</a></h2><p><strong>This notebook focuses on self-managed cluster using <a href="https://cloud.ibm.com/docs/databases-for-elasticsearch?topic=databases-for-elasticsearch-getting-started" target="_blank" rel="noopener no referrer">IBM Cloud® Databases for Elasticsearch.</a></strong></p>
+<p>The following cell retrieves the Elasticsearch users, password, host and port from the environment if available and prompts you otherwise.</p>
 
 </div>
 </div>
@@ -16228,131 +16208,104 @@ corresponding host and port values for the cluster.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[46]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">esuser</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ESUSER&quot;</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+    <span class="n">esuser</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter your Elasticsearch user name (hit enter): &quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">espassword</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ESPASSWORD&quot;</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+    <span class="n">espassword</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="s2">&quot;Please enter your Elasticsearch password (hit enter): &quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">eshost</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ESHOST&quot;</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+    <span class="n">eshost</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter your Elasticsearch hostname (hit enter): &quot;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">esport</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;ESPORT&quot;</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+    <span class="n">esport</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter your Elasticsearch port number (hit enter): &quot;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>By default Elasticsearch will start with security features like authentication and TLS enabled. To connect to the Elasticsearch cluster you’ll need to configure the Python Elasticsearch client to use HTTPS with the generated CA certificate in order to make requests successfully. Details can be found <a href="https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/connecting.html#connect-self-managed-new" target="_blank" rel="noopener no referrer">here</a>. In this notebook certificate fingerprints will be used for authentication.</p>
+<p><strong>Verifying HTTPS with certificate fingerprints (Python 3.10 or later)</strong> If you don’t have access to the generated CA file from Elasticsearch you can use the following script to output the root CA fingerprint of the Elasticsearch instance with openssl s_client <a href="https://www.elastic.co/guide/en/elasticsearch/client/python-api/current/connecting.html#_verifying_https_with_certificate_fingerprints_python_3_10_or_later" target="_blank" rel="noopener no referrer"> (docs)</a>:</p>
+<p>The following cell retrieves the fingerprint information using a shell command and stores it in variable <code>ssl_assert_fingerprint</code>.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">es_ssl_fingerprint</span> <span class="o">=</span> <span class="o">!</span>openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span><span class="nv">$eshost</span>:<span class="nv">$esport</span><span class="w">  </span>-showcerts<span class="w"> </span>&lt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="p">|</span><span class="w"> </span>openssl<span class="w"> </span>x509<span class="w"> </span>-fingerprint<span class="w"> </span>-sha256<span class="w"> </span>-noout<span class="w"> </span>-in<span class="w"> </span>/dev/stdin
+<span class="n">es_ssl_fingerprint</span> <span class="o">=</span> <span class="n">es_ssl_fingerprint</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">es_ssl_fingerprint</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p><a id="elasticsearchstore"></a></p>
+<h2 id="Set-up-ElasticsearchStore-connector-from-Langchain">Set up ElasticsearchStore connector from Langchain<a class="anchor-link" href="#Set-up-ElasticsearchStore-connector-from-Langchain">&#182;</a></h2><p>We first create a regular Elasticsearch Python client connection. Then we pass it into LangChain's ElasticsearchStore wrapper together with the WatsonX model based embedding function.</p>
+<p>Consult the LangChain documentation For more information about <a href="https://api.python.langchain.com/en/latest/vectorstores/langchain.vectorstores.elasticsearch.ElasticsearchStore.html" target="_blank" rel="noopener no referrer">ElasticsearchStore</a> connector.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[41]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">langchain.vectorstores.elasticsearch</span> <span class="kn">import</span> <span class="n">ElasticsearchStore</span>
 <span class="kn">from</span> <span class="nn">elasticsearch</span> <span class="kn">import</span> <span class="n">Elasticsearch</span>
 
-<span class="k">class</span> <span class="nc">ElasticWrapper</span><span class="p">:</span>
-    
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">es_user</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">es_password</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">index_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">embedding_function</span><span class="p">:</span> <span class="n">Embeddings</span><span class="p">,</span>
-            <span class="n">ssl_assert_fingerprint</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-            <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;watsonx_rag_collection&quot;</span>
-    <span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_embedding_function</span> <span class="o">=</span> <span class="n">embedding_function</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_index_name</span> <span class="o">=</span> <span class="n">index_name</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connecting to Elasticsearch...&quot;</span><span class="p">)</span>
-        <span class="n">es_connection</span> <span class="o">=</span> <span class="n">Elasticsearch</span><span class="p">([</span><span class="n">url</span><span class="p">],</span> <span class="n">basic_auth</span><span class="o">=</span><span class="p">(</span><span class="n">es_user</span><span class="p">,</span> <span class="n">es_password</span><span class="p">),</span> <span class="n">request_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-                                    <span class="n">ssl_assert_fingerprint</span><span class="o">=</span><span class="n">ssl_assert_fingerprint</span><span class="p">)</span>
-        
-        <span class="bp">self</span><span class="o">.</span><span class="n">_db</span> <span class="o">=</span> <span class="n">ElasticsearchStore</span><span class="p">(</span>
-            <span class="n">es_connection</span><span class="o">=</span><span class="n">es_connection</span><span class="p">,</span>
-            <span class="n">index_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_index_name</span><span class="p">,</span>
-            <span class="n">embedding</span><span class="o">=</span><span class="n">embedding_function</span>
-        <span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connected&quot;</span><span class="p">)</span>
-        
+<span class="n">es_connection</span> <span class="o">=</span> <span class="n">Elasticsearch</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;https://</span><span class="si">{</span><span class="n">esuser</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">espassword</span><span class="si">}</span><span class="s2">@</span><span class="si">{</span><span class="n">eshost</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">esport</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span>
+                              <span class="n">basic_auth</span><span class="o">=</span><span class="p">(</span><span class="n">esuser</span><span class="p">,</span> <span class="n">espassword</span><span class="p">),</span>
+                              <span class="n">request_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">ssl_assert_fingerprint</span><span class="o">=</span><span class="n">es_ssl_fingerprint</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">upsert_texts</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">texts</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-        <span class="n">metadatas</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Run more texts through the embeddings and add to the vectorstore.</span>
-<span class="sd">        Args:</span>
-<span class="sd">            :param texts (Iterable[str]): Texts to add to the vectorstore.</span>
-<span class="sd">            :param metadatas (Optional[List[dict]], optional): Optional list of metadatas.</span>
-<span class="sd">            :param ids (Optional[List[str]], optional): Optional list of IDs.</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            List[str]: List of IDs of the added texts.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Adding metadata to documents</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Uploading texts...&quot;</span><span class="p">)</span>
-        <span class="n">ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">add_texts</span><span class="p">(</span>
-            <span class="n">texts</span><span class="p">,</span> <span class="n">metadatas</span><span class="o">=</span><span class="n">metadatas</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_index_name</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="n">ids</span> 
-        <span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Uploading completed&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ids</span>
-   
-
-    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_texts</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">n_results</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the closests vector to the question vector</span>
-<span class="sd">        :param query_texts: the question</span>
-<span class="sd">        :param n_results: number of results to generate</span>
-<span class="sd">        :return: the closest result to the given question</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">similarity_search_with_score</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query_texts</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">n_results</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">get_retriver</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the closests vector to the question vector</span>
-<span class="sd">        :param query_texts: the question</span>
-<span class="sd">        :param n_results: number of results to generate</span>
-<span class="sd">        :return: the closest result to the given question</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_db</span><span class="o">.</span><span class="n">as_retriever</span><span class="p">()</span>
+<span class="n">knowledge_base</span> <span class="o">=</span> <span class="n">ElasticsearchStore</span><span class="p">(</span><span class="n">es_connection</span><span class="o">=</span><span class="n">es_connection</span><span class="p">,</span>
+                                    <span class="n">index_name</span><span class="o">=</span><span class="s2">&quot;test_index&quot;</span><span class="p">,</span>
+                                    <span class="n">embedding</span><span class="o">=</span><span class="n">emb_func</span><span class="p">,</span>
+                                    <span class="n">strategy</span><span class="o">=</span><span class="n">ElasticsearchStore</span><span class="o">.</span><span class="n">ApproxRetrievalStrategy</span><span class="p">(),</span>
+                                    <span class="n">distance_strategy</span><span class="o">=</span><span class="s2">&quot;DOT_PRODUCT&quot;</span><span class="p">)</span>
 </pre></div>
 
      </div>
 </div>
 </div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[47]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">elasticsearch_store</span> <span class="o">=</span> <span class="n">ElasticWrapper</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;nq910_minilm6v2&quot;</span><span class="p">,</span>
-    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;&lt;ENTER ELASTICSEARCH INSTANCE URL&gt;&quot;</span><span class="p">,</span>
-    <span class="n">es_user</span><span class="o">=</span><span class="s2">&quot;&lt;ENTER ELASTICSEARCH USER&gt;&quot;</span><span class="p">,</span>
-    <span class="n">es_password</span><span class="o">=</span><span class="s2">&quot;&lt;ENTER ELASTICSEARCH INSTANCE PASSWORD&gt;&quot;</span><span class="p">,</span>
-    <span class="n">index_name</span><span class="o">=</span><span class="s2">&quot;test_index&quot;</span><span class="p">,</span>
-    <span class="n">ssl_assert_fingerprint</span><span class="o">=</span><span class="s2">&quot;&lt;ENTER CERTIFICATE FINGERPRINT&gt;&quot;</span><span class="p">,</span>
-    <span class="n">embedding_function</span><span class="o">=</span><span class="n">emb_func</span>  <span class="c1"># you can have something here using /embed endpoint</span>
-<span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Connecting to Elasticsearch...
-Connected
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -16368,22 +16321,616 @@ Connected
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[42]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="n">es_connection</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;test_index&quot;</span><span class="p">):</span>
+    <span class="n">es_connection</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;test_index&quot;</span><span class="p">)</span>
+<span class="n">_</span> <span class="o">=</span> <span class="n">knowledge_base</span><span class="o">.</span><span class="n">add_texts</span><span class="p">(</span><span class="n">texts</span><span class="o">=</span><span class="n">documents</span><span class="o">.</span><span class="n">indextext</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                             <span class="n">metadatas</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">doc_id</span><span class="p">}</span>
+                                <span class="k">for</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">doc_id</span><span class="p">)</span> <span class="ow">in</span>
+                                <span class="nb">zip</span><span class="p">(</span><span class="n">documents</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">documents</span><span class="o">.</span><span class="n">id</span><span class="p">)],</span>  <span class="c1"># filter on these!</span>
+                             <span class="n">index_name</span><span class="o">=</span><span class="s2">&quot;test_index&quot;</span><span class="p">,</span>
+                             <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">documents</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>  <span class="c1"># unique for each doc</span>
+                            <span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Let's take a look in Elasticsearch what the LangChain wrapper has created. First we display the newly created index (&quot;tables&quot; in Elasticsearch are always called &quot;index&quot;). Note the field <code>vector</code> of type <code>dense_vector</code> with <code>dot_product</code> similarity.</p>
+
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[43]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">elasticsearch_store</span><span class="o">.</span><span class="n">upsert_texts</span><span class="p">(</span>
-    <span class="n">texts</span><span class="o">=</span><span class="n">documents</span><span class="o">.</span><span class="n">indextext</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
-    <span class="c1"># we handle tokenization, embedding, and indexing automatically. You can skip that and add your own embeddings as well</span>
-    <span class="n">metadata</span><span class="o">=</span><span class="p">[{</span><span class="s1">&#39;title&#39;</span><span class="p">:</span> <span class="n">title</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="n">doc_id</span><span class="p">}</span>
-                <span class="k">for</span> <span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">doc_id</span><span class="p">)</span> <span class="ow">in</span>
-                <span class="nb">zip</span><span class="p">(</span><span class="n">documents</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">documents</span><span class="o">.</span><span class="n">id</span><span class="p">)],</span>  <span class="c1"># filter on these!</span>
-    <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">documents</span><span class="o">.</span><span class="n">id</span><span class="p">],</span>  <span class="c1"># unique for each doc</span>
-<span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">dict</span><span class="p">(</span><span class="n">es_connection</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;test_index&quot;</span><span class="p">))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[43]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>{&#39;test_index&#39;: {&#39;aliases&#39;: {},
+  &#39;mappings&#39;: {&#39;properties&#39;: {&#39;metadata&#39;: {&#39;properties&#39;: {&#39;id&#39;: {&#39;type&#39;: &#39;long&#39;},
+      &#39;title&#39;: {&#39;type&#39;: &#39;text&#39;,
+       &#39;fields&#39;: {&#39;keyword&#39;: {&#39;type&#39;: &#39;keyword&#39;, &#39;ignore_above&#39;: 256}}}}},
+    &#39;text&#39;: {&#39;type&#39;: &#39;text&#39;,
+     &#39;fields&#39;: {&#39;keyword&#39;: {&#39;type&#39;: &#39;keyword&#39;, &#39;ignore_above&#39;: 256}}},
+    &#39;vector&#39;: {&#39;type&#39;: &#39;dense_vector&#39;,
+     &#39;dims&#39;: 384,
+     &#39;index&#39;: True,
+     &#39;similarity&#39;: &#39;dot_product&#39;}}},
+  &#39;settings&#39;: {&#39;index&#39;: {&#39;routing&#39;: {&#39;allocation&#39;: {&#39;include&#39;: {&#39;_tier_preference&#39;: &#39;data_content&#39;}}},
+    &#39;allocation&#39;: {&#39;max_retries&#39;: &#39;15&#39;},
+    &#39;number_of_shards&#39;: &#39;1&#39;,
+    &#39;provided_name&#39;: &#39;test_index&#39;,
+    &#39;creation_date&#39;: &#39;1697800967343&#39;,
+    &#39;unassigned&#39;: {&#39;node_left&#39;: {&#39;delayed_timeout&#39;: &#39;60m&#39;}},
+    &#39;number_of_replicas&#39;: &#39;1&#39;,
+    &#39;uuid&#39;: &#39;3z03XJE2TSm7Z0FqMvLMCw&#39;,
+    &#39;version&#39;: {&#39;created&#39;: &#39;8070099&#39;}}}}}</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Verify the number of documents loaded into the Elasticsearch index.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[44]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">doc_count</span> <span class="o">=</span> <span class="n">es_connection</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s1">&#39;test_index&#39;</span><span class="p">)[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span>
+<span class="n">doc_count</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[44]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>1000</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Let's retrieve a random document as a sample. Note the embedding in the vector field, that was generated with the WatsonX embedding model.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[47]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">dict</span><span class="p">(</span><span class="n">es_connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;test_index&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[47]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>{&#39;_index&#39;: &#39;test_index&#39;,
+ &#39;_id&#39;: &#39;252&#39;,
+ &#39;_version&#39;: 1,
+ &#39;_seq_no&#39;: 251,
+ &#39;_primary_term&#39;: 1,
+ &#39;found&#39;: True,
+ &#39;_source&#39;: {&#39;text&#39;: &#34;Kaaba\nBibliotheca Historica . Book 3 Chapter 44 . Jump up ^ Imoti , Eiichi . `` The Ka&#39;ba - i Zardušt &#39;&#39; , Orient , XV ( 1979 ) , The Society for Near Eastern Studies in Japan , pp. 65 -- 69 . Jump up ^ Grunebaum , p. 24 Jump up ^ Armstrong , Jerusalem , p. 221 Jump up ^ Hafiz Ghulam Sarwar . Muhammad the Holy Prophet . pp. 18 -- 19 . Jump up ^ Francis E. Peters , Muhammad and the origins of Islam , SUNY Press , 1994 , p. 109 . Jump up ^ Armstrong , Jerusalem : One City , Three Faiths , pp. 221 -- 22 Jump up ^ Crone , Patricia ( 2004 ) . Makkan Trade and the Rise of Islam . Piscataway , New Jersey : Gorgias . p. 137 Jump up ^ Britannica 2002 Deluxe Edition CD - ROM , `` Ka&#39;bah . &#39;&#39; Jump up ^ Gaster , Moses ( 1927 ) . The Asatir : the Samaritan book of Moses . London : The Royal Asiatic Society . pp. 262 , 71 . Ishmaelites built Mecca ( Baka , Bakh ) Jump up ^ Crown , Alan David ( 2001 ) . Samaritan Scribes and Manuscripts . Tübingen : Mohr Siebeck . p. 27 . Jump up ^ M. Gaster , The Asatir : The Samaritan Book of the `` Secrets of Moses &#39;&#39; , London ( 1927 ) , p. 160 Jump up&#34;,
+  &#39;vector&#39;: [-0.019460834562778473,
+   0.10563772171735764,
+   -0.03679051250219345,
+   0.009292990900576115,
+   -0.05026105046272278,
+   0.028299227356910706,
+   -0.07515691965818405,
+   -0.010877757333219051,
+   -0.03545180708169937,
+   0.04190792888402939,
+   0.11010318994522095,
+   -0.054886963218450546,
+   0.03744077309966087,
+   -0.004814439453184605,
+   0.05074089393019676,
+   -0.0022956423927098513,
+   -0.053423911333084106,
+   0.012671268545091152,
+   0.0336051769554615,
+   -0.03599844500422478,
+   -0.05706708878278732,
+   -0.045180145651102066,
+   0.05510128661990166,
+   0.011039086617529392,
+   0.060496263206005096,
+   0.03646443039178848,
+   0.01173442229628563,
+   0.015329938381910324,
+   -0.009243086911737919,
+   -0.024239499121904373,
+   -0.12653255462646484,
+   0.03888430446386337,
+   -0.005490416660904884,
+   -0.07155846059322357,
+   0.04236306995153427,
+   0.04549425467848778,
+   0.06823600828647614,
+   0.10654156655073166,
+   0.08047862350940704,
+   0.013659396208822727,
+   0.09947443753480911,
+   -0.01900421269237995,
+   -0.019408587366342545,
+   -0.039576198905706406,
+   0.024934973567724228,
+   0.07719919085502625,
+   0.0399315245449543,
+   0.06767931580543518,
+   -0.009400881826877594,
+   0.0005378876812756062,
+   -0.04316924512386322,
+   0.05985002592206001,
+   0.07321515679359436,
+   0.005362308118492365,
+   0.05106531083583832,
+   -0.06003822013735771,
+   -0.08632269501686096,
+   0.053666602820158005,
+   0.0696180984377861,
+   -0.033491190522909164,
+   -0.0036159527953714132,
+   0.06296854466199875,
+   -0.02202592045068741,
+   -0.012363250367343426,
+   -0.015575799159705639,
+   -0.08246882259845734,
+   0.0015743793919682503,
+   0.03993629664182663,
+   -0.05369618535041809,
+   0.039510373026132584,
+   -0.04165635630488396,
+   -0.03019368276000023,
+   0.009884418919682503,
+   0.02997877635061741,
+   -0.11685360968112946,
+   -0.04722032696008682,
+   -0.02284979820251465,
+   -0.016347184777259827,
+   -0.13249355554580688,
+   -0.03399200364947319,
+   0.07520990818738937,
+   -0.040496040135622025,
+   -0.057705383747816086,
+   -0.04695993289351463,
+   -0.06761831790208817,
+   0.025014787912368774,
+   -0.0015389081090688705,
+   -0.03679125756025314,
+   0.013566038571298122,
+   -0.04041285812854767,
+   0.07917188853025436,
+   -0.05764985457062721,
+   -0.015359684824943542,
+   -0.018365802243351936,
+   0.07365798205137253,
+   -0.02822405844926834,
+   -0.07143574953079224,
+   -0.014102152548730373,
+   0.05214705318212509,
+   -8.45747854327783e-05,
+   0.060974087566137314,
+   0.01219895388931036,
+   0.07806282490491867,
+   0.0283384770154953,
+   -0.03480703756213188,
+   -0.023381318897008896,
+   -0.06543150544166565,
+   -0.022173644974827766,
+   0.016938386484980583,
+   0.01403704471886158,
+   -0.11505034565925598,
+   -0.09737376123666763,
+   -0.03277994319796562,
+   -0.09464859217405319,
+   0.022877557203173637,
+   0.09239386022090912,
+   -0.05856432020664215,
+   -0.01488125417381525,
+   -0.0745336040854454,
+   0.029346324503421783,
+   0.0037547682877629995,
+   -0.002502372022718191,
+   0.060762397944927216,
+   0.07784514129161835,
+   -0.0024569917004555464,
+   -0.03414260596036911,
+   -0.006021164823323488,
+   9.919409997768835e-34,
+   0.06397375464439392,
+   -0.03801659494638443,
+   0.004319910425692797,
+   0.016481658443808556,
+   0.022710049524903297,
+   -0.13191218674182892,
+   -0.04591192305088043,
+   -0.042939893901348114,
+   -0.09907537698745728,
+   -0.03680512309074402,
+   0.009876652620732784,
+   0.000762054871302098,
+   -0.02185213938355446,
+   -0.04080411419272423,
+   0.04810065031051636,
+   -0.0019090761197730899,
+   -0.07309304922819138,
+   -0.07204093039035797,
+   0.05908462032675743,
+   -0.010817496106028557,
+   0.03503866493701935,
+   -0.07354363054037094,
+   -0.05248443782329559,
+   0.03390563651919365,
+   -0.0008370069554075599,
+   0.06806101649999619,
+   0.07952555269002914,
+   -0.015831004828214645,
+   -0.07055588811635971,
+   0.046211306005716324,
+   -0.023716852068901062,
+   -0.044985923916101456,
+   -0.0762820914387703,
+   -0.08503122627735138,
+   -0.03652915358543396,
+   0.04026184603571892,
+   -0.011378630064427853,
+   -0.0707932636141777,
+   -0.047520000487565994,
+   -0.07015997171401978,
+   -0.035623710602521896,
+   -0.0221245139837265,
+   0.05952061712741852,
+   0.02823307178914547,
+   0.034580715000629425,
+   0.04295441880822182,
+   -0.04067837446928024,
+   -0.06945794820785522,
+   0.051606081426143646,
+   0.05243100970983505,
+   -0.036503005772829056,
+   -0.00901953224092722,
+   0.0026429917197674513,
+   -0.043822769075632095,
+   0.010173620656132698,
+   0.0016012686537578702,
+   -0.029325410723686218,
+   0.07506169378757477,
+   -0.02378465235233307,
+   0.09148015081882477,
+   -0.06479823589324951,
+   -0.018756534904241562,
+   -0.08463814109563828,
+   0.05190446972846985,
+   -0.07150277495384216,
+   0.034888580441474915,
+   -0.044067081063985825,
+   0.053189102560281754,
+   0.0291140079498291,
+   0.034329310059547424,
+   -0.0224731657654047,
+   0.021028608083724976,
+   0.027849657461047173,
+   0.06974854320287704,
+   0.027197565883398056,
+   0.029563920572400093,
+   -0.07457366585731506,
+   -0.0330742709338665,
+   -0.01094056572765112,
+   0.014492057263851166,
+   0.03755022957921028,
+   0.0007791524403728545,
+   -0.04136078059673309,
+   0.007681707385927439,
+   0.029873076826334,
+   0.0015044115716591477,
+   0.06511226296424866,
+   -0.03431839495897293,
+   -0.04761748015880585,
+   -0.08742059022188187,
+   -0.02272331528365612,
+   0.042529672384262085,
+   0.08978033065795898,
+   -0.016299400478601456,
+   -0.05236158147454262,
+   -3.153009395427421e-33,
+   0.08880811929702759,
+   0.09276977926492691,
+   -0.003188906703144312,
+   0.011490313336253166,
+   -0.006713529117405415,
+   0.04258004575967789,
+   0.05909668281674385,
+   0.05569327995181084,
+   -0.03450227156281471,
+   -0.06302438676357269,
+   -0.1100502535700798,
+   -0.021014709025621414,
+   0.07737123221158981,
+   0.01596376858651638,
+   0.06680682301521301,
+   -0.02317309007048607,
+   0.015530358068645,
+   0.06405963748693466,
+   -0.024988070130348206,
+   0.00823140423744917,
+   0.03279445692896843,
+   -0.0356382317841053,
+   -0.04364600405097008,
+   -0.0616937130689621,
+   0.023492787033319473,
+   0.07195677608251572,
+   0.074773408472538,
+   0.041785191744565964,
+   -0.03358638286590576,
+   0.0590030662715435,
+   -0.007899967953562737,
+   0.006570966448634863,
+   -0.13965925574302673,
+   0.024381568655371666,
+   -0.02875552885234356,
+   -0.03227876499295235,
+   0.024503592401742935,
+   0.06429056078195572,
+   -0.03808283060789108,
+   -0.04592667520046234,
+   0.035989273339509964,
+   0.09801360219717026,
+   0.015056123957037926,
+   0.007290969602763653,
+   0.03282582759857178,
+   0.0941624864935875,
+   -0.011100713163614273,
+   0.12064360827207565,
+   0.0031252445187419653,
+   -0.09764864295721054,
+   -0.05892113596200943,
+   0.04012362286448479,
+   0.044783469289541245,
+   -0.03144068643450737,
+   0.053327400237321854,
+   0.02011972665786743,
+   -0.058266639709472656,
+   0.11791082471609116,
+   -0.06376563012599945,
+   -0.01786516234278679,
+   -0.017009412869811058,
+   -0.02679177187383175,
+   0.02522931806743145,
+   0.04426788538694382,
+   -0.03839172422885895,
+   -0.06479134410619736,
+   0.10841776430606842,
+   0.016225088387727737,
+   -0.0216052308678627,
+   0.007422945462167263,
+   -0.059263087809085846,
+   -0.06689726561307907,
+   -0.03191467002034187,
+   -0.024244558066129684,
+   0.009065925143659115,
+   0.058113615959882736,
+   -0.011079932563006878,
+   0.058865416795015335,
+   0.025823602452874184,
+   -0.0368654727935791,
+   0.007548758760094643,
+   0.019799163565039635,
+   -0.1116143986582756,
+   0.03521416708827019,
+   0.08868298679590225,
+   0.05866669863462448,
+   -0.07002442330121994,
+   0.0011052082991227508,
+   0.0716303139925003,
+   -0.06336995959281921,
+   -0.03442363068461418,
+   -0.06993401795625687,
+   0.009352592751383781,
+   -0.0020982702262699604,
+   -0.03630635887384415,
+   -5.1550689050827714e-08,
+   0.014642242342233658,
+   0.021132510155439377,
+   0.010145854204893112,
+   0.01058206893503666,
+   0.1095845177769661,
+   0.07414264976978302,
+   0.00700574042275548,
+   0.03828488290309906,
+   -0.010451164096593857,
+   -0.049508415162563324,
+   -0.013114580884575844,
+   0.04312431439757347,
+   0.01918088085949421,
+   0.09692701697349548,
+   -0.023883413523435593,
+   -0.04018598794937134,
+   -0.0025466098450124264,
+   -0.02180989272892475,
+   -0.005228254944086075,
+   -0.024866558611392975,
+   0.04007920250296593,
+   0.029116429388523102,
+   -0.008411356247961521,
+   -0.05905879661440849,
+   -0.06868981570005417,
+   0.06066327169537544,
+   -0.0899750143289566,
+   -0.014888250268995762,
+   -0.025813361629843712,
+   0.0241851806640625,
+   0.028134508058428764,
+   0.04506390169262886,
+   -0.06032198667526245,
+   -0.07785461097955704,
+   -0.0039940690621733665,
+   0.022812485694885254,
+   -0.004996288102120161,
+   0.012477845884859562,
+   -0.03995039686560631,
+   -0.07882115989923477,
+   -0.007827111519873142,
+   -0.019537774845957756,
+   0.010528060607612133,
+   0.017785610631108284,
+   0.03376356139779091,
+   0.06377830356359482,
+   -0.0006825932068750262,
+   0.03934096917510033,
+   -0.01431913860142231,
+   -0.04467131569981575,
+   0.015531343407928944,
+   0.017804140225052834,
+   0.10352031886577606,
+   -0.016611875966191292,
+   0.0030279457569122314,
+   0.0025666216388344765,
+   -0.0491783544421196,
+   -0.08359087258577347,
+   0.03884495049715042,
+   -0.022293981164693832,
+   0.07985222339630127,
+   -0.055284805595874786,
+   -0.0453575924038887,
+   0.06787393987178802],
+  &#39;metadata&#39;: {&#39;title&#39;: &#39;Kaaba&#39;, &#39;id&#39;: 252}}}</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Display the total size and indexing time of the new index in Elasticsearch.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[48]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">index_stats</span> <span class="o">=</span> <span class="n">es_connection</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">stats</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;test_index&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_all&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;primaries&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Index size:    &quot;</span> <span class="o">+</span> <span class="n">humanize</span><span class="o">.</span><span class="n">naturalsize</span><span class="p">(</span><span class="n">index_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;store&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;size_in_bytes&#39;</span><span class="p">)))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Indexing time: &quot;</span> <span class="o">+</span> <span class="n">humanize</span><span class="o">.</span><span class="n">precisedelta</span><span class="p">(</span><span class="n">index_stats</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;indexing&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;index_time_in_millis&#39;</span><span class="p">)</span><span class="o">/</span><span class="mi">1000</span><span class="p">,</span> <span class="n">minimum_unit</span><span class="o">=</span><span class="s1">&#39;minutes&#39;</span><span class="p">))</span>
 </pre></div>
 
      </div>
@@ -16403,8 +16950,8 @@ Connected
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Uploading texts...
-Uploading completed
+<pre>Index size:    9.4 MB
+Indexing time: 0.02 minutes
 </pre>
 </div>
 </div>
@@ -16446,7 +16993,7 @@ Uploading completed
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Select-questions">Select questions<a class="anchor-link" href="#Select-questions">&#182;</a></h3><p>Get questions from the previously loaded test dataset.</p>
+<h3 id="Select-questions">Select questions<a class="anchor-link" href="#Select-questions">&#182;</a></h3><p>The prompts we will use to test the RAG flow</p>
 
 </div>
 </div>
@@ -16459,11 +17006,11 @@ Uploading completed
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[49]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">questions_and_answers</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="p">(</span><span class="s1">&#39;names of founding fathers of the united states?&#39;</span><span class="p">,</span> <span class="s2">&quot;Thomas Jefferson::James Madison::John Jay::George Washington::John Adams::Benjamin Franklin::Alexander Hamilton&quot;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;who played in the super bowl in 2013?&#39;</span><span class="p">,</span> <span class="s1">&#39;Baltimore Ravens::San Francisco 49ers&#39;</span><span class="p">),</span>
-            <span class="p">(</span><span class="s1">&#39;when did bucharest become the capital of romania?&#39;</span><span class="p">,</span> <span class="s1">&#39;1862&#39;</span><span class="p">)</span>
-            <span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">questions_and_answers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;names of founding fathers of the united states?&#39;</span><span class="p">:</span> <span class="s2">&quot;Thomas Jefferson::James Madison::John Jay::George Washington::John Adams::Benjamin Franklin::Alexander Hamilton&quot;</span><span class="p">,</span>
+            <span class="s1">&#39;who played in the super bowl in 2013?&#39;</span><span class="p">:</span> <span class="s1">&#39;Baltimore Ravens::San Francisco 49ers&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;when did bucharest become the capital of romania?&#39;</span><span class="p">:</span> <span class="s1">&#39;1862&#39;</span>
+<span class="p">}</span>
 </pre></div>
 
      </div>
@@ -16488,12 +17035,12 @@ Uploading completed
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[48]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[52]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">langchain.chains</span> <span class="kn">import</span> <span class="n">RetrievalQA</span>
 
-<span class="n">qa</span> <span class="o">=</span> <span class="n">RetrievalQA</span><span class="o">.</span><span class="n">from_chain_type</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">to_langchain</span><span class="p">(),</span> <span class="n">chain_type</span><span class="o">=</span><span class="s2">&quot;stuff&quot;</span><span class="p">,</span> <span class="n">retriever</span><span class="o">=</span><span class="n">elasticsearch_store</span><span class="o">.</span><span class="n">get_retriver</span><span class="p">(),</span> <span class="n">return_source_documents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">qa</span> <span class="o">=</span> <span class="n">RetrievalQA</span><span class="o">.</span><span class="n">from_chain_type</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">to_langchain</span><span class="p">(),</span> <span class="n">chain_type</span><span class="o">=</span><span class="s2">&quot;stuff&quot;</span><span class="p">,</span> <span class="n">retriever</span><span class="o">=</span><span class="n">knowledge_base</span><span class="o">.</span><span class="n">as_retriever</span><span class="p">(),</span> <span class="n">return_source_documents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16506,12 +17053,12 @@ Uploading completed
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[50]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[53]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
-<span class="k">for</span> <span class="n">question</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">questions_and_answers</span><span class="p">:</span>
+<span class="k">for</span> <span class="n">question</span> <span class="ow">in</span> <span class="n">questions_and_answers</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">qa</span><span class="p">({</span><span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="n">question</span><span class="p">})</span>
     <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </pre></div>
@@ -16538,14 +17085,14 @@ Uploading completed
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[45]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[54]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=========&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Question = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;query&#39;</span><span class="p">])</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Answer = &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">])</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Expected Answer(s) (may not be appear with exact wording in the dataset) = &quot;</span><span class="p">,</span> <span class="n">questions_and_answers</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Expected Answer(s) (may not be appear with exact wording in the dataset) = &quot;</span><span class="p">,</span> <span class="n">questions_and_answers</span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;query&#39;</span><span class="p">]])</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Source documents:&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">page_content</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;source_documents&#39;</span><span class="p">]),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
