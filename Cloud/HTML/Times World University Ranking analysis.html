@@ -63,6 +63,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -228,6 +229,10 @@ background-color: transparent;
 
 .notebook_app .container {
 width: 100% !important;
+}
+
+.jupyter-resource-usage-hide {
+display: none !important;
 }
 
 .notebook_app #notebook {
@@ -15469,10 +15474,6 @@ a.anchor-link {
   display: none;
 }
 
-.highlight  {
-  margin: 0.4em;
-}
-
 /* Input area styling */
 .jp-InputArea {
   overflow: hidden;
@@ -15482,9 +15483,26 @@ a.anchor-link {
   overflow: hidden;
 }
 
-.CodeMirror pre {
+.CodeMirror.cm-s-jupyter .highlight pre {
+/* weird, but --jp-code-padding defined to be 5px but 4px horizontal padding is hardcoded for pre.CodeMirror-line */
+  padding: var(--jp-code-padding) 4px;
   margin: 0;
-  padding: 0;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+}
+
+.jp-OutputArea-output pre {
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.jp-RenderedText pre {
+  color: var(--jp-content-font-color1);
+  font-size: var(--jp-code-font-size);
 }
 
 /* Using table instead of flexbox so that we can use break-inside property */
@@ -15528,6 +15546,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 /* Hiding the collapser by default */
 .jp-Collapser {
   display: none;
+}
+
+@page {
+    margin: 0.5in; /* Margin for each printed piece of paper */
 }
 
 @media print {
@@ -15588,6 +15610,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span style="font-size:18px;color:#152935;">Want to do more?</span><span style="border: 1px solid #3d70b2;padding: 15px;float:right;margin-right:40px; color:#3d70b2; "><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
 <span style="color:#5A6872;"> Try out this notebook with your free trial of IBM Watson Studio.</span>
 </div>
+
 </div>
 </div>
 </div>
@@ -15685,7 +15708,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <ol>
 <li>Go <a href="https://www.kaggle.com/mylesoneill/world-university-rankings/data" target="_blank" rel="noopener no referrer">Kaggle: World University Rankings</a>, log in, and then download <code>timesData.csv</code> to your computer.</li>
 <li>Load the <code>timesData.csv</code> file into your notebook. Click the <strong>Data</strong> icon on the notebook action bar. Drop each file into the box or browse to select the file. The file is loaded to your object storage and appears in the Data Assets section of the project. For more information, see <a href="https://datascience.ibm.com/docs/content/analyze-data/load-and-access-data.html" target="_blank" rel="noopener noreferrer">Load and access data</a>.</li>
-<li>To load the data from the <code>timesData.csv</code> file into a Pandas DataFrame, click in the next code cell and select <strong>Insert to code &gt; Insert Pandas DataFrame</strong> under the file name.</li>
+<li>To load the data from the <code>timesData.csv</code> file into a Pandas DataFrame, click in the next code cell, click the <strong>Code Snippets</strong> icon -&gt; <strong>Read data</strong>, and browse your project to locate the dataset. Then select <strong>Load as</strong> &gt; <strong>Pandas DataFrame</strong>.</li>
 <li>Run the cell.</li>
 </ol>
 
@@ -15700,29 +15723,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Removed code for importing the csv file</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">types</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">botocore.client</span> <span class="kn">import</span> <span class="n">Config</span>
-<span class="kn">import</span> <span class="nn">ibm_boto3</span>
-
-<span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="mi">0</span>
-
-<span class="c1"># @hidden_cell</span>
-<span class="c1"># The following code accesses a file in your IBM Cloud Object Storage. It includes your credentials.</span>
-<span class="c1"># You might want to remove those credentials before you share the notebook.</span>
-<span class="n">client_cdd1a4f11a7243449a739fd7851745b5</span> <span class="o">=</span> <span class="n">ibm_boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="n">service_name</span><span class="o">=</span><span class="s1">&#39;s3&#39;</span><span class="p">,</span>
-    <span class="n">ibm_api_key_id</span><span class="o">=</span><span class="s1">&#39;r0KQgAMKJDtX0el0dzIX0_4y7R0TiTFgzE7GXg_Q8GKf&#39;</span><span class="p">,</span>
-    <span class="n">ibm_auth_endpoint</span><span class="o">=</span><span class="s2">&quot;https://iam.cloud.ibm.com/oidc/token&quot;</span><span class="p">,</span>
-    <span class="n">config</span><span class="o">=</span><span class="n">Config</span><span class="p">(</span><span class="n">signature_version</span><span class="o">=</span><span class="s1">&#39;oauth&#39;</span><span class="p">),</span>
-    <span class="n">endpoint_url</span><span class="o">=</span><span class="s1">&#39;https://s3.private.us.cloud-object-storage.appdomain.cloud&#39;</span><span class="p">)</span>
-
-<span class="n">body</span> <span class="o">=</span> <span class="n">client_cdd1a4f11a7243449a739fd7851745b5</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="s1">&#39;py39-donotdelete-pr-awttqtqg1nzgv4&#39;</span><span class="p">,</span><span class="n">Key</span><span class="o">=</span><span class="s1">&#39;timesData.csv&#39;</span><span class="p">)[</span><span class="s1">&#39;Body&#39;</span><span class="p">]</span>
-<span class="c1"># add missing __iter__ method, so pandas accepts body as file-like object</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span> <span class="n">body</span><span class="o">.</span><span class="fm">__iter__</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span> <span class="fm">__iter__</span><span class="p">,</span> <span class="n">body</span> <span class="p">)</span>
-
-<span class="n">df_data_1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-<span class="n">df_data_1</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># empty cell</span>
 </pre></div>
 
      </div>
@@ -16386,7 +16387,7 @@ Some universities are ranked equally.</p>
 <li><b>international_students</b> is highly correlated to <b>international</b>, which represents the international outlook of the university (including staff and international research collaborations).</li>
 <li><b>num_students</b> is highly correlated to <b>student_staff_ratio</b>. Of course, the greater the number of students, the greater the student_staff_ratio.</li>
 <li><b>student_staff_ratio</b> is slightly negatively correlated to <b>teaching</b>. Teaching quality suffers if there is a higher number of students per teacher.</li>
-<li><b>research</b> is correlated to <b>income</b>. Because <b>income</b> is a measure of how much <i>"research income an institution earns from industry"</i>, hence better the research, more the income</li>
+<li><b>research</b> is correlated to <b>income</b>. Because <b>income</b> is a measure of how much <i>&quot;research income an institution earns from industry&quot;</i>, hence better the research, more the income</li>
 <li>An interesting slight negative correlation between <b>female_male_ratio</b> and <b>income</b>, which means more males study in higher income universities. As income is directly correlated to the quality of research, this seems to suggest that more males are into research (across disciplines) than females.</li>
 </ul>
 
@@ -16495,9 +16496,9 @@ What if we simply omit the research score and double the weighting for teaching?
 <h3 id="Citations">Citations<a class="anchor-link" href="#Citations">&#182;</a></h3><ul>
 <li><a href="https://www.timeshighereducation.com/world-university-rankings" target="_blank" rel="noopener no referrer">THE world university rankings</a></li>
 <li><a href="https://www.timeshighereducation.com/news/ranking-methodology-2016" target="_blank" rel="noopener no referrer">THE world university ranking methodology 2016</a></li>
-<li><a href="https://www.kaggle.com/mylesoneill/world-university-rankings/data" target="_blank" rel="noopener no referrer">World University Rankings:
-Investigate the best universities in the world</a></li>
+<li><a href="https://www.kaggle.com/mylesoneill/world-university-rankings/data" target="_blank" rel="noopener no referrer">World University Rankings:</li>
 </ul>
+<p>Investigate the best universities in the world</a></p>
 
 </div>
 </div>
