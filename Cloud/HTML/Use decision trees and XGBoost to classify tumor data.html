@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Use decision trees and XGBoost to classify tumor d</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Use decision trees and XGBoost to classify tumor</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -36,6 +36,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -201,6 +202,10 @@ background-color: transparent;
 
 .notebook_app .container {
 width: 100% !important;
+}
+
+.jupyter-resource-usage-hide {
+display: none !important;
 }
 
 .notebook_app #notebook {
@@ -15442,10 +15447,6 @@ a.anchor-link {
   display: none;
 }
 
-.highlight  {
-  margin: 0.4em;
-}
-
 /* Input area styling */
 .jp-InputArea {
   overflow: hidden;
@@ -15455,9 +15456,26 @@ a.anchor-link {
   overflow: hidden;
 }
 
-.CodeMirror pre {
+.CodeMirror.cm-s-jupyter .highlight pre {
+/* weird, but --jp-code-padding defined to be 5px but 4px horizontal padding is hardcoded for pre.CodeMirror-line */
+  padding: var(--jp-code-padding) 4px;
   margin: 0;
-  padding: 0;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+}
+
+.jp-OutputArea-output pre {
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.jp-RenderedText pre {
+  color: var(--jp-content-font-color1);
+  font-size: var(--jp-code-font-size);
 }
 
 /* Using table instead of flexbox so that we can use break-inside property */
@@ -15501,6 +15519,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 /* Hiding the collapser by default */
 .jp-Collapser {
   display: none;
+}
+
+@page {
+    margin: 0.5in; /* Margin for each printed piece of paper */
 }
 
 @media print {
@@ -15589,7 +15611,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><p>1.0 <a href="#bullet-1">Introduction to supervised learning</a><br/>
 2.0 <a href="#bullet-8">Basic model: decision trees</a><br/> 
-3.0 <a href="#bullet-13">Ensemble model: gradient boosting</a><br>
+3.0 <a href="#bullet-13">Ensemble model: gradient boosting</a><br />
 4.0 <a href="#bullet-17">XGBoost: parameter tuning</a></p>
 
 </div>
@@ -15621,7 +15643,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <h3 id="1.2-Defining-the-task">1.2 Defining the task<a class="anchor" id="bullet-3" /><a class="anchor-link" href="#1.2-Defining-the-task">&#182;</a></h3><p>The goal is to use an augmented version <a href="https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29" target="_blank" rel="noopener noreferrer">this data set</a> to develop a predictive model which classifies breast tumors as malignant or benign depending on measurements of the tumor cells. The <a href="https://dataplatform.cloud.ibm.com/exchange/public/entry/view/c173693bf48aeb22e41bbe2b41d79c1f" target="_blank" rel="noopener noreferrer">augmented data set</a> includes statistical analysis values, such as the mean, for some of the measurements. In machine learning terms, the <strong>target</strong> (what you want to predict) is the diagnosis, and the <strong>features</strong> are the measurements. The data sample contains <strong>observations</strong> of tumor cases described by these two components.</p>
 <h3 id="1.3-How-does-an-algorithm-learn?">1.3 How does an algorithm learn?<a class="anchor" id="bullet-4" /><a class="anchor-link" href="#1.3-How-does-an-algorithm-learn?">&#182;</a></h3><ol>
 <li>Initialize the algorithm to produce a default model, and give it the feature data. The algorithm makes its first set of predictions (close to a random guess).</li>
-<li>The algorithm measures the error between its previous prediction and the true value of the targets. </li>
+<li>The algorithm measures the error between its previous prediction and the true value of the targets.</li>
 <li>The algorithm adjusts its model-building to make the error smaller. Each adjustment represents a part of the pattern it is learning, and is used to process future data.</li>
 <li>It continues to predict, calculate error, and adjust.</li>
 </ol>
@@ -15639,10 +15661,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h4 id="Load-data">Load data<a class="anchor-link" href="#Load-data">&#182;</a></h4><p>To load the data:</p>
 <ol>
-<li>Go to the <a href="https://dataplatform.cloud.ibm.com/exchange/public/entry/view/c173693bf48aeb22e41bbe2b41d79c1f" target="_blank" rel="noopener noreferrer">Breast Cancer Wisconsin (Diagnostic) Data Set</a> on the Watson Studio Community. </li>
-<li>Click the download icon and save the data set to your computer.  </li>
-<li>Load the <code>BreastCancerWisconsonDataSet.csv</code> file into your notebook. Click the <strong>Data</strong> icon on the notebook action bar. Drop the file into the box or browse to select the file. The file is loaded to your object storage and appears in the Data Assets section of the project. For more information, see <a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/load-and-access-data.html" target="_blank" rel="noopener noreferrer">Load and access data</a>.</li>
-<li>To load the data from the <code>BreastCancerWisconsonDataSet.csv</code> file into a pandas DataFrame, click in the next code cell and select <strong>Insert to code &gt; Insert pandas DataFrame</strong> under the file name.</li>
+<li>Go to the <a href="https://dataplatform.cloud.ibm.com/exchange/public/entry/view/c173693bf48aeb22e41bbe2b41d79c1f" target="_blank" rel="noopener noreferrer">Breast Cancer Wisconsin (Diagnostic) Data Set</a> on the Watson Studio Community and add the file to your project.</li>
+<li>Load the <code>BreastCancerWisconsonDataSet.csv</code> file into your notebook. To do that, click the <strong>Data</strong> icon on the notebook action bar. Drop the file into the box or browse to select the file. The file is loaded to your object storage and appears in the Data Assets section of the project. For more information, see <a href="https://dataplatform.cloud.ibm.com/docs/content/analyze-data/load-and-access-data.html" target="_blank" rel="noopener noreferrer">Load and access data</a>.</li>
+<li>To load the data from the <code>BreastCancerWisconsonDataSet.csv</code> file into a pandas DataFrame, click in the next code cell and select <strong>Code snippets</strong> &gt; <strong>Read data</strong>. Then locate the file in your project. Finally, choose the option to download the file as a pandas DataFrame, and then click <strong>Insert code to cell</strong>.</li>
 <li>Make sure the object is named <code>df</code> instead of <code>df_data_1</code> in the last two lines of the <strong>Insert to Code</strong> block and then run the cell.</li>
 </ol>
 
@@ -15657,29 +15678,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># click in this cell</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">types</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">botocore.client</span> <span class="kn">import</span> <span class="n">Config</span>
-<span class="kn">import</span> <span class="nn">ibm_boto3</span>
-
-<span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="k">return</span> <span class="mi">0</span>
-
-<span class="c1"># @hidden_cell</span>
-<span class="c1"># The following code accesses a file in your IBM Cloud Object Storage. It includes your credentials.</span>
-<span class="c1"># You might want to remove those credentials before you share the notebook.</span>
-<span class="n">client_cdd1a4f11a7243449a739fd7851745b5</span> <span class="o">=</span> <span class="n">ibm_boto3</span><span class="o">.</span><span class="n">client</span><span class="p">(</span><span class="n">service_name</span><span class="o">=</span><span class="s1">&#39;s3&#39;</span><span class="p">,</span>
-    <span class="n">ibm_api_key_id</span><span class="o">=</span><span class="s1">&#39;r0KQgAMKJDtX0el0dzIX0_4y7R0TiTFgzE7GXg_Q8GKf&#39;</span><span class="p">,</span>
-    <span class="n">ibm_auth_endpoint</span><span class="o">=</span><span class="s2">&quot;https://iam.cloud.ibm.com/oidc/token&quot;</span><span class="p">,</span>
-    <span class="n">config</span><span class="o">=</span><span class="n">Config</span><span class="p">(</span><span class="n">signature_version</span><span class="o">=</span><span class="s1">&#39;oauth&#39;</span><span class="p">),</span>
-    <span class="n">endpoint_url</span><span class="o">=</span><span class="s1">&#39;https://s3.private.us.cloud-object-storage.appdomain.cloud&#39;</span><span class="p">)</span>
-
-<span class="n">body</span> <span class="o">=</span> <span class="n">client_cdd1a4f11a7243449a739fd7851745b5</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="s1">&#39;py39-donotdelete-pr-awttqtqg1nzgv4&#39;</span><span class="p">,</span><span class="n">Key</span><span class="o">=</span><span class="s1">&#39;Breast Cancer Wisconsin Diagnostic Data Set.csv&#39;</span><span class="p">)[</span><span class="s1">&#39;Body&#39;</span><span class="p">]</span>
-<span class="c1"># add missing __iter__ method, so pandas accepts body as file-like object</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">body</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span> <span class="n">body</span><span class="o">.</span><span class="fm">__iter__</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span> <span class="fm">__iter__</span><span class="p">,</span> <span class="n">body</span> <span class="p">)</span>
-
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># empty cell</span>
 </pre></div>
 
      </div>
@@ -15832,7 +15831,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip install pydotplus
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>pydotplus
 </pre></div>
 
      </div>
@@ -15892,14 +15891,14 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <li>The rectangles at the bottom of the diagram are called <strong>leaves</strong>, which contain the final predictions (observations classified by diagnosis).</li>
 </ul>
 <h3 id="2.3-How-a-decision-tree-learns">2.3 How a decision tree learns<a class="anchor" id="bullet-11" /><a class="anchor-link" href="#2.3-How-a-decision-tree-learns">&#182;</a></h3><p>Applying the general learning outline (<a href="#bullet-4">section 1.3</a>) to a decision tree:</p>
-<ol>
-</ol>
-<ol>
-</ol>
-<ol>
-</ol>
-<ol>
-</ol>
+<p><em>1. Initialize the algorithm to produce a default model, and give it the feature data. The algorithm makes its first set of predictions (close to a random guess).</em><br/>
+The default model is the very first splitting feature - the algorithm chose 'concave points mean &lt;= 0.0492'. The observations are divided into benign or malignant based on this decision, making up the first set of predictions!</p>
+<p><em>2. The algorithm measures the error between its previous prediction and the true value of the targets.</em><br/> 
+This error is quantified by the gini value that appears in the first node of the tree.</p>
+<p><em>3. The algorithm adjusts its model-building to make the error smaller. Each adjustment represents a part of the pattern it is learning, and is used to process future data.</em><br/>
+The adjustment is the next splitting feature that is chosen for each subgroup that resulted from the concave points mean decision. The algorithm chose 'radius worst' for observations that had a concave points mean less than the threshold, and 'concavity worst' for observations with concave points mean greater than the threshold.</p>
+<p><em>4. It continues to predict, calculate error, and adjust.</em><br/>
+The next set of predictions are the classifications that result from the second round of decision making. Each time, a gini value is calculated to indicate how far the classifications are from the true targets, and another set of splitting features are chosen to further refine the class groupings.</p>
 <h3 id="2.4-Evaluating-the-model">2.4 Evaluating the model<a class="anchor" id="bullet-12" /><a class="anchor-link" href="#2.4-Evaluating-the-model">&#182;</a></h3><p>Pick a metric to measure predictive accuracy or performance of your model, so that you can compare different models.</p>
 <p>Models can differ in two ways:</p>
 <ol>
@@ -15962,12 +15961,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
     3.3 <a href="#bullet-16">K-fold cross validation</a><br/></p>
 <h3 id="3.1-An-intuitive-explanation-of-gradient-boosting">3.1 An intuitive explanation of gradient boosting<a class="anchor" id="bullet-14" /><a class="anchor-link" href="#3.1-An-intuitive-explanation-of-gradient-boosting">&#182;</a></h3><ol>
 <li>A tree is used to learn from the data as described in <a href="#bullet-10">section 2.2</a>. This first model is called the <strong>base learner</strong>.</li>
-<li>The algorithm calculates the error of the base learner's final predictions. These error measurements are called <strong>pseudo-residuals</strong>. </li>
-<li>A second decision tree, called the <strong>booster</strong>, is stacked on top of the base tree by using the pseudo-residuals as input. Its output is a prediction of error for each prediction of the base tree. </li>
-<li>The algorithm adjusts the base prediction by adding the predicted amount of error.
-<em>Note: target - prediction = error, so by adding 'predicted error' to the base prediction, you are getting closer to the target.</em></li>
-<li>Another set of pseudo-residuals are calculated for the predictions of the updated model (base tree + first boosting tree). Each round of boosting corrects the base prediction by a predicted amount of error, gradually inching towards the true value.</li>
+<li>The algorithm calculates the error of the base learner's final predictions. These error measurements are called <strong>pseudo-residuals</strong>.</li>
+<li>A second decision tree, called the <strong>booster</strong>, is stacked on top of the base tree by using the pseudo-residuals as input. Its output is a prediction of error for each prediction of the base tree.</li>
+<li>The algorithm adjusts the base prediction by adding the predicted amount of error.</li>
 </ol>
+<p><em>Note: target - prediction = error, so by adding 'predicted error' to the base prediction, you are getting closer to the target.</em>
+5. Another set of pseudo-residuals are calculated for the predictions of the updated model (base tree + first boosting tree). Each round of boosting corrects the base prediction by a predicted amount of error, gradually inching towards the true value.</p>
 <h3 id="3.2-XGBoost">3.2 XGBoost<a class="anchor" id="bullet-15" /><a class="anchor-link" href="#3.2-XGBoost">&#182;</a></h3><p>You use the XGBoost library, an implementation of gradient tree boosting popularized by usage in machine learning competitions. It is a valuable addition to any machine learning toolkit, as it significantly outperforms other algorithms in speed, accuracy, and flexibility.</p>
 <p>If you don't have xgboost library installed, install it.</p>
 
@@ -16062,8 +16061,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p>Luckily, XGBoost performs well with its default values, so you only need to define the following three parameters:</p>
 <ol>
 <li>objective: Depends on the target type - use binary:logistic because you have a binary classification problem.</li>
-<li>learning rate: This parameter is always chosen first, as the optimal values of all other parameters are dependent upon it. It directly controls how conservative the model is in picking up patterns - a smaller value makes the model more conservative. A good rule of thumb is to initialize the learning rate at 0.1.  </li>
-<li>number of estimators: The maximum number of boosting trees to be added. Pick a number that is a bit larger than necessary for our data set size. </li>
+<li>learning rate: This parameter is always chosen first, as the optimal values of all other parameters are dependent upon it. It directly controls how conservative the model is in picking up patterns - a smaller value makes the model more conservative. A good rule of thumb is to initialize the learning rate at 0.1.</li>
+<li>number of estimators: The maximum number of boosting trees to be added. Pick a number that is a bit larger than necessary for our data set size.</li>
 </ol>
 
 </div>
@@ -16188,14 +16187,22 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="4.4-Interpreting-evaluation-output">4.4 Interpreting evaluation output<a class="anchor" id="bullet-21" /><a class="anchor-link" href="#4.4-Interpreting-evaluation-output">&#182;</a></h3><ul>
-<li>The first set of readings shows you the cross-validation scores at each boosting round. So at line [0], one tree has been fit to the data. Train-auc gives you the average AUC score for the five training sets during cross-validation, and test-auc gives you the same metric for the five testing sets during cross validation. Naturally, the test score is lower, as the model is predicting on data that was not used to train it. You can see that the test-auc catches up with more boosting rounds, as more trees are used to minimize the error.
-<br/><br/></li>
-<li>The model stops training after ten rounds, which means that the cross-validation scores are not significantly improving with more than 10 rounds. For a learning rate of 0.1, you can take the number of estimators to be 10 to save computation time.
-<br/><br/></li>
-<li>Overall, the accuracy is 0.9824, which tells you how many cases were correctly classified, both benign and malignant.
-<br/><br/></li>
-<li>Overall, the AUC score is 0.99877, which indicates that the model rarely lets malignant cases slip through its screening process.
-<br/><br/></li>
+<li>The first set of readings shows you the cross-validation scores at each boosting round. So at line [0], one tree has been fit to the data. Train-auc gives you the average AUC score for the five training sets during cross-validation, and test-auc gives you the same metric for the five testing sets during cross validation. Naturally, the test score is lower, as the model is predicting on data that was not used to train it. You can see that the test-auc catches up with more boosting rounds, as more trees are used to minimize the error.</li>
+</ul>
+<p><br/><br/></p>
+<ul>
+<li>The model stops training after ten rounds, which means that the cross-validation scores are not significantly improving with more than 10 rounds. For a learning rate of 0.1, you can take the number of estimators to be 10 to save computation time.</li>
+</ul>
+<p><br/><br/></p>
+<ul>
+<li>Overall, the accuracy is 0.9824, which tells you how many cases were correctly classified, both benign and malignant.</li>
+</ul>
+<p><br/><br/></p>
+<ul>
+<li>Overall, the AUC score is 0.99877, which indicates that the model rarely lets malignant cases slip through its screening process.</li>
+</ul>
+<p><br/><br/></p>
+<ul>
 <li>The graph displays the features ranked by their importance to the model. Feature importance refers to the number of times it is used as a splitting feature in the decision trees. This function is especially useful in large datasets, where many variables are just noise and <a href="https://en.wikipedia.org/wiki/Feature_engineering" target="_blank" rel="noopener no referrer">feature engineering</a> may be required.</li>
 </ul>
 <h3 id="4.5-Grid-search">4.5 Grid search<a class="anchor" id="bullet-22" /><a class="anchor-link" href="#4.5-Grid-search">&#182;</a></h3><p>To tune the remaining XGBoost parameters, use grid search with cross-validation.</p>
@@ -16572,7 +16579,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You've found out how to use a decision tree as a machine learning model to classify cancer data, and you've seen how you how tools like XGBoost can be used to tune parameters to improve the accuracy of your model.</p>
 <h3 id="Learn-more:">Learn more:<a class="anchor-link" href="#Learn-more:">&#182;</a></h3><ul>
-<li><p id="footnote-1"><sup>[1]</sup><a id="fn1" href="https://www.analyticsvidhya.com/blog/2016/03/complete-guide-parameter-tuning-xgboost-with-codes-python" target="_blank" rel="noopener noreferrer">Jain, A. (March 1, 2016) Complete Guide to Parameter Tuning in XGBoost(with codes in Python)</a></li>
+<li><p id="footnote-1"><sup>[1]</sup><a id="fn1" href="https://www.analyticsvidhya.com/blog/2016/03/complete-guide-parameter-tuning-xgboost-with-codes-python" target="_blank" rel="noopener noreferrer">Jain, A. (March 1, 2016) Complete Guide to Parameter Tuning in XGBoost(with codes in Python)</a>
+</li>
 <li><a href="https://en.wikipedia.org/wiki/Feature_engineering" target="_blank" rel="noopener no referrer">Feature engineering</a></li>
 <li><a href="https://en.wikipedia.org/wiki/Decision_tree_learning#Metrics" target="_blank" rel="noopener noreferrer">Decision tree learning metrics</a></li>
 <li><a href="https://www.quora.com/Machine-Learning-What-is-an-intuitive-explanation-of-AUC" rel="noopener noreferrer">An intuitive explanation of AUC</a></li>
@@ -16601,7 +16609,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Data-citations">Data citations<a class="anchor-link" href="#Data-citations">&#182;</a></h3><p><p id="footnote-2"> Lichman, M. (2013). <a href="http://archive.ics.uci.edu/ml">UCI Machine Learning Repository</a>. Irvine, CA: University of California, School of Information and Computer Science. <a id="fn2"></a></p>
+<h3 id="Data-citations">Data citations<a class="anchor-link" href="#Data-citations">&#182;</a></h3><p id="footnote-2"> Lichman, M. (2013). [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml). Irvine, CA: University of California, School of Information and Computer Science. <a id="fn2"></a>
 
 </div>
 </div>
@@ -16631,6 +16639,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
 <span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
 </div>
+
 </div>
 </div>
 </div>
