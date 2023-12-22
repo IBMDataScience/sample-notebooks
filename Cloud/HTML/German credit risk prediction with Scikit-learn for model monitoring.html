@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>German credit risk prediction with Scikit-learn for model monitoring</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>German credit risk prediction with Scikit-learn fo</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -15878,11 +15878,98 @@ You can find <code>COS_API_KEY_ID</code> and <code>COS_RESOURCE_CRN</code> varia
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">COS_API_KEY_ID</span> <span class="o">=</span> <span class="s2">&quot;***&quot;</span>
-<span class="n">COS_RESOURCE_CRN</span> <span class="o">=</span> <span class="s2">&quot;***&quot;</span> 
-<span class="n">COS_ENDPOINT</span> <span class="o">=</span> <span class="s2">&quot;***&quot;</span>
-<span class="n">IAM_AUTH_ENDPOINT</span> <span class="o">=</span> <span class="s2">&quot;***&quot;</span>
-<span class="n">BUCKET_NAME</span> <span class="o">=</span> <span class="s2">&quot;***&quot;</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cos_credentials</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">get_details</span><span class="p">(</span><span class="n">space_id</span><span class="o">=</span><span class="n">space_id</span><span class="p">)[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;storage&#39;</span><span class="p">][</span><span class="s1">&#39;properties&#39;</span><span class="p">]</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">datasource_name</span> <span class="o">=</span> <span class="s1">&#39;bluemixcloudobjectstorage&#39;</span>
+<span class="n">bucketname</span> <span class="o">=</span> <span class="n">cos_credentials</span><span class="p">[</span><span class="s1">&#39;bucket_name&#39;</span><span class="p">]</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">conn_meta_props</span><span class="o">=</span> <span class="p">{</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Connection to Database - </span><span class="si">{</span><span class="n">datasource_name</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">,</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">DATASOURCE_TYPE</span><span class="p">:</span> <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">get_datasource_type_uid_by_name</span><span class="p">(</span><span class="n">datasource_name</span><span class="p">),</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">DESCRIPTION</span><span class="p">:</span> <span class="s2">&quot;Connection to external Database&quot;</span><span class="p">,</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">PROPERTIES</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;bucket&#39;</span><span class="p">:</span> <span class="n">bucketname</span><span class="p">,</span>
+        <span class="s1">&#39;access_key&#39;</span><span class="p">:</span> <span class="n">cos_credentials</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">][</span><span class="s1">&#39;editor&#39;</span><span class="p">][</span><span class="s1">&#39;access_key_id&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;secret_key&#39;</span><span class="p">:</span> <span class="n">cos_credentials</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">][</span><span class="s1">&#39;editor&#39;</span><span class="p">][</span><span class="s1">&#39;secret_access_key&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;iam_url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://iam.cloud.ibm.com/identity/token&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">cos_credentials</span><span class="p">[</span><span class="s1">&#39;endpoint_url&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">conn_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">meta_props</span><span class="o">=</span><span class="n">conn_meta_props</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p><strong>Note</strong>: The above connection can be initialized alternatively with <code>api_key</code> and <code>resource_instance_id</code>.<br />
+The above cell can be replaced with:</p>
+<pre><code>conn_meta_props= {
+    client.connections.ConfigurationMetaNames.NAME: f&quot;Connection to Database - {db_name} &quot;,
+    client.connections.ConfigurationMetaNames.DATASOURCE_TYPE: client.connections.get_datasource_type_uid_by_name(db_name),
+    client.connections.ConfigurationMetaNames.DESCRIPTION: &quot;Connection to external Database&quot;,
+    client.connections.ConfigurationMetaNames.PROPERTIES: {
+        'bucket': bucket_name,
+        'api_key': cos_credentials['apikey'],
+        'resource_instance_id': cos_credentials['resource_instance_id'],
+        'iam_url': 'https://iam.cloud.ibm.com/identity/token',
+        'url': 'https://s3.us.cloud-object-storage.appdomain.cloud'
+    }
+}
+
+conn_details = client.connections.create(meta_props=conn_meta_props)
+
+</code></pre>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">connection_id</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">get_uid</span><span class="p">(</span><span class="n">conn_details</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16097,35 +16184,18 @@ You can find <code>COS_API_KEY_ID</code> and <code>COS_RESOURCE_CRN</code> varia
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">ibm_boto3</span>
-<span class="kn">from</span> <span class="nn">ibm_botocore.client</span> <span class="kn">import</span> <span class="n">Config</span><span class="p">,</span> <span class="n">ClientError</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning.helpers</span> <span class="kn">import</span> <span class="n">DataConnection</span><span class="p">,</span> <span class="n">S3Location</span>
 
-<span class="n">cos_client</span> <span class="o">=</span> <span class="n">ibm_boto3</span><span class="o">.</span><span class="n">resource</span><span class="p">(</span><span class="s2">&quot;s3&quot;</span><span class="p">,</span>
-    <span class="n">ibm_api_key_id</span><span class="o">=</span><span class="n">COS_API_KEY_ID</span><span class="p">,</span>
-    <span class="n">ibm_service_instance_id</span><span class="o">=</span><span class="n">COS_RESOURCE_CRN</span><span class="p">,</span>
-    <span class="n">ibm_auth_endpoint</span><span class="o">=</span><span class="n">IAM_AUTH_ENDPOINT</span><span class="p">,</span>
-    <span class="n">config</span><span class="o">=</span><span class="n">Config</span><span class="p">(</span><span class="n">signature_version</span><span class="o">=</span><span class="s2">&quot;oauth&quot;</span><span class="p">),</span>
-    <span class="n">endpoint_url</span><span class="o">=</span><span class="n">COS_ENDPOINT</span>
-<span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">training_data_file_name</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_data</span><span class="p">:</span>
-    <span class="n">cos_client</span><span class="o">.</span><span class="n">Object</span><span class="p">(</span><span class="n">BUCKET_NAME</span><span class="p">,</span> <span class="n">training_data_file_name</span><span class="p">)</span><span class="o">.</span><span class="n">upload_fileobj</span><span class="p">(</span>
-        <span class="n">Fileobj</span><span class="o">=</span><span class="n">file_data</span>
+<span class="n">data_connections</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">data_connection</span> <span class="o">=</span> <span class="n">DataConnection</span><span class="p">(</span>
+        <span class="n">connection_asset_id</span><span class="o">=</span><span class="n">connection_id</span><span class="p">,</span>
+        <span class="n">location</span><span class="o">=</span><span class="n">S3Location</span><span class="p">(</span><span class="n">bucket</span><span class="o">=</span><span class="n">cos_credentials</span><span class="p">[</span><span class="s1">&#39;bucket_name&#39;</span><span class="p">],</span>
+                            <span class="n">path</span><span class="o">=</span><span class="n">training_data_file_name</span><span class="p">)</span>
     <span class="p">)</span>
+
+<span class="n">data_connection</span><span class="o">.</span><span class="n">set_client</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+<span class="n">data_connection</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">training_data_file_name</span><span class="p">,</span> <span class="n">remote_name</span><span class="o">=</span><span class="n">training_data_file_name</span><span class="p">)</span>
+<span class="n">data_connections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_connection</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16398,11 +16468,11 @@ You can find <code>COS_API_KEY_ID</code> and <code>COS_RESOURCE_CRN</code> varia
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">software_spec_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_id_by_name</span><span class="p">(</span><span class="s2">&quot;runtime-22.2-py3.10&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">software_spec_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_id_by_name</span><span class="p">(</span><span class="s2">&quot;runtime-23.1-py3.10&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Software Specification ID: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">software_spec_uid</span><span class="p">))</span>
 <span class="n">model_props</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">MODEL_NAME</span><span class="p">),</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="s1">&#39;scikit-learn_1.0&#39;</span><span class="p">,</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="s1">&#39;scikit-learn_1.1&#39;</span><span class="p">,</span>
     <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">SOFTWARE_SPEC_UID</span><span class="p">:</span> <span class="n">software_spec_uid</span>
 <span class="p">}</span>
 </pre></div>
