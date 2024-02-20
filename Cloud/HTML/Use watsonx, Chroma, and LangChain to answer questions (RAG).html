@@ -15626,7 +15626,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p><a id="setup"></a></p>
 <h2 id="Set-up-the-environment">Set up the environment<a class="anchor-link" href="#Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html?context=analytics" target="_blank" rel="noopener no referrer">here</a>).</li>
+<li>Create a <a href="https://cloud.ibm.com/catalog/services/watson-machine-learning" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html?context=analytics" target="_blank" rel="noopener no referrer">here</a>).</li>
 </ul>
 
 </div>
@@ -15651,12 +15651,14 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;langchain==0.0.345&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;langchain==0.1.7&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>langchain_ibm<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>wget<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>sentence-transformers<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;chromadb==0.3.26&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
-<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;ibm-watson-machine-learning&gt;=1.0.335&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;ibm-watsonx-ai&gt;=0.1.7&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;pydantic==1.10.0&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;sqlalchemy==2.0.1&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 </pre></div>
 
      </div>
@@ -15904,7 +15906,7 @@ Model inferencing.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning.foundation_models.utils.enums</span> <span class="kn">import</span> <span class="n">ModelTypes</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watsonx_ai.foundation_models.utils.enums</span> <span class="kn">import</span> <span class="n">ModelTypes</span>
 
 <span class="n">model_id</span> <span class="o">=</span> <span class="n">ModelTypes</span><span class="o">.</span><span class="n">GRANITE_13B_CHAT_V2</span>
 </pre></div>
@@ -15934,8 +15936,8 @@ Model inferencing.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning.metanames</span> <span class="kn">import</span> <span class="n">GenTextParamsMetaNames</span> <span class="k">as</span> <span class="n">GenParams</span>
-<span class="kn">from</span> <span class="nn">ibm_watson_machine_learning.foundation_models.utils.enums</span> <span class="kn">import</span> <span class="n">DecodingMethods</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watsonx_ai.metanames</span> <span class="kn">import</span> <span class="n">GenTextParamsMetaNames</span> <span class="k">as</span> <span class="n">GenParams</span>
+<span class="kn">from</span> <span class="nn">ibm_watsonx_ai.foundation_models.utils.enums</span> <span class="kn">import</span> <span class="n">DecodingMethods</span>
 
 <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">GenParams</span><span class="o">.</span><span class="n">DECODING_METHOD</span><span class="p">:</span> <span class="n">DecodingMethods</span><span class="o">.</span><span class="n">GREEDY</span><span class="p">,</span>
@@ -15970,7 +15972,7 @@ Model inferencing.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">langchain.llms</span> <span class="kn">import</span> <span class="n">WatsonxLLM</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">langchain_ibm</span> <span class="kn">import</span> <span class="n">WatsonxLLM</span>
 
 <span class="n">watsonx_granite</span> <span class="o">=</span> <span class="n">WatsonxLLM</span><span class="p">(</span>
     <span class="n">model_id</span><span class="o">=</span><span class="n">model_id</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
@@ -16049,7 +16051,7 @@ Model inferencing.</p>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;What did the president say about Ketanji Brown Jackson&quot;</span>
-<span class="n">qa</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="n">qa</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16071,7 +16073,8 @@ Model inferencing.</p>
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>&#34; The president said that Ketanji Brown Jackson is one of our nation&#39;s top legal minds and will continue Justice Breyer&#39;s legacy of excellence.&#34;</pre>
+<pre>{&#39;query&#39;: &#39;What did the president say about Ketanji Brown Jackson&#39;,
+ &#39;result&#39;: &#34; The president said that Ketanji Brown Jackson is one of our nation&#39;s top legal minds and will continue Justice Breyer&#39;s legacy of excellence.&#34;}</pre>
 </div>
 
 </div>
@@ -16102,7 +16105,7 @@ Model inferencing.</p>
 <p><a id="summary"></a></p>
 <h2 id="Summary-and-next-steps">Summary and next steps<a class="anchor-link" href="#Summary-and-next-steps">&#182;</a></h2><p>You successfully completed this notebook!.</p>
 <p>You learned how to answer question using RAG using watsonx and LangChain.</p>
-<p>Check out our <em><a href="https://ibm.github.io/watson-machine-learning-sdk/samples.html" target="_blank" rel="noopener no referrer">Online Documentation</a></em> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
+<p>Check out our <em><a href="https://ibm.github.io/watsonx-ai-python-sdk/samples.html" target="_blank" rel="noopener no referrer">Online Documentation</a></em> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
 
 </div>
 </div>
@@ -16114,7 +16117,7 @@ Model inferencing.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Copyright © 2023 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright © 2023, 2024 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
