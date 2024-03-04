@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Use Watsonx and Google to extract entities of clim</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Use watsonx, and Google `flan-ul2` to extract the</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -15580,7 +15580,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><img src="https://raw.githubusercontent.com/IBM/watson-machine-learning-samples/master/cloud/notebooks/headers/watsonx-Prompt_Lab-Notebook.png" alt="image" /></p>
-<h1 id="Use-Watsonx-and-Google-google/flan-ul2-to-extract-the-named-entities-of--climate-fever-document">Use Watsonx and Google <code>google/flan-ul2</code> to extract the named entities of  climate fever document<a class="anchor-link" href="#Use-Watsonx-and-Google-google/flan-ul2-to-extract-the-named-entities-of--climate-fever-document">&#182;</a></h1>
+<h1 id="Use-watsonx,-and-google/flan-ul2-to-extract-the-named-entities-of--climate-fever-document">Use watsonx, and <code>google/flan-ul2</code> to extract the named entities of  climate fever document<a class="anchor-link" href="#Use-watsonx,-and-google/flan-ul2-to-extract-the-named-entities-of--climate-fever-document">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -15591,7 +15591,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>This notebook contains the steps and code to demonstrate support of named entity extraction in Watsonx. It introduces commands for data retrieval and model testing.</p>
+<p>This notebook contains the steps and code to demonstrate support of named entity extraction in watsonx. It introduces commands for data retrieval and model testing.</p>
 <p>Some familiarity with Python is helpful. This notebook uses Python 3.10.</p>
 <h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>The objective is to explore and utilize the Google Flan-UL2 model for entity extraction.Google Flan-UL2 is a pre-trained language model which can be used for token-level entity extraction tasks. Entity extraction, also known as Named Entity Recognition (NER), involves identifying and classifying named entities (such as persons, organizations, locations, dates, etc.) from unstructured text.</p>
 <p>Here are the steps we took in this notebook for Named Entity Extractions:</p>
@@ -15617,7 +15617,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <ul>
 <li><a href="#setup">Setup</a></li>
 <li><a href="#data">Data loading</a></li>
-<li><a href="#models">Foundation Models on Watsonx</a></li>
+<li><a href="#models">Foundation Models on watsonx</a></li>
 <li><a href="#predict">Model testing</a></li>
 <li><a href="#score">Score</a></li>
 <li><a href="#summary">Summary</a></li>
@@ -15636,7 +15636,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p><a id="setup"></a></p>
 <h2 id="Set-up-the-environment">Set up the environment<a class="anchor-link" href="#Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html?context=analytics" target="_blank" rel="noopener no referrer">here</a>).</li>
+<li>Create a <a href="https://cloud.ibm.com/catalog/services/watson-machine-learning" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html?context=analytics" target="_blank" rel="noopener no referrer">here</a>).</li>
 </ul>
 
 </div>
@@ -15666,8 +15666,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>requests<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w">  </span>wget<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>ibm-cloud-sdk-core<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
-<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>scikit-learn
-<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>spacy
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>scikit-learn<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>spacy<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>python<span class="w"> </span>-m<span class="w"> </span>spacy<span class="w"> </span>download<span class="w"> </span>en_core_web_sm<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-1
 </pre></div>
 
@@ -15681,7 +15681,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">getpass</span><span class="o">,</span> <span class="nn">wget</span>
@@ -15693,15 +15693,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">value_counts</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">accuracy_score</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">read_csv</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">classification_report</span>
-<span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
 <span class="kn">from</span> <span class="nn">ibm_cloud_sdk_core</span> <span class="kn">import</span> <span class="n">IAMTokenManager</span>
-<span class="kn">from</span> <span class="nn">ibm_cloud_sdk_core.authenticators</span> <span class="kn">import</span> <span class="n">IAMAuthenticator</span><span class="p">,</span> <span class="n">BearerTokenAuthenticator</span>
-<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">value_counts</span><span class="p">,</span> <span class="n">read_csv</span><span class="p">,</span> <span class="n">DataFrame</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">read_json</span>
 <span class="n">nlp</span> <span class="o">=</span> <span class="n">spacy</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;en_core_web_sm&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -15738,12 +15733,12 @@ from the API call is returned as the cell output.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">endpoint_url</span> <span class="o">=</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getpass</span><span class="p">(</span><span class="s2">&quot;Please enter your WML endpoint url (hit enter): &quot;</span><span class="p">)</span>
@@ -15752,27 +15747,6 @@ from the API call is returned as the cell output.</p>
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Please enter your WML endpoint url (hit enter): ········
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -15792,7 +15766,7 @@ from the API call is returned as the cell output.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Prompt</span><span class="p">:</span>
@@ -15801,7 +15775,7 @@ from the API call is returned as the cell output.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">project_id</span> <span class="o">=</span> <span class="n">project_id</span>
 
     <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">model_id</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
-        <span class="n">wml_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">endpoint_url</span><span class="si">}</span><span class="s2">/ml/v1-beta/generation/text?version=2023-05-28&quot;</span>
+        <span class="n">wml_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">endpoint_url</span><span class="si">}</span><span class="s2">/ml/v1/text/generation?version=2023-05-28&quot;</span>
         <span class="n">Headers</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span>
             <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
@@ -15833,20 +15807,19 @@ from the API call is returned as the cell output.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Watsonx-API-connection">Watsonx API connection<a class="anchor-link" href="#Watsonx-API-connection">&#182;</a></h3><p>This cell defines the credentials required to work with watsonx API for Foundation
+<h3 id="watsonx-API-connection">watsonx API connection<a class="anchor-link" href="#watsonx-API-connection">&#182;</a></h3><p>This cell defines the credentials required to work with watsonx API for Foundation
 Model inferencing.</p>
-<p><strong>Action:</strong> Provide the IBM Cloud personal API key. For details, see
-<a href="https://cloud.ibm.com/docs/account?topic=account-userapikey&amp;interface=ui">documentation</a>.</p>
+<p><strong>Action:</strong> Provide the IBM Cloud personal API key. For details, see <a href="https://cloud.ibm.com/docs/account?topic=account-userapikey&interface=ui" target="_blank" rel="IBM Cloud user API key">documentation</a>.</p>
 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">access_token</span> <span class="o">=</span> <span class="n">IAMTokenManager</span><span class="p">(</span>
@@ -15858,27 +15831,6 @@ Model inferencing.</p>
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Please enter your WML api key (hit enter): ········
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -15894,12 +15846,12 @@ the id from the project in which this notebook runs:</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span>
@@ -15911,27 +15863,6 @@ the id from the project in which this notebook runs:</p>
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Please enter your project_id (hit enter): ········
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -15963,7 +15894,7 @@ the id from the project in which this notebook runs:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[121]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;data_clm_fever.csv&#39;</span>
@@ -15993,7 +15924,7 @@ the id from the project in which this notebook runs:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[179]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">=</span> <span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;data_clm_fever.csv&quot;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -16014,7 +15945,7 @@ the id from the project in which this notebook runs:</p>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[179]:</div>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[12]:</div>
 
 
 
@@ -16089,7 +16020,7 @@ the id from the project in which this notebook runs:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[180]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_train</span><span class="p">,</span> <span class="n">data_test</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;claim&#39;</span><span class="p">],</span> 
@@ -16121,7 +16052,7 @@ the id from the project in which this notebook runs:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[181]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_sample</span><span class="o">=</span><span class="n">data_train</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_train</span><span class="p">)),</span> <span class="mi">10</span><span class="p">)]</span>
@@ -16145,16 +16076,16 @@ the id from the project in which this notebook runs:</p>
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>517     Most likely the primary control knob on climat...
-863     While there has been a mean rise of a little m...
-437     &#34;The IPCC’s Fourth Assessment Report, 2007, ca...
-228     The bushfires in Australia were caused by arso...
-1052    “Several of the papers note that the primary i...
-539     the mild warming of around 0.8 degrees Celsius...
-560     This means that the world is now 1C warmer tha...
-246     Our evolving dynamic planet has survived sea l...
-1045    Temperatures cooled from about 1940 to 1975, a...
-203     Klaus-Martin Schulte examined all papers publi...
+<pre>733     Global warming theory holds that one of the fi...
+333     […]until we develop a practical, cost-competit...
+628     The IPCC confirms that computer modeling predi...
+286     more than 100 per cent of the warming over the...
+1008    U.S. Pays $1 Billion into Green Climate Fund, ...
+755     About 120,000 years ago, before the last ice a...
+552     Many of the world’s coral reefs are already ba...
+714              Renewables can&#39;t provide baseload power.
+669     The IPCC simply updated their temperature hist...
+510        CO2 emissions were much smaller 100 years ago.
 Name: claim, dtype: object
 </pre>
 </div>
@@ -16172,7 +16103,7 @@ Name: claim, dtype: object
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="models"></a></p>
-<h2 id="Foundation-Models-on-Watsonx">Foundation Models on Watsonx<a class="anchor-link" href="#Foundation-Models-on-Watsonx">&#182;</a></h2>
+<h2 id="Foundation-Models-on-watsonx">Foundation Models on watsonx<a class="anchor-link" href="#Foundation-Models-on-watsonx">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -16192,10 +16123,10 @@ Name: claim, dtype: object
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[182]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">models_json</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint_url</span> <span class="o">+</span> <span class="s1">&#39;/ml/v1-beta/foundation_model_specs?version=2022-08-01&amp;limit=50&#39;</span><span class="p">,</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">models_json</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint_url</span> <span class="o">+</span> <span class="s1">&#39;/ml/v1/foundation_model_specs?version=2022-08-01&amp;limit=50&#39;</span><span class="p">,</span>
                            <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
                                     <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Bearer </span><span class="si">{</span><span class="n">access_token</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                                     <span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
@@ -16222,7 +16153,7 @@ Name: claim, dtype: object
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>[&#39;bigscience/mt0-xxl&#39;, &#39;eleutherai/gpt-neox-20b&#39;, &#39;google/flan-t5-xxl&#39;, &#39;google/flan-ul2&#39;, &#39;ibm/mpt-7b-instruct2&#39;]
+<pre>[&#39;bigcode/starcoder&#39;, &#39;bigscience/mt0-xxl&#39;, &#39;eleutherai/gpt-neox-20b&#39;, &#39;google/flan-t5-xl&#39;, &#39;google/flan-t5-xxl&#39;, &#39;google/flan-ul2&#39;, &#39;ibm-mistralai/mixtral-8x7b-instruct-v01-q&#39;, &#39;ibm/granite-13b-chat-v1&#39;, &#39;ibm/granite-13b-chat-v2&#39;, &#39;ibm/granite-13b-instruct-v1&#39;, &#39;ibm/granite-13b-instruct-v2&#39;, &#39;ibm/mpt-7b-instruct2&#39;, &#39;meta-llama/llama-2-13b-chat&#39;, &#39;meta-llama/llama-2-70b-chat&#39;]
 </pre>
 </div>
 </div>
@@ -16248,7 +16179,7 @@ Name: claim, dtype: object
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[183]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_id</span> <span class="o">=</span> <span class="s2">&quot;google/flan-ul2&quot;</span>
@@ -16301,7 +16232,7 @@ Name: claim, dtype: object
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[184]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">zero_shot_inputs</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">}</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">data_test</span><span class="p">]</span>
@@ -16382,7 +16313,7 @@ The sentence example 10 is:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[185]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">few_shot_inputs_</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">}</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">data_test</span><span class="o">.</span><span class="n">values</span><span class="p">]</span>
@@ -16447,7 +16378,7 @@ The sentence example 5 is:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[186]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[19]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Process each document in the dataset</span>
@@ -16477,7 +16408,7 @@ The sentence example 5 is:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[187]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">json_formatted_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">example_dic_list</span><span class="p">[:</span><span class="mi">4</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -16503,47 +16434,27 @@ The sentence example 5 is:
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>[
     {
-        &#34;document&#34;: &#34;While there has been a mean rise of a little more than 3mm per year worldwide since the 1990s, in the last decade, the NOAA Virginia Key tide gauge just south of Miami Beach has measured a 9mm rise annually.\u201d&#34;,
-        &#34;phrase_0&#34;: &#34;a little more than 3mm per year&#34;,
-        &#34;label_0&#34;: &#34;DATE&#34;,
-        &#34;phrase_1&#34;: &#34;the 1990s&#34;,
-        &#34;label_1&#34;: &#34;DATE&#34;,
-        &#34;phrase_2&#34;: &#34;the last decade&#34;,
-        &#34;label_2&#34;: &#34;DATE&#34;,
-        &#34;phrase_3&#34;: &#34;the NOAA Virginia Key&#34;,
-        &#34;label_3&#34;: &#34;ORG&#34;,
-        &#34;phrase_4&#34;: &#34;Miami Beach&#34;,
-        &#34;label_4&#34;: &#34;GPE&#34;,
-        &#34;phrase_5&#34;: &#34;9mm&#34;,
-        &#34;label_5&#34;: &#34;QUANTITY&#34;,
-        &#34;phrase_6&#34;: &#34;annually&#34;,
-        &#34;label_6&#34;: &#34;DATE&#34;
+        &#34;document&#34;: &#34;Global warming theory holds that one of the fingerprints of human-induced global warming is more rapid warming in the lower troposphere than at the surface (James Taylor)&#34;,
+        &#34;phrase_0&#34;: &#34;James Taylor&#34;,
+        &#34;label_0&#34;: &#34;PERSON&#34;
     },
     {
-        &#34;document&#34;: &#34;\&#34;The IPCC\u2019s Fourth Assessment Report, 2007, carries in three places a graph in which the Hadley Center\u2019s global mean surface temperature anomaly dataset from 1850-2005 is displayed with four arbitrarily-chosen trend-lines overlaid upon it.&#34;,
-        &#34;phrase_0&#34;: &#34;2007&#34;,
-        &#34;label_0&#34;: &#34;DATE&#34;,
-        &#34;phrase_1&#34;: &#34;three&#34;,
-        &#34;label_1&#34;: &#34;CARDINAL&#34;,
-        &#34;phrase_2&#34;: &#34;the Hadley Center\u2019s&#34;,
-        &#34;label_2&#34;: &#34;ORG&#34;,
-        &#34;phrase_3&#34;: &#34;anomaly&#34;,
-        &#34;label_3&#34;: &#34;GPE&#34;,
-        &#34;phrase_4&#34;: &#34;1850-2005&#34;,
-        &#34;label_4&#34;: &#34;DATE&#34;,
-        &#34;phrase_5&#34;: &#34;four&#34;,
-        &#34;label_5&#34;: &#34;CARDINAL&#34;
+        &#34;document&#34;: &#34;[\u2026]until we develop a practical, cost-competitive alternative to fossil fuels, it is unlikely that renewable energy will ever make up more than 15-20% of global energy requirements.&#34;,
+        &#34;phrase_0&#34;: &#34;more than 15&#34;,
+        &#34;label_0&#34;: &#34;CARDINAL&#34;
     },
     {
-        &#34;document&#34;: &#34;The bushfires in Australia were caused by arsonists and a series of lightning strikes, not &#39;climate change&#39;.&#34;,
-        &#34;phrase_0&#34;: &#34;Australia&#34;,
-        &#34;label_0&#34;: &#34;GPE&#34;
-    },
-    {
-        &#34;document&#34;: &#34;the mild warming of around 0.8 degrees Celsius that the planet has experienced since the middle of the 19th century&#34;,
-        &#34;phrase_0&#34;: &#34;0.8 degrees&#34;,
+        &#34;document&#34;: &#34;The IPCC confirms that computer modeling predicts the existence of a tropical, mid-troposphere \u201chot spot\u201d about 10km above the Earth\u2019s surface.&#34;,
+        &#34;phrase_0&#34;: &#34;about 10km&#34;,
         &#34;label_0&#34;: &#34;QUANTITY&#34;,
-        &#34;phrase_1&#34;: &#34;the middle of the 19th century&#34;,
+        &#34;phrase_1&#34;: &#34;Earth&#34;,
+        &#34;label_1&#34;: &#34;LOC&#34;
+    },
+    {
+        &#34;document&#34;: &#34;more than 100 per cent of the warming over the past century is due to human actions&#34;,
+        &#34;phrase_0&#34;: &#34;more than 100&#34;,
+        &#34;label_0&#34;: &#34;CARDINAL&#34;,
+        &#34;phrase_1&#34;: &#34;the past century&#34;,
         &#34;label_1&#34;: &#34;DATE&#34;
     }
 ]
@@ -16572,7 +16483,7 @@ The sentence example 5 is:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[188]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">examples</span><span class="o">=</span><span class="p">[]</span>
@@ -16596,7 +16507,7 @@ The sentence example 5 is:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[189]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[22]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">examples_input</span><span class="p">)</span>
@@ -16620,51 +16531,51 @@ The sentence example 5 is:
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>document: 
-While there has been a mean rise of a little more than 3mm per year worldwide since the 1990s, in the last decade, the NOAA Virginia Key tide gauge just south of Miami Beach has measured a 9mm rise annually.”
+Global warming theory holds that one of the fingerprints of human-induced global warming is more rapid warming in the lower troposphere than at the surface (James Taylor)
 
-{&#39;phrase_0&#39;: &#39;a little more than 3mm per year&#39;, &#39;label_0&#39;: &#39;DATE&#39;, &#39;phrase_1&#39;: &#39;the 1990s&#39;, &#39;label_1&#39;: &#39;DATE&#39;, &#39;phrase_2&#39;: &#39;the last decade&#39;, &#39;label_2&#39;: &#39;DATE&#39;, &#39;phrase_3&#39;: &#39;the NOAA Virginia Key&#39;, &#39;label_3&#39;: &#39;ORG&#39;, &#39;phrase_4&#39;: &#39;Miami Beach&#39;, &#39;label_4&#39;: &#39;GPE&#39;, &#39;phrase_5&#39;: &#39;9mm&#39;, &#39;label_5&#39;: &#39;QUANTITY&#39;, &#39;phrase_6&#39;: &#39;annually&#39;, &#39;label_6&#39;: &#39;DATE&#39;}
-
-
-document: 
-&#34;The IPCC’s Fourth Assessment Report, 2007, carries in three places a graph in which the Hadley Center’s global mean surface temperature anomaly dataset from 1850-2005 is displayed with four arbitrarily-chosen trend-lines overlaid upon it.
-
-{&#39;phrase_0&#39;: &#39;2007&#39;, &#39;label_0&#39;: &#39;DATE&#39;, &#39;phrase_1&#39;: &#39;three&#39;, &#39;label_1&#39;: &#39;CARDINAL&#39;, &#39;phrase_2&#39;: &#39;the Hadley Center’s&#39;, &#39;label_2&#39;: &#39;ORG&#39;, &#39;phrase_3&#39;: &#39;anomaly&#39;, &#39;label_3&#39;: &#39;GPE&#39;, &#39;phrase_4&#39;: &#39;1850-2005&#39;, &#39;label_4&#39;: &#39;DATE&#39;, &#39;phrase_5&#39;: &#39;four&#39;, &#39;label_5&#39;: &#39;CARDINAL&#39;}
+{&#39;phrase_0&#39;: &#39;James Taylor&#39;, &#39;label_0&#39;: &#39;PERSON&#39;}
 
 
 document: 
-The bushfires in Australia were caused by arsonists and a series of lightning strikes, not &#39;climate change&#39;.
+[…]until we develop a practical, cost-competitive alternative to fossil fuels, it is unlikely that renewable energy will ever make up more than 15-20% of global energy requirements.
 
-{&#39;phrase_0&#39;: &#39;Australia&#39;, &#39;label_0&#39;: &#39;GPE&#39;}
-
-
-document: 
-the mild warming of around 0.8 degrees Celsius that the planet has experienced since the middle of the 19th century
-
-{&#39;phrase_0&#39;: &#39;0.8 degrees&#39;, &#39;label_0&#39;: &#39;QUANTITY&#39;, &#39;phrase_1&#39;: &#39;the middle of the 19th century&#39;, &#39;label_1&#39;: &#39;DATE&#39;}
+{&#39;phrase_0&#39;: &#39;more than 15&#39;, &#39;label_0&#39;: &#39;CARDINAL&#39;}
 
 
 document: 
-This means that the world is now 1C warmer than it was in pre-industrial times
+The IPCC confirms that computer modeling predicts the existence of a tropical, mid-troposphere “hot spot” about 10km above the Earth’s surface.
 
-{&#39;phrase_0&#39;: &#39;1C&#39;, &#39;label_0&#39;: &#39;CARDINAL&#39;}
-
-
-document: 
-Our evolving dynamic planet has survived sea level changes of hundreds of metres
-
-{&#39;phrase_0&#39;: &#39;hundreds of metres&#39;, &#39;label_0&#39;: &#39;QUANTITY&#39;}
+{&#39;phrase_0&#39;: &#39;about 10km&#39;, &#39;label_0&#39;: &#39;QUANTITY&#39;, &#39;phrase_1&#39;: &#39;Earth&#39;, &#39;label_1&#39;: &#39;LOC&#39;}
 
 
 document: 
-Temperatures cooled from about 1940 to 1975, and then they rose from about ’75 to about 2005 or so, and since then they’ve been flat or cooling.
+more than 100 per cent of the warming over the past century is due to human actions
 
-{&#39;phrase_0&#39;: &#39;about 1940 to 1975&#39;, &#39;label_0&#39;: &#39;DATE&#39;, &#39;phrase_1&#39;: &#39;about ’75 to about 2005&#39;, &#39;label_1&#39;: &#39;CARDINAL&#39;}
+{&#39;phrase_0&#39;: &#39;more than 100&#39;, &#39;label_0&#39;: &#39;CARDINAL&#39;, &#39;phrase_1&#39;: &#39;the past century&#39;, &#39;label_1&#39;: &#39;DATE&#39;}
 
 
 document: 
-Klaus-Martin Schulte examined all papers published from 2004 to February 2007.
+U.S. Pays $1 Billion into Green Climate Fund, Top Polluters Pay Nothing
 
-{&#39;phrase_0&#39;: &#39;Klaus-Martin Schulte&#39;, &#39;label_0&#39;: &#39;PERSON&#39;, &#39;phrase_1&#39;: &#39;2004&#39;, &#39;label_1&#39;: &#39;DATE&#39;}
+{&#39;phrase_0&#39;: &#39;U.S.&#39;, &#39;label_0&#39;: &#39;GPE&#39;, &#39;phrase_1&#39;: &#39;$1 Billion&#39;, &#39;label_1&#39;: &#39;MONEY&#39;, &#39;phrase_2&#39;: &#39;Green Climate Fund&#39;, &#39;label_2&#39;: &#39;ORG&#39;}
+
+
+document: 
+About 120,000 years ago, before the last ice age, the planet went through a natural warm period, with temperatures similar to those expected in coming decades.
+
+{&#39;phrase_0&#39;: &#39;About 120,000 years ago&#39;, &#39;label_0&#39;: &#39;DATE&#39;, &#39;phrase_1&#39;: &#39;the last ice age&#39;, &#39;label_1&#39;: &#39;DATE&#39;, &#39;phrase_2&#39;: &#39;coming decades&#39;, &#39;label_2&#39;: &#39;DATE&#39;}
+
+
+document: 
+The IPCC simply updated their temperature history graphs to show the best data available at the time.
+
+{&#39;phrase_0&#39;: &#39;IPCC&#39;, &#39;label_0&#39;: &#39;ORG&#39;}
+
+
+document: 
+CO2 emissions were much smaller 100 years ago.
+
+{&#39;phrase_0&#39;: &#39;100 years ago&#39;, &#39;label_0&#39;: &#39;DATE&#39;}
 
 
 
@@ -16697,7 +16608,7 @@ result:Based on decoding strategy that we have for the models, the parameters ca
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[190]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[23]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># GREEDY PAREMETER CONFIGURATION</span>
@@ -16723,7 +16634,7 @@ result:Based on decoding strategy that we have for the models, the parameters ca
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Extract-the-named-entities-of-climate-claim-document-using-google/flan-ul2-model.">Extract the named entities of climate claim document using <code>google/flan-ul2</code> model.<a class="anchor-link" href="#Extract-the-named-entities-of-climate-claim-document-using-google/flan-ul2-model.">&#182;</a></h3><p><strong>Note:</strong> You might need to adjust model <code>parameters</code> for different models or tasks, to do so please refer to <a href="">documentation</a>.</p>
+<h3 id="Extract-the-named-entities-of-climate-claim-document-using-google/flan-ul2-model.">Extract the named entities of climate claim document using <code>google/flan-ul2</code> model.<a class="anchor-link" href="#Extract-the-named-entities-of-climate-claim-document-using-google/flan-ul2-model.">&#182;</a></h3><p><strong>Note:</strong> You might need to adjust model <code>parameters</code> for different models or tasks, to do so please refer to <a href="https://ibm.github.io/watsonx-ai-python-sdk/fm_model.html#metanames.GenTextParamsMetaNames" target="_blank" rel="GenTextParamsMetaNames params">documentation</a>.</p>
 
 </div>
 </div>
@@ -16746,7 +16657,7 @@ result:Based on decoding strategy that we have for the models, the parameters ca
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[191]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[24]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">prompt</span> <span class="o">=</span> <span class="n">Prompt</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">project_id</span><span class="p">)</span>
@@ -16774,7 +16685,7 @@ result:Based on decoding strategy that we have for the models, the parameters ca
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[192]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[25]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">list_of_NERS</span><span class="o">=</span><span class="n">nlp</span><span class="o">.</span><span class="n">get_pipe</span><span class="p">(</span><span class="s1">&#39;ner&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">labels</span>
@@ -16824,7 +16735,7 @@ result:Based on decoding strategy that we have for the models, the parameters ca
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[193]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[26]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">instruction</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
@@ -16849,7 +16760,7 @@ result:Based on decoding strategy that we have for the models, the parameters ca
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[194]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[27]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">instruction</span><span class="p">)</span>
@@ -16895,7 +16806,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[195]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[28]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
@@ -16913,7 +16824,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[196]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[29]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">json_formatted_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="p">[:</span><span class="mi">4</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -16939,28 +16850,28 @@ Use the following training examples as follows:
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>[
     {
-        &#34;generated_text&#34;: &#34;&#39;phrase_0&#39;: &#39;the primary control knob&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;phrase_1&#39;: &#39;[on climate change]&#39;, &#39;label_1&#39;: &#39;ORG&#39;, &#39;phrase_2&#39;: &#39;this environment that we live in&#39;, &#39;label_2&#39;: &#39;ORG&#39;, &#39;phrase_3&#39;: &#39;control knob&#39;, &#39;label_3&#39;: &#39;ORG&#39;, &#39;phrase_4&#39;: &#39;[on climate change]&#39;, &#39;label_4&#39;: &#39;ORG&#39;, &#39;&#34;,
+        &#34;generated_text&#34;: &#34;[&#39;[on climate change]&#39;, &#39;label_0&#39;: &#39;PERCENT&#39;, &#39;phrase_0&#39;: &#39;control knob&#39;, &#39;label_1&#39;: &#39;ocean waters&#39;, &#39;phrase_2&#39;: &#39;this environment&#39;, &#39;label_3&#39;: &#39;live in&#39;]&#34;,
+        &#34;generated_token_count&#34;: 80,
+        &#34;input_token_count&#34;: 906,
+        &#34;stop_reason&#34;: &#34;eos_token&#34;
+    },
+    {
+        &#34;generated_text&#34;: &#34;[&#39;The Rio Grande&#39;, &#39;label_0&#39;: &#39;LOC&#39;]&#34;,
+        &#34;generated_token_count&#34;: 22,
+        &#34;input_token_count&#34;: 921,
+        &#34;stop_reason&#34;: &#34;eos_token&#34;
+    },
+    {
+        &#34;generated_text&#34;: &#34;&#39;phrase_0&#39;: &#39;Mountain West&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;Pacific Northwest&#39;, &#39;label_1&#39;: &#39;LOC&#39;, &#39;phrase_2&#39;: &#39;early July&#39;, &#39;label_2&#39;: &#39;DATE&#39;, &#39;phrase_3&#39;: &#39;early August&#39;, &#39;label_3&#39;: &#39;DATE&#39;, &#39;phrase_4&#39;: &#39;100-degree-Fahrenheit&#39;, &#39;label_4&#39;: &#39;QUANTITY&#39;, &#39;phrase&#34;,
         &#34;generated_token_count&#34;: 150,
-        &#34;input_token_count&#34;: 1176,
-        &#34;stop_reason&#34;: &#34;MAX_TOKENS&#34;
+        &#34;input_token_count&#34;: 921,
+        &#34;stop_reason&#34;: &#34;max_tokens&#34;
     },
     {
-        &#34;generated_text&#34;: &#34;&#39;phrase_0&#39;: &#39;Rio Grande&#39;, &#39;label_0&#39;: &#39;LOC&#39;&#34;,
-        &#34;generated_token_count&#34;: 31,
-        &#34;input_token_count&#34;: 1191,
-        &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;
-    },
-    {
-        &#34;generated_text&#34;: &#34;&#39;phrase_0&#39;: &#39;Mountain West&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;Pacific Northwest&#39;, &#39;label_1&#39;: &#39;LOC&#39;, &#39;phrase_2&#39;: &#39;early July&#39;, &#39;label_2&#39;: &#39;DATE&#39;, &#39;phrase_3&#39;: &#39;early August&#39;, &#39;label_3&#39;: &#39;DATE&#39;&#34;,
-        &#34;generated_token_count&#34;: 115,
-        &#34;input_token_count&#34;: 1191,
-        &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;
-    },
-    {
-        &#34;generated_text&#34;: &#34;&#39;phrase_0&#39;: &#39;carbon dioxide emissions&#39;, &#39;label_0&#39;: &#39;QUANTITY&#39;, &#39;phrase_1&#39;: &#39;temperature&#39;, &#39;label_1&#39;: &#39;QUANTITY&#39;&#34;,
-        &#34;generated_token_count&#34;: 59,
-        &#34;input_token_count&#34;: 1167,
-        &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;
+        &#34;generated_text&#34;: &#34;&#39;phrase_0&#39;: &#39;carbon dioxide emissions&#39;, &#39;label_0&#39;: &#39;QUANTITY&#39;, &#39;phrase_1&#39;: &#39;temperature&#39;, &#39;label_1&#39;: &#39;TIME&#39;, &#39;phrase_2&#39;: &#39;lifetime&#39;, &#39;label_2&#39;: &#39;PERSON&#39;&#34;,
+        &#34;generated_token_count&#34;: 85,
+        &#34;input_token_count&#34;: 897,
+        &#34;stop_reason&#34;: &#34;eos_token&#34;
     }
 ]
 </pre>
@@ -16988,7 +16899,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[197]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[30]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)):</span>
@@ -17019,31 +16930,31 @@ Use the following training examples as follows:
 Document #0:
 Most likely the primary control knob [on climate change] is the ocean waters and this environment that we live in.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;the primary control knob&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;phrase_1&#39;: &#39;[on climate change]&#39;, &#39;label_1&#39;: &#39;ORG&#39;, &#39;phrase_2&#39;: &#39;this environment that we live in&#39;, &#39;label_2&#39;: &#39;ORG&#39;, &#39;phrase_3&#39;: &#39;control knob&#39;, &#39;label_3&#39;: &#39;ORG&#39;, &#39;phrase_4&#39;: &#39;[on climate change]&#39;, &#39;label_4&#39;: &#39;ORG&#39;, &#39;
+  [&#39;[on climate change]&#39;, &#39;label_0&#39;: &#39;PERCENT&#39;, &#39;phrase_0&#39;: &#39;control knob&#39;, &#39;label_1&#39;: &#39;ocean waters&#39;, &#39;phrase_2&#39;: &#39;this environment&#39;, &#39;label_3&#39;: &#39;live in&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #1:
 The Rio Grande is a classic “feast or famine” river, with a dry year or two typically followed by a couple of wet years that allow for recovery.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Rio Grande&#39;, &#39;label_0&#39;: &#39;LOC&#39;
+  [&#39;The Rio Grande&#39;, &#39;label_0&#39;: &#39;LOC&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #2:
 Days of near-100-degree-Fahrenheit temperatures cooked the Mountain West in early July, and a scorching heat wave lingered over the Pacific Northwest in early August.”
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Mountain West&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;Pacific Northwest&#39;, &#39;label_1&#39;: &#39;LOC&#39;, &#39;phrase_2&#39;: &#39;early July&#39;, &#39;label_2&#39;: &#39;DATE&#39;, &#39;phrase_3&#39;: &#39;early August&#39;, &#39;label_3&#39;: &#39;DATE&#39;
+  &#39;phrase_0&#39;: &#39;Mountain West&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;Pacific Northwest&#39;, &#39;label_1&#39;: &#39;LOC&#39;, &#39;phrase_2&#39;: &#39;early July&#39;, &#39;label_2&#39;: &#39;DATE&#39;, &#39;phrase_3&#39;: &#39;early August&#39;, &#39;label_3&#39;: &#39;DATE&#39;, &#39;phrase_4&#39;: &#39;100-degree-Fahrenheit&#39;, &#39;label_4&#39;: &#39;QUANTITY&#39;, &#39;phrase
 --------------------------------------------------
 --------------------------------------------------
 Document #3:
 In our lifetime, there has been no correlation between carbon dioxide emissions and temperature
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;carbon dioxide emissions&#39;, &#39;label_0&#39;: &#39;QUANTITY&#39;, &#39;phrase_1&#39;: &#39;temperature&#39;, &#39;label_1&#39;: &#39;QUANTITY&#39;
+  &#39;phrase_0&#39;: &#39;carbon dioxide emissions&#39;, &#39;label_0&#39;: &#39;QUANTITY&#39;, &#39;phrase_1&#39;: &#39;temperature&#39;, &#39;label_1&#39;: &#39;TIME&#39;, &#39;phrase_2&#39;: &#39;lifetime&#39;, &#39;label_2&#39;: &#39;PERSON&#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #4:
 There is no way for us to prevent the world’s CO2 emissions    from doubling by 2100&#34;
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;world’s CO2 emissions&#39;, &#39;label_0&#39;: &#39;QUANTITY&#39;, &#39;phrase_1&#39;: &#39;from doubling by 2100&#39;, &#39;label_1&#39;: &#39;DATE&#39;, &#39;phrase_2&#39;: &#39;by 2100&#39;, &#39;label_2&#39;: &#39;QUANTITY&#39;, &#39;phrase_3&#39;: &#39;There is no way for us to prevent the world’s CO2 emissions from doubling by 2100&#39;, &#39;label_3&#39;: &#39;QUANTITY&#39;, &#39;phrase_4&#39;: &#39;There
+  phrase_0&#39;: &#39;CO2 emissions&#39;, &#39;label_0&#39;: &#39;QUANTITY&#39;, &#39;phrase_1&#39;: &#39;from doubling by 2100&#39;, &#39;label_1&#39;: &#39;DATE&#39;, &#39;phrase_2&#39;: &#39;world’s&#39;, &#39;label_2&#39;: &#39;ORG&#39;, &#39;phrase_3&#39;: &#39;from doubling by 2100&#39;, &#39;label_3&#39;: &#39;DATE&#39;, &#39;phrase_4&#39;: &#39;There is no way for us to prevent the world’s CO2 emissions from doubling by 2100&#39;, 
 --------------------------------------------------
 --------------------------------------------------
 Document #5:
@@ -17055,7 +16966,7 @@ Raw results from LLM model:
 Document #6:
 In the last 35 years of global warming, sun and climate have been going in opposite directions.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;sun and climate&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;phrase_1&#39;: &#39;going in opposite directions&#39;, &#39;label_1&#39;: &#39;ORG&#39;, &#39;phrase_2&#39;: &#39;last 35 years&#39;, &#39;label_2&#39;: &#39;DATE&#39;, &#39;phrase_3&#39;: &#39;global warming&#39;, &#39;label_3&#39;: &#39;DATE&#39;, &#39;phrase_4&#39;: &#39;sun and climate&#39;, &#39;label_4&#39;: &#39;ORG&#39;, &#39;phrase_5&#39;
+  [&#39;phrase_0&#39;: &#39;35 years&#39;, &#39;label_0&#39;: &#39;DATE&#39;, &#39;phrase_1&#39;: &#39;sun and climate&#39;, &#39;label_1&#39;: &#39;ORDER&#39;, &#39;phrase_2&#39;: &#39;opposite directions&#39;, &#39;label_2&#39;: &#39;ORDER&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #7:
@@ -17067,193 +16978,193 @@ Raw results from LLM model:
 Document #8:
 Polar bears are in danger of extinction as well as many other species.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Polar bears&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;phrase_1&#39;: &#39;many other species&#39;, &#39;label_1&#39;: &#39;ORG&#39;
+  [&#39;Polar bears&#39;, &#39;label_0&#39;: &#39;ORG&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #9:
 The United States has been restricting soot emissions  in Draconian fashion since the Clean Air Act of 1963.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;United States&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;Clean Air Act&#39;, &#39;label_1&#39;: &#39;LAW&#39;, &#39;phrase_2&#39;: &#39;since&#39;, &#39;label_2&#39;: &#39;1963&#39;
+  [&#39;United States&#39;, &#39;LOC&#39;, &#39;Clean Air Act&#39;, &#39;LAW&#39;, &#39;1963&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #10:
 The costs of inaction far outweigh the costs of mitigation.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;costs of inaction&#39;, &#39;label_0&#39;: &#39;COST&#39;, &#39;phrase_1&#39;: &#39;costs of mitigation&#39;, &#39;label_1&#39;: &#39;COST&#39;
+  [&#39;costs of mitigation&#39;, &#39;label_0&#39;: &#39;CARDINAL&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #11:
 “In their award winning book, ‘Taken By Storm’ (2007), Canadian researchers Christopher Essex and Ross McKitrick explain: ‘Temperature is not an amount of something [like height or weight].
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Taken By Storm’ &#39;, &#39;label_0&#39;: &#39;BOOK&#39;, &#39;phrase_1&#39;: &#39;Canadian researchers Christopher Essex and Ross McKitrick&#39;, &#39;label_1&#39;: &#39;PERSON&#39;, &#39;phrase_2&#39;: &#39;Canadian researchers Christopher Essex and Ross McKitrick&#39;, &#39;label_2&#39;: &#39;PERSON&#39;, &#39;phrase_3&#39;: &#39;Temperature is not an amount of something [like height or weight]&#39;, &#39;label_3&#39;: &#39;QUANTITY&#39;
+  [&#39;Taken By Storm&#39;, &#39;label_0&#39;: &#39;BOOK&#39;, &#39;label_1&#39;: &#39;CANADIAN&#39;, &#39;label_2&#39;: &#39;Christopher Essex&#39;, &#39;label_3&#39;: &#39;Ross McKitrick&#39;, &#39;label_4&#39;: &#39;PERSON&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #12:
 Greg Hunt CSIRO research shows carbon emissions can be reduced by 20 per cent over 40 years using nature, soils and trees.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Greg Hunt CSIRO&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;phrase_1&#39;: &#39;research shows carbon emissions can be reduced by 20 per cent over 40 years using nature, soils and trees&#39;
+  &#39;phrase_0&#39;: &#39;Greg Hunt CSIRO&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;phrase_1&#39;: &#39;research shows carbon emissions can be reduced by 20 per cent over 40 years using nature, soils and trees&#39;, &#39;label_1&#39;: &#39;PERCENT&#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #13:
 With that in mind, they propose a plausible and terrifying “2050 scenario” whereby humanity could face irreversible collapse in just three decades.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;2050 scenario&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;phrase_1&#39;: &#39;2050 scenario&#39;, &#39;label_1&#39;: &#39;ORG&#39;, &#39;phrase_2&#39;: &#39;2050 scenario&#39;, &#39;label_2&#39;: &#39;ORG&#39;, &#39;phrase_3&#39;: &#39;2050 scenario&#39;, &#39;label_3&#39;: &#39;ORG&#39;, &#39;phrase_4&#39;: &#39;2050 scenario&#39;, &#39;label_4&#39;: &#39;ORG&#39;, &#39;phrase_5&#39;: &#39;
+  [&#39;2050 scenario&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;label_1&#39;: &#39;2050&#39;, &#39;label_2&#39;: &#39;scenario&#39;, &#39;label_3&#39;: &#39;scenario&#39;, &#39;label_4&#39;: &#39;scenario&#39;, &#39;label_5&#39;: &#39;scenario&#39;, &#39;label_6&#39;: &#39;scenario&#39;, &#39;label_7&#39;: &#39;scenario&#39;, &#39;label_8&#39;: &#39;scenario&#39;, &#39;l
 --------------------------------------------------
 --------------------------------------------------
 Document #14:
 No known natural forcing fits the fingerprints of observed warming except anthropogenic greenhouse gases.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;anthropogenic&#39;, &#39;label_0&#39;: &#39;FAC&#39;, &#39;phrase_1&#39;: &#39;greenhouse gases&#39;, &#39;label_1&#39;: &#39;FAC&#39;
+  [&#39;phrase_0&#39;: &#39;anthropogenic&#39;, &#39;label_0&#39;: &#39;FAC&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #15:
 We know the Northwest Passage had been open before.&#34;
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;the Northwest Passage&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;had been open before&#39;, &#39;label_1&#39;: &#39;before&#39;
+  phrase_0&#39;: &#34;the Northwest Passage had been open before.&#34;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;had been open before&#39;, &#39;label_1&#39;: &#39;before&#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #16:
 Mass coral bleaching is a new phenomenon and was never observed before the 1980s as global warming ramped up.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Mass coral bleaching&#39;, &#39;label_0&#39;: &#39;EVENT&#39;, &#39;phrase_1&#39;: &#39;new phenomenon&#39;, &#39;label_1&#39;: &#39;FAC&#39;, &#39;phrase_2&#39;: &#39;global warming ramped up&#39;, &#39;label_2&#39;: &#39;GPE&#39;, &#39;phrase_3&#39;: &#39;before the 1980s&#39;, &#39;label_3&#39;: &#39;DATE&#39;, &#39;phrase_4&#39;: &#39;before the 1980s&#39;, &#39;label_4&#39;: &#39;QUANTITY&#39;
+  [&#39;Mass coral bleaching&#39;, &#39;label_0&#39;: &#39;EVENT&#39;, &#39;label_1&#39;: &#39;FACT&#39;, &#39;label_2&#39;: &#39;ORG&#39;, &#39;label_3&#39;: &#39;PERSON&#39;, &#39;label_4&#39;: &#39;LOC&#39;, &#39;label_5&#39;: &#39;PERCENT&#39;, &#39;label_6&#39;: &#39;LAW&#39;, &#39;label_7&#39;: &#39;PERSON&#39;, &#39;label_8&#39;: &#39;PERCENT&#39;, &#39;label_9&#39;: &#39;ORG&#39;, &#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #17:
 [S]unspot activity on the surface of our star has dropped to a new low.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;[s]unspot activity&#39;, &#39;label_0&#39;: &#39;FAC&#39;, &#39;phrase_1&#39;: &#39;the surface of our star&#39;, &#39;label_1&#39;: &#39;LOC&#39;, &#39;phrase_2&#39;: &#39;new low&#39;, &#39;label_2&#39;: &#39;QUANTITY&#39;
+  [&#39;phrase_0&#39;: &#39;s]unspot activity&#39;, &#39;label_0&#39;: &#39;FAC&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #18:
 Carbon dioxide is a trace gas.”
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Carbon dioxide&#39;, &#39;label_0&#39;: &#39;PRODUCT&#39;, &#39;phrase_1&#39;: &#39;trace gas&#39;, &#39;label_1&#39;: &#39;QUANTITY&#39;
+  &#39;phrase_0&#39;: &#39;Carbon dioxide is a trace gas.&#39;, &#39;label_0&#39;: &#39;QUANTITY&#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #19:
 Arctic sea ice has been steadily thinning, even in the last few years while the surface ice (eg - sea ice extent) increased slightly.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Arctic sea ice&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;thinning&#39;, &#39;label_1&#39;: &#39;QUANTITY&#39;, &#39;phrase_2&#39;: &#39;surface ice&#39;, &#39;label_2&#39;: &#39;QUANTITY&#39;, &#39;phrase_3&#39;: &#39;sea ice extent&#39;, &#39;label_3&#39;: &#39;QUANTITY&#39;, &#39;phrase_4&#39;: &#39;increased slightly&#39;, &#39;label_4&#39;: &#39;QUANTITY
+  [&#39;Arctic sea ice&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;label_1&#39;: &#39;FAC&#39;, &#39;label_2&#39;: &#39;ORG&#39;, &#39;label_3&#39;: &#39;PERSON&#39;, &#39;label_4&#39;: &#39;PERCENT&#39;, &#39;label_5&#39;: &#39;LAW&#39;, &#39;label_6&#39;: &#39;PERCENT&#39;, &#39;label_7&#39;: &#39;PERSON&#39;, &#39;label_8&#39;: &#39;PERCENT&#39;, &#39;label_9&#39;: &#39;PERSON&#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #20:
 The consensus among scientists and policy-makers is that we’ll pass this point of no return if the global mean temperature rises by more than two degrees Celsius.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;scientists and policy-makers&#39;, &#39;label_0&#39;: &#39;PERSON&#39;, &#39;phrase_1&#39;: &#39;point of no return&#39;, &#39;label_1&#39;: &#39;QUANTITY&#39;, &#39;phrase_2&#39;: &#39;global mean temperature&#39;, &#39;label_2&#39;: &#39;CARDINAL&#39;, &#39;phrase_3&#39;: &#39;rises by more than two degrees Celsius&#39;, &#39;label_3&#39;: &#39;QUANTITY&#39;, &#39;phrase_4&#39;: &#39;Celsius&#39;, &#39;label_4&#39;
+  [&#39;point of no return&#39;, &#39;label_0&#39;: &#39;PERSON&#39;, &#39;point of no return&#39;, &#39;label_1&#39;: &#39;global mean temperature&#39;, &#39;label_2&#39;: &#39;degrees Celsius&#39;, &#39;label_3&#39;: &#39;two degrees Celsius&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #21:
 Over the last 30-40 years 80% of coral in the Caribbean have been destroyed and 50% in Indonesia and the Pacific.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;carribean&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;Indonesia&#39;, &#39;label_1&#39;: &#39;LOC&#39;, &#39;phrase_2&#39;: &#39;Pacific&#39;, &#39;label_2&#39;: &#39;LOC&#39;, &#39;phrase_3&#39;: &#39;80%&#39;, &#39;label_3&#39;: &#39;QUANTITY&#39;
+  [&#39;Carribean&#39;, &#39;LOC&#39;], [&#39;Indonesia&#39;, &#39;LOC&#39;], [&#39;Pacific&#39;, &#39;LOC&#39;]]
 --------------------------------------------------
 --------------------------------------------------
 Document #22:
 There are about 120,000 solar energy jobs in the United States, but only 1,700 of them are in Georgia.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;United States&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;Georgia&#39;, &#39;label_1&#39;: &#39;LOC&#39;
+  [&#39;United States&#39;, &#39;LOC&#39;, &#39;Georgia&#39;, &#39;LOC&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #23:
 All the indicators show that global warming is still happening.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;global warming&#39;, &#39;label_0&#39;: &#39;EVENT&#39;
+  [&#39;phrase_0&#39;: &#39;global warming&#39;, &#39;label_0&#39;: &#39;EVENT&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #24:
 While there are isolated cases of growing glaciers, the overwhelming trend in glaciers worldwide is retreat.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;grow glaciers&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;grow glaciers&#39;, &#39;label_1&#39;: &#39;LOC&#39;, &#39;phrase_2&#39;: &#39;grow glaciers&#39;, &#39;label_2&#39;: &#39;LOC&#39;, &#39;phrase_3&#39;: &#39;grow glaciers&#39;, &#39;label_3&#39;: &#39;LOC&#39;, &#39;phrase_4&#39;: &#39;grow glaciers&#39;, &#39;label_4&#39;: &#39;LOC&#39;, &#39;phrase_
+  [&#39;grow glaciers&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;grow glaciers&#39;, &#39;label_1&#39;: &#39;LOC&#39;, &#39;grow glaciers&#39;, &#39;label_2&#39;: &#39;LOC&#39;, &#39;grow glaciers&#39;, &#39;label_3&#39;: &#39;LOC&#39;, &#39;grow glaciers&#39;, &#39;label_4&#39;: &#39;LOC&#39;, &#39;grow glaciers&#39;, &#39;label_5&#39;: &#39;LOC&#39;, &#39;grow glaciers&#39;, &#39;label_6&#39;: &#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #25:
 &#34;The 30 major droughts of the 20th century were likely natural in all respects; and, hence, they are &#34;indicative of what could also happen in the future,&#34; as Narisma
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#34;The 30 major droughts of the 20th century were likely natural in all respects; and, hence, they are &#34;indicative of what could also happen in the future,&#34; as narisma&#39;, &#39;label_0&#39;: &#39;PERSON&#39;, &#39;label_1&#39;: &#39;ORG&#39;, &#39;label_2&#39;: &#39;PERCENT&#39;, &#39;label_3&#39;: &#39;ORG&#39;, &#39;label_4&#39;: &#39;PERCENT&#39;, &#39;label_5&#39;: &#39;PERSON&#39;, &#39;label_6&#39;: &#39;PERSON
+  &#39;phrase_0&#39;: &#34;The 30 major droughts of the 20th century were likely natural in all respects; and, hence, they are &#34;indicative of what could also happen in the future,&#34; as narisma&#39;, &#39;label_0&#39;: &#39;PERSON&#39;, &#39;label_1&#39;: &#39;ORG&#39;, &#39;label_2&#39;: &#39;PERCENT&#39;, &#39;label_3&#39;: &#39;DATE&#39;, &#39;label_4&#39;: &#39;LOC&#39;, &#39;label_5&#39;: &#39;PERCENT&#39;, &#39;label_6&#39;: &#39;ORG
 --------------------------------------------------
 --------------------------------------------------
 Document #26:
 Previous IPCC reports tended to assume that clouds would have a neutral impact because the warming and cooling feedbacks would cancel each other out.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;IPCC&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;phrase_1&#39;: &#39;reports&#39;, &#39;label_1&#39;: &#39;EVENT&#39;, &#39;phrase_2&#39;: &#39;would cancel each other out&#39;, &#39;label_2&#39;: &#39;warming and cooling feedbacks&#39;
+  [&#39;IPCC&#39;, &#39;ORG&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #27:
 Measurements indicating that 2017 had relatively more sea ice in the Arctic and less melting of glacial ice in Greenland casts scientific doubt on the reality of global warming.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Arctic&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;Greenland&#39;, &#39;label_1&#39;: &#39;LOC&#39;, &#39;phrase_2&#39;: &#39;melting&#39;, &#39;label_2&#39;: &#39;LOC&#39;, &#39;phrase_3&#39;: &#39;global warming&#39;, &#39;label_3&#39;: &#39;LOC&#39;, &#39;phrase_4&#39;: &#39;scientific doubt&#39;, &#39;label_4&#39;: &#39;LOC&#39;, &#39;phrase_5&#39;: &#39;
+  [&#39;Greenland&#39;, &#39;LOC&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #28:
 It has never been shown that human emissions of carbon dioxide drive global warming.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;human emissions of carbon dioxide drive global warming&#39;, &#39;label_0&#39;: &#39;QUANTITY&#39;, &#39;phrase_1&#39;: &#39;human emissions of carbon dioxide drive global warming&#39;, &#39;label_1&#39;: &#39;QUANTITY&#39;
+  [&#39;human emissions&#39;, &#39;label_0&#39;: &#39;PERCENT&#39;, &#39;human emissions&#39;, &#39;label_1&#39;: &#39;CO2&#39;, &#39;label_2&#39;: &#39;global warming&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #29:
 cutting speed limits could slow climate change
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;cutting speed limits could slow climate change&#39;, &#39;label_0&#39;: &#39;QUANTITY&#39;, &#39;phrase_1&#39;: &#39;climate change&#39;, &#39;label_1&#39;: &#39;QUANTITY&#39;
+  &#39;phrase_0&#39;: &#39;cutting speed limits could slow climate change&#39;, &#39;label_0&#39;: &#39;ORG&#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #30:
 Research has found a human influence on the climate of the past several decades ...
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;human influence&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;phrase_1&#39;: &#39;climate&#39;, &#39;label_1&#39;: &#39;ORG&#39;, &#39;phrase_2&#39;: &#39;past several decades&#39;, &#39;label_2&#39;: &#39;ORG&#39;, &#39;phrase_3&#39;: &#39;Research&#39;, &#39;label_3&#39;: &#39;ORG&#39;, &#39;phrase_4&#39;: &#39;human&#39;, &#39;label_4&#39;: &#39;ORG&#39;, &#39;phrase_5&#39;: &#39;climate&#39;,
+  &#39;phrase_0&#39;: &#39;human influence&#39;, &#39;label_0&#39;: &#39;ORG&#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #31:
 By 2100 the seas will rise another 6 inches or so—a far cry from Al Gore’s alarming numbers
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Al Gore’s&#39;, &#39;label_0&#39;: &#39;PERSON&#39;, &#39;phrase_1&#39;: &#39;alarming numbers&#39;, &#39;label_1&#39;: &#39;PERSON&#39;, &#39;phrase_2&#39;: &#39;6 inches&#39;, &#39;label_2&#39;: &#39;QUANTITY&#39;, &#39;phrase_3&#39;: &#39;2100&#39;, &#39;label_3&#39;: &#39;DATE&#39;, &#39;phrase_4&#39;: &#39;the seas will rise another 6 inches or so&#39;, &#39;label_4&#39;: &#39;DATE&#39;
+  &#39;phrase_0&#39;: &#39;Al Gore’s&#39;, &#39;label_0&#39;: &#39;PERSON&#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #32:
 Multiple lines of independent evidence indicate humidity is rising and provides positive feedback.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;multiple lines of independent evidence&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;phrase_1&#39;: &#39;indicate humidity is rising and provides positive feedback&#39;, &#39;label_1&#39;: &#39;QUANTITY&#39;
+  [&#39;multiple lines of independent evidence&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;label_1&#39;: &#39;FAC&#39;, &#39;label_2&#39;: &#39;PERSON&#39;, &#39;label_3&#39;: &#39;LANGUAGE&#39;, &#39;label_4&#39;: &#39;PERCENT&#39;, &#39;label_5&#39;: &#39;PERSON&#39;, &#39;label_6&#39;: &#39;LOC&#39;, &#39;label_7&#39;: &#39;PERCENT&#39;, &#39;label_8&#39;: &#39;PERSON&#39;, &#39;label_9&#39;: &#39;PERCENT&#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #33:
 a study that totally debunks the whole concept of man-made Global Warming
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Global Warming&#39;, &#39;label_0&#39;: &#39;GPE&#39;, &#39;phrase_1&#39;: &#39;man-made&#39;, &#39;label_1&#39;: &#39;GPE&#39;, &#39;phrase_2&#39;: &#39;concept&#39;, &#39;label_2&#39;: &#39;GPE&#39;, &#39;phrase_3&#39;: &#39;whole&#39;, &#39;label_3&#39;: &#39;GPE&#39;, &#39;phrase_4&#39;: &#39;concept&#39;, &#39;label_4&#39;: &#39;GPE&#39;, &#39;phrase_5&#39;: &#39;whole&#39;
+  &#39;phrase_0&#39;: &#39;Global Warming&#39;, &#39;label_0&#39;: &#39;EVENT&#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #34:
 Claims have recently surfaced in the blogosphere that an increasing number of scientists are warning of an imminent global cooling, some even going so far as to call it a &#34;growing consensus&#34;.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;blogosphere&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;an increasing number of scientists&#39;, &#39;label_1&#39;: &#39;PERSON&#39;, &#39;phrase_2&#39;: &#39;a &#34;growing consensus&#34;&#39;, &#39;label_2&#39;: &#39;PERSON&#39;, &#39;phrase_3&#39;: &#39;an imminent global cooling&#39;, &#39;label_3&#39;: &#39;QUANTITY&#39;, &#39;phrase_4&#39;: &#39;scientists&#39;, &#39;label_4&#39;: &#39;PERSON&#39;, &#39;phrase
+  [&#39;phrase_0&#39;: &#39;blogosphere&#39;, &#39;label_0&#39;: &#39;LOC&#39;], [&#39;phrase_1&#39;: &#39;an increasing number of scientists&#39;, &#39;label_1&#39;: &#39;PERSON&#39;], [&#39;phrase_2&#39;: &#39;a &#34;growing consensus&#34;&#39;, &#39;label_2&#39;: &#39;PERSON&#39;]]
 --------------------------------------------------
 --------------------------------------------------
 Document #35:
 The extent of climate change’s influence on the jet stream is an intense subject of research.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;climate change’s influence&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;phrase_1&#39;: &#39;jet stream&#39;, &#39;label_1&#39;: &#39;REGION&#39;, &#39;phrase_2&#39;: &#39;research&#39;, &#39;label_2&#39;: &#39;ORG&#39;, &#39;phrase_3&#39;: &#39;intense&#39;, &#39;label_3&#39;: &#39;ORG&#39;, &#39;phrase_4&#39;: &#39;subject&#39;, &#39;label_4&#39;: &#39;ORG&#39;, &#39;phrase_5&#39;:
+  [&#39;climate change’s influence&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;label_1&#39;: &#39;JET_STREAM&#39;, &#39;label_2&#39;: &#39;RESEARCH&#39;]
 --------------------------------------------------
 --------------------------------------------------
 Document #36:
 CO2 limits won&#39;t cool the planet.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;CO2 limits&#39;, &#39;label_0&#39;: &#39;ORG&#39;, &#39;phrase_1&#39;: &#39;cool the planet&#39;, &#39;label_1&#39;: &#39;ORG&#39;
+  &#39;phrase_0&#39;: &#39;CO2 limits&#39;, &#39;label_0&#39;: &#39;ORG&#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #37:
 “Global warming alarmists’ preferred electricity source – wind power – kills nearly 1 million bats every year (to say nothing of the more than 500,000 birds killed every year) in the United States alone.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Global warming alarmists&#39;, &#39;label_0&#39;: &#39;PERSON&#39;, &#39;phrase_1&#39;: &#39;wind power&#39;, &#39;label_1&#39;: &#39;ORG&#39;, &#39;phrase_2&#39;: &#39;kills nearly 1 million bats every year&#39;, &#39;label_2&#39;: &#39;QUANTITY&#39;, &#39;phrase_3&#39;: &#39;United States&#39;, &#39;label_3&#39;: &#39;LOC&#39;, &#39;phrase_4&#39;: &#39;kills every year&#39;, &#39;label_4&#39;: &#39;QUANTITY
+  phrase_0&#39;: &#34;Global warming alarmists’ preferred electricity source – wind power – kills nearly 1 million bats every year (to say nothing of the more than 500,000 birds killed every year) in the united states alone.&#34;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;United States&#39;, &#39;label_1&#39;: &#39;LOC&#39;
 --------------------------------------------------
 --------------------------------------------------
 Document #38:
 They concluded that trends toward rising climate damages were mainly due to increased population and economic activity in the path of storms, that it was not currently possible to determine the portion of damages attributable to greenhouse gases, and that they didn’t expect that situation to change in the near future.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;they&#39;, &#39;label_0&#39;: &#39;PERSON&#39;, &#39;phrase_1&#39;: &#39;trends toward rising climate damages&#39;, &#39;label_1&#39;: &#39;QUANTITY&#39;, &#39;phrase_2&#39;: &#39;economic activity in the path of storms&#39;, &#39;label_2&#39;: &#39;ORG&#39;, &#39;phrase_3&#39;: &#39;attributable to greenhouse gases&#39;, &#39;label_3&#39;: &#39;PERCENT&#39;, &#39;phrase_4&#39;: &#39;that situation to change in the near future&#39;, &#39;label_4&#39;:
+  [&#39;they&#39;, &#39;label_0&#39;: &#39;PERSON&#39;, &#39;label_1&#39;: &#39;ORG&#39;, &#39;label_2&#39;: &#39;PERCENT&#39;, &#39;label_3&#39;: &#39;LAW&#39;, &#39;label_4&#39;: &#39;PERCENT&#39;, &#39;label_5&#39;: &#39;PERSON&#39;, &#39;label_6&#39;: &#39;PERCENT&#39;, &#39;label_7&#39;: &#39;PERSON&#39;, &#39;label_8&#39;: &#39;PERCENT&#39;, &#39;label_9&#39;: &#39;PERSON&#39;, &#39;label_
 --------------------------------------------------
 --------------------------------------------------
 Document #39:
 Humans are too insignificant to affect global climate.
 Raw results from LLM model:
-  &#39;phrase_0&#39;: &#39;Humans&#39;, &#39;label_0&#39;: &#39;PERSON&#39;, &#39;phrase_1&#39;: &#39;affect global climate&#39;, &#39;label_1&#39;: &#39;PERSON&#39;
+  &#39;phrase_0&#39;: &#39;Humans&#39;, &#39;label_0&#39;: &#39;PERSON&#39;
 --------------------------------------------------
 </pre>
 </div>
@@ -17291,7 +17202,7 @@ Raw results from LLM model:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[198]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[31]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Process each document in the few_shot_inputs_</span>
@@ -17323,7 +17234,7 @@ Raw results from LLM model:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[199]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[32]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">json_formatted_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">fsi_list_for_ground_truth</span><span class="p">[:</span><span class="mi">4</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -17398,7 +17309,7 @@ Raw results from LLM model:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[200]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[33]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">extract_dictionary_from_results</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
@@ -17445,7 +17356,7 @@ Raw results from LLM model:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[201]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[34]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">find_common_words</span><span class="p">(</span><span class="n">string1</span><span class="p">,</span> <span class="n">string2</span><span class="p">):</span>
@@ -17477,7 +17388,7 @@ Raw results from LLM model:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[202]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[35]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">drop_words</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
@@ -17509,7 +17420,7 @@ Raw results from LLM model:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[203]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[36]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">polish_results</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
@@ -17560,7 +17471,7 @@ Raw results from LLM model:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[204]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[37]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">y_true</span><span class="o">=</span><span class="p">[]</span>
@@ -17629,7 +17540,7 @@ Raw results from LLM model:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[205]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[38]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">len_y_true</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span>
@@ -17664,7 +17575,7 @@ Raw results from LLM model:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[206]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[39]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span>
@@ -17687,7 +17598,7 @@ Raw results from LLM model:
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+<pre>[1, 1, 1, 1]
 </pre>
 </div>
 </div>
@@ -17701,7 +17612,7 @@ Raw results from LLM model:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[207]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[40]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">y_pred</span><span class="p">)</span>
@@ -17724,7 +17635,7 @@ Raw results from LLM model:
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>[0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0]
+<pre>[1, 0, 0, 0]
 </pre>
 </div>
 </div>
@@ -17738,7 +17649,7 @@ Raw results from LLM model:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[208]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[41]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_pred</span><span class="o">=</span><span class="n">y_pred</span><span class="p">,</span><span class="n">y_true</span><span class="o">=</span><span class="n">y_true</span><span class="p">))</span>
@@ -17764,11 +17675,11 @@ Raw results from LLM model:
 <pre>              precision    recall  f1-score   support
 
            0       0.00      0.00      0.00         0
-           1       1.00      0.40      0.57        40
+           1       1.00      0.25      0.40         4
 
-    accuracy                           0.40        40
-   macro avg       0.50      0.20      0.29        40
-weighted avg       1.00      0.40      0.57        40
+    accuracy                           0.25         4
+   macro avg       0.50      0.12      0.20         4
+weighted avg       1.00      0.25      0.40         4
 
 </pre>
 </div>
@@ -17808,7 +17719,7 @@ weighted avg       1.00      0.40      0.57        40
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[209]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[42]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">specific_label</span> <span class="o">=</span> <span class="s1">&#39;LOC&#39;</span>
@@ -17825,7 +17736,7 @@ weighted avg       1.00      0.40      0.57        40
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[210]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[43]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">label_replacement_dictionary</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;GPE&#39;</span><span class="p">:</span><span class="s1">&#39;LOC&#39;</span><span class="p">}</span>
@@ -17841,7 +17752,7 @@ weighted avg       1.00      0.40      0.57        40
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[211]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[44]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">instruction</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
@@ -17868,7 +17779,7 @@ weighted avg       1.00      0.40      0.57        40
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[212]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[45]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">instruction</span><span class="p">)</span>
@@ -17928,7 +17839,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[213]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[46]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">replace_label_values</span><span class="p">(</span><span class="n">examples</span><span class="p">,</span><span class="n">label_replacement_dictionary</span><span class="p">):</span>
@@ -17953,7 +17864,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[214]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[47]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">post_processed_examples</span> <span class="o">=</span> <span class="n">replace_label_values</span><span class="p">(</span><span class="n">example_dic_list</span><span class="p">,</span><span class="n">label_replacement_dictionary</span><span class="p">)</span>
@@ -17969,7 +17880,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[215]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[48]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">json_formatted_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">post_processed_examples</span><span class="p">[:</span><span class="mi">4</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -17995,47 +17906,27 @@ Use the following training examples as follows:
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>[
     {
-        &#34;document&#34;: &#34;While there has been a mean rise of a little more than 3mm per year worldwide since the 1990s, in the last decade, the NOAA Virginia Key tide gauge just south of Miami Beach has measured a 9mm rise annually.\u201d&#34;,
-        &#34;phrase_0&#34;: &#34;a little more than 3mm per year&#34;,
-        &#34;label_0&#34;: &#34;DATE&#34;,
-        &#34;phrase_1&#34;: &#34;the 1990s&#34;,
-        &#34;label_1&#34;: &#34;DATE&#34;,
-        &#34;phrase_2&#34;: &#34;the last decade&#34;,
-        &#34;label_2&#34;: &#34;DATE&#34;,
-        &#34;phrase_3&#34;: &#34;the NOAA Virginia Key&#34;,
-        &#34;label_3&#34;: &#34;ORG&#34;,
-        &#34;phrase_4&#34;: &#34;Miami Beach&#34;,
-        &#34;label_4&#34;: &#34;LOC&#34;,
-        &#34;phrase_5&#34;: &#34;9mm&#34;,
-        &#34;label_5&#34;: &#34;QUANTITY&#34;,
-        &#34;phrase_6&#34;: &#34;annually&#34;,
-        &#34;label_6&#34;: &#34;DATE&#34;
+        &#34;document&#34;: &#34;Global warming theory holds that one of the fingerprints of human-induced global warming is more rapid warming in the lower troposphere than at the surface (James Taylor)&#34;,
+        &#34;phrase_0&#34;: &#34;James Taylor&#34;,
+        &#34;label_0&#34;: &#34;PERSON&#34;
     },
     {
-        &#34;document&#34;: &#34;\&#34;The IPCC\u2019s Fourth Assessment Report, 2007, carries in three places a graph in which the Hadley Center\u2019s global mean surface temperature anomaly dataset from 1850-2005 is displayed with four arbitrarily-chosen trend-lines overlaid upon it.&#34;,
-        &#34;phrase_0&#34;: &#34;2007&#34;,
-        &#34;label_0&#34;: &#34;DATE&#34;,
-        &#34;phrase_1&#34;: &#34;three&#34;,
-        &#34;label_1&#34;: &#34;CARDINAL&#34;,
-        &#34;phrase_2&#34;: &#34;the Hadley Center\u2019s&#34;,
-        &#34;label_2&#34;: &#34;ORG&#34;,
-        &#34;phrase_3&#34;: &#34;anomaly&#34;,
-        &#34;label_3&#34;: &#34;LOC&#34;,
-        &#34;phrase_4&#34;: &#34;1850-2005&#34;,
-        &#34;label_4&#34;: &#34;DATE&#34;,
-        &#34;phrase_5&#34;: &#34;four&#34;,
-        &#34;label_5&#34;: &#34;CARDINAL&#34;
+        &#34;document&#34;: &#34;[\u2026]until we develop a practical, cost-competitive alternative to fossil fuels, it is unlikely that renewable energy will ever make up more than 15-20% of global energy requirements.&#34;,
+        &#34;phrase_0&#34;: &#34;more than 15&#34;,
+        &#34;label_0&#34;: &#34;CARDINAL&#34;
     },
     {
-        &#34;document&#34;: &#34;The bushfires in Australia were caused by arsonists and a series of lightning strikes, not &#39;climate change&#39;.&#34;,
-        &#34;phrase_0&#34;: &#34;Australia&#34;,
-        &#34;label_0&#34;: &#34;LOC&#34;
-    },
-    {
-        &#34;document&#34;: &#34;the mild warming of around 0.8 degrees Celsius that the planet has experienced since the middle of the 19th century&#34;,
-        &#34;phrase_0&#34;: &#34;0.8 degrees&#34;,
+        &#34;document&#34;: &#34;The IPCC confirms that computer modeling predicts the existence of a tropical, mid-troposphere \u201chot spot\u201d about 10km above the Earth\u2019s surface.&#34;,
+        &#34;phrase_0&#34;: &#34;about 10km&#34;,
         &#34;label_0&#34;: &#34;QUANTITY&#34;,
-        &#34;phrase_1&#34;: &#34;the middle of the 19th century&#34;,
+        &#34;phrase_1&#34;: &#34;Earth&#34;,
+        &#34;label_1&#34;: &#34;LOC&#34;
+    },
+    {
+        &#34;document&#34;: &#34;more than 100 per cent of the warming over the past century is due to human actions&#34;,
+        &#34;phrase_0&#34;: &#34;more than 100&#34;,
+        &#34;label_0&#34;: &#34;CARDINAL&#34;,
+        &#34;phrase_1&#34;: &#34;the past century&#34;,
         &#34;label_1&#34;: &#34;DATE&#34;
     }
 ]
@@ -18052,7 +17943,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[216]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[49]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">keep_only_certain_labels</span><span class="p">(</span><span class="n">examples</span><span class="p">,</span> <span class="n">specific_label</span><span class="p">):</span>
@@ -18085,7 +17976,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[217]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[50]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">modified_examples_list</span> <span class="o">=</span> <span class="n">keep_only_certain_labels</span><span class="p">(</span><span class="n">post_processed_examples</span><span class="p">,</span> <span class="n">specific_label</span><span class="p">)</span>
@@ -18101,7 +17992,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[220]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[51]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">json_formatted_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">modified_examples_list</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -18127,18 +18018,13 @@ Use the following training examples as follows:
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>[
     {
-        &#34;document&#34;: &#34;While there has been a mean rise of a little more than 3mm per year worldwide since the 1990s, in the last decade, the NOAA Virginia Key tide gauge just south of Miami Beach has measured a 9mm rise annually.\u201d&#34;,
-        &#34;phrase_4&#34;: &#34;Miami Beach&#34;,
-        &#34;label_4&#34;: &#34;LOC&#34;
+        &#34;document&#34;: &#34;The IPCC confirms that computer modeling predicts the existence of a tropical, mid-troposphere \u201chot spot\u201d about 10km above the Earth\u2019s surface.&#34;,
+        &#34;phrase_1&#34;: &#34;Earth&#34;,
+        &#34;label_1&#34;: &#34;LOC&#34;
     },
     {
-        &#34;document&#34;: &#34;\&#34;The IPCC\u2019s Fourth Assessment Report, 2007, carries in three places a graph in which the Hadley Center\u2019s global mean surface temperature anomaly dataset from 1850-2005 is displayed with four arbitrarily-chosen trend-lines overlaid upon it.&#34;,
-        &#34;phrase_3&#34;: &#34;anomaly&#34;,
-        &#34;label_3&#34;: &#34;LOC&#34;
-    },
-    {
-        &#34;document&#34;: &#34;The bushfires in Australia were caused by arsonists and a series of lightning strikes, not &#39;climate change&#39;.&#34;,
-        &#34;phrase_0&#34;: &#34;Australia&#34;,
+        &#34;document&#34;: &#34;U.S. Pays $1 Billion into Green Climate Fund, Top Polluters Pay Nothing&#34;,
+        &#34;phrase_0&#34;: &#34;U.S.&#34;,
         &#34;label_0&#34;: &#34;LOC&#34;
     }
 ]
@@ -18155,7 +18041,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[221]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[52]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">examples</span><span class="o">=</span><span class="p">[]</span>
@@ -18171,7 +18057,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[222]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[53]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">modified_examples_list</span><span class="p">)):</span>
@@ -18193,7 +18079,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[223]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[54]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">examples_input</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">examples</span><span class="p">)</span>
@@ -18209,7 +18095,7 @@ Use the following training examples as follows:
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[224]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[55]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">examples_input</span><span class="p">)</span>
@@ -18233,21 +18119,15 @@ Use the following training examples as follows:
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>document: 
-While there has been a mean rise of a little more than 3mm per year worldwide since the 1990s, in the last decade, the NOAA Virginia Key tide gauge just south of Miami Beach has measured a 9mm rise annually.”
+The IPCC confirms that computer modeling predicts the existence of a tropical, mid-troposphere “hot spot” about 10km above the Earth’s surface.
 
-{&#39;phrase_4&#39;: &#39;Miami Beach&#39;, &#39;label_4&#39;: &#39;LOC&#39;}
-
-
-document: 
-&#34;The IPCC’s Fourth Assessment Report, 2007, carries in three places a graph in which the Hadley Center’s global mean surface temperature anomaly dataset from 1850-2005 is displayed with four arbitrarily-chosen trend-lines overlaid upon it.
-
-{&#39;phrase_3&#39;: &#39;anomaly&#39;, &#39;label_3&#39;: &#39;LOC&#39;}
+{&#39;phrase_1&#39;: &#39;Earth&#39;, &#39;label_1&#39;: &#39;LOC&#39;}
 
 
 document: 
-The bushfires in Australia were caused by arsonists and a series of lightning strikes, not &#39;climate change&#39;.
+U.S. Pays $1 Billion into Green Climate Fund, Top Polluters Pay Nothing
 
-{&#39;phrase_0&#39;: &#39;Australia&#39;, &#39;label_0&#39;: &#39;LOC&#39;}
+{&#39;phrase_0&#39;: &#39;U.S.&#39;, &#39;label_0&#39;: &#39;LOC&#39;}
 
 
 
@@ -18264,7 +18144,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[225]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[56]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
@@ -18282,7 +18162,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[226]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[57]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">json_formatted_str</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results</span><span class="p">[:</span><span class="mi">4</span><span class="p">],</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -18308,28 +18188,28 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>[
     {
-        &#34;generated_text&#34;: &#34;phrase_0: \&#34;the ocean waters and this environment that we live in.\&#34;, &#39;label_0&#39;: &#39;LOC&#39;&#34;,
-        &#34;generated_token_count&#34;: 32,
-        &#34;input_token_count&#34;: 442,
-        &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;
-    },
-    {
-        &#34;generated_text&#34;: &#34;phrase_0: \&#34;The Rio Grande\&#34; , &#39;label_0&#39;: &#39;LOC&#39;&#34;,
+        &#34;generated_text&#34;: &#34;phrase_0: \&#34;the ocean waters and this environment that we live in.\&#34;, label_0: \&#34;LOC\&#34;&#34;,
         &#34;generated_token_count&#34;: 26,
-        &#34;input_token_count&#34;: 457,
-        &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;
+        &#34;input_token_count&#34;: 329,
+        &#34;stop_reason&#34;: &#34;eos_token&#34;
     },
     {
-        &#34;generated_text&#34;: &#34;&#39;phrase_0&#39;: &#39;Mountain West&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;Pacific Northwest&#39;, &#39;label_1&#39;: &#39;LOC&#39;&#34;,
-        &#34;generated_token_count&#34;: 59,
-        &#34;input_token_count&#34;: 457,
-        &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;
+        &#34;generated_text&#34;: &#34;phrase_0: \&#34;The Rio Grande\&#34; , label_0: &#39;LOC&#39;&#34;,
+        &#34;generated_token_count&#34;: 21,
+        &#34;input_token_count&#34;: 344,
+        &#34;stop_reason&#34;: &#34;eos_token&#34;
+    },
+    {
+        &#34;generated_text&#34;: &#34;phrase_0: the Mountain West, &#39;label_0&#39;: &#39;LOC&#39;, phrase_1: the Pacific Northwest, &#39;label_1&#39;: &#39;LOC&#39;&#34;,
+        &#34;generated_token_count&#34;: 44,
+        &#34;input_token_count&#34;: 344,
+        &#34;stop_reason&#34;: &#34;eos_token&#34;
     },
     {
         &#34;generated_text&#34;: &#34;&#39;phrase_0&#39;: &#39;in our lifetime&#39;, &#39;label_0&#39;: &#39;LOC&#39;&#34;,
         &#34;generated_token_count&#34;: 30,
-        &#34;input_token_count&#34;: 433,
-        &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;
+        &#34;input_token_count&#34;: 320,
+        &#34;stop_reason&#34;: &#34;eos_token&#34;
     }
 ]
 </pre>
@@ -18345,7 +18225,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[227]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[58]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">polish_results</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
@@ -18384,7 +18264,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[228]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[59]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">polish_results</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s1">&#39;generated_text&#39;</span><span class="p">]))</span>
@@ -18407,7 +18287,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>&#39;phrase_0&#39;:&#39;Mountain West&#39;,&#39;label_0&#39;:&#39;LOC&#39;,&#39;phrase_1&#39;:&#39;Pacific Northwest&#39;,&#39;label_1&#39;:&#39;LOC&#39;
+<pre>&#39;phrase_0&#39;:&#39;the Mountain West&#39;,&#39;label_0&#39;:&#39;LOC&#39;,&#39;phrase_1&#39;:&#39;the Pacific Northwest&#39;,&#39;label_1&#39;:&#39;LOC&#39;
 </pre>
 </div>
 </div>
@@ -18421,7 +18301,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[229]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[60]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">extract_dictionary_from_results</span><span class="p">(</span><span class="n">polish_results</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s1">&#39;generated_text&#39;</span><span class="p">])))</span>
@@ -18444,7 +18324,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>{&#39;phrase_0&#39;: &#39;Mountain West&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;Pacific Northwest&#39;, &#39;label_1&#39;: &#39;LOC&#39;}
+<pre>{&#39;phrase_0&#39;: &#39;the Mountain West&#39;, &#39;label_0&#39;: &#39;LOC&#39;, &#39;phrase_1&#39;: &#39;the Pacific Northwest&#39;, &#39;label_1&#39;: &#39;LOC&#39;}
 </pre>
 </div>
 </div>
@@ -18458,7 +18338,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[230]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[61]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">extract_dictionary_from_results</span><span class="p">(</span><span class="n">polish_results</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;generated_text&#39;</span><span class="p">])))</span>
@@ -18495,7 +18375,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[231]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[62]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">y_true</span><span class="o">=</span><span class="p">[]</span>
@@ -18566,7 +18446,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[232]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[63]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">len_y_true</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span>
@@ -18601,7 +18481,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[233]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[64]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">y_pred</span>
@@ -18620,13 +18500,13 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[233]:</div>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[64]:</div>
 
 
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>[1, 1, 1, 1, 1]</pre>
+<pre>[1, 1, 1, 1]</pre>
 </div>
 
 </div>
@@ -18640,7 +18520,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[234]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[65]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">y_true</span>
@@ -18659,13 +18539,13 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
     
-    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[234]:</div>
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[65]:</div>
 
 
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>[1, 1, 1, 1, 1]</pre>
+<pre>[1, 1, 1, 1]</pre>
 </div>
 
 </div>
@@ -18679,7 +18559,7 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[235]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[66]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_pred</span><span class="o">=</span><span class="n">y_pred</span><span class="p">,</span><span class="n">y_true</span><span class="o">=</span><span class="n">y_true</span><span class="p">))</span>
@@ -18704,11 +18584,11 @@ The bushfires in Australia were caused by arsonists and a series of lightning st
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>              precision    recall  f1-score   support
 
-           1       1.00      1.00      1.00         5
+           1       1.00      1.00      1.00         4
 
-    accuracy                           1.00         5
-   macro avg       1.00      1.00      1.00         5
-weighted avg       1.00      1.00      1.00         5
+    accuracy                           1.00         4
+   macro avg       1.00      1.00      1.00         4
+weighted avg       1.00      1.00      1.00         4
 
 </pre>
 </div>
@@ -18727,8 +18607,8 @@ weighted avg       1.00      1.00      1.00         5
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="summary"></a></p>
 <h2 id="Summary-and-next-steps">Summary and next steps<a class="anchor-link" href="#Summary-and-next-steps">&#182;</a></h2><p>You successfully completed this notebook!.</p>
-<p>You learned how to extract named entities with Google's <code>google/flan-ul2</code> on Watsonx.</p>
-<p>Check out our <em><a href="">Online Documentation</a></em> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
+<p>You learned how to extract named entities with Google's <code>google/flan-ul2</code> on watsonx.</p>
+<p>Check out our <a href="https://ibm.github.io/watsonx-ai-python-sdk/samples.html" target="_blank" rel="Online Documentation">Online Documentation</a> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
 
 </div>
 </div>
@@ -18752,7 +18632,7 @@ weighted avg       1.00      1.00      1.00         5
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Copyright © 2023 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright © 2023, 2024 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
