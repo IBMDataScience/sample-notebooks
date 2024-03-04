@@ -15592,7 +15592,6 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h4 id="Disclaimers">Disclaimers<a class="anchor-link" href="#Disclaimers">&#182;</a></h4><ul>
-<li>Foundational Model REST API that is used in this notebook is in <code>beta</code> state.</li>
 <li>Use only Projects and Spaces that are available in watsonx context.</li>
 </ul>
 <h2 id="Notebook-content">Notebook content<a class="anchor-link" href="#Notebook-content">&#182;</a></h2><p>This notebook contains the steps and code to demonstrate support of text generation in watsonx. It introduces commands for data generation and model testing.</p>
@@ -15620,7 +15619,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p><a id="setup"></a></p>
 <h2 id="Set-up-the-environment">Set up the environment<a class="anchor-link" href="#Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html?context=analytics" target="_blank" rel="noopener no referrer">here</a>).</li>
+<li>Create a <a href="https://cloud.ibm.com/catalog/services/watson-machine-learning" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html?context=analytics" target="_blank" rel="noopener no referrer">here</a>).</li>
 </ul>
 
 </div>
@@ -15661,13 +15660,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">getpass</span><span class="o">,</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">ibm_cloud_sdk_core</span> <span class="kn">import</span> <span class="n">IAMTokenManager</span>
-<span class="kn">from</span> <span class="nn">ibm_cloud_sdk_core.authenticators</span> <span class="kn">import</span> <span class="n">IAMAuthenticator</span><span class="p">,</span> <span class="n">BearerTokenAuthenticator</span>
 </pre></div>
 
      </div>
@@ -15703,7 +15701,7 @@ from the API call is returned as the cell output.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -15717,27 +15715,6 @@ from the API call is returned as the cell output.</p>
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Please enter your WML endpoint url (hit enter): ········
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -15766,7 +15743,7 @@ from the API call is returned as the cell output.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">project_id</span> <span class="o">=</span> <span class="n">project_id</span>
 
     <span class="k">def</span> <span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">input</span><span class="p">,</span> <span class="n">model_id</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
-        <span class="n">wml_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">endpoint_url</span><span class="si">}</span><span class="s2">/ml/v1-beta/generation/text?version=2023-05-28&quot;</span>
+        <span class="n">wml_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">endpoint_url</span><span class="si">}</span><span class="s2">/ml/v1/text/generation?version=2023-05-28&quot;</span>
         <span class="n">Headers</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="p">,</span>
             <span class="s2">&quot;Content-Type&quot;</span><span class="p">:</span> <span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
@@ -15799,13 +15776,12 @@ from the API call is returned as the cell output.</p>
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="watsonx-API-connection">watsonx API connection<a class="anchor-link" href="#watsonx-API-connection">&#182;</a></h3><p>This cell defines the credentials required to work with watsonx API for Foundation
 Model inferencing.</p>
-<p><strong>Action:</strong> Provide the IBM Cloud user API key. For details, see
-<a href="https://cloud.ibm.com/docs/account?topic=account-userapikey&amp;interface=ui">documentation</a>.</p>
+<p><strong>Action:</strong> Provide the IBM Cloud user API key. For details, see <a href="https://cloud.ibm.com/docs/account?topic=account-userapikey&interface=ui" target="_blank" rel="IBM Cloud user API key">documentation</a>.</p>
 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -15824,27 +15800,6 @@ Model inferencing.</p>
 </div>
 </div>
 
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Please enter your WML api key (hit enter): ········
-</pre>
-</div>
-</div>
-
-</div>
-
-</div>
-
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -15858,7 +15813,7 @@ the id from the project in which this notebook runs. Otherwise, please provide t
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -15875,27 +15830,6 @@ the id from the project in which this notebook runs. Otherwise, please provide t
      </div>
 </div>
 </div>
-</div>
-
-<div class="jp-Cell-outputWrapper">
-<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
-</div>
-
-
-<div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Please enter your project_id (hit enter): ········
-</pre>
-</div>
-</div>
-
-</div>
-
 </div>
 
 </div>
@@ -16091,10 +16025,10 @@ the id from the project in which this notebook runs. Otherwise, please provide t
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">models_json</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint_url</span> <span class="o">+</span> <span class="s1">&#39;/ml/v1-beta/foundation_model_specs?version=2022-08-01&amp;limit=50&#39;</span><span class="p">,</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">models_json</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">endpoint_url</span> <span class="o">+</span> <span class="s1">&#39;/ml/v1/foundation_model_specs?version=2022-08-01&amp;limit=50&#39;</span><span class="p">,</span>
                            <span class="n">headers</span><span class="o">=</span><span class="p">{</span>
                                     <span class="s1">&#39;Authorization&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;Bearer </span><span class="si">{</span><span class="n">access_token</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
                                     <span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">,</span>
@@ -16121,7 +16055,7 @@ the id from the project in which this notebook runs. Otherwise, please provide t
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>[&#39;bigscience/mt0-xxl&#39;, &#39;eleutherai/gpt-neox-20b&#39;, &#39;google/flan-t5-xxl&#39;, &#39;google/flan-ul2&#39;, &#39;ibm/mpt-7b-instruct2&#39;]
+<pre>[&#39;bigcode/starcoder&#39;, &#39;bigscience/mt0-xxl&#39;, &#39;eleutherai/gpt-neox-20b&#39;, &#39;google/flan-t5-xl&#39;, &#39;google/flan-t5-xxl&#39;, &#39;google/flan-ul2&#39;, &#39;ibm-mistralai/mixtral-8x7b-instruct-v01-q&#39;, &#39;ibm/granite-13b-chat-v1&#39;, &#39;ibm/granite-13b-chat-v2&#39;, &#39;ibm/granite-13b-instruct-v1&#39;, &#39;ibm/granite-13b-instruct-v2&#39;, &#39;ibm/mpt-7b-instruct2&#39;, &#39;meta-llama/llama-2-13b-chat&#39;, &#39;meta-llama/llama-2-70b-chat&#39;]
 </pre>
 </div>
 </div>
@@ -16147,7 +16081,7 @@ the id from the project in which this notebook runs. Otherwise, please provide t
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_id</span> <span class="o">=</span> <span class="s2">&quot;google/flan-t5-xxl&quot;</span>
@@ -16188,7 +16122,7 @@ result:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">parameters</span> <span class="o">=</span>  <span class="p">{</span><span class="s2">&quot;decoding_method&quot;</span><span class="p">:</span> <span class="s2">&quot;sample&quot;</span><span class="p">,</span>
@@ -16214,7 +16148,7 @@ result:</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Generate-mail-advertising-using-flan-t5-xxl-model.">Generate mail advertising using <code>flan-t5-xxl</code> model.<a class="anchor-link" href="#Generate-mail-advertising-using-flan-t5-xxl-model.">&#182;</a></h3><p><strong>Note:</strong> You might need to adjust model <code>parameters</code> for different models or tasks, to do so please refer to <a href="https://ibm.github.io/watson-machine-learning-sdk/model.html#metanames.GenTextParamsMetaNames" target="_blank" rel="noopener no referrer">documentation</a>.</p>
+<h3 id="Generate-mail-advertising-using-flan-t5-xxl-model.">Generate mail advertising using <code>flan-t5-xxl</code> model.<a class="anchor-link" href="#Generate-mail-advertising-using-flan-t5-xxl-model.">&#182;</a></h3><p><strong>Note:</strong> You might need to adjust model <code>parameters</code> for different models or tasks, to do so please refer to <a href="https://ibm.github.io/watsonx-ai-python-sdk/fm_model.html#metanames.GenTextParamsMetaNames" target="_blank" rel="GenTextParamsMetaNames params">documentation</a>.</p>
 
 </div>
 </div>
@@ -16237,7 +16171,7 @@ result:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">prompt</span> <span class="o">=</span> <span class="n">Prompt</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">project_id</span><span class="p">)</span>
@@ -16265,7 +16199,7 @@ result:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">results_low_temperature</span> <span class="o">=</span> <span class="p">[]</span>
@@ -16296,7 +16230,7 @@ result:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[19]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results_low_temperature</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
@@ -16321,38 +16255,38 @@ result:</p>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>[
   {
-    &#34;generated_text&#34;: &#34;The Bank of America Cash Rewards Credit Card offers a 10% cash back on all purchases. Earn points for every $1 you spend. Use your rewards to get travel, merchandise, and gift cards. Get rewarded for shopping online, at the gas pump, or anywhere else you shop.&#34;,
-    &#34;generated_token_count&#34;: 58,
+    &#34;generated_text&#34;: &#34;The Bank of America Cash Rewards Credit Card offers a 10% cash back on all purchases. Earn points for every $1 you spend. Use your rewards to get travel, merchandise, and gift cards. Get rewarded for shopping online, at the gas pump, or anywhere else with a Visa credit card.&#34;,
+    &#34;generated_token_count&#34;: 62,
     &#34;input_token_count&#34;: 16,
-    &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;,
+    &#34;stop_reason&#34;: &#34;eos_token&#34;,
     &#34;seed&#34;: 33
   },
   {
     &#34;generated_text&#34;: &#34;a saving account with 8 percent interest. if you&#39;re interested, please call us at 1-800-447-2337 or visit any of our banking centers. id#123456. cc#5feb3d&#34;,
     &#34;generated_token_count&#34;: 53,
     &#34;input_token_count&#34;: 16,
-    &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;,
+    &#34;stop_reason&#34;: &#34;eos_token&#34;,
     &#34;seed&#34;: 33
   },
   {
     &#34;generated_text&#34;: &#34;Dear Sir/Madam, We are offering an online JAVA programming course. The course is designed by a team of experienced and qualified professionals. You can learn to program in Java and get certified in the process. Please visit our website for more information. Thank you,&#34;,
     &#34;generated_token_count&#34;: 58,
     &#34;input_token_count&#34;: 14,
-    &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;,
+    &#34;stop_reason&#34;: &#34;eos_token&#34;,
     &#34;seed&#34;: 33
   },
   {
-    &#34;generated_text&#34;: &#34;i have been using photoshop for years and it is great. however, i am looking for something that i can use to edit my photos. i have found a program that i think would be perfect for this. if you know of any please let me know.&#34;,
-    &#34;generated_token_count&#34;: 61,
-    &#34;input_token_count&#34;: 17,
-    &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;,
+    &#34;generated_text&#34;: &#34;i have been using photoshop for years and it is the most powerful, yet easy to use program i have ever used. however, i am always looking for something better. i am not sure if you are interested in trying out my new software, but if you are, please let me know. it is called \&#34;photoscape\&#34; and it is the best thing i have ever bought. i think you will love it. i have attached a few screen shots of what it can do. i hope you like it. please feel free to contact me if you have any questions. i would be happy to help. i look forward to hearing from you.&#34;,
+    &#34;generated_token_count&#34;: 146,
+    &#34;input_token_count&#34;: 19,
+    &#34;stop_reason&#34;: &#34;eos_token&#34;,
     &#34;seed&#34;: 33
   },
   {
     &#34;generated_text&#34;: &#34;Healthy Food Catering is a new healthy food catering company. We are offering a free first meal to anyone who signs up for our service. For more information, please visit our website at www.healthyfoodcatering.com. Thank you for your time.&#34;,
     &#34;generated_token_count&#34;: 55,
     &#34;input_token_count&#34;: 16,
-    &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;,
+    &#34;stop_reason&#34;: &#34;eos_token&#34;,
     &#34;seed&#34;: 33
   }
 ]
@@ -16381,7 +16315,7 @@ result:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[19]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">parameters_temp</span> <span class="o">=</span>  <span class="p">{</span><span class="s2">&quot;decoding_method&quot;</span><span class="p">:</span> <span class="s2">&quot;sample&quot;</span><span class="p">,</span>
@@ -16405,7 +16339,7 @@ result:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">results_high_temperature</span> <span class="o">=</span> <span class="p">[]</span>
@@ -16436,7 +16370,7 @@ result:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[23]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results_high_temperature</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
@@ -16464,35 +16398,35 @@ result:</p>
     &#34;generated_text&#34;: &#34;From now on, enjoy some amazing advantages with Sainsbury&#39;s Premier 1 Cashback Card! Redeem your card at any one of our 200+ retailers and get 10% cash back! You need to apply for this incredible offer here. Don&#39;t delay&#34;,
     &#34;generated_token_count&#34;: 53,
     &#34;input_token_count&#34;: 16,
-    &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;,
+    &#34;stop_reason&#34;: &#34;eos_token&#34;,
     &#34;seed&#34;: 33
   },
   {
-    &#34;generated_text&#34;: &#34;From the Credit Union Board of Directors: All members who have been with our credit union for a year or more are eligible for an 8.00% interest checking account. To open yours, stop by any of our locations, apply on-line at www.rbcusa.com or by calling 1-800-457-5555. For over 100 years we&#39;ve made banking easy.&#34;,
+    &#34;generated_text&#34;: &#34;From the Credit Union Board of Directors: All members who have been with our credit union for a year or more are eligible for an 8.00% interest checking account. To open your account, stop by any of our locations, apply on-line at www.rbcusa.com or by calling 1-800-457-5555. For over 100 years we&#39;ve made banking easy.&#34;,
     &#34;generated_token_count&#34;: 81,
     &#34;input_token_count&#34;: 16,
-    &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;,
+    &#34;stop_reason&#34;: &#34;eos_token&#34;,
     &#34;seed&#34;: 33
   },
   {
     &#34;generated_text&#34;: &#34;From the makers of JAVA: \&#34;Avail yourself of our online course and learn the programming language from a pro-teacher and the best technical team on the web\&#34;. We have now launched an improved version of JAVA that has been designed by experts, with interactive lessons, assignments and quizzes to keep you in touch with JAVA as well as the latest enhancements in Oracle Java SE 6 Beta. The new java has many exciting features that I will describe to you but the most important one is security and support for future technologies. This version is the last release of JAVA 5.x and is intended for those JAVA programmers who have already become adept at using the new language and would like to update their knowledge. To enroll in this upgrade, please email : sales3(at)iknowitall (dot) com with your request. You can expect to receive the confirmation by return email. For more details on upgrade, click here : Upgrade page.&#34;,
     &#34;generated_token_count&#34;: 209,
     &#34;input_token_count&#34;: 14,
-    &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;,
+    &#34;stop_reason&#34;: &#34;eos_token&#34;,
     &#34;seed&#34;: 33
   },
   {
-    &#34;generated_text&#34;: &#34;Hi, The free version of our photo editor is available from the photo page. Thanks. <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9ff5f0f1f1e6b1e8edf6f8f7ebdfebb2ecf0f9ebb2ece6ecebfaf2ecb1fcf0f2">[email&#160;protected]</a> www.t-soft-systems.com ...http://www.freewarefromdrf.com www.freewarefromdeveltower.com www.photoeditingapp.com We offer you best video and image editing software on the market. Our software has many powerful functions at low cost and will solve all your personal or business tasks in editing photographs and movies. Try it for 30 days absolutely free.&#34;,
-    &#34;generated_token_count&#34;: 122,
-    &#34;input_token_count&#34;: 17,
-    &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;,
+    &#34;generated_text&#34;: &#34;Hi, The free version of our photo editor is great. But most people want to edit their photos in a professional way. So we decided to introduce you a photo editing software called FX Photo Studio Pro for Windows, which requires that you order an installation disc, if you do not have one yet.&#34;,
+    &#34;generated_token_count&#34;: 65,
+    &#34;input_token_count&#34;: 19,
+    &#34;stop_reason&#34;: &#34;eos_token&#34;,
     &#34;seed&#34;: 33
   },
   {
     &#34;generated_text&#34;: &#34;From the makers of Fresh-n-Easy, now available in your area: The new Fresh-n-Easy Healthy Catering line is an evolution in quality fresh food. Our healthy meals taste great, are delivered to you on time and leave a positive impact on the environment by using green options that are in season year round. For free, get your first meal. For us, we believe eating well should be affordable, too. Call 1-877-696-0999 today for more details!&#34;,
     &#34;generated_token_count&#34;: 106,
     &#34;input_token_count&#34;: 16,
-    &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;,
+    &#34;stop_reason&#34;: &#34;eos_token&#34;,
     &#34;seed&#34;: 33
   }
 ]
@@ -16521,7 +16455,7 @@ result:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[24]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[22]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">photo_software_prompt</span> <span class="o">=</span> <span class="s2">&quot;Write an advertising e-mail of paid (9$ a month, first month free) photo editing software COOLSOFTWARE targeted for early professionals.&quot;</span>
@@ -16537,7 +16471,7 @@ result:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[25]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[23]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">parameters_photo</span> <span class="o">=</span>  <span class="p">{</span><span class="s2">&quot;decoding_method&quot;</span><span class="p">:</span> <span class="s2">&quot;sample&quot;</span><span class="p">,</span>
@@ -16561,7 +16495,7 @@ result:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[26]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[24]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">results_photo_soft</span> <span class="o">=</span> <span class="n">prompt</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">photo_software_prompt</span><span class="p">,</span> <span class="n">model_id</span><span class="p">,</span> <span class="n">parameters_photo</span><span class="p">)</span>
@@ -16577,7 +16511,7 @@ result:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[27]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[25]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">results_photo_soft</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
@@ -16601,10 +16535,10 @@ result:</p>
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>{
-  &#34;generated_text&#34;: &#34;i discovered photography was my hobby - not profession. until now that is. with the introduction of new technology, there is no limit to what you can do with your photos. now, all you basic need for photo editing is this great software called pixlr xpress, which you may find at http://www.softeventsandmedia.com/?cat=265. i just wanted to let you know that there is an amazing deal for early photographers: you can get 1 month free. after that, the subscription goes up by 9 dollars every month. we are currently on sale, and if you are interested, you should order your copy right away. otherwise, you wont be in a position to try it out, because it is only available in demo version. a bit over 100 free samples are already available, though. you dont have to buy anything first, so grab your free trial right now. as soon as you try it out, youll be pleased to hear that the interface is extremely intuitive and its fairly easy to edit your photo with it.&#34;,
-  &#34;generated_token_count&#34;: 226,
-  &#34;input_token_count&#34;: 26,
-  &#34;stop_reason&#34;: &#34;EOS_TOKEN&#34;,
+  &#34;generated_text&#34;: &#34;Cool Software is dedicated to helping photographers worldwide make the most of their photo-editing software investment by providing high quality, easy to use and affordable graphics software. Whether you&#39;re an amateur or professional photographer in need of new tools to enhance your work, our highly advanced, easy-to-use photo editing programs will let you see your creative vision come to life. Isn&#39;t it time you had a cool piece of professional software too? Well, at $8.99 each month (free for first month) Cool Software seems to fit that bill perfectly. This is the best part about our company: We only offer support through email. We haven&#39;t tossed your photos out to fend for themselves in a year because our program didn&#39;t save enough time or effort for the photo. At Cool Software we don&#39;t want to give you \&#34;quick and dirty\&#34; editing features either. Instead we want the very best in software, from one application to another. That means using different applications across the board to make your pictures look perfect. With that in mind we offer you a wide range of choices, not just from what works well now but what has worked well in the past. As well as other applications to fit your photography. You have the free trail version, so what better way to try before you buy than to test drive Cool Software. When you sign up simply send us an e-mail, and choose from our variety of products. It&#39;s that easy.&#34;,
+  &#34;generated_token_count&#34;: 308,
+  &#34;input_token_count&#34;: 34,
+  &#34;stop_reason&#34;: &#34;eos_token&#34;,
   &#34;seed&#34;: 33
 }
 </pre>
@@ -16625,7 +16559,7 @@ result:</p>
 <p><a id="summary"></a></p>
 <h2 id="Summary-and-next-steps">Summary and next steps<a class="anchor-link" href="#Summary-and-next-steps">&#182;</a></h2><p>You successfully completed this notebook!.</p>
 <p>You learned how to generate mail advertising with Google's <code>flan-t5-xxl</code> on watsonx.</p>
-<p>Check out our <em><a href="https://ibm.github.io/watson-machine-learning-sdk/samples.html" target="_blank" rel="noopener no referrer">Online Documentation</a></em> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
+<p>Check out our <a href="https://ibm.github.io/watsonx-ai-python-sdk/samples.html" target="_blank" rel="Online Documentation">Online Documentation</a> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
 
 </div>
 </div>
@@ -16637,7 +16571,7 @@ result:</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Szymon Kucharczyk</strong>, Staff Software Engineer at Watson Machine Learning.</p>
+<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Mateusz Szewczyk</strong>, Software Engineer at Watson Machine Learning.</p>
 
 </div>
 </div>
@@ -16649,13 +16583,13 @@ result:</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Copyright © 2023 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright © 2023, 2024 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
 </div>
 </div>
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body>
+</body>
 
 
 
