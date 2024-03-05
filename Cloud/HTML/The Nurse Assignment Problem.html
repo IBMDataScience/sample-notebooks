@@ -36,6 +36,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -201,6 +202,10 @@ background-color: transparent;
 
 .notebook_app .container {
 width: 100% !important;
+}
+
+.jupyter-resource-usage-hide {
+display: none !important;
 }
 
 .notebook_app #notebook {
@@ -15442,10 +15447,6 @@ a.anchor-link {
   display: none;
 }
 
-.highlight  {
-  margin: 0.4em;
-}
-
 /* Input area styling */
 .jp-InputArea {
   overflow: hidden;
@@ -15455,9 +15456,26 @@ a.anchor-link {
   overflow: hidden;
 }
 
-.CodeMirror pre {
+.CodeMirror.cm-s-jupyter .highlight pre {
+/* weird, but --jp-code-padding defined to be 5px but 4px horizontal padding is hardcoded for pre.CodeMirror-line */
+  padding: var(--jp-code-padding) 4px;
   margin: 0;
-  padding: 0;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+}
+
+.jp-OutputArea-output pre {
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.jp-RenderedText pre {
+  color: var(--jp-content-font-color1);
+  font-size: var(--jp-code-font-size);
 }
 
 /* Using table instead of flexbox so that we can use break-inside property */
@@ -15501,6 +15519,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 /* Hiding the collapser by default */
 .jp-Collapser {
   display: none;
+}
+
+@page {
+    margin: 0.5in; /* Margin for each printed piece of paper */
 }
 
 @media print {
@@ -15559,14 +15581,17 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="The-Nurse-Assignment-Problem">The Nurse Assignment Problem<a class="anchor-link" href="#The-Nurse-Assignment-Problem">&#182;</a></h1><p>This notebook is an example of how <strong>Decision Optimization</strong> can help to prescribe decisions for a complex constrained problem.</p>
 <p>When you finish this tutorial, you'll have a foundational knowledge of <em>Prescriptive Analytics</em>.</p>
-<blockquote><p>This notebook requires the Commercial Edition of CPLEX engines. This notebook runs on Python and DO.</p>
+<blockquote>
+<p>This notebook requires the Commercial Edition of CPLEX engines. This notebook runs on Python and DO.</p>
 </blockquote>
-<p>Table of contents:</p>
+<p><strong>Table of contents:</strong></p>
 <ul>
 <li><a href="#Describe-the-business-problem">Describe the business problem</a></li>
-<li><a href="#How--decision-optimization-can-help">How decision optimization (prescriptive analytics) can help</a></li>
-<li><a href="#Use-decision-optimization">Use decision optimization</a><ul>
-<li><a href="#Step-1:-Import-the-docplex-package">Step 1: Import the docplex package</a></li>
+</ul>
+<ul>
+<li><a href="#How-Decision-Optimization-can-help">How Decision Optimization can help</a></li>
+<li><a href="#Use-Decision-Optimization">Use Decision Optimization</a><ul>
+<li><a href="#Step-1:-Import-the-DOcplex-package">Step 1: Import the DOcplex package</a></li>
 <li><a href="#Step-2:-Model-the-data">Step 2: Model the data</a></li>
 <li><a href="#Step-3:-Prepare-the-data">Step 3: Prepare the data</a></li>
 <li><a href="#Step-4:-Set-up-the-prescriptive-model">Step 4: Set up the prescriptive model</a><ul>
@@ -15576,12 +15601,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <li><a href="#Solve-with-the-Decision-Optimization-solve-service">Solve with the Decision Optimization solve service</a></li>
 </ul>
 </li>
-<li><a href="#Step-5:-Investigate-the-solution-and-then-run-an-example-analysis">Step 5: Investigate the solution and run an example analysis</a></li>
+<li><a href="#Step-5:-Investigate-the-solution-and-run-an-example-analysis">Step 5: Investigate the solution and run an example analysis</a></li>
 </ul>
 </li>
 <li><a href="#Summary">Summary</a></li>
 </ul>
-<hr>
+<hr />
 
 </div>
 </div>
@@ -15612,15 +15637,15 @@ manage the assignment of nurses to shifts in a hospital.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="How--decision-optimization-can-help">How  decision optimization can help<a class="anchor-link" href="#How--decision-optimization-can-help">&#182;</a></h2><ul>
-<li><p>Prescriptive analytics (decision optimization) technology recommends actions that are based on desired outcomes.  It takes into account specific scenarios, resources, and knowledge of past and current events. With this insight, your organization can make better decisions and have greater control of business outcomes.</p>
+<h2 id="How-Decision-Optimization-can-help">How Decision Optimization can help<a class="anchor-link" href="#How-Decision-Optimization-can-help">&#182;</a></h2><ul>
+<li><p>Prescriptive analytics (Decision Optimization) technology recommends actions that are based on desired outcomes.  It takes into account specific scenarios, resources, and knowledge of past and current events. With this insight, your organization can make better decisions and have greater control of business outcomes.</p>
 </li>
 <li><p>Prescriptive analytics is the next step on the path to insight-based actions. It creates value through synergy with predictive analytics, which analyzes data to predict future outcomes.</p>
 </li>
-<li><p>Prescriptive analytics takes that insight to the next level by suggesting the optimal way to handle that future situation. Organizations that can act fast in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.<br>
-<br/></p>
+<li><p>Prescriptive analytics takes that insight to the next level by suggesting the optimal way to handle that future situation. Organizations that can act fast in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.</p>
 </li>
 </ul>
+<br/>
 <p><u>With prescriptive analytics, you can:</u></p>
 <ul>
 <li>Automate the complex decisions and trade-offs to better manage your limited resources.</li>
@@ -15639,7 +15664,7 @@ manage the assignment of nurses to shifts in a hospital.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Use-decision-optimization">Use decision optimization<a class="anchor-link" href="#Use-decision-optimization">&#182;</a></h2>
+<h2 id="Use-Decision-Optimization">Use Decision Optimization<a class="anchor-link" href="#Use-Decision-Optimization">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -15650,7 +15675,7 @@ manage the assignment of nurses to shifts in a hospital.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Step-1:-Import-the-docplex-package">Step 1: Import the docplex package<a class="anchor-link" href="#Step-1:-Import-the-docplex-package">&#182;</a></h3><p>This package is presintalled on Watson Studio.</p>
+<h3 id="Step-1:-Import-the-DOcplex-package">Step 1: Import the DOcplex package<a class="anchor-link" href="#Step-1:-Import-the-DOcplex-package">&#182;</a></h3><p>This package is presintalled on IBM Cloud Pak for Data.</p>
 
 </div>
 </div>
@@ -15660,7 +15685,7 @@ manage the assignment of nurses to shifts in a hospital.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
@@ -15713,7 +15738,7 @@ Each sheet is read into a separate <em>pandas</em> DataFrame.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This notebook requires pandas to work</span>
@@ -15729,9 +15754,9 @@ Each sheet is read into a separate <em>pandas</em> DataFrame.</p>
 <span class="k">except</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sys</span><span class="p">,</span> <span class="s1">&#39;real_prefix&#39;</span><span class="p">):</span>
         <span class="c1">#we are in a virtual env.</span>
-        <span class="o">!</span>pip install xlrd 
+        <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>xlrd<span class="w"> </span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="o">!</span>pip install --user xlrd
+        <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>xlrd
 </pre></div>
 
      </div>
@@ -15739,12 +15764,12 @@ Each sheet is read into a separate <em>pandas</em> DataFrame.</p>
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
@@ -15779,6 +15804,29 @@ Each sheet is read into a separate <em>pandas</em> DataFrame.</p>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>#nurses = 32
+#shifts = 41
+#vacations = 59
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -15800,7 +15848,7 @@ Each sheet is read into a separate <em>pandas</em> DataFrame.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># maximum work time (in hours)</span>
@@ -15827,12 +15875,12 @@ Each sheet is read into a separate <em>pandas</em> DataFrame.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_shifts</span>
@@ -15841,6 +15889,435 @@ Each sheet is read into a separate <em>pandas</em> DataFrame.</p>
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>department</th>
+      <th>day</th>
+      <th>start_time</th>
+      <th>end_time</th>
+      <th>min_req</th>
+      <th>max_req</th>
+    </tr>
+    <tr>
+      <th>shiftId</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Consultation</td>
+      <td>Monday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Consultation</td>
+      <td>Monday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Cardiac Care</td>
+      <td>Monday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Cardiac Care</td>
+      <td>Monday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Emergency</td>
+      <td>Tuesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Emergency</td>
+      <td>Tuesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Emergency</td>
+      <td>Tuesday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Consultation</td>
+      <td>Tuesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Consultation</td>
+      <td>Tuesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Cardiac Care</td>
+      <td>Tuesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Cardiac Care</td>
+      <td>Tuesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Cardiac Care</td>
+      <td>Tuesday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>Consultation</td>
+      <td>Wednesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>Consultation</td>
+      <td>Wednesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>Consultation</td>
+      <td>Thursday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Consultation</td>
+      <td>Thursday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>Consultation</td>
+      <td>Friday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>Consultation</td>
+      <td>Friday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>Emergency</td>
+      <td>Saturday</td>
+      <td>2</td>
+      <td>12</td>
+      <td>5</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>Emergency</td>
+      <td>Saturday</td>
+      <td>12</td>
+      <td>20</td>
+      <td>7</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>Emergency</td>
+      <td>Saturday</td>
+      <td>20</td>
+      <td>2</td>
+      <td>12</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>Emergency</td>
+      <td>Sunday</td>
+      <td>2</td>
+      <td>12</td>
+      <td>5</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>Emergency</td>
+      <td>Sunday</td>
+      <td>12</td>
+      <td>20</td>
+      <td>7</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>Emergency</td>
+      <td>Sunday</td>
+      <td>20</td>
+      <td>2</td>
+      <td>8</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>Geriatrics</td>
+      <td>Sunday</td>
+      <td>8</td>
+      <td>10</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -15852,17 +16329,17 @@ Each sheet is read into a separate <em>pandas</em> DataFrame.</p>
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Step-3:-Prepare-the-data">Step 3: Prepare the data<a class="anchor-link" href="#Step-3:-Prepare-the-data">&#182;</a></h3><p>We need to precompute additional data for shifts. 
 For each shift, we need the start time and end time expressed in hours, counting from the beginning of the week: Monday 8am is converted to 8, Tuesday 8am is converted to 24+8 = 32, and so on.</p>
-<h4 id="Sub-step-%231">Sub-step #1<a class="anchor-link" href="#Sub-step-%231">&#182;</a></h4><p>We start by adding an extra column <code>dow</code> (day of week) which converts the string "day" into an integer in 0..6 (Monday is 0, Sunday is 6).</p>
+<h4 id="Sub-step-%231">Sub-step #1<a class="anchor-link" href="#Sub-step-%231">&#182;</a></h4><p>We start by adding an extra column <code>dow</code> (day of week) which converts the string &quot;day&quot; into an integer in 0..6 (Monday is 0, Sunday is 6).</p>
 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">days</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;monday&quot;</span><span class="p">,</span> <span class="s2">&quot;tuesday&quot;</span><span class="p">,</span> <span class="s2">&quot;wednesday&quot;</span><span class="p">,</span> <span class="s2">&quot;thursday&quot;</span><span class="p">,</span> <span class="s2">&quot;friday&quot;</span><span class="p">,</span> <span class="s2">&quot;saturday&quot;</span><span class="p">,</span> <span class="s2">&quot;sunday&quot;</span><span class="p">]</span>
@@ -15883,6 +16360,478 @@ For each shift, we need the start time and end time expressed in hours, counting
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>department</th>
+      <th>day</th>
+      <th>start_time</th>
+      <th>end_time</th>
+      <th>min_req</th>
+      <th>max_req</th>
+      <th>dow</th>
+    </tr>
+    <tr>
+      <th>shiftId</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Consultation</td>
+      <td>Monday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Consultation</td>
+      <td>Monday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Cardiac Care</td>
+      <td>Monday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Cardiac Care</td>
+      <td>Monday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Emergency</td>
+      <td>Tuesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Emergency</td>
+      <td>Tuesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Emergency</td>
+      <td>Tuesday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Consultation</td>
+      <td>Tuesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Consultation</td>
+      <td>Tuesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Cardiac Care</td>
+      <td>Tuesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Cardiac Care</td>
+      <td>Tuesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Cardiac Care</td>
+      <td>Tuesday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>Consultation</td>
+      <td>Wednesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>Consultation</td>
+      <td>Wednesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>Consultation</td>
+      <td>Thursday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Consultation</td>
+      <td>Thursday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>Consultation</td>
+      <td>Friday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>Consultation</td>
+      <td>Friday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>Emergency</td>
+      <td>Saturday</td>
+      <td>2</td>
+      <td>12</td>
+      <td>5</td>
+      <td>7</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>Emergency</td>
+      <td>Saturday</td>
+      <td>12</td>
+      <td>20</td>
+      <td>7</td>
+      <td>9</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>Emergency</td>
+      <td>Saturday</td>
+      <td>20</td>
+      <td>2</td>
+      <td>12</td>
+      <td>12</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>Emergency</td>
+      <td>Sunday</td>
+      <td>2</td>
+      <td>12</td>
+      <td>5</td>
+      <td>7</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>Emergency</td>
+      <td>Sunday</td>
+      <td>12</td>
+      <td>20</td>
+      <td>7</td>
+      <td>9</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>Emergency</td>
+      <td>Sunday</td>
+      <td>20</td>
+      <td>2</td>
+      <td>8</td>
+      <td>12</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>Geriatrics</td>
+      <td>Sunday</td>
+      <td>8</td>
+      <td>10</td>
+      <td>2</td>
+      <td>5</td>
+      <td>6</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -15900,7 +16849,7 @@ For each shift, we need the start time and end time expressed in hours, counting
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_shifts</span><span class="p">[</span><span class="s2">&quot;wstart&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_shifts</span><span class="o">.</span><span class="n">start_time</span> <span class="o">+</span> <span class="mi">24</span> <span class="o">*</span> <span class="n">df_shifts</span><span class="o">.</span><span class="n">dow</span>
@@ -15911,12 +16860,12 @@ For each shift, we need the start time and end time expressed in hours, counting
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_shifts</span>
@@ -15925,6 +16874,521 @@ For each shift, we need the start time and end time expressed in hours, counting
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>department</th>
+      <th>day</th>
+      <th>start_time</th>
+      <th>end_time</th>
+      <th>min_req</th>
+      <th>max_req</th>
+      <th>dow</th>
+      <th>wstart</th>
+    </tr>
+    <tr>
+      <th>shiftId</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+      <td>0</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>0</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>0</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>0</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Consultation</td>
+      <td>Monday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>0</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Consultation</td>
+      <td>Monday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>0</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Cardiac Care</td>
+      <td>Monday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>0</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Cardiac Care</td>
+      <td>Monday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>0</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Emergency</td>
+      <td>Tuesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>1</td>
+      <td>32</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Emergency</td>
+      <td>Tuesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>1</td>
+      <td>36</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Emergency</td>
+      <td>Tuesday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>1</td>
+      <td>42</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Consultation</td>
+      <td>Tuesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>1</td>
+      <td>32</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Consultation</td>
+      <td>Tuesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>1</td>
+      <td>36</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Cardiac Care</td>
+      <td>Tuesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>1</td>
+      <td>32</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Cardiac Care</td>
+      <td>Tuesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>1</td>
+      <td>36</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Cardiac Care</td>
+      <td>Tuesday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>1</td>
+      <td>42</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+      <td>2</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>2</td>
+      <td>56</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>2</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>2</td>
+      <td>66</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>Consultation</td>
+      <td>Wednesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>2</td>
+      <td>56</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>Consultation</td>
+      <td>Wednesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>2</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+      <td>3</td>
+      <td>74</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>3</td>
+      <td>80</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>3</td>
+      <td>84</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>3</td>
+      <td>90</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>Consultation</td>
+      <td>Thursday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>3</td>
+      <td>80</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Consultation</td>
+      <td>Thursday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>3</td>
+      <td>84</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+      <td>4</td>
+      <td>98</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>4</td>
+      <td>104</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>4</td>
+      <td>108</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>4</td>
+      <td>114</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>Consultation</td>
+      <td>Friday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>4</td>
+      <td>104</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>Consultation</td>
+      <td>Friday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>108</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>Emergency</td>
+      <td>Saturday</td>
+      <td>2</td>
+      <td>12</td>
+      <td>5</td>
+      <td>7</td>
+      <td>5</td>
+      <td>122</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>Emergency</td>
+      <td>Saturday</td>
+      <td>12</td>
+      <td>20</td>
+      <td>7</td>
+      <td>9</td>
+      <td>5</td>
+      <td>132</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>Emergency</td>
+      <td>Saturday</td>
+      <td>20</td>
+      <td>2</td>
+      <td>12</td>
+      <td>12</td>
+      <td>5</td>
+      <td>140</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>Emergency</td>
+      <td>Sunday</td>
+      <td>2</td>
+      <td>12</td>
+      <td>5</td>
+      <td>7</td>
+      <td>6</td>
+      <td>146</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>Emergency</td>
+      <td>Sunday</td>
+      <td>12</td>
+      <td>20</td>
+      <td>7</td>
+      <td>9</td>
+      <td>6</td>
+      <td>156</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>Emergency</td>
+      <td>Sunday</td>
+      <td>20</td>
+      <td>2</td>
+      <td>8</td>
+      <td>12</td>
+      <td>6</td>
+      <td>164</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>Geriatrics</td>
+      <td>Sunday</td>
+      <td>8</td>
+      <td>10</td>
+      <td>2</td>
+      <td>5</td>
+      <td>6</td>
+      <td>152</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -15947,7 +17411,7 @@ The general rule for computing absolute end time is:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># an auxiliary function to calculate absolute end time of a shift</span>
@@ -15982,7 +17446,7 @@ The general rule for computing absolute end time is:</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_shifts</span><span class="p">[</span><span class="s2">&quot;duration&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df_shifts</span><span class="o">.</span><span class="n">wend</span> <span class="o">-</span> <span class="n">df_shifts</span><span class="o">.</span><span class="n">wstart</span>
@@ -16007,12 +17471,12 @@ nurse-hours, this demand is stored in another new column <code>min_demand</code>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># also compute minimum demand in nurse-hours</span>
@@ -16027,6 +17491,650 @@ nurse-hours, this demand is stored in another new column <code>min_demand</code>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>department</th>
+      <th>day</th>
+      <th>start_time</th>
+      <th>end_time</th>
+      <th>min_req</th>
+      <th>max_req</th>
+      <th>dow</th>
+      <th>wstart</th>
+      <th>wend</th>
+      <th>duration</th>
+      <th>min_demand</th>
+    </tr>
+    <tr>
+      <th>shiftId</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+      <td>0</td>
+      <td>2</td>
+      <td>8</td>
+      <td>6</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>0</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>0</td>
+      <td>12</td>
+      <td>18</td>
+      <td>6</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Emergency</td>
+      <td>Monday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>0</td>
+      <td>18</td>
+      <td>26</td>
+      <td>8</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Consultation</td>
+      <td>Monday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>0</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>Consultation</td>
+      <td>Monday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>0</td>
+      <td>12</td>
+      <td>18</td>
+      <td>6</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Cardiac Care</td>
+      <td>Monday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>0</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Cardiac Care</td>
+      <td>Monday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>0</td>
+      <td>12</td>
+      <td>18</td>
+      <td>6</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Emergency</td>
+      <td>Tuesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>1</td>
+      <td>32</td>
+      <td>36</td>
+      <td>4</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Emergency</td>
+      <td>Tuesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>1</td>
+      <td>36</td>
+      <td>42</td>
+      <td>6</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>Emergency</td>
+      <td>Tuesday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>1</td>
+      <td>42</td>
+      <td>50</td>
+      <td>8</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>Consultation</td>
+      <td>Tuesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>1</td>
+      <td>32</td>
+      <td>36</td>
+      <td>4</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>Consultation</td>
+      <td>Tuesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>1</td>
+      <td>36</td>
+      <td>42</td>
+      <td>6</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>Cardiac Care</td>
+      <td>Tuesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>1</td>
+      <td>32</td>
+      <td>36</td>
+      <td>4</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>Cardiac Care</td>
+      <td>Tuesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>1</td>
+      <td>36</td>
+      <td>42</td>
+      <td>6</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>Cardiac Care</td>
+      <td>Tuesday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>1</td>
+      <td>42</td>
+      <td>50</td>
+      <td>8</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+      <td>2</td>
+      <td>50</td>
+      <td>56</td>
+      <td>6</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>2</td>
+      <td>56</td>
+      <td>60</td>
+      <td>4</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>2</td>
+      <td>60</td>
+      <td>66</td>
+      <td>6</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>Emergency</td>
+      <td>Wednesday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>2</td>
+      <td>66</td>
+      <td>74</td>
+      <td>8</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>Consultation</td>
+      <td>Wednesday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>2</td>
+      <td>56</td>
+      <td>60</td>
+      <td>4</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>21</th>
+      <td>Consultation</td>
+      <td>Wednesday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>2</td>
+      <td>60</td>
+      <td>66</td>
+      <td>6</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <th>22</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+      <td>3</td>
+      <td>74</td>
+      <td>80</td>
+      <td>6</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>3</td>
+      <td>80</td>
+      <td>84</td>
+      <td>4</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>3</td>
+      <td>84</td>
+      <td>90</td>
+      <td>6</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>25</th>
+      <td>Emergency</td>
+      <td>Thursday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>3</td>
+      <td>90</td>
+      <td>98</td>
+      <td>8</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <th>26</th>
+      <td>Consultation</td>
+      <td>Thursday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>3</td>
+      <td>80</td>
+      <td>84</td>
+      <td>4</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>Consultation</td>
+      <td>Thursday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>3</td>
+      <td>84</td>
+      <td>90</td>
+      <td>6</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>2</td>
+      <td>8</td>
+      <td>3</td>
+      <td>5</td>
+      <td>4</td>
+      <td>98</td>
+      <td>104</td>
+      <td>6</td>
+      <td>18</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>7</td>
+      <td>4</td>
+      <td>104</td>
+      <td>108</td>
+      <td>4</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>2</td>
+      <td>5</td>
+      <td>4</td>
+      <td>108</td>
+      <td>114</td>
+      <td>6</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>31</th>
+      <td>Emergency</td>
+      <td>Friday</td>
+      <td>18</td>
+      <td>2</td>
+      <td>3</td>
+      <td>7</td>
+      <td>4</td>
+      <td>114</td>
+      <td>122</td>
+      <td>8</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>Consultation</td>
+      <td>Friday</td>
+      <td>8</td>
+      <td>12</td>
+      <td>10</td>
+      <td>13</td>
+      <td>4</td>
+      <td>104</td>
+      <td>108</td>
+      <td>4</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <th>33</th>
+      <td>Consultation</td>
+      <td>Friday</td>
+      <td>12</td>
+      <td>18</td>
+      <td>8</td>
+      <td>12</td>
+      <td>4</td>
+      <td>108</td>
+      <td>114</td>
+      <td>6</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <th>34</th>
+      <td>Emergency</td>
+      <td>Saturday</td>
+      <td>2</td>
+      <td>12</td>
+      <td>5</td>
+      <td>7</td>
+      <td>5</td>
+      <td>122</td>
+      <td>132</td>
+      <td>10</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>35</th>
+      <td>Emergency</td>
+      <td>Saturday</td>
+      <td>12</td>
+      <td>20</td>
+      <td>7</td>
+      <td>9</td>
+      <td>5</td>
+      <td>132</td>
+      <td>140</td>
+      <td>8</td>
+      <td>56</td>
+    </tr>
+    <tr>
+      <th>36</th>
+      <td>Emergency</td>
+      <td>Saturday</td>
+      <td>20</td>
+      <td>2</td>
+      <td>12</td>
+      <td>12</td>
+      <td>5</td>
+      <td>140</td>
+      <td>146</td>
+      <td>6</td>
+      <td>72</td>
+    </tr>
+    <tr>
+      <th>37</th>
+      <td>Emergency</td>
+      <td>Sunday</td>
+      <td>2</td>
+      <td>12</td>
+      <td>5</td>
+      <td>7</td>
+      <td>6</td>
+      <td>146</td>
+      <td>156</td>
+      <td>10</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>38</th>
+      <td>Emergency</td>
+      <td>Sunday</td>
+      <td>12</td>
+      <td>20</td>
+      <td>7</td>
+      <td>9</td>
+      <td>6</td>
+      <td>156</td>
+      <td>164</td>
+      <td>8</td>
+      <td>56</td>
+    </tr>
+    <tr>
+      <th>39</th>
+      <td>Emergency</td>
+      <td>Sunday</td>
+      <td>20</td>
+      <td>2</td>
+      <td>8</td>
+      <td>12</td>
+      <td>6</td>
+      <td>164</td>
+      <td>170</td>
+      <td>6</td>
+      <td>48</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>Geriatrics</td>
+      <td>Sunday</td>
+      <td>8</td>
+      <td>10</td>
+      <td>2</td>
+      <td>5</td>
+      <td>6</td>
+      <td>152</td>
+      <td>154</td>
+      <td>2</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16038,12 +18146,12 @@ nurse-hours, this demand is stored in another new column <code>min_demand</code>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.environment</span> <span class="kn">import</span> <span class="n">Environment</span>
@@ -16054,6 +18162,31 @@ nurse-hours, this demand is stored in another new column <code>min_demand</code>
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>* system is: Linux 64bit
+* Python version 3.10.13, located at: /opt/conda/envs/Python-RT23.1-Premium/bin/python
+* docplex is present, version is 2.25.236
+* CPLEX library is present, version is 22.1.1.0, located at: /opt/conda/envs/Python-RT23.1-Premium/lib/python3.10/site-packages
+* pandas is present, version is 1.5.3
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16074,7 +18207,7 @@ nurse-hours, this demand is stored in another new column <code>min_demand</code>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="kn">import</span> <span class="n">Model</span>
@@ -16104,7 +18237,7 @@ nurse-hours, this demand is stored in another new column <code>min_demand</code>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># first global collections to iterate upon</span>
@@ -16135,12 +18268,12 @@ To check whether two shifts overlap in time, we start by ordering all shifts wit
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Organize decision variables in a DataFrame</span>
@@ -16162,6 +18295,217 @@ To check whether two shifts overlap in time, we start by ordering all shifts wit
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[15]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>all_shifts</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>31</th>
+      <th>32</th>
+      <th>33</th>
+      <th>34</th>
+      <th>35</th>
+      <th>36</th>
+      <th>37</th>
+      <th>38</th>
+      <th>39</th>
+      <th>40</th>
+    </tr>
+    <tr>
+      <th>all_nurses</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Anne</th>
+      <td>assign_Anne_0</td>
+      <td>assign_Anne_1</td>
+      <td>assign_Anne_2</td>
+      <td>assign_Anne_3</td>
+      <td>assign_Anne_4</td>
+      <td>assign_Anne_5</td>
+      <td>assign_Anne_6</td>
+      <td>assign_Anne_7</td>
+      <td>assign_Anne_8</td>
+      <td>assign_Anne_9</td>
+      <td>...</td>
+      <td>assign_Anne_31</td>
+      <td>assign_Anne_32</td>
+      <td>assign_Anne_33</td>
+      <td>assign_Anne_34</td>
+      <td>assign_Anne_35</td>
+      <td>assign_Anne_36</td>
+      <td>assign_Anne_37</td>
+      <td>assign_Anne_38</td>
+      <td>assign_Anne_39</td>
+      <td>assign_Anne_40</td>
+    </tr>
+    <tr>
+      <th>Bethanie</th>
+      <td>assign_Bethanie_0</td>
+      <td>assign_Bethanie_1</td>
+      <td>assign_Bethanie_2</td>
+      <td>assign_Bethanie_3</td>
+      <td>assign_Bethanie_4</td>
+      <td>assign_Bethanie_5</td>
+      <td>assign_Bethanie_6</td>
+      <td>assign_Bethanie_7</td>
+      <td>assign_Bethanie_8</td>
+      <td>assign_Bethanie_9</td>
+      <td>...</td>
+      <td>assign_Bethanie_31</td>
+      <td>assign_Bethanie_32</td>
+      <td>assign_Bethanie_33</td>
+      <td>assign_Bethanie_34</td>
+      <td>assign_Bethanie_35</td>
+      <td>assign_Bethanie_36</td>
+      <td>assign_Bethanie_37</td>
+      <td>assign_Bethanie_38</td>
+      <td>assign_Bethanie_39</td>
+      <td>assign_Bethanie_40</td>
+    </tr>
+    <tr>
+      <th>Betsy</th>
+      <td>assign_Betsy_0</td>
+      <td>assign_Betsy_1</td>
+      <td>assign_Betsy_2</td>
+      <td>assign_Betsy_3</td>
+      <td>assign_Betsy_4</td>
+      <td>assign_Betsy_5</td>
+      <td>assign_Betsy_6</td>
+      <td>assign_Betsy_7</td>
+      <td>assign_Betsy_8</td>
+      <td>assign_Betsy_9</td>
+      <td>...</td>
+      <td>assign_Betsy_31</td>
+      <td>assign_Betsy_32</td>
+      <td>assign_Betsy_33</td>
+      <td>assign_Betsy_34</td>
+      <td>assign_Betsy_35</td>
+      <td>assign_Betsy_36</td>
+      <td>assign_Betsy_37</td>
+      <td>assign_Betsy_38</td>
+      <td>assign_Betsy_39</td>
+      <td>assign_Betsy_40</td>
+    </tr>
+    <tr>
+      <th>Cathy</th>
+      <td>assign_Cathy_0</td>
+      <td>assign_Cathy_1</td>
+      <td>assign_Cathy_2</td>
+      <td>assign_Cathy_3</td>
+      <td>assign_Cathy_4</td>
+      <td>assign_Cathy_5</td>
+      <td>assign_Cathy_6</td>
+      <td>assign_Cathy_7</td>
+      <td>assign_Cathy_8</td>
+      <td>assign_Cathy_9</td>
+      <td>...</td>
+      <td>assign_Cathy_31</td>
+      <td>assign_Cathy_32</td>
+      <td>assign_Cathy_33</td>
+      <td>assign_Cathy_34</td>
+      <td>assign_Cathy_35</td>
+      <td>assign_Cathy_36</td>
+      <td>assign_Cathy_37</td>
+      <td>assign_Cathy_38</td>
+      <td>assign_Cathy_39</td>
+      <td>assign_Cathy_40</td>
+    </tr>
+    <tr>
+      <th>Cecilia</th>
+      <td>assign_Cecilia_0</td>
+      <td>assign_Cecilia_1</td>
+      <td>assign_Cecilia_2</td>
+      <td>assign_Cecilia_3</td>
+      <td>assign_Cecilia_4</td>
+      <td>assign_Cecilia_5</td>
+      <td>assign_Cecilia_6</td>
+      <td>assign_Cecilia_7</td>
+      <td>assign_Cecilia_8</td>
+      <td>assign_Cecilia_9</td>
+      <td>...</td>
+      <td>assign_Cecilia_31</td>
+      <td>assign_Cecilia_32</td>
+      <td>assign_Cecilia_33</td>
+      <td>assign_Cecilia_34</td>
+      <td>assign_Cecilia_35</td>
+      <td>assign_Cecilia_36</td>
+      <td>assign_Cecilia_37</td>
+      <td>assign_Cecilia_38</td>
+      <td>assign_Cecilia_39</td>
+      <td>assign_Cecilia_40</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 41 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16169,21 +18513,21 @@ To check whether two shifts overlap in time, we start by ordering all shifts wit
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>We create a DataFrame representing a list of shifts sorted by <em>"wstart"</em> and <em>"duration"</em>.
+<p>We create a DataFrame representing a list of shifts sorted by <em>&quot;wstart&quot;</em> and <em>&quot;duration&quot;</em>.
 This sorted list will be used to easily detect overlapping shifts.</p>
 <p>Note that indices are reset after sorting so that the DataFrame can be indexed with respect to
 the index in the sorted list and not the original unsorted list. This is the purpose of the <em>reset_index()</em>
-operation which also adds a new column named <em>"shiftId"</em> with the original index.</p>
+operation which also adds a new column named <em>&quot;shiftId&quot;</em> with the original index.</p>
 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create a Data Frame representing a list of shifts sorted by wstart and duration.</span>
@@ -16199,6 +18543,84 @@ operation which also adds a new column named <em>"shiftId"</em> with the origina
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>shiftId</th>
+      <th>wstart</th>
+      <th>wend</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>2</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>8</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4</td>
+      <td>8</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>6</td>
+      <td>8</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2</td>
+      <td>12</td>
+      <td>18</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16211,12 +18633,12 @@ operation which also adds a new column named <em>"shiftId"</em> with the origina
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">number_of_incompatible_shift_constraints</span> <span class="o">=</span> <span class="mi">0</span>
@@ -16241,6 +18663,27 @@ operation which also adds a new column named <em>"shiftId"</em> with the origina
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>#incompatible shift constraints: 640
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16249,17 +18692,17 @@ operation which also adds a new column named <em>"shiftId"</em> with the origina
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h5 id="Vacations">Vacations<a class="anchor-link" href="#Vacations">&#182;</a></h5><p>When the nurse is on vacation, he cannot be assigned to any shift starting that day.</p>
-<p>We use the <em>pandas</em> <em>merge</em> operation to create a join between the <em>"df_vacations"</em>, <em>"df_shifts"</em>, and <em>"df_assigned"</em> DataFrames. Each row of the resulting DataFrame contains the assignment decision variable corresponding to the matching (nurse, shift) pair.</p>
+<p>We use the <em>pandas</em> <em>merge</em> operation to create a join between the <em>&quot;df_vacations&quot;</em>, <em>&quot;df_shifts&quot;</em>, and <em>&quot;df_assigned&quot;</em> DataFrames. Each row of the resulting DataFrame contains the assignment decision variable corresponding to the matching (nurse, shift) pair.</p>
 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Add &#39;day of week&#39; column to vacations Data Frame</span>
@@ -16282,12 +18725,114 @@ operation which also adds a new column named <em>"shiftId"</em> with the origina
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[18]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>nurse</th>
+      <th>day</th>
+      <th>dow</th>
+      <th>shiftId</th>
+      <th>all_nurses</th>
+      <th>all_shifts</th>
+      <th>assigned</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Anne</td>
+      <td>Friday</td>
+      <td>4</td>
+      <td>28</td>
+      <td>Anne</td>
+      <td>28</td>
+      <td>assign_Anne_28</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Anne</td>
+      <td>Friday</td>
+      <td>4</td>
+      <td>29</td>
+      <td>Anne</td>
+      <td>29</td>
+      <td>assign_Anne_29</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Anne</td>
+      <td>Friday</td>
+      <td>4</td>
+      <td>30</td>
+      <td>Anne</td>
+      <td>30</td>
+      <td>assign_Anne_30</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Anne</td>
+      <td>Friday</td>
+      <td>4</td>
+      <td>31</td>
+      <td>Anne</td>
+      <td>31</td>
+      <td>assign_Anne_31</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Anne</td>
+      <td>Friday</td>
+      <td>4</td>
+      <td>32</td>
+      <td>Anne</td>
+      <td>32</td>
+      <td>assign_Anne_32</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[19]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">forbidden_assignment</span> <span class="ow">in</span> <span class="n">df_vacation_forbidden_assignments</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
@@ -16299,6 +18844,27 @@ operation which also adds a new column named <em>"shiftId"</em> with the origina
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre># vacation forbids: 342 assignments
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16315,12 +18881,12 @@ Either both nurses work the shift, or both do not.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Join &#39;df_assignment&#39; Data Frame twice, based on associations to get corresponding decision variables pairs for all shifts</span>
@@ -16339,6 +18905,108 @@ Either both nurses work the shift, or both do not.</p>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[20]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>nurse1</th>
+      <th>nurse2</th>
+      <th>all_nurses_1</th>
+      <th>all_shifts</th>
+      <th>assigned_1</th>
+      <th>all_nurses_2</th>
+      <th>assigned_2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Isabelle</td>
+      <td>Dee</td>
+      <td>Isabelle</td>
+      <td>0</td>
+      <td>assign_Isabelle_0</td>
+      <td>Dee</td>
+      <td>assign_Dee_0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Isabelle</td>
+      <td>Dee</td>
+      <td>Isabelle</td>
+      <td>1</td>
+      <td>assign_Isabelle_1</td>
+      <td>Dee</td>
+      <td>assign_Dee_1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Isabelle</td>
+      <td>Dee</td>
+      <td>Isabelle</td>
+      <td>2</td>
+      <td>assign_Isabelle_2</td>
+      <td>Dee</td>
+      <td>assign_Dee_2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Isabelle</td>
+      <td>Dee</td>
+      <td>Isabelle</td>
+      <td>3</td>
+      <td>assign_Isabelle_3</td>
+      <td>Dee</td>
+      <td>assign_Dee_3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Isabelle</td>
+      <td>Dee</td>
+      <td>Isabelle</td>
+      <td>4</td>
+      <td>assign_Isabelle_4</td>
+      <td>Dee</td>
+      <td>assign_Dee_4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16346,7 +19014,7 @@ Either both nurses work the shift, or both do not.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>The associations constraint can now easily be formulated by iterating on the rows of the <em>"df_preferred_assign"</em> DataFrame.</p>
+<p>The associations constraint can now easily be formulated by iterating on the rows of the <em>&quot;df_preferred_assign&quot;</em> DataFrame.</p>
 
 </div>
 </div>
@@ -16356,7 +19024,7 @@ Either both nurses work the shift, or both do not.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">preferred_assign</span> <span class="ow">in</span> <span class="n">df_preferred_assign</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
@@ -16382,12 +19050,12 @@ In other terms, for each shift, both nurses of an incompatible pair cannot be as
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[22]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Join assignment Data Frame twice, based on incompatibilities Data Frame to get corresponding decision variables pairs</span>
@@ -16405,6 +19073,108 @@ In other terms, for each shift, both nurses of an incompatible pair cannot be as
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[22]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>nurse1</th>
+      <th>nurse2</th>
+      <th>all_nurses_1</th>
+      <th>all_shifts</th>
+      <th>assigned_1</th>
+      <th>all_nurses_2</th>
+      <th>assigned_2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Patricia</td>
+      <td>Patrick</td>
+      <td>Patricia</td>
+      <td>0</td>
+      <td>assign_Patricia_0</td>
+      <td>Patrick</td>
+      <td>assign_Patrick_0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Patricia</td>
+      <td>Patrick</td>
+      <td>Patricia</td>
+      <td>1</td>
+      <td>assign_Patricia_1</td>
+      <td>Patrick</td>
+      <td>assign_Patrick_1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Patricia</td>
+      <td>Patrick</td>
+      <td>Patricia</td>
+      <td>2</td>
+      <td>assign_Patricia_2</td>
+      <td>Patrick</td>
+      <td>assign_Patrick_2</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Patricia</td>
+      <td>Patrick</td>
+      <td>Patricia</td>
+      <td>3</td>
+      <td>assign_Patricia_3</td>
+      <td>Patrick</td>
+      <td>assign_Patrick_3</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>Patricia</td>
+      <td>Patrick</td>
+      <td>Patricia</td>
+      <td>4</td>
+      <td>assign_Patricia_4</td>
+      <td>Patrick</td>
+      <td>assign_Patrick_4</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16412,7 +19182,7 @@ In other terms, for each shift, both nurses of an incompatible pair cannot be as
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>The incompatibilities constraint can now easily be formulated, by iterating on the rows of the <em>"df_incompatible_assign"</em> DataFrame.</p>
+<p>The incompatibilities constraint can now easily be formulated, by iterating on the rows of the <em>&quot;df_incompatible_assign&quot;</em> DataFrame.</p>
 
 </div>
 </div>
@@ -16422,7 +19192,7 @@ In other terms, for each shift, both nurses of an incompatible pair cannot be as
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[23]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">incompatible_assign</span> <span class="ow">in</span> <span class="n">df_incompatible_assign</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
@@ -16450,12 +19220,12 @@ These variables are not true decision variables; they are used to express work c
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[24]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># auxiliary function to create worktime variable from a row</span>
@@ -16474,6 +19244,286 @@ These variables are not true decision variables; they are used to express work c
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[24]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>seniority</th>
+      <th>qualification</th>
+      <th>pay_rate</th>
+      <th>worktime</th>
+    </tr>
+    <tr>
+      <th>name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Anne</th>
+      <td>11</td>
+      <td>1</td>
+      <td>25</td>
+      <td>worktime_Anne</td>
+    </tr>
+    <tr>
+      <th>Bethanie</th>
+      <td>4</td>
+      <td>5</td>
+      <td>28</td>
+      <td>worktime_Bethanie</td>
+    </tr>
+    <tr>
+      <th>Betsy</th>
+      <td>2</td>
+      <td>2</td>
+      <td>17</td>
+      <td>worktime_Betsy</td>
+    </tr>
+    <tr>
+      <th>Cathy</th>
+      <td>2</td>
+      <td>2</td>
+      <td>17</td>
+      <td>worktime_Cathy</td>
+    </tr>
+    <tr>
+      <th>Cecilia</th>
+      <td>9</td>
+      <td>5</td>
+      <td>38</td>
+      <td>worktime_Cecilia</td>
+    </tr>
+    <tr>
+      <th>Chris</th>
+      <td>11</td>
+      <td>4</td>
+      <td>38</td>
+      <td>worktime_Chris</td>
+    </tr>
+    <tr>
+      <th>Cindy</th>
+      <td>5</td>
+      <td>2</td>
+      <td>21</td>
+      <td>worktime_Cindy</td>
+    </tr>
+    <tr>
+      <th>David</th>
+      <td>1</td>
+      <td>2</td>
+      <td>15</td>
+      <td>worktime_David</td>
+    </tr>
+    <tr>
+      <th>Debbie</th>
+      <td>7</td>
+      <td>2</td>
+      <td>24</td>
+      <td>worktime_Debbie</td>
+    </tr>
+    <tr>
+      <th>Dee</th>
+      <td>3</td>
+      <td>3</td>
+      <td>21</td>
+      <td>worktime_Dee</td>
+    </tr>
+    <tr>
+      <th>Gloria</th>
+      <td>8</td>
+      <td>2</td>
+      <td>25</td>
+      <td>worktime_Gloria</td>
+    </tr>
+    <tr>
+      <th>Isabelle</th>
+      <td>3</td>
+      <td>1</td>
+      <td>16</td>
+      <td>worktime_Isabelle</td>
+    </tr>
+    <tr>
+      <th>Jane</th>
+      <td>3</td>
+      <td>4</td>
+      <td>23</td>
+      <td>worktime_Jane</td>
+    </tr>
+    <tr>
+      <th>Janelle</th>
+      <td>4</td>
+      <td>3</td>
+      <td>22</td>
+      <td>worktime_Janelle</td>
+    </tr>
+    <tr>
+      <th>Janice</th>
+      <td>2</td>
+      <td>2</td>
+      <td>17</td>
+      <td>worktime_Janice</td>
+    </tr>
+    <tr>
+      <th>Jemma</th>
+      <td>2</td>
+      <td>4</td>
+      <td>22</td>
+      <td>worktime_Jemma</td>
+    </tr>
+    <tr>
+      <th>Joan</th>
+      <td>5</td>
+      <td>3</td>
+      <td>24</td>
+      <td>worktime_Joan</td>
+    </tr>
+    <tr>
+      <th>Joyce</th>
+      <td>8</td>
+      <td>3</td>
+      <td>29</td>
+      <td>worktime_Joyce</td>
+    </tr>
+    <tr>
+      <th>Jude</th>
+      <td>4</td>
+      <td>3</td>
+      <td>22</td>
+      <td>worktime_Jude</td>
+    </tr>
+    <tr>
+      <th>Julie</th>
+      <td>6</td>
+      <td>2</td>
+      <td>22</td>
+      <td>worktime_Julie</td>
+    </tr>
+    <tr>
+      <th>Juliet</th>
+      <td>7</td>
+      <td>4</td>
+      <td>31</td>
+      <td>worktime_Juliet</td>
+    </tr>
+    <tr>
+      <th>Kate</th>
+      <td>5</td>
+      <td>3</td>
+      <td>24</td>
+      <td>worktime_Kate</td>
+    </tr>
+    <tr>
+      <th>Nancy</th>
+      <td>8</td>
+      <td>4</td>
+      <td>32</td>
+      <td>worktime_Nancy</td>
+    </tr>
+    <tr>
+      <th>Nathalie</th>
+      <td>9</td>
+      <td>5</td>
+      <td>38</td>
+      <td>worktime_Nathalie</td>
+    </tr>
+    <tr>
+      <th>Nicole</th>
+      <td>0</td>
+      <td>2</td>
+      <td>14</td>
+      <td>worktime_Nicole</td>
+    </tr>
+    <tr>
+      <th>Patricia</th>
+      <td>1</td>
+      <td>1</td>
+      <td>13</td>
+      <td>worktime_Patricia</td>
+    </tr>
+    <tr>
+      <th>Patrick</th>
+      <td>6</td>
+      <td>1</td>
+      <td>19</td>
+      <td>worktime_Patrick</td>
+    </tr>
+    <tr>
+      <th>Roberta</th>
+      <td>3</td>
+      <td>5</td>
+      <td>26</td>
+      <td>worktime_Roberta</td>
+    </tr>
+    <tr>
+      <th>Suzanne</th>
+      <td>5</td>
+      <td>1</td>
+      <td>18</td>
+      <td>worktime_Suzanne</td>
+    </tr>
+    <tr>
+      <th>Vickie</th>
+      <td>7</td>
+      <td>1</td>
+      <td>20</td>
+      <td>worktime_Vickie</td>
+    </tr>
+    <tr>
+      <th>Wendie</th>
+      <td>5</td>
+      <td>2</td>
+      <td>21</td>
+      <td>worktime_Wendie</td>
+    </tr>
+    <tr>
+      <th>Zoe</th>
+      <td>8</td>
+      <td>3</td>
+      <td>29</td>
+      <td>worktime_Zoe</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16487,12 +19537,12 @@ These variables are not true decision variables; they are used to express work c
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[25]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Use pandas&#39; groupby operation to enforce constraint calculating worktime for each nurse as the sum of all assigned</span>
@@ -16509,6 +19559,34 @@ These variables are not true decision variables; they are used to express work c
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Model: nurses
+ - number of variables: 1344
+   - binary=1312, integer=0, continuous=32
+ - number of constraints: 1547
+   - linear=1547
+ - parameters: defaults
+ - objective: none
+ - problem type is: MILP
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16522,12 +19600,12 @@ Again we use the <code>apply</code> method, this time with an anonymous lambda f
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[26]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># we use pandas&#39; apply() method to set an upper bound on all worktime variables.</span>
@@ -16542,6 +19620,62 @@ Again we use the <code>apply</code> method, this time with an anonymous lambda f
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[26]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>name
+Anne            worktime_Anne &lt;= 40
+Bethanie    worktime_Bethanie &lt;= 40
+Betsy          worktime_Betsy &lt;= 40
+Cathy          worktime_Cathy &lt;= 40
+Cecilia      worktime_Cecilia &lt;= 40
+Chris          worktime_Chris &lt;= 40
+Cindy          worktime_Cindy &lt;= 40
+David          worktime_David &lt;= 40
+Debbie        worktime_Debbie &lt;= 40
+Dee              worktime_Dee &lt;= 40
+Gloria        worktime_Gloria &lt;= 40
+Isabelle    worktime_Isabelle &lt;= 40
+Jane            worktime_Jane &lt;= 40
+Janelle      worktime_Janelle &lt;= 40
+Janice        worktime_Janice &lt;= 40
+Jemma          worktime_Jemma &lt;= 40
+Joan            worktime_Joan &lt;= 40
+Joyce          worktime_Joyce &lt;= 40
+Jude            worktime_Jude &lt;= 40
+Julie          worktime_Julie &lt;= 40
+Juliet        worktime_Juliet &lt;= 40
+Kate            worktime_Kate &lt;= 40
+Nancy          worktime_Nancy &lt;= 40
+Nathalie    worktime_Nathalie &lt;= 40
+Nicole        worktime_Nicole &lt;= 40
+Patricia    worktime_Patricia &lt;= 40
+Patrick      worktime_Patrick &lt;= 40
+Roberta      worktime_Roberta &lt;= 40
+Suzanne      worktime_Suzanne &lt;= 40
+Vickie        worktime_Vickie &lt;= 40
+Wendie        worktime_Wendie &lt;= 40
+Zoe              worktime_Zoe &lt;= 40
+Name: worktime, dtype: object</pre>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16564,7 +19698,7 @@ must be greater than the minimum requirement.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[27]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Use pandas&#39; groupby operation to enforce minimum requirement constraint for each shift</span>
@@ -16591,12 +19725,12 @@ must be greater than the minimum requirement.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[28]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># again leverage pandas to create a series of expressions: costs of each nurse</span>
@@ -16613,6 +19747,29 @@ must be greater than the minimum requirement.</p>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[28]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>DecisionKPI(name=Total salary cost,expr=25worktime_Anne+28worktime_Bethanie+17worktime_Betsy+17worktime_..)</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16626,12 +19783,12 @@ using the <code>Model.minimize()</code> method.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[29]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">mdl</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">total_salary_cost</span><span class="p">)</span>
@@ -16641,6 +19798,34 @@ using the <code>Model.minimize()</code> method.</p>
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Model: nurses
+ - number of variables: 1344
+   - binary=1312, integer=0, continuous=32
+ - number of constraints: 1588
+   - linear=1588
+ - parameters: defaults
+ - objective: minimize
+ - problem type is: MILP
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16655,12 +19840,12 @@ using the <code>Model.minimize()</code> method.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[30]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Set Cplex mipgap to 1e-5 to enforce precision to be of the order of a unit (objective value magnitude is ~1e+5).</span>
@@ -16676,6 +19861,89 @@ using the <code>Model.minimize()</code> method.</p>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>WARNING: Number of workers has been reduced to 2 to comply with platform limitations.
+Version identifier: 22.1.1.0 | 2022-11-28 | 9160aff4d
+CPXPARAM_Read_DataCheck                          1
+CPXPARAM_Threads                                 2
+CPXPARAM_MIP_Tolerances_MIPGap                   1.0000000000000001e-05
+Tried aggregator 2 times.
+MIP Presolve eliminated 997 rows and 379 columns.
+MIP Presolve modified 90 coefficients.
+Aggregator did 41 substitutions.
+Reduced MIP has 550 rows, 922 columns, and 2862 nonzeros.
+Reduced MIP has 892 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.02 sec. (3.66 ticks)
+Probing time = 0.00 sec. (0.50 ticks)
+Tried aggregator 1 time.
+Detecting symmetries...
+Reduced MIP has 550 rows, 922 columns, and 2862 nonzeros.
+Reduced MIP has 892 binaries, 30 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.01 sec. (2.01 ticks)
+Probing time = 0.00 sec. (0.50 ticks)
+Clique table members: 479.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 2 threads.
+Root relaxation solution time = 0.02 sec. (4.73 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+      0     0    28824.0000    45                  28824.0000      499         
+      0     0    28824.0000    42                    Cuts: 35      600         
+      0     0    28824.0000    67                    Cuts: 91      730         
+*     0+    0                        29290.0000    28824.0000             1.59%
+      0     0    28824.0000    26    29290.0000      Cuts: 19      810    1.59%
+      0     0    28824.0000    40    29290.0000      Cuts: 44      890    1.59%
+*     0+    0                        29104.0000    28824.0000             0.96%
+*     0+    0                        29020.0000    28824.0000             0.68%
+      0     2    28824.0000     9    29020.0000    28824.0000      890    0.68%
+Elapsed time = 0.36 sec. (140.76 ticks, tree = 0.02 MB, solutions = 3)
+*    10+   10                        28988.0000    28824.0000             0.57%
+*    20+   20                        28920.0000    28824.0000             0.33%
+*    22+    1                        28842.0000    28824.0000             0.06%
+*   634+  554                        28838.0000    28824.0000             0.05%
+    831   713    28824.0000     4    28838.0000    28824.0000    14546    0.05%
+*   841+  682                        28824.0000    28824.0000             0.00%
+
+GUB cover cuts applied:  17
+Cover cuts applied:  17
+Flow cuts applied:  2
+Mixed integer rounding cuts applied:  14
+Zero-half cuts applied:  13
+Lift and project cuts applied:  1
+Gomory fractional cuts applied:  4
+
+Root node processing (before b&amp;c):
+  Real time             =    0.37 sec. (140.55 ticks)
+Parallel b&amp;c, 2 threads:
+  Real time             =    0.39 sec. (276.47 ticks)
+  Sync time (average)   =    0.04 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&amp;cut) =    0.76 sec. (417.02 ticks)
+* model nurses solved with objective = 28824.000
+*  KPI: Total salary cost = 28824.000
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16683,18 +19951,18 @@ using the <code>Model.minimize()</code> method.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Step-5:-Investigate-the-solution-and-then-run-an-example-analysis">Step 5: Investigate the solution and then run an example analysis<a class="anchor-link" href="#Step-5:-Investigate-the-solution-and-then-run-an-example-analysis">&#182;</a></h3><p>We take advantage of <em>pandas</em> to analyze the results. First we store the solution values of the assignment variables into a new <em>pandas</em> Series.</p>
+<h3 id="Step-5:-Investigate-the-solution-and-run-an-example-analysis">Step 5: Investigate the solution and run an example analysis<a class="anchor-link" href="#Step-5:-Investigate-the-solution-and-run-an-example-analysis">&#182;</a></h3><p>We take advantage of <em>pandas</em> to analyze the results. First we store the solution values of the assignment variables into a new <em>pandas</em> Series.</p>
 <p>Calling <code>solution_value</code> on a DOcplex variable returns its value in the solution (provided the model has been successfully solved).</p>
 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[31]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create a pandas Series containing actual shift assignment decision variables value</span>
@@ -16713,6 +19981,217 @@ using the <code>Model.minimize()</code> method.</p>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[31]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>all_shifts</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>31</th>
+      <th>32</th>
+      <th>33</th>
+      <th>34</th>
+      <th>35</th>
+      <th>36</th>
+      <th>37</th>
+      <th>38</th>
+      <th>39</th>
+      <th>40</th>
+    </tr>
+    <tr>
+      <th>all_nurses</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Anne</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Bethanie</th>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Betsy</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Cathy</th>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>Cecilia</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 41 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16726,12 +20205,12 @@ using the <code>Model.minimize()</code> method.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[32]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">s_demand</span>  <span class="o">=</span> <span class="n">df_shifts</span><span class="o">.</span><span class="n">min_req</span> <span class="o">*</span> <span class="n">df_shifts</span><span class="o">.</span><span class="n">duration</span>
@@ -16743,6 +20222,27 @@ using the <code>Model.minimize()</code> method.</p>
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>* theoretical average work time is 39 h
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16757,12 +20257,12 @@ using the <code>Model.minimize()</code> method.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[33]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># a pandas series of worktimes solution values</span>
@@ -16784,6 +20284,27 @@ using the <code>Model.minimize()</code> method.</p>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>* the sum of absolute deviations from mean is 58.0
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16797,12 +20318,12 @@ Note that, as all time data are integers, work times in the solution can take on
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[34]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -16818,6 +20339,44 @@ Note that, as all time data are integers, work times in the solution can take on
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[34]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>Text(0.5, 0, &#39;worktime&#39;)</pre>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output ">
+<img src="data:image/png;base64,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zz7TkiVLVFBQIEk6f/68Ll++HLDiAAAAKuPXysypU6c0YMAAnT59Wh6PR/3791dYWJjeeustXb16Ve+9916g6wQAACiTXyszU6dOVbdu3XTx4kU1bNjQ2z506FBt3rw5YMUBAABUxu93M33++edq0KCBT3tcXJzOnTsXkMIAAACqwq+VmeLiYhUVFZVqP3v2rMLCwu64KAAAgKryK8z0799f77zzjvfY4XDo8uXLev311/mKAwAAcFf5FWb+9V//VZmZmerYsaOuXr2qkSNHqm3btjp37pzefPPNKvezfft2PfXUU4qJiZHD4dAnn3zic//o0aPlcDh8bg899JA/JQMAgFrKrz0zMTExysrK0gcffKCvv/5axcXFGjdunJ599lmfDcGVKSwsVJcuXTRmzBj97Gc/K/OcAQMG+Hyuze37dAAAwN82v8KMJDVs2FBjx47V2LFj/X7ygQMHauDAgRWe43Q6FRUV5fdzAACA2s2vMLNixYoK7x81apRfxZRl27ZtioiIUNOmTZWUlKTf/OY3ioiIKPd8j8cjj8fjPXa73QGrBQAAhB6/wszUqVN9jq9fv64ffvhBDRo0UKNGjQIWZgYOHKif//zniouLU3Z2tubMmaN+/fpp3759cjqdZT4mNTVV8+bNC8jzAwCA0OdXmLl48WKptuPHj+ull17Syy+/fMdFlRg+fLj334mJierWrZvi4uK0fv16DRs2rMzHzJ49W9OnT/ceu91uxcbGBqwmAAAQWvzeM3O7hIQELViwQM8995z+9Kc/BapbH9HR0YqLi9Px48fLPcfpdJa7agMAAGofv79osix169bV+fPnA9mljwsXLujMmTOKjo6usecAAAB28WtlZt26dT7Hxhjl5ORo0aJF6tWrV5X7uXz5sr799lvvcXZ2trKystS8eXM1b95cc+fO1c9+9jNFR0fr5MmTeu2119SyZUsNHTrUn7IBAEAt5FeYGTJkiM+xw+FQq1at1K9fP7399ttV7mfv3r3q27ev97hkr0tKSooWL16sQ4cOacWKFbp06ZKio6PVt29frV69mq9MAAAAXn6FmeLi4oA8eZ8+fWSMKff+jRs3BuR5AABA7RXQPTMAAAB3m18rM7e+9bkyaWlp/jwFAABAlfgVZvbv36+vv/5aN27cUIcOHSRJ33zzjerWrasHHnjAe57D4QhMlQAAAOXw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+OMVPuZuuH185Z3jcDgq/V6ry5cvKy4uTq1bt9aTTz6p/fv3B7JUv5U3xm3btikiIkLt27fXiy++qLy8vAr7sfUafvfdd1q/fr3GjRtXaV+heA2Lioq0atUqFRYWqkePHrVuDt4+vrLYPAfLG19tmX9S5dfQ5jk4adIkPfHEE3rsscd82kN5Hob8JwDfbcYYTZ8+XQ8//LASExMlyftFl7d/uWVkZKROnTpVbl+5ubllPub2L868m8oa3+2uXr2qV199VSNHjqzwi8PuueceLVu2TJ07d5bb7da7776rXr166cCBA0pISKipIVSqvDEOHDhQP//5zxUXF6fs7GzNmTNH/fr10759+8r99Epbr+Hy5csVFhamYcOGVdhXqF3DQ4cOqUePHrp69aqaNGmitWvXqmPHjt5ferbPwfLGdztb52BF46st86+q19DWObhq1Sp9/fXX2rNnT6n7QvpvYcDWeGqJiRMnmri4OHPmzBlv2+eff24kmfPnz/uc+8ILL5jHH3+83L7q169v3n//fZ+2lStXGqfTGdiiq6Gs8d3q2rVrZvDgweb+++83+fn51eq7qKjIdOnSxUyZMiUQpfqtsjGWOH/+vKlfv775+OOPyz3HxmtojDEdOnQwkydPrnbfwb6GHo/HHD9+3OzZs8e8+uqrpmXLlubIkSO1Zg6WN75b2TwHqzK+ErbOv6qO0cY5ePr0aRMREWGysrK8bbe+zBTK85CVmVtMmTJF69at0/bt29W6dWtve1RUlKSb6TI6OtrbnpeXVypt3ioqKqpU8qzsMTWpvPGVuH79up5++mllZ2dry5Yt1f469zp16ujBBx/U8ePHA1VytVU2xltFR0crLi6uwnptu4aStGPHDh07dkyrV6+udv/BvoYNGjRQu3btJEndunXTnj179O677+qVV16RZP8cLG98S5YskWT/HKxsfLeycf5JVRujrXNw3759ysvLU9euXb1tRUVF2r59uxYtWuR9B2UozkP2zOjmsv3kyZO1Zs0abdmyRfHx8T73x8fHKyoqShkZGd62a9euKTMzUz179iy33x49evg8RpI2bdpU4WNqQmXjk/7vl+jx48f12WefqUWLFn49T1ZWls9/8rulKmO83YULF3TmzJkK67XpGpZYunSpunbtqi5duvj1PMG6hmUxxsjj8Vg/B8tTMj7J/jlYllvHdzub5l9FyhqjrXPw0Ucf1aFDh5SVleW9devWTc8++6yysrL093//96E7DwO2xmOxl156ybhcLrNt2zaft8b98MMP3nMWLFhgXC6XWbNmjTl06JB55plnSr0d7fnnnzevvvqq9/jzzz83devWNQsWLDBHjx41CxYsCMrbCisb3/Xr181Pf/pT07p1a5OVleVzjsfjKXd8c+fONRs2bDAnTpww+/fvN2PGjDH16tUzX3755V0dX1XGWFBQYGbMmGF27dplsrOzzdatW02PHj3Mj370o1pxDUvk5+ebRo0amcWLF5fZTyhfw9mzZ5vt27eb7Oxsc/DgQfPaa6+ZOnXqmE2bNhlj7J6DlY2vNszBisZn+/wrUdn/UWPsnoNlufVlJmNCdx4SZowxksq8paene88pLi42r7/+uomKijJOp9P07t3bHDp0yKefpKQkk5KS4tP20UcfmQ4dOpj69eube+65p8LXh2tKZePLzs4u95ytW7d6+7l9fNOmTTNt2rQxDRo0MK1atTLJyclm165dd3dw/19lY/zhhx9McnKyadWqlalfv75p06aNSUlJMadPn/bpx9ZrWGLJkiWmYcOG5tKlS2X2E8rXcOzYsSYuLs5by6OPPurzR8LmOWhMxeOrDXOwovHZPv9KVPZ/1Bi752BZbg8zoToPHcYYE7h1HgAAgLuLPTMAAMBqhBkAAGA1wgwAALAaYQYAAFiNMAMAAKxGmAEAAFYjzAAAAKsRZgAAgNUIMwBC3smTJ+VwOJSVlVWtx82dO1c/+clPaqQmAKGDMAOgVnA4HPrkk0982mbOnKnNmzcHpyAAd029YBcAABW5du2a349t0qSJmjRpEsBqAIQiVmYA3JH/+Z//UdOmTVVcXCxJysrKksPh0Msvv+w9Z/z48XrmmWckSR9//LE6deokp9Optm3b6u233/bpr23btnrjjTc0evRouVwuvfjii6Wes7i4WC+++KLat2+vU6dOqW3btpKkoUOHyuFweI9vf5lp9OjRGjJkiObPn6/IyEg1bdpU8+bN040bN/Tyyy+refPmat26tX7/+9/7PN+5c+c0fPhwNWvWTC1atNDgwYN18uTJO/zJAQgUwgyAO9K7d28VFBRo//79kqTMzEy1bNlSmZmZ3nO2bdumpKQk7du3T08//bRGjBihQ4cOae7cuZozZ46WLVvm0+fChQuVmJioffv2ac6cOT73Xbt2TU8//bT27t2rnTt3Ki4uTnv27JEkpaenKycnx3tcli1btuj8+fPavn270tLSNHfuXD355JNq1qyZvvzyS02YMEETJkzQmTNnJEk//PCD+vbtqyZNmmj79u3auXOnmjRpogEDBtzRqhGAAArod3AD+Jv0wAMPmH/5l38xxhgzZMgQ85vf/MY0aNDAuN1uk5OTYySZo0ePmpEjR5r+/fv7PPbll182HTt29B7HxcWZIUOG+JyTnZ1tJJkdO3aYxx57zPTq1ctcunTJ5xxJZu3atT5tr7/+uunSpYv3OCUlxcTFxZmioiJvW4cOHcwjjzziPb5x44Zp3Lix+eCDD4wxxixdutR06NDBFBcXe8/xeDymYcOGZuPGjdX4KQGoKazMALhjffr00bZt22SM0Y4dOzR48GAlJiZq586d2rp1qyIjI3XPPffo6NGj6tWrl89je/XqpePHj6uoqMjb1q1btzKf55lnntHly5e1adMmuVwuv2rt1KmT6tT5v199kZGR6ty5s/e4bt26atGihfLy8iRJ+/bt07fffquwsDDvHpzmzZvr6tWrOnHihF81AAgsNgADuGN9+vTR0qVLdeDAAdWpU0cdO3ZUUlKSMjMzdfHiRSUlJUmSjDFyOBw+jzXGlOqvcePGZT7PoEGDtHLlSu3evVv9+vXzq9b69ev7HDscjjLbSvYAFRcXq2vXrvqv//qvUn21atXKrxoABBZhBsAdK9k388477ygpKUkOh0NJSUlKTU3VxYsXNXXqVElSx44dtXPnTp/H7tq1S+3bt1fdunUrfZ6XXnpJiYmJ+ulPf6r169d7Q5J0M6TcuroTKA888IBWr16tiIgIhYeHB7x/AHeOl5kA3DGXy6Wf/OQnWrlypfr06SPpZsD5+uuv9c0333jbZsyYoc2bN+vXv/61vvnmGy1fvlyLFi3SzJkzq/xcU6ZM0RtvvKEnn3zSJxi1bdtWmzdvVm5uri5evBiwsT377LNq2bKlBg8erB07dig7O1uZmZmaOnWqzp49G7DnAeA/wgyAgOjbt6+Kioq8waVZs2bq2LGjWrVqpXvvvVfSzVWODz/8UKtWrVJiYqJ++ctf6le/+pVGjx5dreeaNm2a5s2bp0GDBmnXrl2SpLffflsZGRmKjY3V/fffH7BxNWrUSNu3b1ebNm00bNgw3XvvvRo7dqyuXLnCSg0QIhymrBesAQAALMHKDAAAsBphBgAAWI0wAwAArEaYAQAAViPMAAAAqxFmAACA1QgzAADAaoQZAABgNcIMAACwGmEGAABYjTADAACs9v8AZf++U/+h81IAAAAASUVORK5CYII="
+class="
+"
+>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16828,17 +20387,17 @@ Note that, as all time data are integers, work times in the solution can take on
 <h4 id="How-shifts-are-distributed">How shifts are distributed<a class="anchor-link" href="#How-shifts-are-distributed">&#182;</a></h4><p>Let's now analyze the solution from the <em>number of shifts</em> perspective.
 How many shifts does each nurse work? Are these shifts fairly distributed amongst nurses?</p>
 <p>We compute a new column in our result DataFrame for the number of shifts worked,
-by summing rows (the <em>"axis=1"</em> argument in the <em>sum()</em> call indicates to <em>pandas</em> that each sum is performed by row instead of column):</p>
+by summing rows (the <em>&quot;axis=1&quot;</em> argument in the <em>sum()</em> call indicates to <em>pandas</em> that each sum is performed by row instead of column):</p>
 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[35]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># a pandas series of #shifts worked</span>
@@ -16852,6 +20411,44 @@ by summing rows (the <em>"axis=1"</em> argument in the <em>sum()</em> call indic
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[35]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>Text(0, 0.5, &#39;#shifts worked&#39;)</pre>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output ">
+<img src="data:image/png;base64,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"
+class="
+"
+>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16868,12 +20465,12 @@ the <em>fairness</em> in shift distribution.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[36]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">avg_worked</span> <span class="o">=</span> <span class="n">df_shifts</span><span class="p">[</span><span class="s2">&quot;min_req&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_nurses</span><span class="p">))</span>
@@ -16887,6 +20484,28 @@ the <em>fairness</em> in shift distribution.</p>
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>-- expected avg #shifts worked is 6.875
+-- total absolute deviation to mean #shifts is 14.5
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16910,7 +20529,7 @@ the shifts assigned over nurses.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[37]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># add two extra variables per nurse: deviations above and below average</span>
@@ -16940,7 +20559,7 @@ the shifts assigned over nurses.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[38]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Use the pandas groupby operation to enforce the constraint calculating number of worked shifts for each nurse</span>
@@ -16969,12 +20588,12 @@ the shifts assigned over nurses.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[39]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># finally, define kpis for over and under average quantities</span>
@@ -16987,6 +20606,29 @@ the shifts assigned over nurses.</p>
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[39]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>DecisionKPI(name=Total under-worked,expr=underw_Anne+underw_Bethanie+underw_Betsy+underw_Cathy+underw_Cec..)</pre>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -17007,7 +20649,7 @@ the shifts assigned over nurses.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[40]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">mdl</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">total_salary_cost</span> <span class="o">+</span> <span class="n">total_overw</span> <span class="o">+</span> <span class="n">total_underw</span><span class="p">)</span>  <span class="c1"># incorporate over_worked and under_worked in objective</span>
@@ -17031,12 +20673,12 @@ the shifts assigned over nurses.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[41]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">sol2</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">log_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># solve again and get a new solution</span>
@@ -17047,6 +20689,88 @@ the shifts assigned over nurses.</p>
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>WARNING: Number of workers has been reduced to 2 to comply with platform limitations.
+Version identifier: 22.1.1.0 | 2022-11-28 | 9160aff4d
+CPXPARAM_Read_DataCheck                          1
+CPXPARAM_Threads                                 2
+CPXPARAM_MIP_Tolerances_MIPGap                   1.0000000000000001e-05
+1 of 11 MIP starts provided solutions.
+MIP start &#39;m1&#39; defined initial solution with objective 28838.5000.
+Tried aggregator 2 times.
+MIP Presolve eliminated 997 rows and 379 columns.
+MIP Presolve modified 90 coefficients.
+Aggregator did 73 substitutions.
+Reduced MIP has 582 rows, 986 columns, and 3859 nonzeros.
+Reduced MIP has 892 binaries, 0 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.02 sec. (4.32 ticks)
+Probing time = 0.00 sec. (0.59 ticks)
+Tried aggregator 1 time.
+Detecting symmetries...
+MIP Presolve eliminated 2 rows and 4 columns.
+Reduced MIP has 580 rows, 982 columns, and 3814 nonzeros.
+Reduced MIP has 892 binaries, 30 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.01 sec. (2.39 ticks)
+Probing time = 0.00 sec. (0.58 ticks)
+Clique table members: 479.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 2 threads.
+Root relaxation solution time = 0.02 sec. (10.52 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                        28838.5000        0.0000           100.00%
+      0     0    28827.9167    72    28838.5000    28827.9167      756    0.04%
+      0     0    28829.2500    58    28838.5000      Cuts: 63      868    0.03%
+      0     0    28830.3438    59    28838.5000     Cuts: 125     1107    0.03%
+      0     0    28831.0000    57    28838.5000      Cuts: 55     1260    0.03%
+      0     0    28831.0000    28    28838.5000      Cuts: 10     1352    0.03%
+      0     0    28831.0000    31    28838.5000      Cuts: 34     1399    0.03%
+      0     2    28831.0000     5    28838.5000    28831.0000     1399    0.03%
+Elapsed time = 0.34 sec. (171.74 ticks, tree = 0.02 MB, solutions = 1)
+*    88    63      integral     0    28831.0000    28831.0000     3415    0.00%
+
+GUB cover cuts applied:  16
+Cover cuts applied:  8
+Flow cuts applied:  22
+Mixed integer rounding cuts applied:  62
+Zero-half cuts applied:  11
+Lift and project cuts applied:  2
+Gomory fractional cuts applied:  11
+
+Root node processing (before b&amp;c):
+  Real time             =    0.35 sec. (171.38 ticks)
+Parallel b&amp;c, 2 threads:
+  Real time             =    0.09 sec. (60.15 ticks)
+  Sync time (average)   =    0.01 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&amp;cut) =    0.43 sec. (231.53 ticks)
+* model nurses solved with objective = 28831.000
+*  KPI: Total salary cost  = 28824.000
+*  KPI: Total over-worked  = 3.500
+*  KPI: Total under-worked = 3.500
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -17061,12 +20785,12 @@ the shifts assigned over nurses.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[42]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create a pandas Series containing actual shift assignment decision variables value</span>
@@ -17092,6 +20816,227 @@ the shifts assigned over nurses.</p>
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>-- total absolute deviation to mean #shifts is now 7.0 down from 14.5
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[42]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>all_shifts</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>32</th>
+      <th>33</th>
+      <th>34</th>
+      <th>35</th>
+      <th>36</th>
+      <th>37</th>
+      <th>38</th>
+      <th>39</th>
+      <th>40</th>
+      <th>worked</th>
+    </tr>
+    <tr>
+      <th>all_nurses</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Anne</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>Bethanie</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>Betsy</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>Cathy</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>7.0</td>
+    </tr>
+    <tr>
+      <th>Cecilia</th>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>1.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>6.0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 42 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -17104,12 +21049,12 @@ the shifts assigned over nurses.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[43]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_res2</span><span class="p">[</span><span class="s2">&quot;worked&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;hist&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;gold&quot;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
@@ -17118,6 +21063,44 @@ the shifts assigned over nurses.</p>
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[43]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>&lt;Axes: ylabel=&#39;Frequency&#39;&gt;</pre>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output ">
+<img src="data:image/png;base64,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1rBhw3TLLbdI+uHfi8WLF2vjxo3NPoexb0v9r4aGBhUXF6uurk79+vWze5ywNHHiRN1yyy363e9+Z/coYa+8vFxJSUlKTU3VyJEjtXfvXrtHCkvLly9XRkaGbr/9dsXFxemqq67Siy++aPdYkFRfX69XX31VY8eOPeuPNKPtDBgwQO+99552794tSdq6das+/PBDDR06tNnnMPbKjSRt375d/fr108mTJ3XRRRdp2bJluuyyy+weK+wUFxfr008/VVlZmd2jhL0+ffqoqKhIPXr00FdffaUZM2aof//+2rlzpzp27Gj3eGFl7969KigoUG5urp544gl98skneuihh+R2uzVq1Ci7xwtrb7/9to4dO6bRo0fbPUpYeuyxx1RbW6uePXsqIiJCDQ0Nmjlzpu68885mn8Pobyiur69XZWWljh07prfeeksvvfSSSktLCZxzaP/+/crIyNCqVat0xRVXSJIGDRqkK6+8UvPmzbN3OKiurk7dunXT1KlTlZuba/c4YSUqKkoZGRlav359YN9DDz2ksrIyffzxxzZOht///veKiorSv//9b7tHCUvFxcV69NFHNXfuXKWnp2vLli2aPHmy8vPzlZOT06xzGH3lJioqKrCgOCMjQ2VlZXr++ee1YMECmycLH5s2bVJNTY2uueaawL6GhgatW7dO8+fPl8/nY0Grjdq3b6/evXurvLzc7lHCTmJiYpP/0Lr00kv11ltv2TQRJKmiokKrV6/W0qVL7R4lbD366KN6/PHHNXLkSElS7969VVFRoby8POLmTPx+v3w+n91jhJWbbrpJ27dvD9o3ZswY9ezZU4899hhhYzOfz6fPPvtM119/vd2jhJ3rrrtOu3btCtq3e/fuZv8oMNpGYWGh4uLiAotZce59++23uuCC4CXBERERfBRckp544gllZWUpOTlZx48fV3FxsdauXauVK1faPVpYiYmJUa9evYL2tW/fXh07dmyyH21vypQpys7OVteuXVVTU6MZM2bI6/U2+7+GEDoPP/yw+vfvr1mzZumPf/yjPvnkEy1cuFALFy60e7Sw1djYqMLCQuXk5Cgy0tiXR8fLzs7WzJkz1bVrV6Wnp2vz5s3Kz8/X2LFjm30OY5+9r776Svfee6+qqqrk8Xh0+eWXa+XKlRo8eLDdowG2OXDggO68804dPnxYnTt3Vt++fbVhwwauFtjg2muv1bJlyzRt2jQ988wzSk1N1bx583T33XfbPVrYWr16tSorK1v0IorQ+/vf/66nnnpKEyZMUE1NjZKSkjR+/Hj95S9/afY5jF5QDAAAwk9YfM8NAAAIH8QNAAAwCnEDAACMQtwAAACjEDcAAMAoxA0AADAKcQMAAIxC3AAAAKMQNwAAwCjEDQAAMApxAwAAjELcAAAAo/w/olISKWPyXncAAAAASUVORK5CYII="
+class="
+"
+>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -17147,12 +21130,12 @@ absolute optimal fairness.</p>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[44]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">mdl</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="n">total_overw</span> <span class="o">+</span> <span class="n">total_underw</span><span class="p">)</span>
@@ -17163,6 +21146,30 @@ absolute optimal fairness.</p>
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>* model nurses solved with objective = 4.000
+*  KPI: Total salary cost  = 29606.000
+*  KPI: Total over-worked  = 4.000
+*  KPI: Total under-worked = 0.000
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -17180,12 +21187,12 @@ Salary cost is now higher than the previous value of 28884 but this was expected
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[45]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create a pandas Series containing actual shift assignment decision variables value</span>
@@ -17206,6 +21213,44 @@ Salary cost is now higher than the previous value of 28884 but this was expected
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[45]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>&lt;Axes: ylabel=&#39;Frequency&#39;&gt;</pre>
+</div>
+
+</div>
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+
+
+<div class="jp-RenderedImage jp-OutputArea-output ">
+<img src="data:image/png;base64,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"
+class="
+"
+>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -17214,7 +21259,7 @@ Salary cost is now higher than the previous value of 28884 but this was expected
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>In the above figure, all nurses but one are assigned the average of 7 shifts, which is what we expected.</p>
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You have learned how to set up, formulate and solve an optimization model using Decision Optimization in Watson Studio.</p>
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You have learned how to set up, formulate and solve an optimization model using Decision Optimization in IBM Cloud Pak for Data.</p>
 
 </div>
 </div>
@@ -17228,7 +21273,8 @@ Salary cost is now higher than the previous value of 28884 but this was expected
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h4 id="References">References<a class="anchor-link" href="#References">&#182;</a></h4><ul>
 <li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization CPLEX Modeling for Python documentation</a></li>
-<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html" target="_blank" rel="noopener noreferrer">Watson Studio documentation</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html?context=cpdaas" target="_blank" rel="noopener noreferrer">IBM Cloud Pak for Data as a Service documentation</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html?context=wx" target="_blank" rel="noopener noreferrer">IBM watsonx.ai documentation</a></li>
 </ul>
 
 </div>
@@ -17241,7 +21287,8 @@ Salary cost is now higher than the previous value of 28884 but this was expected
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Copyright © 2017-2021 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+<hr>
+Copyright © 2017-2024 IBM. This notebook and its source code are released under the terms of the MIT License.
 
 </div>
 </div>

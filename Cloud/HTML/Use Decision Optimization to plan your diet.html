@@ -15594,11 +15594,11 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>The learning goals of this notebook are:</p>
 <ul>
-<li>Load a DO model file into an Watson Machine learning repository.</li>
+<li>Load a Decision Optimization model into a Watson Machine Learning repository.</li>
 <li>Prepare data for training and evaluation.</li>
-<li>Create an DO machine learning job.</li>
-<li>Persist a DO model Watson Machine Learning repository.</li>
-<li>Deploy a model for batch scoring using Wastson Machine Learning API.</li>
+<li>Create a Watson Machine Learning job.</li>
+<li>Persist a Decision Optimization model in a Watson Machine Learning repository.</li>
+<li>Deploy a model for batch scoring using Watson Machine Learning API.</li>
 </ul>
 
 </div>
@@ -15613,9 +15613,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Contents">Contents<a class="anchor-link" href="#Contents">&#182;</a></h2><p>This notebook contains the following parts:</p>
 <ol>
-<li><a href="#setup">Setup</a></li>
-<li><a href="#download">Download externally created DO model</a></li>
-<li><a href="#persistence">Persist externally created DO model</a></li>
+<li><a href="#setup">Set up the environment</a></li>
+<li><a href="#download">Download externally created Decision Optimization model and data</a></li>
+<li><a href="#persistence">Persist externally created Decision Optimization model</a></li>
 <li><a href="#deploy">Deploy in a Cloud</a></li>
 <li><a href="#job">Create job</a></li>
 <li><a href="#cleanup">Clean up</a></li>
@@ -15633,9 +15633,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="setup"></a></p>
-<h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
+<h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must:</p>
 <ul>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html?context=analytics" target="_blank" rel="noopener no referrer">here</a>).</li>
+<li>create a <a href="https://cloud.ibm.com/catalog?category=ai" target="_blank" rel="noopener noreferrer">Watson Machine Learning (WML) Service</a> instance. A free plan is offered and information about how to create the instance can be found at <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html" target="_blank" rel="noopener noreferrer"> https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html.</a></li>
 </ul>
 
 </div>
@@ -15648,46 +15648,23 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Connection-to-WML">Connection to WML<a class="anchor-link" href="#Connection-to-WML">&#182;</a></h3><p>Authenticate the Watson Machine Learning service on IBM Cloud. You need to provide platform <code>api_key</code> and instance <code>location</code>.</p>
-<p>You can use <a href="https://cloud.ibm.com/docs/cli/index.html">IBM Cloud CLI</a> to retrieve platform API Key and instance location.</p>
-<p>API Key can be generated in the following way:</p>
-<pre><code>ibmcloud login
-ibmcloud iam api-key-create API_KEY_NAME
-</code></pre>
-<p>In result, get the value of <code>api_key</code> from the output.</p>
-<p>Location of your WML instance can be retrieved in the following way:</p>
-<pre><code>ibmcloud login --apikey API_KEY -a https://cloud.ibm.com
-ibmcloud resource service-instance WML_INSTANCE_NAME
-</code></pre>
-<p>In result, get the value of <code>location</code> from the output.</p>
+<p>Install and then import the Watson Machine Learning client library.</p>
+<p><strong>Note:</strong> <code>ibm-watson-machine-learning</code> documentation can be found <a href="https://ibm.github.io/watson-machine-learning-sdk/" target="_blank" rel="noopener no referrer">here</a>.</p>
 
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><strong>Tip</strong>: Your <code>Cloud API key</code> can be generated by going to the <a href="https://cloud.ibm.com/iam#/users"><strong>Users</strong> section of the Cloud console</a>. From that page, click your name, scroll down to the <strong>API Keys</strong> section, and click <strong>Create an IBM Cloud API key</strong>. Give your key a name and click <strong>Create</strong>, then copy the created key and paste it below. You can also get a service specific url by going to the <a href="https://cloud.ibm.com/apidocs/machine-learning"><strong>Endpoint URLs</strong> section of the Watson Machine Learning docs</a>.  You can check your instance location in your  <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance details.</p>
-<p>You can also get service specific apikey by going to the <a href="https://cloud.ibm.com/iam/serviceids"><strong>Service IDs</strong> section of the Cloud Console</a>.  From that page, click <strong>Create</strong>, then copy the created key and paste it below.</p>
-<p><strong>Action</strong>: Enter your <code>api_key</code> and <code>location</code> in the following cell.</p>
-
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">api_key</span> <span class="o">=</span> <span class="s1">&#39;PASTE YOUR PLATFORM API KEY HERE&#39;</span>
-<span class="n">location</span> <span class="o">=</span> <span class="s1">&#39;PASTE YOUR INSTANCE LOCATION HERE&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Install WML client API</span>
+
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>ibm-watson-machine-learning
 </pre></div>
 
      </div>
@@ -15695,18 +15672,55 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Requirement already satisfied: ibm-watson-machine-learning in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (1.0.338)
+Requirement already satisfied: requests in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (2.31.0)
+Requirement already satisfied: urllib3 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (1.26.18)
+Requirement already satisfied: pandas&lt;1.6.0,&gt;=0.24.2 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (1.5.3)
+Requirement already satisfied: certifi in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (2023.11.17)
+Requirement already satisfied: lomond in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (0.3.3)
+Requirement already satisfied: tabulate in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (0.8.10)
+Requirement already satisfied: packaging in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (23.0)
+Requirement already satisfied: importlib-metadata in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (6.0.0)
+Requirement already satisfied: ibm-cos-sdk&lt;2.14.0,&gt;=2.12.0 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (2.12.0)
+Requirement already satisfied: ibm-cos-sdk-core==2.12.0 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-cos-sdk&lt;2.14.0,&gt;=2.12.0-&gt;ibm-watson-machine-learning) (2.12.0)
+Requirement already satisfied: ibm-cos-sdk-s3transfer==2.12.0 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-cos-sdk&lt;2.14.0,&gt;=2.12.0-&gt;ibm-watson-machine-learning) (2.12.0)
+Requirement already satisfied: jmespath&lt;1.0.0,&gt;=0.10.0 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-cos-sdk&lt;2.14.0,&gt;=2.12.0-&gt;ibm-watson-machine-learning) (0.10.0)
+Requirement already satisfied: python-dateutil&lt;3.0.0,&gt;=2.8.2 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-cos-sdk-core==2.12.0-&gt;ibm-cos-sdk&lt;2.14.0,&gt;=2.12.0-&gt;ibm-watson-machine-learning) (2.8.2)
+Requirement already satisfied: pytz&gt;=2020.1 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from pandas&lt;1.6.0,&gt;=0.24.2-&gt;ibm-watson-machine-learning) (2022.7)
+Requirement already satisfied: numpy&gt;=1.21.0 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from pandas&lt;1.6.0,&gt;=0.24.2-&gt;ibm-watson-machine-learning) (1.23.5)
+Requirement already satisfied: charset-normalizer&lt;4,&gt;=2 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from requests-&gt;ibm-watson-machine-learning) (2.0.4)
+Requirement already satisfied: idna&lt;4,&gt;=2.5 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from requests-&gt;ibm-watson-machine-learning) (3.4)
+Requirement already satisfied: zipp&gt;=0.5 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from importlib-metadata-&gt;ibm-watson-machine-learning) (3.11.0)
+Requirement already satisfied: six&gt;=1.10.0 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from lomond-&gt;ibm-watson-machine-learning) (1.16.0)
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;apikey&quot;</span><span class="p">:</span> <span class="n">api_key</span><span class="p">,</span>
-    <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s1">&#39;https://&#39;</span> <span class="o">+</span> <span class="n">location</span> <span class="o">+</span> <span class="s1">&#39;.ml.cloud.ibm.com&#39;</span>
-<span class="p">}</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>wget
 </pre></div>
 
      </div>
@@ -15714,44 +15728,77 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Collecting wget
+  Downloading wget-3.2.zip (10 kB)
+  Preparing metadata (setup.py) ... done
+Building wheels for collected packages: wget
+  Building wheel for wget (setup.py) ... done
+  Created wheel for wget: filename=wget-3.2-py3-none-any.whl size=9656 sha256=bf798e28395c3c4d6f31ffa38a5ef575cf2925f468cb6691c594e497f41a3d95
+  Stored in directory: /tmp/wsuser/.cache/pip/wheels/8b/f1/7f/5c94f0a7a505ca1c81cd1d9208ae2064675d97582078e6c769
+Successfully built wget
+Installing collected packages: wget
+Successfully installed wget-3.2
+</pre>
 </div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Install-and-import-the-ibm-watson-machine-learning-package">Install and import the <code>ibm-watson-machine-learning</code> package<a class="anchor-link" href="#Install-and-import-the-ibm-watson-machine-learning-package">&#182;</a></h3><p><strong>Note:</strong> <code>ibm-watson-machine-learning</code> documentation can be found <a href="http://ibm-wml-api-pyclient.mybluemix.net/" target="_blank" rel="noopener no referrer">here</a>.</p>
+</div>
 
 </div>
+
 </div>
-</div>
+
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>ibm-watson-machine-learning
-<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>wget
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning</span> <span class="kn">import</span> <span class="n">APIClient</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Create-a-client-instance">Create a client instance<a class="anchor-link" href="#Create-a-client-instance">&#182;</a></h3><p>Use your Watson Machine Learning credentials. You can find information on how to get your API key <a href="https://dataplatform.cloud.ibm.com/docs/content/DO/WML_Deployment/DeployModelRest.html?audience=wdp">here</a> in the second step of the &quot;Before you begin&quot; section and instance's URL <a href="https://dataplatform.cloud.ibm.com/docs/content/DO/WML_Deployment/DeployModelRest.html?audience=wdp">here</a> in the third step of the &quot;Procedure&quot; section.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Instantiate a client using credentials</span>
+<span class="n">wml_credentials</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s2">&quot;apikey&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;API_key&gt;&quot;</span><span class="p">,</span>
+      <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;&lt;instance_url&gt;&quot;</span>
+<span class="p">}</span>
 
 <span class="n">client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">)</span>
 </pre></div>
@@ -15774,28 +15821,55 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <li>Create an empty space</li>
 <li>Select Cloud Object Storage</li>
 <li>Select Watson Machine Learning instance and press Create</li>
-<li>Copy <code>space_id</code> and paste it below</li>
 </ul>
 <p><strong>Tip</strong>: You can also use SDK to prepare the space for your work. More information can be found <a href="https://github.com/IBM/watson-machine-learning-samples/blob/master/cloud/notebooks/python_sdk/instance-management/Space%20management.ipynb">here</a>.</p>
-<p><strong>Action</strong>: Assign space ID below</p>
 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">space_id</span> <span class="o">=</span> <span class="s1">&#39;PASTE YOUR SPACE ID HERE&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Find the space ID</span>
+
+<span class="n">space_name</span> <span class="o">=</span> <span class="s2">&quot;&lt;space_name&gt;&quot;</span>
+
+<span class="n">space_id</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">get_details</span><span class="p">()[</span><span class="s1">&#39;resources&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">space_name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="o">.</span><span class="n">default_space</span><span class="p">(</span><span class="n">space_id</span><span class="p">)</span>
 </pre></div>
 
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>&#39;SUCCESS&#39;</pre>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -15805,7 +15879,9 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>You can use <code>list</code> method to print all existing spaces.</p>
+<p><a id="download"></a></p>
+<h2 id="2.-Download-externally-created-Decision-Optimization-model-and-data">2. Download externally created Decision Optimization model and data<a class="anchor-link" href="#2.-Download-externally-created-Decision-Optimization-model-and-data">&#182;</a></h2><p>In this section, you will download externally created Decision Optimization model and data used for training it.</p>
+<p><strong>Action</strong>: Get your Decision Optimization model.</p>
 
 </div>
 </div>
@@ -15815,64 +15891,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">spaces</span><span class="o">.</span><span class="n">list</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>To be able to interact with all resources available in Watson Machine Learning, you need to set <strong>space</strong> which you will be using.</p>
-
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="o">.</span><span class="n">default_space</span><span class="p">(</span><span class="n">space_id</span><span class="p">)</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h4 id=""><a id="download" /><a class="anchor-link" href="#">&#182;</a></h4><h2 id="2.-Download-externally-created-Keras-model-and-data">2. Download externally created Keras model and data<a class="anchor-link" href="#2.-Download-externally-created-Keras-model-and-data">&#182;</a></h2><p>In this section, you will download externally created DO models and data used for training it.</p>
-<p><strong>Action</strong>: Get your DO model.</p>
-
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
@@ -15895,7 +15914,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="persistence"></a></p>
-<h2 id="3.-Persist-externally-created-DO-model">3. Persist externally created DO model<a class="anchor-link" href="#3.-Persist-externally-created-DO-model">&#182;</a></h2>
+<h2 id="3.-Persist-externally-created-Decision-Optimization-model">3. Persist externally created Decision Optimization model<a class="anchor-link" href="#3.-Persist-externally-created-Decision-Optimization-model">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -15918,7 +15937,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="3.1:-Publish-model">3.1: Publish model<a class="anchor-link" href="#3.1:-Publish-model">&#182;</a></h3>
+<h3 id="3.1-Publish-model">3.1 Publish model<a class="anchor-link" href="#3.1-Publish-model">&#182;</a></h3>
 </div>
 </div>
 </div>
@@ -15952,7 +15971,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Get software specification for DO model</p>
+<p>Get software specification for Decision Optimization model</p>
 
 </div>
 </div>
@@ -15962,10 +15981,10 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sofware_spec_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_uid_by_name</span><span class="p">(</span><span class="s2">&quot;do_20.1&quot;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sofware_spec_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">software_specifications</span><span class="o">.</span><span class="n">get_uid_by_name</span><span class="p">(</span><span class="s2">&quot;do_22.1&quot;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15990,39 +16009,41 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">output_data_schema</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;stest&#39;</span><span class="p">,</span>
-                              <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;list&#39;</span><span class="p">,</span>
-                              <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;cp&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;restbp&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;chol&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;fbs&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;restecg&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;thalach&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;exang&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;oldpeak&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ca&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;thal&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">}]</span>
-                               <span class="p">},</span> <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;teste2&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;cp&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;restbp&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;chol&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;fbs&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;restecg&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;thalach&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;exang&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;oldpeak&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ca&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
-                            <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;thal&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">}]}]</span>
+                       <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;list&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;cp&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;restbp&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;chol&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;fbs&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;restecg&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;thalach&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;exang&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;oldpeak&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ca&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;thal&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">}]</span>
+                      <span class="p">},</span>
+                      <span class="p">{</span><span class="s1">&#39;id&#39;</span><span class="p">:</span> <span class="s1">&#39;teste2&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;test&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;cp&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;restbp&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;chol&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;fbs&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;restecg&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;thalach&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;exang&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;oldpeak&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;slope&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ca&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">},</span>
+                                  <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;thal&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">}]</span>
+                      <span class="p">}]</span>
 </pre></div>
 
      </div>
@@ -16035,12 +16056,12 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_meta_props</span> <span class="o">=</span> <span class="p">{</span>
                         <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s2">&quot;LOCALLY created DO model&quot;</span><span class="p">,</span>
-                        <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="s2">&quot;do-docplex_20.1&quot;</span><span class="p">,</span>
+                        <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">TYPE</span><span class="p">:</span> <span class="s2">&quot;do-docplex_22.1&quot;</span><span class="p">,</span>
                         <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">SOFTWARE_SPEC_UID</span><span class="p">:</span> <span class="n">sofware_spec_uid</span><span class="p">,</span>
                         <span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">ModelMetaNames</span><span class="o">.</span><span class="n">OUTPUT_DATA_SCHEMA</span><span class="p">:</span> <span class="n">output_data_schema</span>
                     <span class="p">}</span>
@@ -16071,16 +16092,16 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="3.2:-Get-model-details">3.2: Get model details<a class="anchor-link" href="#3.2:-Get-model-details">&#182;</a></h3>
+<h3 id="3.2-Get-model-details">3.2 Get model details<a class="anchor-link" href="#3.2-Get-model-details">&#182;</a></h3>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
@@ -16095,6 +16116,169 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>{
+  &#34;entity&#34;: {
+    &#34;hybrid_pipeline_software_specs&#34;: [],
+    &#34;schemas&#34;: {
+      &#34;input&#34;: [],
+      &#34;output&#34;: [
+        {
+          &#34;fields&#34;: [
+            {
+              &#34;name&#34;: &#34;age&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;sex&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;cp&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;restbp&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;chol&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;fbs&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;restecg&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;thalach&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;exang&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;oldpeak&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;slope&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;ca&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;thal&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            }
+          ],
+          &#34;id&#34;: &#34;stest&#34;,
+          &#34;type&#34;: &#34;list&#34;
+        },
+        {
+          &#34;fields&#34;: [
+            {
+              &#34;name&#34;: &#34;age&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;sex&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;cp&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;restbp&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;chol&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;fbs&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;restecg&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;thalach&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;exang&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;oldpeak&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;slope&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;ca&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            },
+            {
+              &#34;name&#34;: &#34;thal&#34;,
+              &#34;type&#34;: &#34;float&#34;
+            }
+          ],
+          &#34;id&#34;: &#34;teste2&#34;,
+          &#34;type&#34;: &#34;test&#34;
+        }
+      ]
+    },
+    &#34;software_spec&#34;: {
+      &#34;id&#34;: &#34;e51999ba-6452-5f1f-8287-17228b88b652&#34;,
+      &#34;name&#34;: &#34;do_22.1&#34;
+    },
+    &#34;type&#34;: &#34;do-docplex_22.1&#34;
+  },
+  &#34;metadata&#34;: {
+    &#34;created_at&#34;: &#34;2024-01-12T08:51:10.217Z&#34;,
+    &#34;id&#34;: &#34;8c0932d0-4afa-44d7-9350-8e0e6fa1ec87&#34;,
+    &#34;modified_at&#34;: &#34;2024-01-12T08:51:11.889Z&#34;,
+    &#34;name&#34;: &#34;LOCALLY created DO model&#34;,
+    &#34;owner&#34;: &#34;IBMid-270006YQEG&#34;,
+    &#34;resource_key&#34;: &#34;98fdf7c6-a6b0-4a5a-b98e-c7765e36d3d5&#34;,
+    &#34;space_id&#34;: &#34;0d715374-9c5f-4faf-bad7-b8356d478bda&#34;
+  },
+  &#34;system&#34;: {
+    &#34;warnings&#34;: []
+  }
+}
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16106,12 +16290,12 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">repository</span><span class="o">.</span><span class="n">list_models</span><span class="p">()</span>
@@ -16120,6 +16304,79 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>------------------------------------  ------------------------  ------------------------  ---------------  ----------  ----------------
+ID                                    NAME                      CREATED                   TYPE             SPEC_STATE  SPEC_REPLACEMENT
+8c0932d0-4afa-44d7-9350-8e0e6fa1ec87  LOCALLY created DO model  2024-01-12T08:51:10.002Z  do-docplex_22.1  supported
+------------------------------------  ------------------------  ------------------------  ---------------  ----------  ----------------
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ID</th>
+      <th>NAME</th>
+      <th>CREATED</th>
+      <th>TYPE</th>
+      <th>SPEC_STATE</th>
+      <th>SPEC_REPLACEMENT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>8c0932d0-4afa-44d7-9350-8e0e6fa1ec87</td>
+      <td>LOCALLY created DO model</td>
+      <td>2024-01-12T08:51:10.002Z</td>
+      <td>do-docplex_22.1</td>
+      <td>supported</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16143,16 +16400,16 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="4.1:-Create-model-deployment">4.1: Create model deployment<a class="anchor-link" href="#4.1:-Create-model-deployment">&#182;</a></h3>
+<h3 id="4.1-Create-model-deployment">4.1 Create model deployment<a class="anchor-link" href="#4.1-Create-model-deployment">&#182;</a></h3>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">meta_data</span> <span class="o">=</span> <span class="p">{</span>
@@ -16167,6 +16424,43 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>
+
+#######################################################################################
+
+Synchronous deployment creation for uid: &#39;8c0932d0-4afa-44d7-9350-8e0e6fa1ec87&#39; started
+
+#######################################################################################
+
+
+ready.
+
+
+------------------------------------------------------------------------------------------------
+Successfully finished deployment creation, deployment_uid=&#39;e9e839fd-20c5-4c73-a66b-1ab28365a580&#39;
+------------------------------------------------------------------------------------------------
+
+
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16186,7 +16480,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">deployment_uid</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_uid</span><span class="p">(</span><span class="n">deployment_details</span><span class="p">)</span>
@@ -16204,17 +16498,17 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Now, You can list all deployments.</p>
+<p>Now, you can list all deployments.</p>
 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
@@ -16225,6 +16519,81 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>------------------------------------  -------------  -----  ------------------------  -------------  ----------  ----------------
+GUID                                  NAME           STATE  CREATED                   ARTIFACT_TYPE  SPEC_STATE  SPEC_REPLACEMENT
+e9e839fd-20c5-4c73-a66b-1ab28365a580  deployment_DO  ready  2024-01-12T08:51:13.609Z  do             supported
+------------------------------------  -------------  -----  ------------------------  -------------  ----------  ----------------
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[14]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>GUID</th>
+      <th>NAME</th>
+      <th>STATE</th>
+      <th>CREATED</th>
+      <th>ARTIFACT_TYPE</th>
+      <th>SPEC_STATE</th>
+      <th>SPEC_REPLACEMENT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>e9e839fd-20c5-4c73-a66b-1ab28365a580</td>
+      <td>deployment_DO</td>
+      <td>ready</td>
+      <td>2024-01-12T08:51:13.609Z</td>
+      <td>do</td>
+      <td>supported</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16232,16 +16601,16 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="4.2:-Get-deployment-details">4.2: Get deployment details<a class="anchor-link" href="#4.2:-Get-deployment-details">&#182;</a></h3>
+<h3 id="4.2-Get-deployment-details">4.2 Get deployment details<a class="anchor-link" href="#4.2-Get-deployment-details">&#182;</a></h3>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_details</span><span class="p">(</span><span class="n">deployment_uid</span><span class="p">)</span>
@@ -16250,6 +16619,44 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[15]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>{&#39;entity&#39;: {&#39;asset&#39;: {&#39;id&#39;: &#39;8c0932d0-4afa-44d7-9350-8e0e6fa1ec87&#39;},
+  &#39;batch&#39;: {},
+  &#39;custom&#39;: {},
+  &#39;deployed_asset_type&#39;: &#39;do&#39;,
+  &#39;hardware_spec&#39;: {&#39;id&#39;: &#39;e7ed1d6c-2e89-42d7-aed5-863b972c1d2b&#39;,
+   &#39;name&#39;: &#39;S&#39;,
+   &#39;num_nodes&#39;: 1},
+  &#39;name&#39;: &#39;deployment_DO&#39;,
+  &#39;space_id&#39;: &#39;0d715374-9c5f-4faf-bad7-b8356d478bda&#39;,
+  &#39;status&#39;: {&#39;state&#39;: &#39;ready&#39;}},
+ &#39;metadata&#39;: {&#39;created_at&#39;: &#39;2024-01-12T08:51:13.609Z&#39;,
+  &#39;id&#39;: &#39;e9e839fd-20c5-4c73-a66b-1ab28365a580&#39;,
+  &#39;modified_at&#39;: &#39;2024-01-12T08:51:13.609Z&#39;,
+  &#39;name&#39;: &#39;deployment_DO&#39;,
+  &#39;owner&#39;: &#39;IBMid-270006YQEG&#39;,
+  &#39;space_id&#39;: &#39;0d715374-9c5f-4faf-bad7-b8356d478bda&#39;}}</pre>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16282,41 +16689,44 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="n">diet_food</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="s2">&quot;Roasted Chicken&quot;</span><span class="p">,</span> <span class="mf">0.84</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                          <span class="p">[</span><span class="s2">&quot;Spaghetti W/ Sauce&quot;</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                          <span class="p">[</span><span class="s2">&quot;Tomato,Red,Ripe,Raw&quot;</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                          <span class="p">[</span><span class="s2">&quot;Apple,Raw,W/Skin&quot;</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                          <span class="p">[</span><span class="s2">&quot;Grapes&quot;</span><span class="p">,</span> <span class="mf">0.32</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                          <span class="p">[</span><span class="s2">&quot;Chocolate Chip Cookies&quot;</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                          <span class="p">[</span><span class="s2">&quot;Lowfat Milk&quot;</span><span class="p">,</span> <span class="mf">0.23</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                          <span class="p">[</span><span class="s2">&quot;Raisin Brn&quot;</span><span class="p">,</span> <span class="mf">0.34</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                          <span class="p">[</span><span class="s2">&quot;Hotdog&quot;</span><span class="p">,</span> <span class="mf">0.31</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">]],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;qmin&quot;</span><span class="p">,</span> <span class="s2">&quot;qmax&quot;</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Import pandas library </span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
+  
+<span class="c1"># Initialize list of lists </span>
+<span class="n">diet_food</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span> <span class="p">[</span><span class="s2">&quot;Roasted Chicken&quot;</span><span class="p">,</span> <span class="mf">0.84</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Spaghetti W/ Sauce&quot;</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Tomato,Red,Ripe,Raw&quot;</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Apple,Raw,W/Skin&quot;</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Grapes&quot;</span><span class="p">,</span> <span class="mf">0.32</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Chocolate Chip Cookies&quot;</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Lowfat Milk&quot;</span><span class="p">,</span> <span class="mf">0.23</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Raisin Brn&quot;</span><span class="p">,</span> <span class="mf">0.34</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Hotdog&quot;</span><span class="p">,</span> <span class="mf">0.31</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">]]</span> <span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="s2">&quot;unit_cost&quot;</span><span class="p">,</span><span class="s2">&quot;qmin&quot;</span><span class="p">,</span><span class="s2">&quot;qmax&quot;</span><span class="p">])</span>
 
 <span class="n">diet_food_nutrients</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
-    <span class="p">[</span><span class="s2">&quot;Spaghetti W/ Sauce&quot;</span><span class="p">,</span> <span class="mf">358.2</span><span class="p">,</span> <span class="mf">80.2</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="mf">3055.2</span><span class="p">,</span> <span class="mf">11.6</span><span class="p">,</span> <span class="mf">58.3</span><span class="p">,</span> <span class="mf">8.2</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Roasted Chicken&quot;</span><span class="p">,</span> <span class="mf">277.4</span><span class="p">,</span> <span class="mf">21.9</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">77.4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">42.2</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Tomato,Red,Ripe,Raw&quot;</span><span class="p">,</span> <span class="mf">25.8</span><span class="p">,</span> <span class="mf">6.2</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">766.3</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">5.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Apple,Raw,W/Skin&quot;</span><span class="p">,</span> <span class="mf">81.4</span><span class="p">,</span> <span class="mf">9.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">73.1</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Grapes&quot;</span><span class="p">,</span> <span class="mf">15.1</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">4.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Chocolate Chip Cookies&quot;</span><span class="p">,</span> <span class="mf">78.1</span><span class="p">,</span> <span class="mf">6.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">101.8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">9.3</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Lowfat Milk&quot;</span><span class="p">,</span> <span class="mf">121.2</span><span class="p">,</span> <span class="mf">296.7</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">500.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">11.7</span><span class="p">,</span> <span class="mf">8.1</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Raisin Brn&quot;</span><span class="p">,</span> <span class="mf">115.1</span><span class="p">,</span> <span class="mf">12.9</span><span class="p">,</span> <span class="mf">16.8</span><span class="p">,</span> <span class="mf">1250.2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">27.9</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Hotdog&quot;</span><span class="p">,</span> <span class="mf">242.1</span><span class="p">,</span> <span class="mf">23.5</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mf">10.4</span><span class="p">]</span>
-<span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Food&quot;</span><span class="p">,</span> <span class="s2">&quot;Calories&quot;</span><span class="p">,</span> <span class="s2">&quot;Calcium&quot;</span><span class="p">,</span> <span class="s2">&quot;Iron&quot;</span><span class="p">,</span> <span class="s2">&quot;Vit_A&quot;</span><span class="p">,</span> <span class="s2">&quot;Dietary_Fiber&quot;</span><span class="p">,</span> <span class="s2">&quot;Carbohydrates&quot;</span><span class="p">,</span> <span class="s2">&quot;Protein&quot;</span><span class="p">])</span>
+                <span class="p">[</span><span class="s2">&quot;Spaghetti W/ Sauce&quot;</span><span class="p">,</span> <span class="mf">358.2</span><span class="p">,</span> <span class="mf">80.2</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="mf">3055.2</span><span class="p">,</span> <span class="mf">11.6</span><span class="p">,</span> <span class="mf">58.3</span><span class="p">,</span> <span class="mf">8.2</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Roasted Chicken&quot;</span><span class="p">,</span> <span class="mf">277.4</span><span class="p">,</span> <span class="mf">21.9</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">77.4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">42.2</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Tomato,Red,Ripe,Raw&quot;</span><span class="p">,</span> <span class="mf">25.8</span><span class="p">,</span> <span class="mf">6.2</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">766.3</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">5.7</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Apple,Raw,W/Skin&quot;</span><span class="p">,</span> <span class="mf">81.4</span><span class="p">,</span> <span class="mf">9.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">73.1</span><span class="p">,</span> <span class="mf">3.7</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Grapes&quot;</span><span class="p">,</span> <span class="mf">15.1</span><span class="p">,</span> <span class="mf">3.4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">4.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Chocolate Chip Cookies&quot;</span><span class="p">,</span> <span class="mf">78.1</span><span class="p">,</span> <span class="mf">6.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">101.8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">9.3</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Lowfat Milk&quot;</span><span class="p">,</span> <span class="mf">121.2</span><span class="p">,</span> <span class="mf">296.7</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">500.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">11.7</span><span class="p">,</span> <span class="mf">8.1</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Raisin Brn&quot;</span><span class="p">,</span> <span class="mf">115.1</span><span class="p">,</span> <span class="mf">12.9</span><span class="p">,</span> <span class="mf">16.8</span><span class="p">,</span> <span class="mf">1250.2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">27.9</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Hotdog&quot;</span><span class="p">,</span> <span class="mf">242.1</span><span class="p">,</span> <span class="mf">23.5</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mf">10.4</span> <span class="p">]</span>
+            <span class="p">]</span> <span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Food&quot;</span><span class="p">,</span><span class="s2">&quot;Calories&quot;</span><span class="p">,</span><span class="s2">&quot;Calcium&quot;</span><span class="p">,</span><span class="s2">&quot;Iron&quot;</span><span class="p">,</span><span class="s2">&quot;Vit_A&quot;</span><span class="p">,</span><span class="s2">&quot;Dietary_Fiber&quot;</span><span class="p">,</span><span class="s2">&quot;Carbohydrates&quot;</span><span class="p">,</span><span class="s2">&quot;Protein&quot;</span><span class="p">])</span>
 
 <span class="n">diet_nutrients</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
-    <span class="p">[</span><span class="s2">&quot;Calories&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">2500</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Calcium&quot;</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">1600</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Iron&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Vit_A&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Dietary_Fiber&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Carbohydrates&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>
-    <span class="p">[</span><span class="s2">&quot;Protein&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
-<span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;qmin&quot;</span><span class="p">,</span> <span class="s2">&quot;qmax&quot;</span><span class="p">])</span>
+                <span class="p">[</span><span class="s2">&quot;Calories&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">2500</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Calcium&quot;</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">1600</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Iron&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Vit_A&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Dietary_Fiber&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Carbohydrates&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>
+                <span class="p">[</span><span class="s2">&quot;Protein&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
+            <span class="p">],</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="s2">&quot;qmin&quot;</span><span class="p">,</span><span class="s2">&quot;qmax&quot;</span><span class="p">])</span>
 </pre></div>
 
      </div>
@@ -16329,7 +16739,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">job_payload_ref</span> <span class="o">=</span> <span class="p">{</span>
@@ -16377,7 +16787,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create_job</span><span class="p">(</span><span class="n">deployment_uid</span><span class="p">,</span> <span class="n">meta_props</span><span class="o">=</span><span class="n">job_payload_ref</span><span class="p">)</span>
@@ -16400,12 +16810,12 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[19]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
@@ -16427,6 +16837,27 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>KPI: 2000.0
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16458,7 +16889,7 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <li>functions</li>
 <li>deployments</li>
 </ul>
-<p>please follow up this sample <a href="https://github.com/IBM/watson-machine-learning-samples/blob/master/cloud/notebooks/python_sdk/instance-management/Machine%20Learning%20artifacts%20management.ipynb">notebook</a>.</p>
+<p>follow up this sample <a href="https://github.com/IBM/watson-machine-learning-samples/blob/master/cloud/notebooks/python_sdk/instance-management/Machine%20Learning%20artifacts%20management.ipynb">notebook</a>.</p>
 
 </div>
 </div>
@@ -16482,7 +16913,19 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>You successfully completed this notebook! You learned how to use Keras machine learning library as well as Watson Machine Learning for model creation and deployment. Check out our <em><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html?context=analytics?pos=2">Online Documentation</a></em> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
+<p>You've successfully completed this notebook!</p>
+<p>You've learned how to:</p>
+<ul>
+<li>work with the Watson Machine Learning client</li>
+<li>upload your model on Watson Machine Learning</li>
+<li>create a deployment</li>
+<li>create and monitor a job with inline data for your deployed model</li>
+</ul>
+<p>Check out our online documentation for more samples, tutorials and documentation:</p>
+<ul>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html?context=cpdaas" target="_blank" rel="noopener noreferrer">IBM Cloud Pak for Data as a Service documentation</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html?context=wx" target="_blank" rel="noopener noreferrer">IBM watsonx.ai documentation</a></li>
+</ul>
 
 </div>
 </div>
@@ -16506,7 +16949,8 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Copyright © 2020, 2021 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
+<hr>
+Copyright © 2020-2024 IBM. This notebook and its source code are released under the terms of the MIT License.
 
 </div>
 </div>

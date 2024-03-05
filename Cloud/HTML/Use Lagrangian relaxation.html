@@ -15579,8 +15579,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Solve-a-generalized-assignment-problem-using-Lagrangian-relaxation">Solve a generalized assignment problem using Lagrangian relaxation<a class="anchor-link" href="#Solve-a-generalized-assignment-problem-using-Lagrangian-relaxation">&#182;</a></h1><p>This tutorial includes data and information that you need to set up decision optimization engines and build mathematical programming models to solve a Generalized Assignment Problem using Lagrangian relaxation.</p>
-<p>Some familiarity with Python is recommended. This notebook runs on the latest version of Python.</p>
+<h1 id="Solve-a-generalized-assignment-problem-using-Lagrangian-relaxation">Solve a generalized assignment problem using Lagrangian relaxation<a class="anchor-link" href="#Solve-a-generalized-assignment-problem-using-Lagrangian-relaxation">&#182;</a></h1><p>This tutorial includes data and information that you need to set up Decision Optimization engines and build mathematical programming models to solve a Generalized Assignment Problem using Lagrangian relaxation.</p>
+<p>Some familiarity with Python is recommended.</p>
 
 </div>
 </div>
@@ -15592,9 +15592,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Table-of-contents">Table of contents<a class="anchor-link" href="#Table-of-contents">&#182;</a></h2><ul>
+<p><strong>Table of contents:</strong></p>
+<ul>
 <li><a href="#Describe-the-business-problem">Describe the business problem</a></li>
-<li><a href="#How-decision-optimization-can-help">How Decision Optimization can help</a></li>
+<li><a href="#How-Decision-Optimization-can-help">How Decision Optimization can help</a></li>
 <li><a href="#Use-Decision-Optimization">Use Decision Optimization to create and solve the model</a></li>
 <li><a href="#Summary">Summary</a><br></li>
 </ul>
@@ -15627,7 +15628,7 @@ It solves a generalized assignment problem (GAP), as defined by Wolsey, using th
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="How-decision-optimization-can-help">How decision optimization can help<a class="anchor-link" href="#How-decision-optimization-can-help">&#182;</a></h2><p>Prescriptive analytics (decision optimization) technology recommends actions that are based on desired outcomes. It considers specific scenarios, resources, and knowledge of past and current events. With this insight, your organization can make better decisions and have greater control over business outcomes.</p>
+<h2 id="How-Decision-Optimization-can-help">How Decision Optimization can help<a class="anchor-link" href="#How-Decision-Optimization-can-help">&#182;</a></h2><p>Prescriptive analytics (Decision Optimization) technology recommends actions that are based on desired outcomes. It considers specific scenarios, resources, and knowledge of past and current events. With this insight, your organization can make better decisions and have greater control over business outcomes.</p>
 <p>Prescriptive analytics is the next step on the path to insight-based actions. It creates value through synergy with predictive analytics, which analyzes data to predict future outcomes. Prescriptive analytics takes that insight to the next level by suggesting the optimal way to handle a future situation. Organizations that act fast in dynamic conditions and make superior decisions in uncertain environments gain a strong competitive advantage.</p>
 <p>With prescriptive analytics, you can:</p>
 <ul>
@@ -15720,12 +15721,12 @@ It solves a generalized assignment problem (GAP), as defined by Wolsey, using th
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.environment</span> <span class="kn">import</span> <span class="n">Environment</span>
@@ -15736,6 +15737,31 @@ It solves a generalized assignment problem (GAP), as defined by Wolsey, using th
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>* system is: Linux 64bit
+* Python version 3.10.13, located at: /opt/conda/envs/Python-RT23.1/bin/python
+* docplex is present, version is 2.25.236
+* CPLEX library is present, version is 22.1.1.0, located at: /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages
+* pandas is present, version is 1.5.3
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16016,7 +16042,6 @@ You will approximate this problem by using an iterative model, where the objecti
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># new version of the approximated constraint where we apply the penalties</span>
 <span class="n">mdl</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">xv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">pv</span> <span class="k">for</span> <span class="n">xv</span><span class="p">,</span> <span class="n">pv</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_vars</span><span class="p">,</span> <span class="n">p_vars</span><span class="p">))</span>
-<span class="p">;</span>
 </pre></div>
 
      </div>
@@ -16038,7 +16063,11 @@ You will approximate this problem by using an iterative model, where the objecti
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>&#39;&#39;</pre>
+<pre>[docplex.mp.LinearConstraint[](x1+x2+x3,EQ,-p_[6, 10, 1]+1),
+ docplex.mp.LinearConstraint[](x4+x5+x6,EQ,-p_[12, 12, 5]+1),
+ docplex.mp.LinearConstraint[](x7+x8+x9,EQ,-p_[15, 4, 3]+1),
+ docplex.mp.LinearConstraint[](x10+x11+x12,EQ,-p_[10, 3, 9]+1),
+ docplex.mp.LinearConstraint[](x13+x14+x15,EQ,-p_[8, 9, 5]+1)]</pre>
 </div>
 
 </div>
@@ -16270,7 +16299,7 @@ You will approximate this problem by using an iterative model, where the objecti
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You have learned how to set up and use IBM Decision Optimization CPLEX Modeling for Python to formulate a Constraint Programming model and solve it with IBM Decision Optimization.</p>
+<h2 id="Summary">Summary<a class="anchor-link" href="#Summary">&#182;</a></h2><p>You have learned how to set up and use IBM Decision Optimization CPLEX Modeling for Python to formulate a Mathematical Programming model and solve it with IBM Decision Optimization.</p>
 
 </div>
 </div>
@@ -16284,8 +16313,8 @@ You will approximate this problem by using an iterative model, where the objecti
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="References">References<a class="anchor-link" href="#References">&#182;</a></h2><ul>
 <li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization CPLEX Modeling for Python documentation</a></li>
-<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html" target="_blank" rel="noopener noreferrer">Online documentation</a></li>
-<li>Need help with DOcplex or to report a bug? Go to <a href="https://developer.ibm.com/answers/smartspace/docloud" target="_blank" rel="noopener noreferrer">https://developer.ibm.com/answers/smartspace/docloud</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html?context=cpdaas" target="_blank" rel="noopener noreferrer">IBM Cloud Pak for Data as a Service documentation</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html?context=wx" target="_blank" rel="noopener noreferrer">IBM watsonx.ai documentation</a></li>
 </ul>
 
 </div>
@@ -16299,7 +16328,7 @@ You will approximate this problem by using an iterative model, where the objecti
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <hr>
-Copyright © 2017-2021. This notebook and its source code are released under the terms of the MIT License.
+Copyright © 2017-2024. This notebook and its source code are released under the terms of the MIT License.
 
 </div>
 </div>
