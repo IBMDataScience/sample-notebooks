@@ -15580,24 +15580,44 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="How-to-make-targeted-offers-to-customers">How to make targeted offers to customers<a class="anchor-link" href="#How-to-make-targeted-offers-to-customers">&#182;</a></h1><p>This tutorial includes everything you need to set up IBM Decision Optimization CPLEX Modeling for Python (DOcplex), build a Mathematical Programming model, and get its solution by solving the model with IBM ILOG CPLEX Optimizer.</p>
-<p>Table of contents:</p>
+<p>When you finish this tutorial, you'll have a foundational knowledge of <em>Prescriptive Analytics</em>.</p>
+<blockquote>
+<p>This notebook is part of <a href="http://ibmdecisionoptimization.github.io/docplex-doc/">Prescriptive Analytics for Python</a></p>
+<p>It requires either an <a href="http://ibmdecisionoptimization.github.io/docplex-doc/getting_started.html">installation of CPLEX Optimizers</a> or it can be run on <a href="https://www.ibm.com/products/cloud-pak-for-data/as-a-service/">IBM Cloud Pak for Data as a Service</a> (Sign up for a <a href="https://dataplatform.cloud.ibm.com/registration/stepone?context=wdp&amp;apps=all%3E">free IBM Cloud account</a></p>
+</blockquote>
+<p>and you can start using <code>IBM Cloud Pak for Data as a Service</code> right away).</p>
+<blockquote>
+<p>CPLEX is available on <i>IBM Cloud Pak for Data</i> and <i>IBM Cloud Pak for Data as a Service</i>:</p>
+<ul>
+<li><i>IBM Cloud Pak for Data as a Service</i>: Depends on the runtime used:<ul>
+<li><i>Runtime xx.x on Python 3.x</i> runtime: Community edition</li>
+<li><i>DO + NLP Runtime xx.x on Python 3.x</i> runtime: full edition</li>
+</ul>
+</li>
+<li><i>IBM Cloud Pak for Data</i>: Community edition is installed by default. Please install <code>DO</code> addon in <code>Watson Studio Premium</code> for the full edition</li>
+</ul>
+</blockquote>
+<p><strong>Table of contents:</strong></p>
 <ul>
 <li><a href="#Describe-the-business-problem">Describe the business problem</a></li>
 </ul>
 <ul>
-<li><a href="#How-decision-optimization-can-help">How decision optimization (prescriptive analytics) can help</a></li>
+<li><a href="#How-Decision-Optimization-can-help">How Decision Optimization can help</a></li>
 <li><a href="#Prepare-the-data">Prepare the data</a></li>
-<li><a href="#Use-IBM-Decision-Optimization-CPLEX-Modeling-for-Python">Use decision optimization</a><ul>
-<li><a href="#Step-1:-Set-up-the-prescriptive-model">Step 1: Set up the prescriptive model</a><ul>
+<li><a href="#Use-IBM-Decision-Optimization-CPLEX-Modeling-for-Python">Use Decision Optimization</a><ul>
+<li><a href="#Step-1:-Import-the-library">Step 1: Import the library</a></li>
+</ul>
+<ul>
+<li><a href="#Step-2:-Set-up-the-prescriptive-model">Step 2: Set up the prescriptive model</a><ul>
 <li><a href="#Define-the-decision-variables">Define the decision variables</a></li>
 <li><a href="#Set-up-the-constraints">Set up the constraints</a></li>
 <li><a href="#Express-the-objective">Express the objective</a></li>
-<li><a href="#Solve-with-Decision-Optimization">Solve with Decision Optimization</a></li>
+<li><a href="#Solve-the-model">Solve the model</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li><a href="#Step-2:-Analyze-the-solution">Step 2: Analyze the solution and run an example analysis</a></li>
+<li><a href="#Step-3:-Analyze-the-solution">Step 3: Analyze the solution</a></li>
 </ul>
 </li>
 <li><a href="#Summary">Summary</a></li>
@@ -15637,8 +15657,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="How-decision-optimization-can-help">How decision optimization can help<a class="anchor-link" href="#How-decision-optimization-can-help">&#182;</a></h2><ul>
-<li><p>Prescriptive analytics technology recommends actions based on desired outcomes, taking into account specific scenarios, resources, and knowledge of past and current events. This insight can help your organization make better decisions and have greater control of business outcomes.</p>
+<h2 id="How-Decision-Optimization-can-help">How Decision Optimization can help<a class="anchor-link" href="#How-Decision-Optimization-can-help">&#182;</a></h2><ul>
+<li><p>Prescriptive analytics (Decision Optimization) technology recommends actions based on desired outcomes, taking into account specific scenarios, resources, and knowledge of past and current events. This insight can help your organization make better decisions and have greater control of business outcomes.</p>
 </li>
 <li><p>Prescriptive analytics is the next step on the path to insight-based actions. It creates value through synergy with predictive analytics, which analyzes data to predict future outcomes.</p>
 </li>
@@ -15668,16 +15688,16 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="Prepare-the-data">Prepare the data<a class="anchor-link" href="#Prepare-the-data">&#182;</a></h2><p>The predictions show which offers a customer is most likely to accept, and the confidence level that they will accept, depending on each customer’s details.</p>
 <p>For example:
-(139987, &quot;Pension&quot;, 0.13221, &quot;Mortgage&quot;, 0.10675) indicates that customer Id=139987 will certainly not buy a <em>Pension</em> as the level is only 13.2%, 
+<code>(139987, &quot;Pension&quot;, 0.13221, &quot;Mortgage&quot;, 0.10675)</code> indicates that customer Id=139987 will certainly not buy a <em>Pension</em> as the level is only 13.2%, 
 whereas
-(140030, &quot;Savings&quot;, 0.95678, &quot;Pension&quot;, 0.84446) is more than likely to buy <em>Savings</em> and a <em>Pension</em> as the rates are 95.7% and 84.4%.</p>
+<code>(140030, &quot;Savings&quot;, 0.95678, &quot;Pension&quot;, 0.84446)</code> is more than likely to buy <em>Savings</em> and a <em>Pension</em> as the rates are 95.7% and 84.4%.</p>
 <p>This data is taken from a SPSS example, except that the names of the customers were modified.</p>
-<p>A Python data analysis library, <a href="http://pandas.pydata.org" target="_blank" rel="noopener noreferrer">pandas</a>, is used to store the data. Let's set up and declare the data.</p>
+<p>A Python data analysis library, <a href="http://pandas.pydata.org">pandas</a>, is used to store the data. Let's set up and declare the data.</p>
 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
@@ -15685,7 +15705,7 @@ whereas
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">Series</span>
 
 <span class="n">names</span> <span class="o">=</span> <span class="p">{</span>
     <span class="mi">139987</span> <span class="p">:</span> <span class="s2">&quot;Guadalupe J. Martinez&quot;</span><span class="p">,</span> <span class="mi">140030</span> <span class="p">:</span> <span class="s2">&quot;Michelle M. Lopez&quot;</span><span class="p">,</span> <span class="mi">140089</span> <span class="p">:</span> <span class="s2">&quot;Terry L. Ridgley&quot;</span><span class="p">,</span> 
@@ -15708,17 +15728,84 @@ whereas
                         <span class="p">(</span><span class="mi">139667</span><span class="p">,</span> <span class="s2">&quot;Pension&quot;</span><span class="p">,</span> <span class="mf">0.13221</span><span class="p">,</span> <span class="s2">&quot;Mortgage&quot;</span><span class="p">,</span> <span class="mf">0.10675</span><span class="p">),</span> <span class="p">(</span><span class="mi">139696</span><span class="p">,</span> <span class="s2">&quot;Savings&quot;</span><span class="p">,</span> <span class="mf">0.16188</span><span class="p">,</span> <span class="s2">&quot;Pension&quot;</span><span class="p">,</span> <span class="mf">0.13221</span><span class="p">),</span> <span class="p">(</span><span class="mi">139752</span><span class="p">,</span> <span class="s2">&quot;Pension&quot;</span><span class="p">,</span> <span class="mf">0.13221</span><span class="p">,</span> <span class="s2">&quot;Mortgage&quot;</span><span class="p">,</span> <span class="mf">0.10675</span><span class="p">),</span> 
                         <span class="p">(</span><span class="mi">139832</span><span class="p">,</span> <span class="s2">&quot;Savings&quot;</span><span class="p">,</span> <span class="mf">0.95678</span><span class="p">,</span> <span class="s2">&quot;Pension&quot;</span><span class="p">,</span> <span class="mf">0.83426</span><span class="p">),</span> <span class="p">(</span><span class="mi">139859</span><span class="p">,</span> <span class="s2">&quot;Savings&quot;</span><span class="p">,</span> <span class="mf">0.95678</span><span class="p">,</span> <span class="s2">&quot;Pension&quot;</span><span class="p">,</span> <span class="mf">0.75925</span><span class="p">),</span> <span class="p">(</span><span class="mi">139881</span><span class="p">,</span> <span class="s2">&quot;Pension&quot;</span><span class="p">,</span> <span class="mf">0.13221</span><span class="p">,</span> <span class="s2">&quot;Mortgage&quot;</span><span class="p">,</span> <span class="mf">0.10675</span><span class="p">)]</span>
 
-<span class="n">products</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Car loan&quot;</span><span class="p">,</span> <span class="s2">&quot;Savings&quot;</span><span class="p">,</span> <span class="s2">&quot;Mortgage&quot;</span><span class="p">,</span> <span class="s2">&quot;Pension&quot;</span><span class="p">]</span>
-<span class="n">productValue</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">]</span>
-<span class="n">budgetShare</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">products</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Savings&quot;</span><span class="p">,</span> <span class="s2">&quot;Mortgage&quot;</span><span class="p">,</span> <span class="s2">&quot;Pension&quot;</span><span class="p">]</span>
+<span class="n">product_value</span> <span class="o">=</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">]</span>
+<span class="n">budget_share</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]</span>
 
-<span class="n">availableBudget</span> <span class="o">=</span> <span class="mi">500</span>
-<span class="n">channels</span> <span class="o">=</span>  <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;gift&quot;</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;newsletter&quot;</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;seminar&quot;</span><span class="p">,</span> <span class="mf">23.0</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">)],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;cost&quot;</span><span class="p">,</span> <span class="s2">&quot;factor&quot;</span><span class="p">])</span>
+<span class="n">available_budget</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">channels</span> <span class="o">=</span>  <span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">[(</span><span class="s2">&quot;gift&quot;</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;newsletter&quot;</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;seminar&quot;</span><span class="p">,</span> <span class="mf">23.0</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">)],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;cost&quot;</span><span class="p">,</span> <span class="s2">&quot;factor&quot;</span><span class="p">])</span>
+<span class="n">channels</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[1]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>name</th>
+      <th>cost</th>
+      <th>factor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>gift</td>
+      <td>20.0</td>
+      <td>0.20</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>newsletter</td>
+      <td>15.0</td>
+      <td>0.05</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>seminar</td>
+      <td>23.0</td>
+      <td>0.30</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -15728,7 +15815,7 @@ whereas
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Offers are stored in a <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html" target="_blank" rel="noopener noreferrer">pandas DataFrame</a>.</p>
+<p>Offers are stored in a <a href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html">pandas DataFrame</a>.</p>
 
 </div>
 </div>
@@ -15741,8 +15828,8 @@ whereas
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">offers</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;customerid&quot;</span><span class="p">,</span> <span class="s2">&quot;Product1&quot;</span><span class="p">,</span> <span class="s2">&quot;Confidence1&quot;</span><span class="p">,</span> <span class="s2">&quot;Product2&quot;</span><span class="p">,</span> <span class="s2">&quot;Confidence2&quot;</span><span class="p">])</span>
-<span class="n">offers</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;name&#39;</span><span class="p">,</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">offers</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;customerid&quot;</span><span class="p">,</span> <span class="s2">&quot;Product1&quot;</span><span class="p">,</span> <span class="s2">&quot;Confidence1&quot;</span><span class="p">,</span> <span class="s2">&quot;Product2&quot;</span><span class="p">,</span> <span class="s2">&quot;Confidence2&quot;</span><span class="p">])</span>
+<span class="n">offers</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">Series</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="p">))</span>
 </pre></div>
 
      </div>
@@ -15801,12 +15888,12 @@ whereas
 <span class="s2">    border: 2px solid #ccf;</span>
 <span class="s2">    background-color: #f4f4ff;</span>
 <span class="s2">}</span>
-<span class="s2">    table.dataframe thead th:first-child {</span>
-<span class="s2">        display: none;</span>
-<span class="s2">    }</span>
-<span class="s2">    table.dataframe tbody th {</span>
-<span class="s2">        display: none;</span>
-<span class="s2">    }</span>
+<span class="s2">table.dataframe thead th:first-child {</span>
+<span class="s2">    display: none;</span>
+<span class="s2">}</span>
+<span class="s2">table.dataframe tbody th {</span>
+<span class="s2">    display: none;</span>
+<span class="s2">}</span>
 <span class="s2">&quot;&quot;&quot;</span>
 </pre></div>
 
@@ -15828,9 +15915,9 @@ whereas
 
 <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
 <span class="k">try</span><span class="p">:</span> 
-    <span class="n">display</span><span class="p">(</span><span class="n">offers</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;customerid&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;name&#39;</span><span class="p">))</span> <span class="c1">#Pandas &gt;= 0.17</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">offers</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;customerid&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;name&#39;</span><span class="p">))</span> <span class="c1">#Pandas &gt;= 0.17</span>
 <span class="k">except</span><span class="p">:</span>
-    <span class="n">display</span><span class="p">(</span><span class="n">offers</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;customerid&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span> <span class="c1">#Pandas &lt; 0.17</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">offers</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;customerid&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">))</span> <span class="c1">#Pandas &lt; 0.17</span>
 </pre></div>
 
      </div>
@@ -15844,17 +15931,6 @@ whereas
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>/tmp/wsuser/ipykernel_132/1194653347.py:6: FutureWarning: In a future version of pandas all arguments of DataFrame.drop except for the argument &#39;labels&#39; will be keyword-only
-  display(offers.drop(&#39;customerid&#39;,1).sort_values(by=&#39;name&#39;)) #Pandas &gt;= 0.17
-</pre>
-</div>
-</div>
 <div class="jp-OutputArea-child">
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
@@ -16134,8 +16210,8 @@ whereas
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Step-1:-Set-up-the-prescriptive-model">Step 1: Set up the prescriptive model<a class="anchor-link" href="#Step-1:-Set-up-the-prescriptive-model">&#182;</a></h3><p>Set up the prescriptive model using the Mathematical Programming (docplex.mp) modeling package.</p>
-<h4 id="Create-the-model">Create the model<a class="anchor-link" href="#Create-the-model">&#182;</a></h4>
+<h3 id="Step-1:-Import-the-library">Step 1: Import the library<a class="anchor-link" href="#Step-1:-Import-the-library">&#182;</a></h3><p>Run the following code to import the Decision Optimization CPLEX Modeling library.  The <em>DOcplex</em> library contains the two modeling packages, Mathematical Programming (docplex.mp) and Constraint Programming (docplex.cp).</p>
+
 </div>
 </div>
 </div>
@@ -16147,9 +16223,72 @@ whereas
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">docplex.mp</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Please install docplex. See https://pypi.org/project/docplex/&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>If <em>cplex</em> is not installed, you can install CPLEX Community edition.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">cplex</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Please install CPLEX. See https://pypi.org/project/cplex/&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Step-2:-Set-up-the-prescriptive-model">Step 2: Set up the prescriptive model<a class="anchor-link" href="#Step-2:-Set-up-the-prescriptive-model">&#182;</a></h3><h4 id="Create-the-model">Create the model<a class="anchor-link" href="#Create-the-model">&#182;</a></h4>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">docplex.mp.model</span> <span class="kn">import</span> <span class="n">Model</span>
 
-<span class="n">mdl</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marketing_campaign&quot;</span><span class="p">,</span> <span class="n">round_solution</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">mdl</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;marketing_campaign&quot;</span><span class="p">)</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">round_solution</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># make sure integer vars are automatically rounded</span>
 </pre></div>
 
      </div>
@@ -16165,34 +16304,77 @@ whereas
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h4 id="Define-the-decision-variables">Define the decision variables<a class="anchor-link" href="#Define-the-decision-variables">&#182;</a></h4><ul>
-<li>The integer decision variables <code>channelVars</code>, represent whether or not a customer will be made an offer for a particular product via a particular channel.</li>
-<li>The integer decision variable <code>totaloffers</code> represents the total number of offers made.</li>
-<li>The continuous variable <code>budgetSpent</code> represents the total cost of the offers made.</li>
+<li>The integer decision variables <code>channel_vars</code>, represent whether or not a customer will be made an offer for a particular product via a particular channel.</li>
+<li>The integer decision variable <code>total_offers</code> represents the total number of offers made.</li>
+<li>The continuous variable <code>budget_pent</code> represents the total cost of the offers made.</li>
 </ul>
 
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">offersR</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">offers</span><span class="p">))</span>
 <span class="n">productsR</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">products</span><span class="p">))</span>
 <span class="n">channelsR</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">))</span>
 
-<span class="n">channelVars</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">binary_var_cube</span><span class="p">(</span><span class="n">offersR</span><span class="p">,</span> <span class="n">productsR</span><span class="p">,</span> <span class="n">channelsR</span><span class="p">)</span>
-<span class="n">totaloffers</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">integer_var</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">budgetSpent</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">continuous_var</span><span class="p">()</span>
+<span class="c1"># names of channels</span>
+<span class="n">channel_names</span> <span class="o">=</span> <span class="n">channels</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="c1"># this function is used to coin names for channel variables</span>
+<span class="k">def</span> <span class="nf">name_chan_var</span><span class="p">(</span><span class="n">opch</span><span class="p">):</span>
+    <span class="n">offer</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">ch</span> <span class="o">=</span> <span class="n">opch</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;ch_</span><span class="si">{</span><span class="n">offer</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">channel_names</span><span class="p">[</span><span class="n">ch</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="n">channel_vars</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">binary_var_cube</span><span class="p">(</span><span class="n">offersR</span><span class="p">,</span> <span class="n">productsR</span><span class="p">,</span> <span class="n">channelsR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name_chan_var</span><span class="p">)</span>
+<span class="n">total_offers</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">integer_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;total_offers&quot;</span><span class="p">)</span>
+<span class="n">budget_spent</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">continuous_var</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;spent&quot;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">name_prod_budget</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;product_budget_</span><span class="si">{</span><span class="n">products</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="n">budget_per_product</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">continuous_var_list</span><span class="p">(</span><span class="n">productsR</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name_prod_budget</span><span class="p">)</span>
+
+<span class="n">mdl</span><span class="o">.</span><span class="n">print_information</span><span class="p">()</span>
 </pre></div>
 
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Model: marketing_campaign
+ - number of variables: 248
+   - binary=243, integer=1, continuous=4
+ - number of constraints: 0
+   - linear=0
+ - parameters: defaults
+ - objective: none
+ - problem type is: MILP
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16216,33 +16398,32 @@ whereas
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Only 1 product is offered to each customer     </span>
-<span class="n">mdl</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channelVars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span><span class="p">)</span> <span class="o">&lt;=</span><span class="mi">1</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channel_vars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span>
                    <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offersR</span><span class="p">)</span>
 
-<span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span> <span class="n">totaloffers</span> <span class="o">==</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channelVars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span> 
-                                           <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offersR</span> 
-                                           <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span> 
-                                           <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span><span class="p">)</span> <span class="p">)</span>
+<span class="c1"># total offers is simply sum of channel vars</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">total_offers</span> <span class="o">==</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channel_vars</span><span class="p">))</span>
 
-<span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span> <span class="n">budgetSpent</span> <span class="o">==</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channelVars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span><span class="o">*</span><span class="n">channels</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;cost&quot;</span><span class="p">]</span> 
-                                           <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offersR</span> 
-                                           <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span> 
-                                           <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span><span class="p">)</span> <span class="p">)</span>
-
-<span class="c1"># Balance the offers among products   </span>
+<span class="c1"># define per product budgets</span>
 <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span><span class="p">:</span>
-    <span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channelVars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offersR</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span><span class="p">)</span> 
-                       <span class="o">&lt;=</span> <span class="n">budgetShare</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">*</span> <span class="n">totaloffers</span> <span class="p">)</span>
+    <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">budget_per_product</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">==</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channel_vars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">c</span><span class="p">]</span> <span class="o">*</span> <span class="n">channels</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;cost&quot;</span><span class="p">]</span>
+                                             <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offersR</span>
+                                             <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span><span class="p">))</span>
+        
+<span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">budget_spent</span> <span class="o">==</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">budget_per_product</span><span class="p">))</span>
+
+<span class="c1"># Balance the offers among products</span>
+<span class="k">assert</span> <span class="nb">sum</span><span class="p">(</span><span class="n">budget_share</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>  <span class="c1"># shares equal 1</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span><span class="p">:</span>
+    <span class="n">mdl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channel_vars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offersR</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span><span class="p">)</span> 
+                       <span class="o">&lt;=</span> <span class="n">budget_share</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">*</span> <span class="n">total_offers</span> <span class="p">)</span>
             
 <span class="c1"># Do not exceed the budget</span>
-<span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span> <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">channelVars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span><span class="o">*</span><span class="n">channels</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;cost&quot;</span><span class="p">]</span>
-                            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offersR</span> 
-                            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span> 
-                            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span><span class="p">)</span>  <span class="o">&lt;=</span> <span class="n">availableBudget</span> <span class="p">)</span>  
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span> <span class="n">budget_spent</span>  <span class="o">&lt;=</span> <span class="n">available_budget</span> <span class="p">)</span>  
 
 <span class="n">mdl</span><span class="o">.</span><span class="n">print_information</span><span class="p">()</span>
 </pre></div>
@@ -16265,10 +16446,10 @@ whereas
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>Model: marketing_campaign
- - number of variables: 326
-   - binary=324, integer=1, continuous=1
- - number of constraints: 34
-   - linear=34
+ - number of variables: 248
+   - binary=243, integer=1, continuous=4
+ - number of constraints: 36
+   - linear=36
  - parameters: defaults
  - objective: none
  - problem type is: MILP
@@ -16297,20 +16478,21 @@ whereas
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">mdl</span><span class="o">.</span><span class="n">maximize</span><span class="p">(</span>
-    <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">channelVars</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">idx2</span><span class="p">]</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">factor</span> <span class="o">*</span> <span class="n">productValue</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">*</span> <span class="n">o</span><span class="o">.</span><span class="n">Confidence1</span>  
-            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">expected_p1</span> <span class="o">=</span>     <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">channel_vars</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">idx2</span><span class="p">]</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">factor</span> <span class="o">*</span> <span class="n">product_value</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">*</span> <span class="n">o</span><span class="o">.</span><span class="n">Confidence1</span>  
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span>
             <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="n">offers</span><span class="p">[</span><span class="n">offers</span><span class="p">[</span><span class="s1">&#39;Product1&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">products</span><span class="p">[</span><span class="n">p</span><span class="p">]]</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>  
             <span class="k">for</span> <span class="n">idx2</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channels</span><span class="o">.</span><span class="n">iterrows</span><span class="p">())</span>
-    <span class="o">+</span>
-    <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">channelVars</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">idx2</span><span class="p">]</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">factor</span> <span class="o">*</span> <span class="n">productValue</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">*</span> <span class="n">o</span><span class="o">.</span><span class="n">Confidence2</span> 
-            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span> 
+
+<span class="n">expected_p2</span> <span class="o">=</span>     <span class="n">mdl</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span> <span class="n">channel_vars</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">idx2</span><span class="p">]</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">factor</span> <span class="o">*</span> <span class="n">product_value</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">*</span> <span class="n">o</span><span class="o">.</span><span class="n">Confidence2</span> 
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span>
             <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">o</span> <span class="ow">in</span> <span class="n">offers</span><span class="p">[</span><span class="n">offers</span><span class="p">[</span><span class="s1">&#39;Product2&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">products</span><span class="p">[</span><span class="n">p</span><span class="p">]]</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span> 
             <span class="k">for</span> <span class="n">idx2</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channels</span><span class="o">.</span><span class="n">iterrows</span><span class="p">())</span>
-    <span class="p">)</span>
+
+
+<span class="n">mdl</span><span class="o">.</span><span class="n">maximize</span><span class="p">(</span><span class="n">expected_p1</span> <span class="o">+</span> <span class="n">expected_p2</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16325,7 +16507,7 @@ whereas
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h4 id="Solve-with-Decision-Optimization">Solve with Decision Optimization<a class="anchor-link" href="#Solve-with-Decision-Optimization">&#182;</a></h4><p>Depending on the size of the problem, the solve stage might fail and require the Commercial Edition of CPLEX engines, which is included in the premium environments in Watson Studio.</p>
+<h4 id="Define-KPIs">Define KPIs<a class="anchor-link" href="#Define-KPIs">&#182;</a></h4><p>KPIs are numbers, computed to give insights, not necessarily used in the optimization process.</p>
 
 </div>
 </div>
@@ -16335,11 +16517,14 @@ whereas
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
-<span class="k">assert</span> <span class="n">s</span><span class="p">,</span> <span class="s2">&quot;No Solution !!!&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span><span class="p">:</span>
+    <span class="n">mdl</span><span class="o">.</span><span class="n">add_kpi</span><span class="p">(</span><span class="n">budget_per_product</span><span class="p">[</span><span class="n">p</span><span class="p">],</span> <span class="n">budget_per_product</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_kpi</span><span class="p">(</span><span class="n">expected_p1</span><span class="p">,</span> <span class="s2">&quot;Expected P1 return&quot;</span><span class="p">);</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_kpi</span><span class="p">(</span><span class="n">expected_p2</span><span class="p">,</span> <span class="s2">&quot;Expected P2 return&quot;</span><span class="p">);</span>
 </pre></div>
 
      </div>
@@ -16354,7 +16539,7 @@ whereas
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Step-2:-Analyze-the-solution">Step 2: Analyze the solution<a class="anchor-link" href="#Step-2:-Analyze-the-solution">&#182;</a></h3><p>First, display the <strong>Optimal Marketing Channel per customer</strong>.</p>
+<h4 id="Solve-the-model">Solve the model<a class="anchor-link" href="#Solve-the-model">&#182;</a></h4><p>Depending on the size of the problem, the solve stage might fail and require the Commercial Edition of CPLEX engines, which is included in the premium environments in IBM Cloud Pak for Data.</p>
 
 </div>
 </div>
@@ -16364,19 +16549,162 @@ whereas
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">log_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">s</span><span class="p">,</span> <span class="s2">&quot;No Solution !!!&quot;</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>WARNING: Number of workers has been reduced to 2 to comply with platform limitations.
+Version identifier: 22.1.1.0 | 2023-02-11 | 22d6266e5
+CPXPARAM_Read_DataCheck                          1
+CPXPARAM_Threads                                 2
+Found incumbent of value 0.000000 after 0.00 sec. (0.01 ticks)
+Tried aggregator 2 times.
+MIP Presolve eliminated 1 rows and 55 columns.
+MIP Presolve modified 3 coefficients.
+Aggregator did 3 substitutions.
+Reduced MIP has 32 rows, 190 columns, and 760 nonzeros.
+Reduced MIP has 189 binaries, 1 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.01 sec. (1.36 ticks)
+Probing time = 0.00 sec. (0.40 ticks)
+Tried aggregator 1 time.
+Detecting symmetries...
+Reduced MIP has 32 rows, 190 columns, and 760 nonzeros.
+Reduced MIP has 189 binaries, 1 generals, 0 SOSs, and 0 indicators.
+Presolve time = 0.01 sec. (0.59 ticks)
+Probing time = 0.00 sec. (0.40 ticks)
+Clique table members: 27.
+MIP emphasis: balance optimality and feasibility.
+MIP search method: dynamic search.
+Parallel mode: deterministic, using up to 2 threads.
+Root relaxation solution time = 0.00 sec. (0.31 ticks)
+
+        Nodes                                         Cuts/
+   Node  Left     Objective  IInf  Best Integer    Best Bound    ItCnt     Gap
+
+*     0+    0                            0.0000     2946.6993              --- 
+      0     0      862.3006     5        0.0000      862.3006       30     --- 
+      0     0      844.9441     9        0.0000       Cuts: 7       57     --- 
+      0     0      844.9441    11        0.0000       Cuts: 6       65     --- 
+*     0     0      integral     0      844.4226       Cuts: 3       75    0.00%
+*     0+    0                          844.4226      844.4226             0.00%
+      0     0        cutoff            844.4226      844.4226       75    0.00%
+Elapsed time = 0.12 sec. (10.39 ticks, tree = 0.01 MB, solutions = 3)
+
+Cover cuts applied:  1
+Mixed integer rounding cuts applied:  2
+Zero-half cuts applied:  3
+Lift and project cuts applied:  1
+Gomory fractional cuts applied:  1
+
+Root node processing (before b&amp;c):
+  Real time             =    0.13 sec. (10.41 ticks)
+Parallel b&amp;c, 2 threads:
+  Real time             =    0.00 sec. (0.00 ticks)
+  Sync time (average)   =    0.00 sec.
+  Wait time (average)   =    0.00 sec.
+                          ------------
+Total (root+branch&amp;cut) =    0.13 sec. (10.41 ticks)
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># print objectives and kpis</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">report</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>* model marketing_campaign solved with objective = 844.423
+*  KPI: product_budget_Savings  = 92.000
+*  KPI: product_budget_Mortgage = 230.000
+*  KPI: product_budget_Pension  = 138.000
+*  KPI: Expected P1 return      = 190.942
+*  KPI: Expected P2 return      = 653.480
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Step-3:-Analyze-the-solution">Step 3: Analyze the solution<a class="anchor-link" href="#Step-3:-Analyze-the-solution">&#182;</a></h3><p>First, display the <strong>Optimal Marketing Channel per customer</strong>.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">report</span> <span class="o">=</span> <span class="p">[(</span><span class="n">channels</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">products</span><span class="p">[</span><span class="n">p</span><span class="p">],</span> <span class="n">names</span><span class="p">[</span><span class="n">offers</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">o</span><span class="p">,</span> <span class="s2">&quot;customerid&quot;</span><span class="p">]])</span> 
           <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">channelsR</span> 
-          <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span> 
-          <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offersR</span>  <span class="k">if</span> <span class="n">channelVars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">solution_value</span><span class="o">==</span><span class="mi">1</span><span class="p">]</span>
+          <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">productsR</span>
+          <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">offersR</span>  <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">channel_vars</span><span class="p">[</span><span class="n">o</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">c</span><span class="p">]</span><span class="o">.</span><span class="n">solution_value</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1e-6</span><span class="p">]</span>
 
-<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="p">)</span> <span class="o">==</span> <span class="n">totaloffers</span><span class="o">.</span><span class="n">solution_value</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="p">)</span> <span class="o">==</span> <span class="nb">round</span><span class="p">(</span><span class="n">total_offers</span><span class="o">.</span><span class="n">solution_value</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Marketing plan has </span><span class="si">{0}</span><span class="s2"> offers costing </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">totaloffers</span><span class="o">.</span><span class="n">solution_value</span><span class="p">,</span> <span class="n">budgetSpent</span><span class="o">.</span><span class="n">solution_value</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Marketing plan has </span><span class="si">{0}</span><span class="s2"> offers costing </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">total_offers</span><span class="o">.</span><span class="n">solution_value</span><span class="p">,</span> <span class="n">budget_spent</span><span class="o">.</span><span class="n">solution_value</span><span class="p">))</span>
 
-<span class="n">report_bd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;channel&#39;</span><span class="p">,</span> <span class="s1">&#39;product&#39;</span><span class="p">,</span> <span class="s1">&#39;customer&#39;</span><span class="p">])</span>
+<span class="n">report_bd</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">report</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;channel&#39;</span><span class="p">,</span> <span class="s1">&#39;product&#39;</span><span class="p">,</span> <span class="s1">&#39;customer&#39;</span><span class="p">])</span>
 <span class="n">display</span><span class="p">(</span><span class="n">report_bd</span><span class="p">)</span>
 </pre></div>
 
@@ -16397,7 +16725,7 @@ whereas
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Marketing plan has 20 offers costing 364.0
+<pre>Marketing plan has 20.0 offers costing 460.0
 </pre>
 </div>
 </div>
@@ -16434,123 +16762,123 @@ whereas
   <tbody>
     <tr>
       <th>0</th>
-      <td>newsletter</td>
-      <td>Car loan</td>
-      <td>Fabien Mailhot</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>newsletter</td>
-      <td>Car loan</td>
-      <td>Christian Austerlitz</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>newsletter</td>
-      <td>Car loan</td>
-      <td>Lee Tsou</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>newsletter</td>
-      <td>Car loan</td>
-      <td>Sanaa' Hikmah Hakimi</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>newsletter</td>
-      <td>Car loan</td>
+      <td>seminar</td>
+      <td>Savings</td>
       <td>George Blomqvist</td>
     </tr>
     <tr>
-      <th>5</th>
-      <td>newsletter</td>
-      <td>Car loan</td>
-      <td>Yuina Ohira</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>newsletter</td>
-      <td>Car loan</td>
-      <td>Vlad Alekseeva</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>newsletter</td>
-      <td>Car loan</td>
-      <td>Cassio Lombardo</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>newsletter</td>
-      <td>Car loan</td>
+      <th>1</th>
+      <td>seminar</td>
+      <td>Savings</td>
       <td>Trinity Zelaya Miramontes</td>
     </tr>
     <tr>
-      <th>9</th>
-      <td>newsletter</td>
-      <td>Car loan</td>
-      <td>Eldar Muravyov</td>
+      <th>2</th>
+      <td>seminar</td>
+      <td>Savings</td>
+      <td>Shu T'an</td>
     </tr>
     <tr>
-      <th>10</th>
-      <td>newsletter</td>
-      <td>Car loan</td>
-      <td>Jameel Abdul-Ghani Gerges</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>newsletter</td>
-      <td>Car loan</td>
+      <th>3</th>
+      <td>seminar</td>
+      <td>Savings</td>
       <td>Zeeb Longoria Marrero</td>
     </tr>
     <tr>
-      <th>12</th>
-      <td>seminar</td>
-      <td>Savings</td>
-      <td>Terry L. Ridgley</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>seminar</td>
-      <td>Savings</td>
-      <td>Gabrielly Sousa Martins</td>
-    </tr>
-    <tr>
-      <th>14</th>
+      <th>4</th>
       <td>seminar</td>
       <td>Mortgage</td>
-      <td>Miranda B. Roush</td>
+      <td>Guadalupe J. Martinez</td>
     </tr>
     <tr>
-      <th>15</th>
+      <th>5</th>
+      <td>seminar</td>
+      <td>Mortgage</td>
+      <td>Roland Guérette</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>seminar</td>
+      <td>Mortgage</td>
+      <td>Fabien Mailhot</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>seminar</td>
+      <td>Mortgage</td>
+      <td>Steffen Meister</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>seminar</td>
+      <td>Mortgage</td>
+      <td>Wolfgang Sanger</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>seminar</td>
+      <td>Mortgage</td>
+      <td>Lee Tsou</td>
+    </tr>
+    <tr>
+      <th>10</th>
       <td>seminar</td>
       <td>Mortgage</td>
       <td>Miroslav Škaroupka</td>
     </tr>
     <tr>
-      <th>16</th>
+      <th>11</th>
+      <td>seminar</td>
+      <td>Mortgage</td>
+      <td>Vlad Alekseeva</td>
+    </tr>
+    <tr>
+      <th>12</th>
       <td>seminar</td>
       <td>Mortgage</td>
       <td>Matheus Azevedo Melo</td>
     </tr>
     <tr>
-      <th>17</th>
+      <th>13</th>
       <td>seminar</td>
       <td>Mortgage</td>
       <td>Franca Palermo</td>
     </tr>
     <tr>
-      <th>18</th>
+      <th>14</th>
       <td>seminar</td>
       <td>Pension</td>
       <td>Michelle M. Lopez</td>
     </tr>
     <tr>
-      <th>19</th>
+      <th>15</th>
+      <td>seminar</td>
+      <td>Pension</td>
+      <td>Terry L. Ridgley</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>seminar</td>
+      <td>Pension</td>
+      <td>Sandra J. Wynkoop</td>
+    </tr>
+    <tr>
+      <th>17</th>
       <td>seminar</td>
       <td>Pension</td>
       <td>Will Henderson</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>seminar</td>
+      <td>Pension</td>
+      <td>Earl B. Wood</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>seminar</td>
+      <td>Pension</td>
+      <td>Gabrielly Sousa Martins</td>
     </tr>
   </tbody>
 </table>
@@ -16580,10 +16908,10 @@ whereas
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">report_bd</span><span class="p">[</span><span class="n">report_bd</span><span class="p">[</span><span class="s1">&#39;channel&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;seminar&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;channel&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">display</span><span class="p">(</span><span class="n">report_bd</span><span class="p">[</span><span class="n">report_bd</span><span class="p">[</span><span class="s1">&#39;channel&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;seminar&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s1">&#39;channel&#39;</span><span class="p">))</span>
 </pre></div>
 
      </div>
@@ -16597,17 +16925,6 @@ whereas
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-<div class="jp-OutputArea-child">
-    
-    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-
-
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>/tmp/wsuser/ipykernel_132/1910524593.py:1: FutureWarning: In a future version of pandas all arguments of DataFrame.drop except for the argument &#39;labels&#39; will be keyword-only
-  display(report_bd[report_bd[&#39;channel&#39;] == &#34;seminar&#34;].drop(&#39;channel&#39;,1))
-</pre>
-</div>
-</div>
 <div class="jp-OutputArea-child">
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
@@ -16639,44 +16956,104 @@ whereas
   </thead>
   <tbody>
     <tr>
-      <th>12</th>
+      <th>0</th>
       <td>Savings</td>
-      <td>Terry L. Ridgley</td>
+      <td>George Blomqvist</td>
     </tr>
     <tr>
-      <th>13</th>
+      <th>1</th>
       <td>Savings</td>
-      <td>Gabrielly Sousa Martins</td>
+      <td>Trinity Zelaya Miramontes</td>
     </tr>
     <tr>
-      <th>14</th>
+      <th>2</th>
+      <td>Savings</td>
+      <td>Shu T'an</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>Savings</td>
+      <td>Zeeb Longoria Marrero</td>
+    </tr>
+    <tr>
+      <th>4</th>
       <td>Mortgage</td>
-      <td>Miranda B. Roush</td>
+      <td>Guadalupe J. Martinez</td>
     </tr>
     <tr>
-      <th>15</th>
+      <th>5</th>
+      <td>Mortgage</td>
+      <td>Roland Guérette</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>Mortgage</td>
+      <td>Fabien Mailhot</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>Mortgage</td>
+      <td>Steffen Meister</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>Mortgage</td>
+      <td>Wolfgang Sanger</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>Mortgage</td>
+      <td>Lee Tsou</td>
+    </tr>
+    <tr>
+      <th>10</th>
       <td>Mortgage</td>
       <td>Miroslav Škaroupka</td>
     </tr>
     <tr>
-      <th>16</th>
+      <th>11</th>
+      <td>Mortgage</td>
+      <td>Vlad Alekseeva</td>
+    </tr>
+    <tr>
+      <th>12</th>
       <td>Mortgage</td>
       <td>Matheus Azevedo Melo</td>
     </tr>
     <tr>
-      <th>17</th>
+      <th>13</th>
       <td>Mortgage</td>
       <td>Franca Palermo</td>
     </tr>
     <tr>
-      <th>18</th>
+      <th>14</th>
       <td>Pension</td>
       <td>Michelle M. Lopez</td>
     </tr>
     <tr>
-      <th>19</th>
+      <th>15</th>
+      <td>Pension</td>
+      <td>Terry L. Ridgley</td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>Pension</td>
+      <td>Sandra J. Wynkoop</td>
+    </tr>
+    <tr>
+      <th>17</th>
       <td>Pension</td>
       <td>Will Henderson</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>Pension</td>
+      <td>Earl B. Wood</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>Pension</td>
+      <td>Gabrielly Sousa Martins</td>
     </tr>
   </tbody>
 </table>
@@ -16709,8 +17086,9 @@ whereas
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h2 id="References">References<a class="anchor-link" href="#References">&#182;</a></h2><ul>
-<li><a href="https://rawgit.com/IBMDecisionOptimization/docplex-doc/master/docs/index.html" target="_blank" rel="noopener noreferrer">Decision Optimization CPLEX Modeling for Python documentation</a></li>
-<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html" target="_blank" rel="noopener noreferrer">Platform documentation</a></li>
+<li><a href="http://ibmdecisionoptimization.github.io/docplex-doc/">CPLEX Modeling for Python documentation</a></li>
+<li><a href="https://www.ibm.com/analytics/decision-optimization">IBM Decision Optimization</a></li>
+<li>Need help with DOcplex or to report a bug? Please go <a href="https://stackoverflow.com/questions/tagged/docplex">here</a>.</li>
 </ul>
 
 </div>
@@ -16724,7 +17102,7 @@ whereas
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <hr>
-Copyright © 2017-2021. This notebook and its source code are released under the terms of the MIT License.
+Copyright &copy; 2017-2024 IBM. This notebook and its source code are released under the terms of the MIT License.
 
 </div>
 </div>
