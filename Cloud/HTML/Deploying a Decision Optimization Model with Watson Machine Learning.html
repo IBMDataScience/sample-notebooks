@@ -36,6 +36,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -15591,8 +15592,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Table-of-Contents">Table of Contents<a class="anchor-link" href="#Table-of-Contents">&#182;</a></h2><ol>
-<li><a href="#setup">Install the Watson Machine Learning client API</a></li>
+<p><strong>Table of contents:</strong></p>
+<ul>
+<li><a href="#setup">Set up the Watson Machine Learning client</a></li>
 <li><a href="#create">Create a client instance</a></li>
 <li><a href="#prepare">Prepare your model archive</a></li>
 <li><a href="#upload">Upload your model on Watson Machine Learning</a></li>
@@ -15601,7 +15603,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <li><a href="#display">Display the solution</a></li>
 <li><a href="#problem">Solve another problem using the same deployment</a></li>
 <li><a href="#summary">Summary</a></li>
-</ol>
+</ul>
 
 </div>
 </div>
@@ -15616,7 +15618,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p><a id='setup'></a></p>
 <h3 id="Set-up-the-Watson-Machine-Learning-client">Set up the Watson Machine Learning client<a class="anchor-link" href="#Set-up-the-Watson-Machine-Learning-client">&#182;</a></h3><p>Before you use the sample code in this notebook, you must:</p>
 <ul>
-<li>create a <a href="https://cloud.ibm.com/catalog/services/machine-learning" target="_blank" rel="noopener noreferrer">Watson Machine Learning (WML) Service</a> instance. A free plan is offered and information about how to create the instance can be found at <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-setup.html" target="_blank" rel="noopener noreferrer"> https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/wml-setup.html.</a></li>
+<li>create a <a href="https://cloud.ibm.com/catalog?category=ai" target="_blank" rel="noopener noreferrer">Watson Machine Learning (WML) Service</a> instance. A free plan is offered and information about how to create the instance can be found at <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html" target="_blank" rel="noopener noreferrer"> https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html.</a></li>
 </ul>
 
 </div>
@@ -15634,17 +15636,17 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Install WML client API</span>
 
-<span class="o">!</span>pip install ibm-watson-machine-learning
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>ibm-watson-machine-learning
 </pre></div>
 
      </div>
@@ -15652,12 +15654,52 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Requirement already satisfied: ibm-watson-machine-learning in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (1.0.338)
+Requirement already satisfied: requests in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (2.31.0)
+Requirement already satisfied: urllib3 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (1.26.18)
+Requirement already satisfied: pandas&lt;1.6.0,&gt;=0.24.2 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (1.5.3)
+Requirement already satisfied: certifi in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (2023.11.17)
+Requirement already satisfied: lomond in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (0.3.3)
+Requirement already satisfied: tabulate in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (0.8.10)
+Requirement already satisfied: packaging in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (23.0)
+Requirement already satisfied: importlib-metadata in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (6.0.0)
+Requirement already satisfied: ibm-cos-sdk&lt;2.14.0,&gt;=2.12.0 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-watson-machine-learning) (2.12.0)
+Requirement already satisfied: ibm-cos-sdk-core==2.12.0 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-cos-sdk&lt;2.14.0,&gt;=2.12.0-&gt;ibm-watson-machine-learning) (2.12.0)
+Requirement already satisfied: ibm-cos-sdk-s3transfer==2.12.0 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-cos-sdk&lt;2.14.0,&gt;=2.12.0-&gt;ibm-watson-machine-learning) (2.12.0)
+Requirement already satisfied: jmespath&lt;1.0.0,&gt;=0.10.0 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-cos-sdk&lt;2.14.0,&gt;=2.12.0-&gt;ibm-watson-machine-learning) (0.10.0)
+Requirement already satisfied: python-dateutil&lt;3.0.0,&gt;=2.8.2 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from ibm-cos-sdk-core==2.12.0-&gt;ibm-cos-sdk&lt;2.14.0,&gt;=2.12.0-&gt;ibm-watson-machine-learning) (2.8.2)
+Requirement already satisfied: pytz&gt;=2020.1 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from pandas&lt;1.6.0,&gt;=0.24.2-&gt;ibm-watson-machine-learning) (2022.7)
+Requirement already satisfied: numpy&gt;=1.21.0 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from pandas&lt;1.6.0,&gt;=0.24.2-&gt;ibm-watson-machine-learning) (1.23.5)
+Requirement already satisfied: charset-normalizer&lt;4,&gt;=2 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from requests-&gt;ibm-watson-machine-learning) (2.0.4)
+Requirement already satisfied: idna&lt;4,&gt;=2.5 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from requests-&gt;ibm-watson-machine-learning) (3.4)
+Requirement already satisfied: zipp&gt;=0.5 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from importlib-metadata-&gt;ibm-watson-machine-learning) (3.11.0)
+Requirement already satisfied: six&gt;=1.10.0 in /opt/conda/envs/Python-RT23.1/lib/python3.10/site-packages (from lomond-&gt;ibm-watson-machine-learning) (1.16.0)
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning</span> <span class="kn">import</span> <span class="n">APIClient</span>
@@ -15676,7 +15718,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id='create'></a></p>
-<h3 id="Create-a-client-instance">Create a client instance<a class="anchor-link" href="#Create-a-client-instance">&#182;</a></h3><p>Use your Watson Machine Learning credentials. You can find information on how to get your API key and instance's URL <a href="https://dataplatform.cloud.ibm.com/docs/content/DO/WML_Deployment/DeployModelRest.html?audience=wdp">here</a> in the second step of the &quot;Before you begin&quot; section.</p>
+<h3 id="Create-a-client-instance">Create a client instance<a class="anchor-link" href="#Create-a-client-instance">&#182;</a></h3><p>Use your Watson Machine Learning credentials. You can find information on how to get your API key <a href="https://dataplatform.cloud.ibm.com/docs/content/DO/WML_Deployment/DeployModelRest.html?audience=wdp">here</a> in the second step of the &quot;Before you begin&quot; section and instance's URL <a href="https://dataplatform.cloud.ibm.com/docs/content/DO/WML_Deployment/DeployModelRest.html?audience=wdp">here</a> in the third step of the &quot;Procedure&quot; section.</p>
 
 </div>
 </div>
@@ -15686,7 +15728,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Instantiate a client using credentials</span>
@@ -15703,12 +15745,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">version</span>
@@ -15717,6 +15759,29 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[4]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>&#39;1.0.338&#39;</pre>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -15743,7 +15808,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">mkdir</span> model
@@ -15754,12 +15819,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%writefile</span> model/main.py
@@ -15839,7 +15904,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw_dict</span><span class="o">.</span><span class="n">read_df</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">get_all_inputs</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Utility method to read a list of files and return a tuple with all</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Utility method to read a list of files and return a tuple with all</span>
 <span class="sd">    read data frames.</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        a map { datasetname: data frame }</span>
@@ -15853,7 +15918,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
     <span class="k">return</span> <span class="n">result</span>
 
 <span class="k">def</span> <span class="nf">write_all_outputs</span><span class="p">(</span><span class="n">outputs</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Write all dataframes in ``outputs`` as .csv.</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;Write all dataframes in ``outputs`` as .csv.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        outputs: The map of outputs &#39;outputname&#39; -&gt; &#39;output df&#39;</span>
@@ -15876,15 +15941,71 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Writing model/main.py
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%writefile</span> -a model/main.py
+
+<span class="kn">from</span> <span class="nn">docplex.mp.progress</span> <span class="kn">import</span> <span class="n">SolutionListener</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+
+<span class="k">def</span> <span class="nf">build_solution</span><span class="p">(</span><span class="n">sol</span><span class="p">):</span>
+    <span class="n">solution_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Food&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">dvar</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">iter_variables</span><span class="p">()):</span>
+        <span class="n">solution_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="s1">&#39;Food&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dvar</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+        <span class="n">solution_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dvar</span><span class="o">.</span><span class="n">solution_value</span>
+    
+    <span class="n">outputs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">outputs</span><span class="p">[</span><span class="s1">&#39;solution&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">solution_df</span>
+        
+    <span class="c1"># Generate output files</span>
+    <span class="n">write_all_outputs</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+
+    
+<span class="k">class</span> <span class="nc">SolutionKeeper</span><span class="p">(</span><span class="n">SolutionListener</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; A specialized implementation of :class:`SolutionListener`, which keeps track</span>
+<span class="sd">    of the latest intermediate solution found.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">SolutionListener</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">notify_solution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sol</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+=</span><span class="mi">1</span>
+        <span class="n">build_solution</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span>
+        <span class="c1">#  `write_all_outputs()` will publish tables from outputs dictionnary as solution tables</span>
+        <span class="n">write_all_outputs</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+
 
 <span class="c1"># Load CSV files into inputs dictionnary</span>
 <span class="n">inputs</span> <span class="o">=</span> <span class="n">get_all_inputs</span><span class="p">()</span>
@@ -15899,6 +16020,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="c1"># Model</span>
 <span class="n">mdl</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;diet&#39;</span><span class="p">)</span>
 
+<span class="c1"># To obtain tables for intermediate solutions, you must add a SolutionListener</span>
+<span class="c1"># so that you can then create solution tables and publish them.</span>
+<span class="n">mdl</span><span class="o">.</span><span class="n">add_progress_listener</span><span class="p">(</span><span class="n">SolutionKeeper</span><span class="p">())</span>
+    
 <span class="c1"># Create decision variables, limited to be &gt;= Food.qmin and &lt;= Food.qmax</span>
 <span class="n">qty</span> <span class="o">=</span> <span class="n">food</span><span class="p">[[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;qmin&#39;</span><span class="p">,</span> <span class="s1">&#39;qmax&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">qty</span><span class="p">[</span><span class="s1">&#39;var&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">qty</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">mdl</span><span class="o">.</span><span class="n">continuous_var</span><span class="p">(</span><span class="n">lb</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;qmin&#39;</span><span class="p">],</span>
@@ -15926,21 +16051,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="n">ok</span> <span class="o">=</span> <span class="n">mdl</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 
 <span class="n">mdl</span><span class="o">.</span><span class="n">print_solution</span><span class="p">()</span>
-
-<span class="kn">import</span> <span class="nn">pandas</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
-
-<span class="n">solution_df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Food&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">])</span>
-
-<span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">dvar</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">iter_variables</span><span class="p">()):</span>
-    <span class="n">solution_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="s1">&#39;Food&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dvar</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
-    <span class="n">solution_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">,</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dvar</span><span class="o">.</span><span class="n">solution_value</span>
-    
-<span class="n">outputs</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="n">outputs</span><span class="p">[</span><span class="s1">&#39;solution&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">solution_df</span>
-        
-<span class="c1"># Generate output files</span>
-<span class="n">write_all_outputs</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+<span class="n">build_solution</span><span class="p">(</span><span class="n">mdl</span><span class="o">.</span><span class="n">solution</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15948,12 +16059,33 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>Appending to model/main.py
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">tarfile</span>
@@ -15989,12 +16121,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># All available meta data properties </span>
@@ -16005,6 +16137,52 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>------------------------  ----  --------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+META_PROP NAME            TYPE  REQUIRED  SCHEMA
+NAME                      str   Y
+DESCRIPTION               str   N
+INPUT_DATA_SCHEMA         list  N         {&#39;id(required)&#39;: &#39;string&#39;, &#39;fields(required)&#39;: [{&#39;name(required)&#39;: &#39;string&#39;, &#39;type(required)&#39;: &#39;string&#39;, &#39;nullable(optional)&#39;: &#39;string&#39;}]}
+TRAINING_DATA_REFERENCES  list  N         [{&#39;name(optional)&#39;: &#39;string&#39;, &#39;type(required)&#39;: &#39;string&#39;, &#39;connection(required)&#39;: {&#39;endpoint_url(required)&#39;: &#39;string&#39;, &#39;access_key_id(required)&#39;: &#39;string&#39;, &#39;secret_access_key(required)&#39;: &#39;string&#39;}, &#39;location(required)&#39;: {&#39;bucket&#39;: &#39;string&#39;, &#39;path&#39;: &#39;string&#39;}, &#39;schema(optional)&#39;: {&#39;id(required)&#39;: &#39;string&#39;, &#39;fields(required)&#39;: [{&#39;name(required)&#39;: &#39;string&#39;, &#39;type(required)&#39;: &#39;string&#39;, &#39;nullable(optional)&#39;: &#39;string&#39;}]}}]
+TEST_DATA_REFERENCES      list  N         [{&#39;name(optional)&#39;: &#39;string&#39;, &#39;type(required)&#39;: &#39;string&#39;, &#39;connection(required)&#39;: {&#39;endpoint_url(required)&#39;: &#39;string&#39;, &#39;access_key_id(required)&#39;: &#39;string&#39;, &#39;secret_access_key(required)&#39;: &#39;string&#39;}, &#39;location(required)&#39;: {&#39;bucket&#39;: &#39;string&#39;, &#39;path&#39;: &#39;string&#39;}, &#39;schema(optional)&#39;: {&#39;id(required)&#39;: &#39;string&#39;, &#39;fields(required)&#39;: [{&#39;name(required)&#39;: &#39;string&#39;, &#39;type(required)&#39;: &#39;string&#39;, &#39;nullable(optional)&#39;: &#39;string&#39;}]}}]
+OUTPUT_DATA_SCHEMA        dict  N         {&#39;id(required)&#39;: &#39;string&#39;, &#39;fields(required)&#39;: [{&#39;name(required)&#39;: &#39;string&#39;, &#39;type(required)&#39;: &#39;string&#39;, &#39;nullable(optional)&#39;: &#39;string&#39;}]}
+LABEL_FIELD               str   N
+TRANSFORMED_LABEL_FIELD   str   N
+TAGS                      list  N         [&#39;string&#39;, &#39;string&#39;]
+SIZE                      dict  N         {&#39;in_memory(optional)&#39;: &#39;string&#39;, &#39;content(optional)&#39;: &#39;string&#39;}
+PIPELINE_UID              str   N
+RUNTIME_UID               str   N
+TYPE                      str   Y
+CUSTOM                    dict  N
+DOMAIN                    str   N
+HYPER_PARAMETERS          dict  N
+METRICS                   list  N
+IMPORT                    dict  N         {&#39;name(optional)&#39;: &#39;string&#39;, &#39;type(required)&#39;: &#39;string&#39;, &#39;connection(required)&#39;: {&#39;endpoint_url(required)&#39;: &#39;string&#39;, &#39;access_key_id(required)&#39;: &#39;string&#39;, &#39;secret_access_key(required)&#39;: &#39;string&#39;}, &#39;location(required)&#39;: {&#39;bucket&#39;: &#39;string&#39;, &#39;path&#39;: &#39;string&#39;}}
+TRAINING_LIB_UID          str   N
+MODEL_DEFINITION_UID      str   N
+SOFTWARE_SPEC_UID         str   N
+TF_MODEL_PARAMS           dict  N
+FAIRNESS_INFO             dict  N
+------------------------  ----  --------  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16056,12 +16234,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Find the space ID</span>
@@ -16078,12 +16256,35 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[10]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>&#39;SUCCESS&#39;</pre>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">mnist_metadata</span> <span class="o">=</span> <span class="p">{</span>
@@ -16141,19 +16342,19 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">meta_props</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s2">&quot;Diet Deployment&quot;</span><span class="p">,</span>
     <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">DESCRIPTION</span><span class="p">:</span> <span class="s2">&quot;Diet Deployment&quot;</span><span class="p">,</span>
     <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">BATCH</span><span class="p">:</span> <span class="p">{},</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">HARDWARE_SPEC</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">HARDWARE_SPEC</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;num_nodes&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
 <span class="p">}</span>
 
 <span class="n">deployment_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">model_uid</span><span class="p">,</span> <span class="n">meta_props</span><span class="o">=</span><span class="n">meta_props</span><span class="p">)</span>
@@ -16169,12 +16370,49 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>
+
+#######################################################################################
+
+Synchronous deployment creation for uid: &#39;49fe25dd-a63f-428d-84e1-7f4b590d85fb&#39; started
+
+#######################################################################################
+
+
+ready.
+
+
+------------------------------------------------------------------------------------------------
+Successfully finished deployment creation, deployment_uid=&#39;b2576c0d-bbad-4e40-b4f6-4b6bfc8283b7&#39;
+------------------------------------------------------------------------------------------------
+
+
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># List all existing deployments</span>
@@ -16185,6 +16423,81 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>------------------------------------  ---------------  -----  ------------------------  -------------  ----------  ----------------
+GUID                                  NAME             STATE  CREATED                   ARTIFACT_TYPE  SPEC_STATE  SPEC_REPLACEMENT
+b2576c0d-bbad-4e40-b4f6-4b6bfc8283b7  Diet Deployment  ready  2024-01-12T08:51:50.499Z  do             supported
+------------------------------------  ---------------  -----  ------------------------  -------------  ----------  ----------------
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>GUID</th>
+      <th>NAME</th>
+      <th>STATE</th>
+      <th>CREATED</th>
+      <th>ARTIFACT_TYPE</th>
+      <th>SPEC_STATE</th>
+      <th>SPEC_REPLACEMENT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>b2576c0d-bbad-4e40-b4f6-4b6bfc8283b7</td>
+      <td>Diet Deployment</td>
+      <td>ready</td>
+      <td>2024-01-12T08:51:50.499Z</td>
+      <td>do</td>
+      <td>supported</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16207,13 +16520,13 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Import pandas library </span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> 
   
-<span class="c1"># initialize list of lists </span>
+<span class="c1"># Initialize list of lists </span>
 <span class="n">diet_food</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span> <span class="p">[</span><span class="s2">&quot;Roasted Chicken&quot;</span><span class="p">,</span> <span class="mf">0.84</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
                 <span class="p">[</span><span class="s2">&quot;Spaghetti W/ Sauce&quot;</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
                 <span class="p">[</span><span class="s2">&quot;Tomato,Red,Ripe,Raw&quot;</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
@@ -16222,7 +16535,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
                 <span class="p">[</span><span class="s2">&quot;Chocolate Chip Cookies&quot;</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
                 <span class="p">[</span><span class="s2">&quot;Lowfat Milk&quot;</span><span class="p">,</span> <span class="mf">0.23</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
                 <span class="p">[</span><span class="s2">&quot;Raisin Brn&quot;</span><span class="p">,</span> <span class="mf">0.34</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-                <span class="p">[</span><span class="s2">&quot;Hotdog&quot;</span><span class="p">,</span> <span class="mf">0.31</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">]]</span> <span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="s2">&quot;unit_cost&quot;</span><span class="p">,</span><span class="s2">&quot;qmin&quot;</span><span class="p">,</span><span class="s2">&quot;qmax&quot;</span><span class="p">])</span>
+                <span class="p">[</span><span class="s2">&quot;Hotdog&quot;</span><span class="p">,</span> <span class="mf">0.31</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">]]</span> <span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;unit_cost&quot;</span><span class="p">,</span> <span class="s2">&quot;qmin&quot;</span><span class="p">,</span> <span class="s2">&quot;qmax&quot;</span><span class="p">])</span>
 
 <span class="n">diet_food_nutrients</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
                 <span class="p">[</span><span class="s2">&quot;Spaghetti W/ Sauce&quot;</span><span class="p">,</span> <span class="mf">358.2</span><span class="p">,</span> <span class="mf">80.2</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="mf">3055.2</span><span class="p">,</span> <span class="mf">11.6</span><span class="p">,</span> <span class="mf">58.3</span><span class="p">,</span> <span class="mf">8.2</span><span class="p">],</span>
@@ -16233,8 +16546,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
                 <span class="p">[</span><span class="s2">&quot;Chocolate Chip Cookies&quot;</span><span class="p">,</span> <span class="mf">78.1</span><span class="p">,</span> <span class="mf">6.2</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">101.8</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">9.3</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
                 <span class="p">[</span><span class="s2">&quot;Lowfat Milk&quot;</span><span class="p">,</span> <span class="mf">121.2</span><span class="p">,</span> <span class="mf">296.7</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">500.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">11.7</span><span class="p">,</span> <span class="mf">8.1</span><span class="p">],</span>
                 <span class="p">[</span><span class="s2">&quot;Raisin Brn&quot;</span><span class="p">,</span> <span class="mf">115.1</span><span class="p">,</span> <span class="mf">12.9</span><span class="p">,</span> <span class="mf">16.8</span><span class="p">,</span> <span class="mf">1250.2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">27.9</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
-                <span class="p">[</span><span class="s2">&quot;Hotdog&quot;</span><span class="p">,</span> <span class="mf">242.1</span><span class="p">,</span> <span class="mf">23.5</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mf">10.4</span> <span class="p">]</span>
-            <span class="p">]</span> <span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Food&quot;</span><span class="p">,</span><span class="s2">&quot;Calories&quot;</span><span class="p">,</span><span class="s2">&quot;Calcium&quot;</span><span class="p">,</span><span class="s2">&quot;Iron&quot;</span><span class="p">,</span><span class="s2">&quot;Vit_A&quot;</span><span class="p">,</span><span class="s2">&quot;Dietary_Fiber&quot;</span><span class="p">,</span><span class="s2">&quot;Carbohydrates&quot;</span><span class="p">,</span><span class="s2">&quot;Protein&quot;</span><span class="p">])</span>
+                <span class="p">[</span><span class="s2">&quot;Hotdog&quot;</span><span class="p">,</span> <span class="mf">242.1</span><span class="p">,</span> <span class="mf">23.5</span><span class="p">,</span> <span class="mf">2.3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="mf">10.4</span><span class="p">]</span>
+            <span class="p">]</span> <span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Food&quot;</span><span class="p">,</span> <span class="s2">&quot;Calories&quot;</span><span class="p">,</span> <span class="s2">&quot;Calcium&quot;</span><span class="p">,</span> <span class="s2">&quot;Iron&quot;</span><span class="p">,</span> <span class="s2">&quot;Vit_A&quot;</span><span class="p">,</span> <span class="s2">&quot;Dietary_Fiber&quot;</span><span class="p">,</span> <span class="s2">&quot;Carbohydrates&quot;</span><span class="p">,</span> <span class="s2">&quot;Protein&quot;</span><span class="p">])</span>
 
 <span class="n">diet_nutrients</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span>
                 <span class="p">[</span><span class="s2">&quot;Calories&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">2500</span><span class="p">],</span>
@@ -16244,7 +16557,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
                 <span class="p">[</span><span class="s2">&quot;Dietary_Fiber&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
                 <span class="p">[</span><span class="s2">&quot;Carbohydrates&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>
                 <span class="p">[</span><span class="s2">&quot;Protein&quot;</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
-            <span class="p">],</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span><span class="s2">&quot;qmin&quot;</span><span class="p">,</span><span class="s2">&quot;qmax&quot;</span><span class="p">])</span>
+            <span class="p">],</span> <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;qmin&quot;</span><span class="p">,</span> <span class="s2">&quot;qmax&quot;</span><span class="p">])</span>
 </pre></div>
 
      </div>
@@ -16252,15 +16565,34 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>If you want to enable intermediate solutions for your solve, uncomment the <code>oaas.outputUploadPeriod</code> solve parameter (expressed in minutes).</p>
+<p>You can also uncomment <code>oaas.outputUploadFiles</code> if you want to get logs at each intermediate solution.</p>
+
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">solve_payload</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;solve_parameters&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="c1">#&quot;oaas.outputUploadPeriod&quot;: &quot;1&quot;,</span>
+        <span class="c1">#&quot;oaas.outputUploadFiles&quot;: &quot;.*\.txt&quot;,</span>
+        <span class="s2">&quot;oaas.logAttachmentName&quot;</span><span class="p">:</span><span class="s2">&quot;log.txt&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;oaas.logTailEnabled&quot;</span><span class="p">:</span><span class="s2">&quot;true&quot;</span>
+    <span class="p">},</span>
     <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">DecisionOptimizationMetaNames</span><span class="o">.</span><span class="n">INPUT_DATA</span><span class="p">:</span> <span class="p">[</span>
         <span class="p">{</span>
             <span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;diet_food.csv&quot;</span><span class="p">,</span>
@@ -16276,9 +16608,17 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
         <span class="p">}</span>
     <span class="p">],</span>
     <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">DecisionOptimizationMetaNames</span><span class="o">.</span><span class="n">OUTPUT_DATA</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-        <span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;.*\.csv&quot;</span>
-    <span class="p">}</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;.*\.csv&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">DecisionOptimizationMetaNames</span><span class="o">.</span><span class="n">OUTPUT_DATA_REFERENCES</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;log.txt&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;data_asset&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;connection&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="s2">&quot;location&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span><span class="s2">&quot;job_$</span><span class="si">{job_id}</span><span class="s2">_log_$</span><span class="si">{update_time}</span><span class="s2">.txt&quot;</span><span class="p">}</span>
+        <span class="p">}</span>
     <span class="p">]</span>
 <span class="p">}</span>
 
@@ -16307,27 +16647,78 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">sleep</span>
 
 <span class="k">while</span> <span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">][</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;completed&#39;</span><span class="p">,</span> <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="s1">&#39;canceled&#39;</span><span class="p">]:</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">][</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;...&#39;</span><span class="p">)</span>
+    <span class="k">if</span><span class="p">(</span><span class="s1">&#39;solve_state&#39;</span> <span class="ow">in</span> <span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">]</span>
+       <span class="ow">and</span> <span class="s1">&#39;details&#39;</span> <span class="ow">in</span> <span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;solve_state&#39;</span><span class="p">]</span>
+       <span class="ow">and</span> <span class="s1">&#39;latestOutputUpload&#39;</span> <span class="ow">in</span> <span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;solve_state&#39;</span><span class="p">][</span><span class="s1">&#39;details&#39;</span><span class="p">]):</span>
+        <span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;      Intermediate captured at: &quot;</span><span class="p">,</span> <span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;solve_state&#39;</span><span class="p">][</span><span class="s1">&#39;details&#39;</span><span class="p">][</span><span class="s1">&#39;latestOutputUpload&#39;</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span> <span class="s2">&quot;      No intermediate available&quot;</span> <span class="p">)</span>
+    
     <span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
     <span class="n">job_details</span><span class="o">=</span><span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_job_details</span><span class="p">(</span><span class="n">job_uid</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span> <span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">][</span><span class="s1">&#39;state&#39;</span><span class="p">])</span>
+<span class="k">if</span> <span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">][</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;failed&#39;</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span> <span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">]</span> <span class="p">)</span>    
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span> <span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">][</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="p">)</span>
 </pre></div>
 
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>queued...
+      No intermediate available
+queued...
+      No intermediate available
+queued...
+      No intermediate available
+queued...
+      No intermediate available
+queued...
+      No intermediate available
+queued...
+      No intermediate available
+queued...
+      No intermediate available
+running...
+      No intermediate available
+running...
+      No intermediate available
+running...
+      No intermediate available
+completed
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16344,12 +16735,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create a dataframe for the solution</span>
@@ -16363,12 +16754,84 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[17]:</div>
+
+
+
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Name</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>cplex.size.integerVariables</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>cplex.size.linearConstraints</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>cplex.modelType</td>
+      <td>LP</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>cplex.size.variables</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>cplex.size.continousVariables</td>
+      <td>9</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[18]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span> <span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;solve_state&#39;</span><span class="p">][</span><span class="s1">&#39;details&#39;</span><span class="p">][</span><span class="s1">&#39;KPI.Total Calories&#39;</span><span class="p">]</span> <span class="p">)</span>
@@ -16377,6 +16840,27 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>2000.0
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16397,7 +16881,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[19]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Change the input data</span>
@@ -16420,9 +16904,9 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
         <span class="p">}</span>
     <span class="p">],</span>
     <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">DecisionOptimizationMetaNames</span><span class="o">.</span><span class="n">OUTPUT_DATA</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-        <span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;.*\.csv&quot;</span>
-    <span class="p">}</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span><span class="s2">&quot;.*\.csv&quot;</span>
+        <span class="p">}</span>
     <span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
@@ -16449,7 +16933,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[20]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">job_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">create_job</span><span class="p">(</span><span class="n">deployment_uid</span><span class="p">,</span> <span class="n">solve_payload</span><span class="p">)</span>
@@ -16476,12 +16960,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[21]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">while</span> <span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">][</span><span class="s1">&#39;state&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;completed&#39;</span><span class="p">,</span> <span class="s1">&#39;failed&#39;</span><span class="p">,</span> <span class="s1">&#39;canceled&#39;</span><span class="p">]:</span>
@@ -16497,6 +16981,28 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>queued...
+completed
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16509,12 +17015,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[22]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span> <span class="n">job_details</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;solve_state&#39;</span><span class="p">][</span><span class="s1">&#39;details&#39;</span><span class="p">][</span><span class="s1">&#39;KPI.Total Calories&#39;</span><span class="p">]</span> <span class="p">)</span>
@@ -16525,12 +17031,33 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>1500.0
+</pre>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[23]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">get_job_details</span><span class="p">(</span><span class="n">job_uid</span><span class="p">)[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;decision_optimization&#39;</span><span class="p">][</span><span class="s1">&#39;status&#39;</span><span class="p">])</span>
@@ -16539,6 +17066,27 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+
+
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
+<pre>{&#39;completed_at&#39;: &#39;2024-01-12T08:52:55.718Z&#39;, &#39;running_at&#39;: &#39;2024-01-12T08:52:53.931Z&#39;, &#39;state&#39;: &#39;completed&#39;}
+</pre>
+</div>
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16564,12 +17112,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell   ">
 <div class="jp-Cell-inputWrapper">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[24]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">deployment_uid</span><span class="p">)</span>
@@ -16578,6 +17126,29 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
      </div>
 </div>
 </div>
+</div>
+
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+
+
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+    
+    <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[24]:</div>
+
+
+
+
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
+<pre>&#39;SUCCESS&#39;</pre>
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -16608,7 +17179,11 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <li>create and monitor a job with inline data for your deployed model</li>
 <li>display the solution</li>
 </ul>
-<p>Check out our online documentation at <a href="https://dataplatform.cloud.ibm.com/docs" target="_blank" rel="noopener noreferrer">https://dataplatform.cloud.ibm.com/docs</a> for more samples, tutorials and documentation.</p>
+<p>Check out our online documentation for more samples, tutorials and documentation:</p>
+<ul>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html?context=cpdaas" target="_blank" rel="noopener noreferrer">IBM Cloud Pak for Data as a Service documentation</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/welcome-main.html?context=wx" target="_blank" rel="noopener noreferrer">IBM watsonx.ai documentation</a></li>
+</ul>
 
 </div>
 </div>
@@ -16621,24 +17196,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <hr>
-Copyright © 2019, 2023. This notebook and its source code are released under the terms of the MIT License.
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<div style="background:#F5F7FA; height:110px; padding: 2em; font-size:14px;">
-<span style="font-size:18px;color:#152935;">Love this notebook? </span>
-<span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
-<span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
-<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
-</div>
+Copyright © 2019-2024. This notebook and its source code are released under the terms of the MIT License.
 
 </div>
 </div>
