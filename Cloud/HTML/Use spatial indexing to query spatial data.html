@@ -36,6 +36,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -201,6 +202,10 @@ background-color: transparent;
 
 .notebook_app .container {
 width: 100% !important;
+}
+
+.jupyter-resource-usage-hide {
+display: none !important;
 }
 
 .notebook_app #notebook {
@@ -15442,10 +15447,6 @@ a.anchor-link {
   display: none;
 }
 
-.highlight  {
-  margin: 0.4em;
-}
-
 /* Input area styling */
 .jp-InputArea {
   overflow: hidden;
@@ -15455,9 +15456,26 @@ a.anchor-link {
   overflow: hidden;
 }
 
-.CodeMirror pre {
+.CodeMirror.cm-s-jupyter .highlight pre {
+/* weird, but --jp-code-padding defined to be 5px but 4px horizontal padding is hardcoded for pre.CodeMirror-line */
+  padding: var(--jp-code-padding) 4px;
   margin: 0;
-  padding: 0;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+}
+
+.jp-OutputArea-output pre {
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.jp-RenderedText pre {
+  color: var(--jp-content-font-color1);
+  font-size: var(--jp-code-font-size);
 }
 
 /* Using table instead of flexbox so that we can use break-inside property */
@@ -15501,6 +15519,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 /* Hiding the collapser by default */
 .jp-Collapser {
   display: none;
+}
+
+@page {
+    margin: 0.5in; /* Margin for each printed piece of paper */
 }
 
 @media print {
@@ -15658,14 +15680,14 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p><a id="createIndex"></a></p>
 <h2 id="Create-a-spatial-index">Create a spatial index<a class="anchor-link" href="#Create-a-spatial-index">&#182;</a></h2><p>There are several options available to choose from for spatial indexing, which include <strong>grid_index</strong>, <strong>r_star_tree_index</strong> and <strong>tessellation_index</strong>. Click the following links for a quick introduction about each of these indexes:</p>
 <ol>
-<li><a href="https://en.wikipedia.org/wiki/Grid_(spatial_index">Grid index</a>)</li>
+<li><a href="https://en.wikipedia.org/wiki/Grid_%28spatial_index%29">Grid index</a></li>
 <li><a href="https://en.wikipedia.org/wiki/R-tree">R* tree index</a></li>
-<li><a href="https://www.tandfonline.com/doi/full/10.1080/10095020.2016.1146440">Tessellation index</a> </li>
+<li><a href="https://www.tandfonline.com/doi/full/10.1080/10095020.2016.1146440">Tessellation index</a></li>
 </ol>
 <p><strong>Note</strong>: this tessellation index is not a  standard tessellation index. Instead, it is similar to a grid index, only in this case the grid is uniform with respect to the <em>size</em> (in meters) of the grid, as opposed to a typical grid index that is uniform with respect to the number of latitude/longitude divisions.</p>
 <p>In this notebook, you will use the tessellation index. To create a tessellation spatial index, you need to set the following two parameters:</p>
 <ul>
-<li><strong>Bounding box</strong>: Defines the boundary of the spatial index. If you know exactly where your geometries are and can  define a boundary that contains all these geometries, you should provide his bounding box information to the method because it will reduce the amount of "tiles" that need to be created and thus increase performance. However, if you don't know much about the geometries or you want to play safe and not exclude any geometry, that might potentially fall out of the given bounding box (both are very common situations), you can use the whole earth as the bounding box by simply leave the <code>bbox parameter</code> parameter value set  to <code>None</code>, which is the default value.</li>
+<li><strong>Bounding box</strong>: Defines the boundary of the spatial index. If you know exactly where your geometries are and can  define a boundary that contains all these geometries, you should provide his bounding box information to the method because it will reduce the amount of &quot;tiles&quot; that need to be created and thus increase performance. However, if you don't know much about the geometries or you want to play safe and not exclude any geometry, that might potentially fall out of the given bounding box (both are very common situations), you can use the whole earth as the bounding box by simply leave the <code>bbox parameter</code> parameter value set  to <code>None</code>, which is the default value.</li>
 <li><strong>Tile size</strong>: Tile size is the size of the tile in the tessellation index. The value is given by the length of the tile in the unit of <code>meters</code>. You should provide a tile size that is close to the size of your geometries for better performance. For example,  if your geometries are $ 100km^2 (i.e. 10^8 m^2)$ then $ 10^4m$ could be a good value for tile size.</li>
 </ul>
 <p>After deciding the bounding box and tile size, you can create the spatial index and import your geometries into the spatial index. For this you will use the <code>from_df</code> method which puts the geometries in a pandas DataFrame into the spatial index. You only need to specify the name of the geometry ID column and the name of the geometry column. The extra parameter called verbosity, which controls how many processing logs to print out, can be set to <code>error</code> which allows only summary and failure entries to display.</p>
@@ -15707,10 +15729,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <li><strong>containing_with_info</strong></li>
 <li><strong>intersects</strong></li>
 <li><strong>intersects_with_info</strong></li>
-<li><strong>within_distance</strong> </li>
+<li><strong>within_distance</strong></li>
 <li><strong>within_distance_with_info</strong></li>
 <li><strong>nearest_neighbors</strong></li>
-<li><strong>nearest_neighbors_with_info</strong> </li>
+<li><strong>nearest_neighbors_with_info</strong></li>
 </ul>
 <p>Here a a few questions that you can get answers for.</p>
 
@@ -15755,7 +15777,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<ol>
+<ol start="2">
 <li>Which county does the city White Plains belong to? (i.e. which county polygon contains the polygon of White Plains?)</li>
 </ol>
 
@@ -15788,8 +15810,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<ol>
-<li>Which are the 3 nearest counties to White Plains Hospital? </li>
+<ol start="3">
+<li>Which are the 3 nearest counties to White Plains Hospital?</li>
 </ol>
 
 </div>
@@ -15819,8 +15841,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<ol>
-<li>Which are the counties within 20 km of White Plains Hospital? </li>
+<ol start="4">
+<li>Which are the counties within 20 km of White Plains Hospital?</li>
 </ol>
 
 </div>
@@ -15893,6 +15915,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
 <span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
 </div>
+
 </div>
 </div>
 </div>
