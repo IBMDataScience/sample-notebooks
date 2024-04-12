@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Use AutoAI and timeseries data for PM2</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Use AutoAI and Lale to predict credit risk with IB</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -15579,7 +15579,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Use-AutoAI-and-timeseries-data-with-supporting-features-to-predict-PM2.5-by-ibm-watson-machine-learning">Use AutoAI and timeseries data with supporting features to predict PM2.5 by <code>ibm-watson-machine-learning</code><a class="anchor-link" href="#Use-AutoAI-and-timeseries-data-with-supporting-features-to-predict-PM2.5-by-ibm-watson-machine-learning">&#182;</a></h1>
+<h1 id="Use-AutoAI-and-Lale-to-predict-credit-risk-with-ibm-watson-machine-learning">Use AutoAI and Lale to predict credit risk with <code>ibm-watson-machine-learning</code><a class="anchor-link" href="#Use-AutoAI-and-Lale-to-predict-credit-risk-with-ibm-watson-machine-learning">&#182;</a></h1>
 </div>
 </div>
 </div>
@@ -15590,24 +15590,25 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>This notebook contains the steps and code to demonstrate support of AutoAI experiments for timeseries data sets in Watson Machine Learning service. It introduces commands for data retrieval, training experiments, persisting pipelines, testing pipelines, deploying pipelines, and scoring.</p>
-<p>Some familiarity with Python is helpful. This notebook uses the latest version of Python.</p>
+<p>This notebook contains the steps and code to demonstrate support of AutoAI experiments in Watson Machine Learning service. It introduces commands for data retrieval, training experiments, persisting pipelines, testing pipelines, refining pipelines, and scoring.</p>
+<p>Some familiarity with Python is helpful. This notebook uses Python.</p>
 <h2 id="Learning-goals">Learning goals<a class="anchor-link" href="#Learning-goals">&#182;</a></h2><p>The learning goals of this notebook are:</p>
 <ul>
-<li>Define Watson Machine Learning experiment for timeseries data sets with supporting features.</li>
-<li>Work with experiments to train AutoAI models.</li>
-<li>Compare trained models quality and select the best one for further deployment.</li>
+<li>Work with Watson Machine Learning experiments to train AutoAI models.</li>
+<li>Compare trained models quality and select the best one for further refinement.</li>
+<li>Refine the best model and test new variations.</li>
 <li>Online deployment and score the trained model.</li>
 </ul>
 <h2 id="Contents">Contents<a class="anchor-link" href="#Contents">&#182;</a></h2><p>This notebook contains the following parts:</p>
 <ol>
 <li><a href="#setup">Setup</a></li>
-<li><a href="#ts">Timeseries data sets</a></li>
 <li><a href="#definition">Optimizer definition</a></li>
 <li><a href="#run">Experiment Run</a></li>
-<li><a href="#comparison">Pipelines comparison</a></li>
+<li><a href="#comparison">Pipelines comparison and testing</a></li>
+<li><a href="#runs">Historical runs</a></li>
+<li><a href="#refinery">Pipeline refinement and testing</a></li>
 <li><a href="#scoring">Deploy and Score</a></li>
-<li><a href="#cleanup">Clean up</a></li>
+<li><a href="#cleanup">Cleanup</a></li>
 <li><a href="#summary">Summary and next steps</a></li>
 </ol>
 
@@ -15624,7 +15625,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p><a id="setup"></a></p>
 <h2 id="1.-Set-up-the-environment">1. Set up the environment<a class="anchor-link" href="#1.-Set-up-the-environment">&#182;</a></h2><p>Before you use the sample code in this notebook, you must perform the following setup tasks:</p>
 <ul>
-<li>Create a <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/ml-service-instance.html" target="_blank" rel="noopener no referrer">here</a>).</li>
+<li>Create a <a href="https://cloud.ibm.com/catalog/services/watson-machine-learning" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance (a free plan is offered and information about how to create the instance can be found <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/admin/create-services.html?context=cpdaas&audience=wdp" target="_blank" rel="noopener no referrer">here</a>).</li>
 <li>Create a <a href="https://console.bluemix.net/catalog/infrastructure/cloud-object-storage" target="_blank" rel="noopener no referrer">Cloud Object Storage (COS)</a> instance (a lite plan is offered and information about how to order storage can be found <a href="https://console.bluemix.net/docs/services/cloud-object-storage/basics/order-storage.html#order-storage" target="_blank" rel="noopener no referrer">here</a>). <br/><strong>Note: When using Watson Studio, you already have a COS instance associated with the project you are running the notebook in.</strong></li>
 </ul>
 
@@ -15639,7 +15640,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Connection-to-WML">Connection to WML<a class="anchor-link" href="#Connection-to-WML">&#182;</a></h3><p>Authenticate the Watson Machine Learning service on IBM Cloud. You need to provide Cloud <code>API key</code> and <code>location</code>.</p>
-<p><strong>Tip</strong>: Your <code>Cloud API key</code> can be generated by going to the <a href="https://cloud.ibm.com/iam#/users"><strong>Users</strong> section of the Cloud console</a>. From that page, click your name, scroll down to the <strong>API Keys</strong> section, and click <strong>Create an IBM Cloud API key</strong>. Give your key a name and click <strong>Create</strong>, then copy the created key and paste it below. You can also get a service specific url by going to the <a href="https://cloud.ibm.com/apidocs/machine-learning"><strong>Endpoint URLs</strong> section of the Watson Machine Learning docs</a>.  You can check your instance location in your  <a href="https://console.ng.bluemix.net/catalog/services/ibm-watson-machine-learning/" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance details.</p>
+<p><strong>Tip</strong>: Your <code>Cloud API key</code> can be generated by going to the <a href="https://cloud.ibm.com/iam#/users"><strong>Users</strong> section of the Cloud console</a>. From that page, click your name, scroll down to the <strong>API Keys</strong> section, and click <strong>Create an IBM Cloud API key</strong>. Give your key a name and click <strong>Create</strong>, then copy the created key and paste it below. You can also get a service specific url by going to the <a href="https://cloud.ibm.com/apidocs/machine-learning"><strong>Endpoint URLs</strong> section of the Watson Machine Learning docs</a>.  You can check your instance location in your  <a href="https://cloud.ibm.com/catalog/services/watson-machine-learning" target="_blank" rel="noopener no referrer">Watson Machine Learning (WML) Service</a> instance details.</p>
 <p>You can use <a href="https://cloud.ibm.com/docs/cli/index.html">IBM Cloud CLI</a> to retrieve the instance <code>location</code>.</p>
 <pre><code>ibmcloud login --apikey API_KEY -a https://cloud.ibm.com
 ibmcloud resource service-instance WML_INSTANCE_NAME
@@ -15658,8 +15659,8 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">api_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-<span class="n">location</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">api_key</span> <span class="o">=</span> <span class="s1">&#39;PASTE YOUR API KEY HERE&#39;</span>
+<span class="n">location</span> <span class="o">=</span> <span class="s1">&#39;us-south&#39;</span>
 </pre></div>
 
      </div>
@@ -15707,8 +15708,10 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>ibm-watson-machine-learning<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>autoai-libs<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>scikit-learn<span class="o">==</span><span class="m">1</span>.1.1<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 <span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>wget<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
-<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>plotly<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>matplotlib<span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="w"> </span>
 </pre></div>
 
      </div>
@@ -15834,18 +15837,6 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a id="ts"></a></p>
-<h2 id="2.-Timeseries-data-set">2. Timeseries data set<a class="anchor-link" href="#2.-Timeseries-data-set">&#182;</a></h2>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Connections-to-COS">Connections to COS<a class="anchor-link" href="#Connections-to-COS">&#182;</a></h3><p>In next cell we read the COS credentials from the space.</p>
 
 </div>
@@ -15874,8 +15865,20 @@ ibmcloud resource service-instance WML_INSTANCE_NAME
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Training-data-sets">Training data sets<a class="anchor-link" href="#Training-data-sets">&#182;</a></h3><p>Download training data from git repository and upload it to a COS.<br />
-This example uses the <a href="https://raw.githubusercontent.com/wjcougar/air_pollution/master/PM25.csv">China daily PM2.5</a>.</p>
+<p><a id="definition"></a></p>
+<h2 id="2.-Optimizer-definition">2. Optimizer definition<a class="anchor-link" href="#2.-Optimizer-definition">&#182;</a></h2>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Training-data-connection">Training data connection<a class="anchor-link" href="#Training-data-connection">&#182;</a></h3><p>Define connection information to COS bucket and training data CSV file. This example uses the <a href="https://raw.githubusercontent.com/IBM/watson-machine-learning-samples/master/cloud/data/credit_risk/credit_risk_training_light.csv">German Credit Risk dataset</a>.</p>
+<p>The code in next cell uploads training data to the bucket.</p>
 
 </div>
 </div>
@@ -15888,29 +15891,9 @@ This example uses the <a href="https://raw.githubusercontent.com/wjcougar/air_po
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">datasource_name</span> <span class="o">=</span> <span class="s1">&#39;bluemixcloudobjectstorage&#39;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;credit_risk_training_light.csv&#39;</span>
+<span class="n">datasource_name</span> <span class="o">=</span> <span class="s1">&#39;bluemixcloudobjectstorage&#39;</span>
 <span class="n">bucketname</span> <span class="o">=</span> <span class="n">cos_credentials</span><span class="p">[</span><span class="s1">&#39;bucket_name&#39;</span><span class="p">]</span>
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">wget</span><span class="o">,</span> <span class="nn">zipfile</span>
-
-<span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;PM25.csv&#39;</span>
-<span class="n">base_url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/wjcougar/air_pollution/master/&#39;</span>
-
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span> <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">base_url</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15925,7 +15908,8 @@ This example uses the <a href="https://raw.githubusercontent.com/wjcougar/air_po
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Visualize-the-data">Visualize the data<a class="anchor-link" href="#Visualize-the-data">&#182;</a></h3>
+<p>Download training data from git repository.</p>
+
 </div>
 </div>
 </div>
@@ -15937,12 +15921,10 @@ This example uses the <a href="https://raw.githubusercontent.com/wjcougar/air_po
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">plotly.express</span> <span class="k">as</span> <span class="nn">px</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">wget</span>
 
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://raw.githubusercontent.com/IBM/watson-machine-learning-samples/master/cloud/data/credit_risk/credit_risk_training_light.csv&#39;</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span> <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15969,17 +15951,72 @@ This example uses the <a href="https://raw.githubusercontent.com/wjcougar/air_po
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">datasource_type_name</span><span class="o">=</span><span class="s1">&#39;PUT YOUR DATASOURCE TYPE NAME HERE&#39;</span>
+<span class="n">db_name</span><span class="o">=</span><span class="s1">&#39;PUT YOUR DATABASE NAME HERE&#39;</span>
+<span class="n">schema_name</span><span class="o">=</span><span class="s1">&#39;PUT YOUR SCHEMA NAME HERE&#39;</span>
+
+<span class="c1"># datasource_type_name=&#39;db2&#39;</span>
+<span class="c1"># db_name=&#39;BLUDB&#39;</span>
+<span class="c1"># schema_name=&#39;ZL&#39;</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;CREDIT_RISK&#39;</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">db_credentials</span><span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;database&quot;</span><span class="p">:</span><span class="n">db_name</span><span class="p">,</span>
+    <span class="s2">&quot;password&quot;</span><span class="p">:</span><span class="s2">&quot;***&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;port&quot;</span><span class="p">:</span><span class="s2">&quot;***&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;host&quot;</span><span class="p">:</span><span class="s2">&quot;***&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ssl&quot;</span><span class="p">:</span><span class="s2">&quot;***&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;username&quot;</span><span class="p">:</span><span class="s2">&quot;***&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">conn_meta_props</span><span class="o">=</span> <span class="p">{</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Connection to Database - </span><span class="si">{</span><span class="n">datasource_name</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">,</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Connection to Database - </span><span class="si">{</span><span class="n">datasource_name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">db_name</span><span class="si">}</span><span class="s2"> &quot;</span><span class="p">,</span>
     <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">DATASOURCE_TYPE</span><span class="p">:</span> <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">get_datasource_type_uid_by_name</span><span class="p">(</span><span class="n">datasource_name</span><span class="p">),</span>
     <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">DESCRIPTION</span><span class="p">:</span> <span class="s2">&quot;Connection to external Database&quot;</span><span class="p">,</span>
-    <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">PROPERTIES</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s1">&#39;bucket&#39;</span><span class="p">:</span> <span class="n">bucketname</span><span class="p">,</span>
-        <span class="s1">&#39;access_key&#39;</span><span class="p">:</span> <span class="n">cos_credentials</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">][</span><span class="s1">&#39;editor&#39;</span><span class="p">][</span><span class="s1">&#39;access_key_id&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;secret_key&#39;</span><span class="p">:</span> <span class="n">cos_credentials</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">][</span><span class="s1">&#39;editor&#39;</span><span class="p">][</span><span class="s1">&#39;secret_access_key&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;iam_url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://iam.cloud.ibm.com/identity/token&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="n">cos_credentials</span><span class="p">[</span><span class="s1">&#39;endpoint_url&#39;</span><span class="p">]</span>
-    <span class="p">}</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">PROPERTIES</span><span class="p">:</span> <span class="n">db_credentials</span>
 <span class="p">}</span>
 
 <span class="n">conn_details</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">connections</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">meta_props</span><span class="o">=</span><span class="n">conn_meta_props</span><span class="p">)</span>
@@ -16042,7 +16079,7 @@ conn_details = client.connections.create(meta_props=conn_meta_props)
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Training-data-connection">Training data connection<a class="anchor-link" href="#Training-data-connection">&#182;</a></h3><p>The code in next cell defines connections to created assets.</p>
+<p>Define connection information to training data.</p>
 
 </div>
 </div>
@@ -16057,16 +16094,13 @@ conn_details = client.connections.create(meta_props=conn_meta_props)
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning.helpers</span> <span class="kn">import</span> <span class="n">DataConnection</span><span class="p">,</span> <span class="n">S3Location</span>
 
-<span class="n">data_connections</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">data_connection</span> <span class="o">=</span> <span class="n">DataConnection</span><span class="p">(</span>
-        <span class="n">connection_asset_id</span><span class="o">=</span><span class="n">connection_id</span><span class="p">,</span>
-        <span class="n">location</span><span class="o">=</span><span class="n">S3Location</span><span class="p">(</span><span class="n">bucket</span><span class="o">=</span><span class="n">cos_credentials</span><span class="p">[</span><span class="s1">&#39;bucket_name&#39;</span><span class="p">],</span>
-                            <span class="n">path</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
-    <span class="p">)</span>
 
-<span class="n">data_connection</span><span class="o">.</span><span class="n">set_client</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
-<span class="n">data_connection</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">remote_name</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
-<span class="n">data_connections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_connection</span><span class="p">)</span>
+<span class="n">credit_risk_conn</span> <span class="o">=</span> <span class="n">DataConnection</span><span class="p">(</span>
+    <span class="n">connection_asset_id</span><span class="o">=</span><span class="n">connection_id</span><span class="p">,</span>
+    <span class="n">location</span><span class="o">=</span><span class="n">S3Location</span><span class="p">(</span><span class="n">bucket</span><span class="o">=</span><span class="n">bucketname</span><span class="p">,</span>
+                        <span class="n">path</span><span class="o">=</span><span class="n">filename</span><span class="p">))</span>
+
+<span class="n">training_data_reference</span><span class="o">=</span><span class="p">[</span><span class="n">credit_risk_conn</span><span class="p">]</span>
 </pre></div>
 
      </div>
@@ -16081,11 +16115,29 @@ conn_details = client.connections.create(meta_props=conn_meta_props)
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a id="definition"></a></p>
-<h2 id="3.-Optimizer-definition">3. Optimizer definition<a class="anchor-link" href="#3.-Optimizer-definition">&#182;</a></h2>
+<p>Check the connection information. Upload the data and validate.</p>
+
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">credit_risk_conn</span><span class="o">.</span><span class="n">set_client</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+<span class="n">credit_risk_conn</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">remote_name</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+<span class="n">credit_risk_conn</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16097,15 +16149,8 @@ conn_details = client.connections.create(meta_props=conn_meta_props)
 <ul>
 <li><code>name</code> - experiment name</li>
 <li><code>prediction_type</code> - type of the problem</li>
-<li><code>prediction_columns</code> - target columns names</li>
-<li><code>timestamp_column_name</code> — date&amp;time column name/index</li>
-<li><code>feature_columns</code> – names/indices of supporting feature columns</li>
-<li><code>forecast_window</code> — future date/time range to be predicted</li>
-<li><code>holdout_size</code> - number of holdout records</li>
-<li><code>lookback_window</code> – past date/time range used for model training, -1 means auto-determined</li>
-<li><code>backtest_num</code> – number of backtests</li>
-<li><code>supporting_features_at_forecast</code> – whether leveraging future values of supporting features</li>
-<li><code>pipeline_types</code> – specify an indiviual or a group of pipelins by type</li>
+<li><code>prediction_column</code> - target column name</li>
+<li><code>scoring</code> - optimization metric</li>
 </ul>
 
 </div>
@@ -16120,24 +16165,14 @@ conn_details = client.connections.create(meta_props=conn_meta_props)
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning.experiment</span> <span class="kn">import</span> <span class="n">AutoAI</span>
-<span class="kn">from</span> <span class="nn">ibm_watson_machine_learning.utils.autoai.enums</span> <span class="kn">import</span> <span class="n">ForecastingPipelineTypes</span>
 
 <span class="n">experiment</span> <span class="o">=</span> <span class="n">AutoAI</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">,</span> <span class="n">space_id</span><span class="o">=</span><span class="n">space_id</span><span class="p">)</span>
-<span class="n">forecast_window</span> <span class="o">=</span> <span class="mi">7</span>
-<span class="n">backtest_num</span> <span class="o">=</span> <span class="mi">4</span>
 
 <span class="n">pipeline_optimizer</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">optimizer</span><span class="p">(</span>
-            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;PM25 prediction&quot;</span><span class="p">,</span>
-            <span class="n">prediction_type</span><span class="o">=</span><span class="n">AutoAI</span><span class="o">.</span><span class="n">PredictionType</span><span class="o">.</span><span class="n">FORECASTING</span><span class="p">,</span>
-            <span class="n">prediction_columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pollution&#39;</span><span class="p">],</span>
-            <span class="n">timestamp_column_name</span><span class="o">=</span><span class="s1">&#39;date&#39;</span><span class="p">,</span>
-            <span class="n">feature_columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;pollution&#39;</span><span class="p">,</span><span class="s1">&#39;dew&#39;</span><span class="p">,</span><span class="s1">&#39;temp&#39;</span><span class="p">,</span><span class="s1">&#39;press&#39;</span><span class="p">,</span><span class="s1">&#39;wnd_spd&#39;</span><span class="p">,</span><span class="s1">&#39;snow&#39;</span><span class="p">,</span><span class="s1">&#39;rain&#39;</span><span class="p">],</span>
-            <span class="n">lookback_window</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">backtest_num</span><span class="o">=</span><span class="n">backtest_num</span><span class="p">,</span>
-            <span class="n">holdout_size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
-            <span class="n">forecast_window</span><span class="o">=</span><span class="n">forecast_window</span><span class="p">,</span>
-            <span class="n">supporting_features_at_forecast</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-            <span class="n">pipeline_types</span><span class="o">=</span><span class="p">[</span><span class="n">ForecastingPipelineTypes</span><span class="o">.</span><span class="n">Bats</span><span class="p">]</span> <span class="o">+</span> <span class="n">ForecastingPipelineTypes</span><span class="o">.</span><span class="n">get_exogenous</span><span class="p">()</span>
+    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Credit Risk Prediction - AutoAI&#39;</span><span class="p">,</span>
+    <span class="n">prediction_type</span><span class="o">=</span><span class="n">AutoAI</span><span class="o">.</span><span class="n">PredictionType</span><span class="o">.</span><span class="n">BINARY</span><span class="p">,</span>
+    <span class="n">prediction_column</span><span class="o">=</span><span class="s1">&#39;Risk&#39;</span><span class="p">,</span>
+    <span class="n">scoring</span><span class="o">=</span><span class="n">AutoAI</span><span class="o">.</span><span class="n">Metrics</span><span class="o">.</span><span class="n">ROC_AUC_SCORE</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 
@@ -16153,20 +16188,7 @@ conn_details = client.connections.create(meta_props=conn_meta_props)
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Configuration parameters can be retrieved via <code>pipeline_optimizer.get_params()</code>.</p>
-
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><a id="run"></a></p>
-<h2 id="4.-Experiment-run">4. Experiment run<a class="anchor-link" href="#4.-Experiment-run">&#182;</a></h2><p>Call the <code>fit()</code> method to trigger the AutoAI experiment. You can either use interactive mode (synchronous job) or background mode (asychronous job) by specifying <code>background_model=True</code>.</p>
+<p>Configuration parameters can be retrieved via <code>get_params()</code>.</p>
 
 </div>
 </div>
@@ -16179,7 +16201,38 @@ conn_details = client.connections.create(meta_props=conn_meta_props)
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fit_details</span> <span class="o">=</span> <span class="n">pipeline_optimizer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">training_data_reference</span><span class="o">=</span><span class="n">data_connections</span><span class="p">,</span> <span class="n">background_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pipeline_optimizer</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p><a id="run"></a></p>
+<h2 id="3.-Experiment-run">3. Experiment run<a class="anchor-link" href="#3.-Experiment-run">&#182;</a></h2><p>Call the <code>fit()</code> method to trigger the AutoAI experiment. You can either use interactive mode (synchronous job) or background mode (asychronous job) by specifying <code>background_model=True</code>.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">run_details</span> <span class="o">=</span> <span class="n">pipeline_optimizer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+            <span class="n">training_data_reference</span><span class="o">=</span><span class="n">training_data_reference</span><span class="p">,</span>
+            <span class="n">background_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16223,10 +16276,10 @@ conn_details = client.connections.create(meta_props=conn_meta_props)
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="comparison"></a></p>
-<h2 id="5.-Pipelines-comparison">5. Pipelines comparison<a class="anchor-link" href="#5.-Pipelines-comparison">&#182;</a></h2><p>You can list trained pipelines and evaluation metrics information in
+<h2 id="4.-Pipelines-comparison-and-testing">4. Pipelines comparison and testing<a class="anchor-link" href="#4.-Pipelines-comparison-and-testing">&#182;</a></h2><p>You can list trained pipelines and evaluation metrics information in
 the form of a Pandas DataFrame by calling the <code>summary()</code> method. You can
 use the DataFrame to compare all discovered pipelines and select the one
-you like for further deployment.</p>
+you like for further testing.</p>
 
 </div>
 </div>
@@ -16255,7 +16308,7 @@ you like for further deployment.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Check pipeline details by calling <code>get_pipeline_details()</code>. By default details of best pipeline are returned.</p>
+<p>You can visualize the scoring metric calculated on a holdout data set.</p>
 
 </div>
 </div>
@@ -16268,10 +16321,10 @@ you like for further deployment.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">best_pipeline_name</span> <span class="o">=</span> <span class="n">summary</span><span class="p">[</span><span class="n">summary</span><span class="o">.</span><span class="n">Winner</span><span class="o">==</span><span class="kc">True</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Best pipeline is:&#39;</span><span class="p">,</span> <span class="n">best_pipeline_name</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">plotting</span><span class="o">.</span><span class="n">backend</span> <span class="o">=</span> <span class="s2">&quot;plotly&quot;</span>
 
-<span class="n">pipeline_details</span> <span class="o">=</span> <span class="n">pipeline_optimizer</span><span class="o">.</span><span class="n">get_pipeline_details</span><span class="p">()</span>
+<span class="n">summary</span><span class="o">.</span><span class="n">holdout_roc_auc</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 
      </div>
@@ -16286,7 +16339,9 @@ you like for further deployment.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Holdout-data-visualization">Holdout data visualization<a class="anchor-link" href="#Holdout-data-visualization">&#182;</a></h3>
+<h3 id="Get-selected-pipeline-model">Get selected pipeline model<a class="anchor-link" href="#Get-selected-pipeline-model">&#182;</a></h3><p>Download and reconstruct a scikit-learn pipeline model object from the
+AutoAI training job.</p>
+
 </div>
 </div>
 </div>
@@ -16298,17 +16353,7 @@ you like for further deployment.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="n">visualization</span> <span class="o">=</span> <span class="n">pipeline_details</span><span class="p">[</span><span class="s1">&#39;visualization&#39;</span><span class="p">][</span><span class="s1">&#39;holdout&#39;</span><span class="p">]</span>
-<span class="n">holdout_dates</span> <span class="o">=</span> <span class="n">visualization</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
-<span class="n">holdout_predictions</span> <span class="o">=</span> <span class="n">visualization</span><span class="p">[</span><span class="s1">&#39;predicted_values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">holdout_observed_values</span> <span class="o">=</span> <span class="n">visualization</span><span class="p">[</span><span class="s1">&#39;observed_values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">holdout_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span><span class="n">holdout_dates</span><span class="p">,</span> <span class="s1">&#39;observed_values&#39;</span><span class="p">:</span><span class="n">holdout_observed_values</span><span class="p">,</span> <span class="s1">&#39;predicted_values&#39;</span><span class="p">:</span> <span class="n">holdout_predictions</span><span class="p">})</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">holdout_df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">holdout_df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">hover_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;|%B </span><span class="si">%d</span><span class="s2">, %Y&quot;</span><span class="p">},</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Holdout data&#39;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">dtick</span><span class="o">=</span><span class="s2">&quot;M1&quot;</span><span class="p">,</span> <span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;%b</span><span class="se">\n</span><span class="s2">%Y&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">best_pipeline</span> <span class="o">=</span> <span class="n">pipeline_optimizer</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">()</span>
 </pre></div>
 
      </div>
@@ -16323,7 +16368,8 @@ you like for further deployment.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Backtest-data-visualization">Backtest data visualization<a class="anchor-link" href="#Backtest-data-visualization">&#182;</a></h3>
+<p>Check confusion matrix for selected pipeline.</p>
+
 </div>
 </div>
 </div>
@@ -16335,20 +16381,650 @@ you like for further deployment.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pipeline_optimizer</span><span class="o">.</span><span class="n">get_pipeline_details</span><span class="p">()[</span><span class="s1">&#39;confusion_matrix&#39;</span><span class="p">]</span>
+</pre></div>
 
-<span class="n">backtest_dfs</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">backtest_num</span><span class="p">):</span>
-    <span class="n">visualization</span> <span class="o">=</span> <span class="n">pipeline_details</span><span class="p">[</span><span class="s1">&#39;visualization&#39;</span><span class="p">][</span><span class="s1">&#39;backtest&#39;</span><span class="p">][</span><span class="s1">&#39;iterations&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
-    <span class="n">backtest_dates</span> <span class="o">=</span> <span class="n">visualization</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
-    <span class="n">backtest_predictions</span> <span class="o">=</span> <span class="n">visualization</span><span class="p">[</span><span class="s1">&#39;predicted_values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">observed_values</span> <span class="o">=</span> <span class="n">visualization</span><span class="p">[</span><span class="s1">&#39;observed_values&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">backtest_dfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;time&#39;</span><span class="p">:</span><span class="n">backtest_dates</span><span class="p">,</span> <span class="s1">&#39;observed_values&#39;</span><span class="p">:</span><span class="n">observed_values</span><span class="p">,</span> <span class="s1">&#39;predicted_values&#39;</span><span class="p">:</span> <span class="n">backtest_predictions</span><span class="p">}))</span>
-<span class="n">backtest_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">backtest_dfs</span><span class="p">)</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">backtest_df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">backtest_df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">hover_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;|%B </span><span class="si">%d</span><span class="s2">, %Y&quot;</span><span class="p">},</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Backtest data&#39;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">dtick</span><span class="o">=</span><span class="s2">&quot;M1&quot;</span><span class="p">,</span> <span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;%b</span><span class="se">\n</span><span class="s2">%Y&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Check features importance for selected pipeline.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pipeline_optimizer</span><span class="o">.</span><span class="n">get_pipeline_details</span><span class="p">()[</span><span class="s1">&#39;features_importance&#39;</span><span class="p">]</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Convert-the-pipeline-model-to-a-Python-script-and-download-it">Convert the pipeline model to a Python script and download it<a class="anchor-link" href="#Convert-the-pipeline-model-to-a-Python-script-and-download-it">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning.helpers</span> <span class="kn">import</span> <span class="n">pipeline_to_script</span>
+<span class="n">pipeline_to_script</span><span class="p">(</span><span class="n">best_pipeline</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Visualize-pipeline">Visualize pipeline<a class="anchor-link" href="#Visualize-pipeline">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">best_pipeline</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Each node in the visualization is a machine-learning operator
+(transformer or estimator). Each edge indicates data flow (transformed
+output from one operator becomes input to the next).  The input to the
+root nodes is the initial dataset and the output from the sink node
+is the final prediction.  When you hover the mouse pointer over a
+node, a tooltip shows you the configuration arguments of the
+corresponding operator (tuned hyperparameters). When you click on the
+hyperlink of a node, it brings you to a documentation page for the
+operator.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Pipeline-source-code">Pipeline source code<a class="anchor-link" href="#Pipeline-source-code">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">best_pipeline</span><span class="o">.</span><span class="n">pretty_print</span><span class="p">(</span><span class="n">ipython_display</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">astype</span><span class="o">=</span><span class="s1">&#39;sklearn&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>In the pretty-printed code, <code>&gt;&gt;</code> is the pipe combinator (dataflow
+edge) and <code>&amp;</code> is the and combinator (combining multiple subpipelines).
+They correspond to the <code>make_pipeline</code> and <code>make_union</code> functions from
+scikit-learn, respectively. If you prefer the functions, you can
+instead pretty-print your pipeline with
+<code>best_pipeline.pretty_print(ipython_display=True, combinators=False)</code>.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Reading-training-data-from-COS">Reading training data from COS<a class="anchor-link" href="#Reading-training-data-from-COS">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_df</span> <span class="o">=</span> <span class="n">pipeline_optimizer</span><span class="o">.</span><span class="n">get_data_connections</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">train_X</span> <span class="o">=</span> <span class="n">train_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Risk&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+<span class="n">train_y</span> <span class="o">=</span> <span class="n">train_df</span><span class="o">.</span><span class="n">Risk</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Test-pipeline-model-locally">Test pipeline model locally<a class="anchor-link" href="#Test-pipeline-model-locally">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">predicted_y</span> <span class="o">=</span> <span class="n">best_pipeline</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">train_X</span><span class="p">)</span>
+<span class="n">predicted_y</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p><a id="runs"></a></p>
+<h2 id="5.-Historical-runs">5. Historical runs<a class="anchor-link" href="#5.-Historical-runs">&#182;</a></h2><p>In this section you learn to work with historical AutoPipelines fit jobs (runs).</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>To list historical runs use method <code>list()</code>.</p>
+<p><strong>Note</strong>: You can filter runs by providing experiment name.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">experiment</span><span class="o">.</span><span class="n">runs</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;Credit Risk Prediction - AutoAI&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>To work with historical pipelines found during a particular optimizer
+run, you need to first provide the <code>run_id</code> to select the fitted
+optimizer.</p>
+<p><strong>Note:</strong> you can assign selected run_id to the <code>run_id</code> variable.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">run_id</span> <span class="o">=</span> <span class="n">run_details</span><span class="p">[</span><span class="s1">&#39;metadata&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Get-executed-optimizer's-configuration-parameters">Get executed optimizer's configuration parameters<a class="anchor-link" href="#Get-executed-optimizer's-configuration-parameters">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">experiment</span><span class="o">.</span><span class="n">runs</span><span class="o">.</span><span class="n">get_params</span><span class="p">(</span><span class="n">run_id</span><span class="o">=</span><span class="n">run_id</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Get-historical-optimizer-instance-and-training-details">Get historical optimizer instance and training details<a class="anchor-link" href="#Get-historical-optimizer-instance-and-training-details">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">historical_opt</span> <span class="o">=</span> <span class="n">experiment</span><span class="o">.</span><span class="n">runs</span><span class="o">.</span><span class="n">get_optimizer</span><span class="p">(</span><span class="n">run_id</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">run_details</span> <span class="o">=</span> <span class="n">historical_opt</span><span class="o">.</span><span class="n">get_run_details</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="List-trained-pipelines-for-selected-optimizer">List trained pipelines for selected optimizer<a class="anchor-link" href="#List-trained-pipelines-for-selected-optimizer">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">historical_opt</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Get-selected-pipeline-and-test-locally">Get selected pipeline and test locally<a class="anchor-link" href="#Get-selected-pipeline-and-test-locally">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hist_pipeline</span> <span class="o">=</span> <span class="n">historical_opt</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">(</span><span class="n">pipeline_name</span><span class="o">=</span><span class="s1">&#39;Pipeline_3&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">predicted_y</span> <span class="o">=</span> <span class="n">hist_pipeline</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">train_X</span><span class="p">)</span>
+<span class="n">predicted_y</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<hr />
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p><a id="refinery"></a></p>
+<h2 id="6.-Pipeline-refinement-with-Lale-and-testing">6. Pipeline refinement with <a href="https://github.com/IBM/lale">Lale</a> and testing<a class="anchor-link" href="#6.-Pipeline-refinement-with-Lale-and-testing">&#182;</a></h2><p>In this section you learn how to refine and retrain the best
+pipeline returned by AutoAI. There are many ways to refine a pipeline.
+For illustration, simply replace the final estimator in the
+pipeline by an interpretable model. The call to
+<code>wrap_imported_operators()</code> augments scikit-learn operators with
+schemas for hyperparameter tuning.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span> <span class="k">as</span> <span class="n">LR</span>
+<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span> <span class="k">as</span> <span class="n">Tree</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsClassifier</span> <span class="k">as</span> <span class="n">KNN</span>
+<span class="kn">from</span> <span class="nn">lale.lib.lale</span> <span class="kn">import</span> <span class="n">Hyperopt</span>
+<span class="kn">from</span> <span class="nn">lale</span> <span class="kn">import</span> <span class="n">wrap_imported_operators</span>
+
+<span class="n">wrap_imported_operators</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Pipeline-decomposition-and-new-definition">Pipeline decomposition and new definition<a class="anchor-link" href="#Pipeline-decomposition-and-new-definition">&#182;</a></h3><p>Start by removing the last step of the pipeline, i.e., the final estimator.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">prefix</span> <span class="o">=</span> <span class="n">hist_pipeline</span><span class="o">.</span><span class="n">remove_last</span><span class="p">()</span><span class="o">.</span><span class="n">freeze_trainable</span><span class="p">()</span>
+<span class="n">prefix</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Next, add a new final step, which consists of a choice of three
+estimators. In this code, <code>|</code> is the or combinator (algorithmic
+choice). It defines a search space for another optimizer run.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">new_pipeline</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">LR</span> <span class="o">|</span> <span class="n">Tree</span> <span class="o">|</span> <span class="n">KNN</span><span class="p">)</span>
+<span class="n">new_pipeline</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="New-optimizer-Hyperopt-configuration-and-training">New optimizer <code>Hyperopt</code> configuration and training<a class="anchor-link" href="#New-optimizer-Hyperopt-configuration-and-training">&#182;</a></h3><p>To automatically select the algorithm and tune its hyperparameters, we
+create an instance of the <code>Hyperopt</code> optimizer and <code>fit</code> it to the
+data.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">train_X</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">33</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">hyperopt</span> <span class="o">=</span> <span class="n">Hyperopt</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">new_pipeline</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_evals</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s1">&#39;roc_auc&#39;</span><span class="p">)</span>
+<span class="n">hyperopt_pipelines</span> <span class="o">=</span> <span class="n">hyperopt</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pipeline_model</span> <span class="o">=</span> <span class="n">hyperopt_pipelines</span><span class="o">.</span><span class="n">get_pipeline</span><span class="p">()</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Pipeline-model-tests-and-visualization">Pipeline model tests and visualization<a class="anchor-link" href="#Pipeline-model-tests-and-visualization">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
+
+<span class="n">predicted_y</span> <span class="o">=</span> <span class="n">pipeline_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">predicted_y</span><span class="o">==</span><span class="s1">&#39;Risk&#39;</span><span class="p">,</span> <span class="n">y_test</span><span class="o">==</span><span class="s1">&#39;Risk&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;roc_auc_score </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s1">.1%</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pipeline_model</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
 </pre></div>
 
      </div>
@@ -16364,11 +17040,27 @@ you like for further deployment.</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="scoring"></a></p>
-<h2 id="6.-Deploy-and-Score">6. Deploy and Score<a class="anchor-link" href="#6.-Deploy-and-Score">&#182;</a></h2><p>In this section you will learn how to deploy and score pipeline model as online deployment using WML instance.</p>
+<h2 id="7.-Deploy-and-Score">7. Deploy and Score<a class="anchor-link" href="#7.-Deploy-and-Score">&#182;</a></h2><p>In this section you will learn how to deploy and score pipeline model as webservice using WML instance.</p>
 
 </div>
 </div>
 </div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pipeline_name</span> <span class="o">=</span> <span class="s2">&quot;Pipeline_1&quot;</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -16393,10 +17085,37 @@ you like for further deployment.</p>
 <span class="n">service</span> <span class="o">=</span> <span class="n">WebService</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">,</span> <span class="n">source_space_id</span><span class="o">=</span><span class="n">space_id</span><span class="p">)</span>
 
 <span class="n">service</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-    <span class="n">experiment_run_id</span><span class="o">=</span><span class="n">pipeline_optimizer</span><span class="o">.</span><span class="n">get_run_details</span><span class="p">()[</span><span class="s1">&#39;metadata&#39;</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>
-    <span class="n">model</span><span class="o">=</span><span class="n">best_pipeline_name</span><span class="p">,</span> 
-    <span class="n">deployment_name</span><span class="o">=</span><span class="s2">&quot;PM2.5 Forecasting&quot;</span>
-    <span class="p">)</span>
+    <span class="n">experiment_run_id</span><span class="o">=</span><span class="n">run_id</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">pipeline_name</span><span class="p">,</span> 
+    <span class="n">deployment_name</span><span class="o">=</span><span class="s2">&quot;Credit Risk Deployment AutoAI&quot;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Deployment object could be printed to show basic information:</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16439,7 +17158,7 @@ you like for further deployment.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Scoring">Scoring<a class="anchor-link" href="#Scoring">&#182;</a></h3><p>You can use the <code>score</code> method to get predictions for defined forecasting window. You can either send payload records or use empty list.</p>
+<h3 id="Scoring-of-webservice">Scoring of webservice<a class="anchor-link" href="#Scoring-of-webservice">&#182;</a></h3><p>You can make scoring request by calling <code>score()</code> on deployed pipeline.</p>
 
 </div>
 </div>
@@ -16452,8 +17171,7 @@ you like for further deployment.</p>
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">predictions</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">payload</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;daily_cases&#39;</span> <span class="p">:</span> <span class="p">[]}))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;predictions for next 7 days:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">predictions</span> <span class="o">=</span> <span class="n">service</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">payload</span><span class="o">=</span><span class="n">train_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Risk&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">10</span><span class="p">])</span>
 <span class="n">predictions</span>
 </pre></div>
 
@@ -16469,13 +17187,13 @@ you like for further deployment.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Or you could send payload with new observations:</p>
-<pre><code>filename = 'PM25_NewObservations.csv'
-
-if not os.path.isfile(filename): wget.download(base_url + filename)
-predictions = service.score(pd.read_csv(filename).drop(&quot;date&quot;, axis=1))
-predictions
-</code></pre>
+<p>If you want to work with the web service in an external Python application you can retrieve the service object by:</p>
+<ul>
+<li>Initialize the service by <code>service = WebService(wml_credentials)</code></li>
+<li>Get deployment_id by <code>service.list()</code> method</li>
+<li>Get webservice object by <code>service.get('deployment_id')</code> method</li>
+</ul>
+<p>After that you can call <code>service.score()</code> method.</p>
 
 </div>
 </div>
@@ -16487,7 +17205,32 @@ predictions
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Visualization-of-predictions">Visualization of predictions<a class="anchor-link" href="#Visualization-of-predictions">&#182;</a></h3>
+<h3 id="Deleting-deployment">Deleting deployment<a class="anchor-link" href="#Deleting-deployment">&#182;</a></h3><p>You can delete the existing deployment by calling the <code>service.delete()</code> command.
+To list the existing web services you can use <code>service.list()</code>.</p>
+
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Batch-deployment-creation">Batch deployment creation<a class="anchor-link" href="#Batch-deployment-creation">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>A batch deployment processes input data from a inline data and return predictions in scoring details.</p>
+
 </div>
 </div>
 </div>
@@ -16499,16 +17242,87 @@ predictions
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">last_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">holdout_df</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="n">prediction_dates</span> <span class="o">=</span> <span class="p">[(</span><span class="n">last_date</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span> <span class="o">+</span> <span class="n">i</span><span class="p">))</span><span class="o">.</span><span class="n">date</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">forecast_window</span><span class="p">)]</span>
-<span class="n">prediction_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span>  <span class="n">predictions</span><span class="p">[</span><span class="s1">&#39;predictions&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;values&#39;</span><span class="p">]]</span>
-<span class="n">pred_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;time&#39;</span> <span class="p">:</span> <span class="n">holdout_dates</span> <span class="o">+</span> <span class="n">prediction_dates</span><span class="p">,</span>
-                        <span class="s1">&#39;observed_values&#39;</span> <span class="p">:</span> <span class="n">holdout_observed_values</span> <span class="o">+</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">NAN</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">forecast_window</span><span class="p">)],</span>
-                        <span class="s1">&#39;predicted_values&#39;</span> <span class="p">:</span> <span class="n">holdout_predictions</span> <span class="o">+</span> <span class="n">prediction_values</span><span class="p">})</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">batch_payload_df</span> <span class="o">=</span> <span class="n">train_df</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;Risk&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">batch_payload_df</span>
+</pre></div>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">pred_df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">pred_df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">hover_data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="s2">&quot;|%B </span><span class="si">%d</span><span class="s2">, %Y&quot;</span><span class="p">},</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Forecast data&#39;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">dtick</span><span class="o">=</span><span class="s2">&quot;M1&quot;</span><span class="p">,</span> <span class="n">tickformat</span><span class="o">=</span><span class="s2">&quot;%b</span><span class="se">\n</span><span class="s2">%Y&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<p>Create batch deployment for <code>Pipeline_2</code> created in AutoAI experiment with the <code>run_id</code>.</p>
+
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watson_machine_learning.deployment</span> <span class="kn">import</span> <span class="n">Batch</span>
+
+<span class="n">service_batch</span> <span class="o">=</span> <span class="n">Batch</span><span class="p">(</span><span class="n">wml_credentials</span><span class="p">,</span><span class="n">source_space_id</span><span class="o">=</span><span class="n">space_id</span><span class="p">)</span>
+<span class="n">service_batch</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">experiment_run_id</span><span class="o">=</span><span class="n">run_id</span><span class="p">,</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Pipeline_2&quot;</span><span class="p">,</span>
+            <span class="n">deployment_name</span><span class="o">=</span><span class="s2">&quot;Credit Risk Batch Deployment AutoAI&quot;</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
+<h3 id="Score-batch-deployment-with-inline-payload-as-pandas-DataFrame.">Score batch deployment with inline payload as pandas DataFrame.<a class="anchor-link" href="#Score-batch-deployment-with-inline-payload-as-pandas-DataFrame.">&#182;</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">scoring_params</span> <span class="o">=</span> <span class="n">service_batch</span><span class="o">.</span><span class="n">run_job</span><span class="p">(</span>
+            <span class="n">payload</span><span class="o">=</span><span class="n">batch_payload_df</span><span class="p">,</span>
+            <span class="n">background_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+     </div>
+</div>
+</div>
+</div>
+
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+     <div class="CodeMirror cm-s-jupyter">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">scoring_params</span><span class="p">[</span><span class="s1">&#39;entity&#39;</span><span class="p">][</span><span class="s1">&#39;scoring&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;predictions&#39;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -16524,7 +17338,7 @@ predictions
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="cleanup"></a></p>
-<h2 id="7.-Clean-up">7. Clean up<a class="anchor-link" href="#7.-Clean-up">&#182;</a></h2>
+<h2 id="8.-Clean-up">8. Clean up<a class="anchor-link" href="#8.-Clean-up">&#182;</a></h2>
 </div>
 </div>
 </div>
@@ -16558,7 +17372,7 @@ predictions
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="summary"></a></p>
-<h2 id="8.-Summary-and-next-steps">8. Summary and next steps<a class="anchor-link" href="#8.-Summary-and-next-steps">&#182;</a></h2><p>You successfully completed this notebook!.</p>
+<h2 id="9.-Summary-and-next-steps">9. Summary and next steps<a class="anchor-link" href="#9.-Summary-and-next-steps">&#182;</a></h2><p>You successfully completed this notebook!.</p>
 <p>You learned how to use <code>ibm-watson-machine-learning</code> to run AutoAI experiments.</p>
 <p>Check out our <em><a href="https://dataplatform.cloud.ibm.com/docs">Online Documentation</a></em> for more samples, tutorials, documentation, how-tos, and blog posts.</p>
 
@@ -16572,7 +17386,11 @@ predictions
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Jun Wang</strong>, is a Software Architect and Data Scientist at IBM with a track record of developing enterprise-level applications that substantially increases clients' ability to turn data into actionable knowledge.</p>
+<h3 id="Authors">Authors<a class="anchor-link" href="#Authors">&#182;</a></h3><p><strong>Lukasz Cmielowski</strong>, PhD, is an Automation Architect and Data Scientist at IBM with a track record of developing enterprise-level applications that substantially increases clients' ability to turn data into actionable knowledge.</p>
+<p><strong>Amadeusz Masny</strong>, Python Software Developer in Watson Machine Learning at IBM</p>
+<p><strong>Kiran Kate</strong>, Senior Software Engineer at IBM Research AI</p>
+<p><strong>Martin Hirzel</strong>, Research Staff Member and Manager at IBM Research AI</p>
+<p><strong>Jan Sołtysik</strong>, Intern in Watson Machine Learning</p>
 
 </div>
 </div>
