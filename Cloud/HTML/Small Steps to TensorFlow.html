@@ -15579,7 +15579,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Small-Steps-to-TensorFlow">Small Steps to <code>TensorFlow</code><a class="anchor-link" href="#Small-Steps-to-TensorFlow">&#182;</a></h1><h2 id="Solve-problems-with-matrices,-linear-regression,-and-gradient-descent">Solve problems with matrices, linear regression, and gradient descent<a class="anchor-link" href="#Solve-problems-with-matrices,-linear-regression,-and-gradient-descent">&#182;</a></h2><p>This guide is part one of a light introduction to <a href="https://www.tensorflow.org/versions/r0.12/get_started" target="_blank" rel="noopener no referrer">TensorFlow</a> on Watson Studio.
+<h1 id="Small-Steps-to-TensorFlow">Small Steps to <code>TensorFlow</code><a class="anchor-link" href="#Small-Steps-to-TensorFlow">&#182;</a></h1><h2 id="Solve-problems-with-matrices,-linear-regression,-and-gradient-descent">Solve problems with matrices, linear regression, and gradient descent<a class="anchor-link" href="#Solve-problems-with-matrices,-linear-regression,-and-gradient-descent">&#182;</a></h2><p>This guide is a light introduction to <a href="https://www.tensorflow.org/versions" target="_blank" rel="noopener no referrer">TensorFlow</a> on Watson Studio.
 <code>TensorFlow</code> is a popular and powerful framework used to specify computations as <code>graphs</code> which data <code>flow</code> through. These data are represented as <code>tensors</code>. By the end of this guide, we'll have developed an intuition for how this all fits together.</p>
 <p>We will not build any neural networks. Instead, we'll use <code>TensorFlow</code> to solve toy problems. This way, we will develop some familiarity with the APIs and best practices.</p>
 <p>This notebook runs on Python and Spark.</p>
@@ -15598,7 +15598,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 ________</p>
 <ol>
 <li><a href="#tensor">What's a TENSOR, anyway?</a></li>
-<li><a href="#matix">Matrix math and linear equations</a></li>
+<li><a href="#matrix">Matrix math and linear equations</a></li>
 <li><a href="#sine">Learning to Sine</a></li>
 <li><a href="#nextsteps">Next steps</a></li>
 </ol>
@@ -15773,8 +15773,8 @@ class="
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="2.-Matrix-math-and-linear-equations">2. Matrix math and linear equations<a id="matrix" /><a class="anchor-link" href="#2.-Matrix-math-and-linear-equations">&#182;</a></h2><p>Importantly, every linear transformation can be represented by a matrix, and every matrix defines a unique linear transformation. The proof is left as an exercise for the reader -- or you can just <a href="https://math.stackexchange.com/questions/916192/proving-any-linear-transformation-can-be-represented-as-a-matrix" target="_blank" rel="noopener noreferrer">read a nice one on math Stack Exchange</a>.</p>
-<p>Now let's solve this system with matrices in <code>TensorFlow</code>! <code>TensorFlow</code> makes  <a href="https://www.tensorflow.org/api_guides/python/math_ops" target="_blank" rel="noopener noreferrer">matrix math</a> easy.</p>
+<h2 id="2.-Matrix-math-and-linear-equations-">2. Matrix math and linear equations <a id="matrix" /><a class="anchor-link" href="#2.-Matrix-math-and-linear-equations-">&#182;</a></h2><p>Importantly, every linear transformation can be represented by a matrix, and every matrix defines a unique linear transformation. The proof is left as an exercise for the reader -- or you can just <a href="https://math.stackexchange.com/questions/916192/proving-any-linear-transformation-can-be-represented-as-a-matrix" target="_blank" rel="noopener noreferrer">read a nice one on math Stack Exchange</a>.</p>
+<p>Now let's solve this system with matrices in <code>TensorFlow</code>! <code>TensorFlow</code> makes  <a href="https://www.tensorflow.org/api_docs/python/tf/math" target="_blank" rel="noopener noreferrer">matrix math</a> easy.</p>
 <p>First, we need to represent our system of equations in matrix form:</p>
 <p>$
   \left[ {\begin{array}{cc}
@@ -15912,7 +15912,7 @@ $$A^{-1}B = X$$</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>There's a reason we see this unusual result. In fact, <code>X</code> has not been evaluated. <code>TensorFlow</code> allows you to specify computations without actually performing them. To compute <code>X</code>, we'll need to start a  <a href="https://www.tensorflow.org/api_docs/python/tf/Session" target="_blank" rel="noopener noreferrer">session</a>.</p>
+<p>There's a reason we see this unusual result. In fact, <code>X</code> has not been evaluated. <code>TensorFlow</code> allows you to specify computations without actually performing them. To compute <code>X</code>, we'll need to start a  <a href="https://www.tensorflow.org/api_docs/python/tf/compat/v1/Session" target="_blank" rel="noopener noreferrer">session</a>.</p>
 
 </div>
 </div>
@@ -16274,7 +16274,7 @@ class="
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>Our goal is to build a <strong>linear model</strong> of the form $Y = WX + B$ that best approximates the  curve.</p>
-<p>First, we need to set up  <a href="https://www.tensorflow.org/api_docs/python/tf/placeholder" target="_blank" rel="noopener noreferrer">placeholders</a> for our data. Later, when we begin our <code>session</code>, we'll <code>feed</code> the placeholders the <code>x</code> and <code>y</code> values from our dataset.</p>
+<p>First, we need to set up  <a href="https://www.tensorflow.org/api_docs/python/tf/compat/v1/placeholder" target="_blank" rel="noopener noreferrer">placeholders</a> for our data. Later, when we begin our <code>session</code>, we'll <code>feed</code> the placeholders the <code>x</code> and <code>y</code> values from our dataset.</p>
 
 </div>
 </div>
@@ -16365,7 +16365,7 @@ class="
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>The learning algorithm we're going to use is  <a href="https://www.tensorflow.org/api_docs/python/tf/train/GradientDescentOptimizer" target="_blank" rel="noopener noreferrer">Gradient Descent</a>. This algorithm will attempt to minimize the value produced by our error function, in our case it will be  the square of the difference between our model's predicted y value and the actual y value.</p>
+<p>The learning algorithm we're going to use is  <a href="https://www.tensorflow.org/api_docs/python/tf/compat/v1/train/GradientDescentOptimizer" target="_blank" rel="noopener noreferrer">Gradient Descent</a>. This algorithm will attempt to minimize the value produced by our error function, in our case it will be  the square of the difference between our model's predicted y value and the actual y value.</p>
 
 </div>
 </div>
@@ -16583,7 +16583,6 @@ class="
 <h2 id="4.-Next-steps">4. Next steps<a id="nextsteps" /><a class="anchor-link" href="#4.-Next-steps">&#182;</a></h2><p>You might not have realized it, but we just implemented <code>Linear Regression</code> in <code>TensorFlow</code>! The steps we used above can be generalized to other dimensions for $x$.</p>
 <p>Just as we generalized with the matrix math to a real world example, I encourage you to use the above blueprint for your linear regressions. Compare the results to other methods implemented in popular frameworks like python's <code>scikit-learn</code> or linear models in <code>R</code>. It's fun to generate a plot from the model's weights as the model is training.</p>
 <p>Another exercise you might consider is putting this code in the iteration loop.</p>
-<p>Look forward to part two, we're going to build a neural network that more accurately approximates a <code>Sine</code> curve.</p>
 
 </div>
 </div>
@@ -16610,7 +16609,7 @@ class="
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="Citations">Citations<a class="anchor-link" href="#Citations">&#182;</a></h3><p>${[1]}$ <a href="http://mathworld.wolfram.com/Tensor.html">http://mathworld.wolfram.com/Tensor.html</a></p>
 <br>
-${[2]}$ https://www.tensorflow.org/versions/r0.12/get_started/basic_usage#tensors
+${[2]}$ https://www.tensorflow.org/api_docs
 <hr>
 
 </div>
@@ -16623,7 +16622,7 @@ ${[2]}$ https://www.tensorflow.org/versions/r0.12/get_started/basic_usage#tensor
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Copyright © IBM Corp. 2018-2019. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright © IBM Corp. 2018-2024. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
@@ -16639,7 +16638,7 @@ ${[2]}$ https://www.tensorflow.org/versions/r0.12/get_started/basic_usage#tensor
 <span style="font-size:18px;color:#152935;">Love this notebook? </span>
 <span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
 <span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
-<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://www.ibm.com/products/watson-studio" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
 </div>
 
 </div>
