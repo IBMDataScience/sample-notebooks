@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Using IBM Cloud SQL Query to analyze Log</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Using IBM Cloud Data Engine to analyze LogDNA data</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -36,6 +36,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -15446,10 +15447,6 @@ a.anchor-link {
   display: none;
 }
 
-.highlight  {
-  margin: 0.4em;
-}
-
 /* Input area styling */
 .jp-InputArea {
   overflow: hidden;
@@ -15459,9 +15456,26 @@ a.anchor-link {
   overflow: hidden;
 }
 
-.CodeMirror pre {
+.CodeMirror.cm-s-jupyter .highlight pre {
+/* weird, but --jp-code-padding defined to be 5px but 4px horizontal padding is hardcoded for pre.CodeMirror-line */
+  padding: var(--jp-code-padding) 4px;
   margin: 0;
-  padding: 0;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+}
+
+.jp-OutputArea-output pre {
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.jp-RenderedText pre {
+  color: var(--jp-content-font-color1);
+  font-size: var(--jp-code-font-size);
 }
 
 /* Using table instead of flexbox so that we can use break-inside property */
@@ -15505,6 +15519,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 /* Hiding the collapser by default */
 .jp-Collapser {
   display: none;
+}
+
+@page {
+    margin: 0.5in; /* Margin for each printed piece of paper */
 }
 
 @media print {
@@ -15575,7 +15593,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <p><strong>IBM Data Engine</strong> is IBM's serverless SQL service on data in <strong>Cloud Object Storage</strong>. It allows the user to run ANSI SQL on Parquet, CSV and JSON data sets. It is based on Apache Spark SQL as the query engine in the background. It can also be used to pre-process and analyze the log archives that LogDNA writes. This notebook uses the the Python SDK from IBM Data Engine. Further details on the Python SDK could be found in this <a href="https://github.com/IBM-Cloud/sql-query-clients/tree/master/Python" target="_blank" rel="noopener noreferrer">Git repository</a>.</p>
 <p><strong>LogDNA</strong> is a cloud-based log management software that aggregates all system and application logs in one centralized logging system. LogDNA keeps your logs only for a limited period of time.
 However, LogDNA can be configured to <strong>export logs from LogDNA to IBM Cloud Object Storage</strong>. Archived logs are in JSON format and preserve metadata associated with each line. Logs will be exported daily in a compressed format (<code>.json.gz</code>).</p>
-<p>This notebook gives an overview on the Data Engine features that help with preparing the log archives for further analysis. Furthermore it shows how to query the logs with SQL to filter out the "noise" in your data.
+<p>This notebook gives an overview on the Data Engine features that help with preparing the log archives for further analysis. Furthermore it shows how to query the logs with SQL to filter out the &quot;noise&quot; in your data.
 The start of the notebook shows how to work with your own LogDNA data and the chapter 5 focuses on sample ingress log data.</p>
 
 </div>
@@ -15636,8 +15654,8 @@ The start of the notebook shows how to work with your own LogDNA data and the ch
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip -q install ibmcloudsql
-<span class="o">!</span>pip -q install sqlparse
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>-q<span class="w"> </span>install<span class="w"> </span>ibmcloudsql
+<span class="o">!</span>pip<span class="w"> </span>-q<span class="w"> </span>install<span class="w"> </span>sqlparse
 </pre></div>
 
      </div>
@@ -15672,9 +15690,7 @@ The start of the notebook shows how to work with your own LogDNA data and the ch
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15704,9 +15720,7 @@ You can opt out by calling pixiedust.optOut() in a new cell.
 </pre>
 </div>
 </div>
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15724,9 +15738,7 @@ You can opt out by calling pixiedust.optOut() in a new cell.
 </div>
 
 </div>
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15738,9 +15750,7 @@ Table service_connections created successfully
 </pre>
 </div>
 </div>
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15751,9 +15761,7 @@ Table service_connections created successfully
 </div>
 
 </div>
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15766,9 +15774,7 @@ Table service_connections created successfully
 </div>
 
 </div>
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15792,13 +15798,13 @@ Table service_connections created successfully
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="-2.-Configure-Data-Engine"><a id="configure" /> 2. Configure Data Engine<a class="anchor-link" href="#-2.-Configure-Data-Engine">&#182;</a></h3><ol>
-<li>You need an API key for an IBM cloud identity that has access to your Cloud Object Storage bucket for writing SQL results and to your Data Engine instance. To create API keys log on to the IBM Cloud console and go to <a href="https://console.bluemix.net/iam/#/apikeys" target="_blank" rel="noopener noreferrer">Manage->Security->Platform API Keys</a>, click the <strong>Create an IBM API key</strong> button, give the key a custom name and click <strong>Create</strong>. In the next dialog click <strong>Show</strong> and copy the key to your clipboard and paste it below in this notebook.</li>
+<li>You need an API key for an IBM cloud identity that has access to your Cloud Object Storage bucket for writing SQL results and to your Data Engine instance. To create API keys log on to the IBM Cloud console and go to <a href="https://console.bluemix.net/iam/#/apikeys" target="_blank" rel="noopener noreferrer">Manage-&gt;Security-&gt;Platform API Keys</a>, click the <strong>Create an IBM API key</strong> button, give the key a custom name and click <strong>Create</strong>. In the next dialog click <strong>Show</strong> and copy the key to your clipboard and paste it below in this notebook.</li>
 <li>You need the instance CRN for the Data Engine instance. You can find it in the <a href="https://console.bluemix.net/dashboard/apps" target="_blank" rel="noopener noreferrer">IBM Cloud console dashboard</a>. Make sure you have <code>All Resources</code> selected as resource group. In the section <strong>Services</strong> you can see your instances of Data Engine and Cloud Object Storage. Select the instance of Data Engine that you want to use. In the Data Engine dashboard page that opens up you find a section titled <strong>REST API</strong> with a button labelled <strong>Instance CRN</strong>. Click the button to copy the CRN into your clipboard and paste it here into the notebook. If you don't have an Data Engine instance created yet, <a href="https://console.bluemix.net/catalog/services/sql-query" target="_blank" rel="noopener noreferrer">create one</a> first.</li>
-<li>You need to specify the location on Cloud Object Storage where your query results should be written. This comprises three parts of information that you can find in the Cloud Object Storage details for your instance in the IBM Cloud console. You need to provide it as a URL using the format <code>cos://&lt;endpoint&gt;/&lt;bucket&gt;/[&lt;prefix&gt;]</code>. You have the option to use the Cloud Object Storage bucket <em>that is associated with your project</em>. In this case, execute the following section before you proceed.  </li>
-<li>You need to specify the location on Cloud Object Storage where your <em>logDNA objects will be stored</em>. </li>
-<li>You need to specify the location on Cloud Object Storage where your <em>pre-processed log data will be stored.</em> See below for an example of pre-processing query.
-<br/></li>
+<li>You need to specify the location on Cloud Object Storage where your query results should be written. This comprises three parts of information that you can find in the Cloud Object Storage details for your instance in the IBM Cloud console. You need to provide it as a URL using the format <code>cos://&lt;endpoint&gt;/&lt;bucket&gt;/[&lt;prefix&gt;]</code>. You have the option to use the Cloud Object Storage bucket <em>that is associated with your project</em>. In this case, execute the following section before you proceed.</li>
+<li>You need to specify the location on Cloud Object Storage where your <em>logDNA objects will be stored</em>.</li>
+<li>You need to specify the location on Cloud Object Storage where your <em>pre-processed log data will be stored.</em> See below for an example of pre-processing query.</li>
 </ol>
+<br/>
 <p>For more background information, check out the Data Engine <a href="https://console.bluemix.net/docs/services/sql-query/getting-started.html#getting-started-tutorial" target="_blank" rel="noopener noreferrer">documentation</a>.</p>
 
 </div>
@@ -15865,9 +15871,7 @@ Table service_connections created successfully
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15958,9 +15962,7 @@ Enter URL where to store preprocessed log data (like cos://us-south/preprocessed
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15994,61 +15996,64 @@ Result stored in: cos://s3.us-south.objectstorage.softlayer.net/cos-standard-6il
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h3 id="-4.-How-to-work-with-Data-Engine-compared-to-LogDNA-UI"><a id="comparison" /> 4. How to work with Data Engine compared to LogDNA UI<a class="anchor-link" href="#-4.-How-to-work-with-Data-Engine-compared-to-LogDNA-UI">&#182;</a></h3><p>Now your preprocessed log data is ready for analysis. But before we get started, here is a quick overview on how to work with Data Engine compared to the LogDNA UI to perform tasks that you need for log analysis like filtering or searching log records.</p>
 <h4 id="4.1-Filtering-by-sources,-apps,-levels-or-tags:">4.1<a id="filter" /> Filtering by sources, apps, levels or tags:<a class="anchor-link" href="#4.1-Filtering-by-sources,-apps,-levels-or-tags:">&#182;</a></h4><ul>
-<li><strong>LogDNA</strong>: 
-Use the respective drop-down to select one or more sources, apps, log levels or tags.
-<br><br></li>
-<li><strong>Data Engine</strong>: 
-Filter on the respective column. The log record's source, app, log level or tags (if defined) are stored along with the log record also for archived logs.<ul>
-<li>to fetch the source:<div class="highlight"><pre><span></span><span class="k">WHERE</span> <span class="n">_source</span><span class="p">.</span><span class="n">_host</span> <span class="k">IN</span><span class="p">(</span><span class="ss">&quot;source1&quot;</span><span class="p">,</span> <span class="ss">&quot;source2&quot;</span><span class="p">)</span>
-</pre></div>
-</li>
-<li>to fetch the app:<div class="highlight"><pre><span></span><span class="k">WHERE</span> <span class="n">_source</span><span class="p">.</span><span class="n">_app</span> <span class="k">IN</span><span class="p">(</span><span class="ss">&quot;app1&quot;</span><span class="p">,</span> <span class="ss">&quot;app2&quot;</span><span class="p">)</span>
-</pre></div>
+<li><strong>LogDNA</strong>:</li>
+</ul>
+<p>Use the respective drop-down to select one or more sources, apps, log levels or tags.
+ <br><br></p>
 <ul>
-<li>to fetch the level: <div class="highlight"><pre><span></span><span class="k">WHERE</span> <span class="n">_source</span><span class="p">.</span><span class="k">level</span> <span class="k">IN</span><span class="p">(</span><span class="ss">&quot;level1&quot;</span><span class="p">,</span> <span class="ss">&quot;level2&quot;</span><span class="p">)</span>
+<li><strong>Data Engine</strong>:</li>
+</ul>
+<p>Filter on the respective column. The log record's source, app, log level or tags (if defined) are stored along with the log record also for archived logs.
+     - to fetch the source:</p>
+<div class="highlight"><pre><span></span><span class="k">WHERE</span><span class="w"> </span><span class="n">_source</span><span class="p">.</span><span class="n">_host</span><span class="w"> </span><span class="k">IN</span><span class="p">(</span><span class="ss">&quot;source1&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;source2&quot;</span><span class="p">)</span>
 </pre></div>
-</li>
-<li>to fetch the tags; you have to explore the tags array before you can query it.<div class="highlight"><pre><span></span><span class="k">WHERE</span> <span class="n">array_contains</span><span class="p">(</span><span class="n">_source</span><span class="p">.</span><span class="n">_tag</span><span class="p">,</span> <span class="ss">&quot;someTag&quot;</span><span class="p">)</span>
+<pre><code> - to fetch the app:
+</code></pre>
+<div class="highlight"><pre><span></span><span class="k">WHERE</span><span class="w"> </span><span class="n">_source</span><span class="p">.</span><span class="n">_app</span><span class="w"> </span><span class="k">IN</span><span class="p">(</span><span class="ss">&quot;app1&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;app2&quot;</span><span class="p">)</span>
 </pre></div>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<pre><code>- to fetch the level: 
+</code></pre>
+<div class="highlight"><pre><span></span><span class="k">WHERE</span><span class="w"> </span><span class="n">_source</span><span class="p">.</span><span class="k">level</span><span class="w"> </span><span class="k">IN</span><span class="p">(</span><span class="ss">&quot;level1&quot;</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;level2&quot;</span><span class="p">)</span>
+</pre></div>
+<pre><code>- to fetch the tags; you have to explore the tags array before you can query it.
+</code></pre>
+<div class="highlight"><pre><span></span><span class="k">WHERE</span><span class="w"> </span><span class="n">array_contains</span><span class="p">(</span><span class="n">_source</span><span class="p">.</span><span class="n">_tag</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;someTag&quot;</span><span class="p">)</span>
+</pre></div>
 <h4 id="4.2-Field-search-on-parsed-fields:">4.2<a id="fieldsearch" /> Field search on parsed fields:<a class="anchor-link" href="#4.2-Field-search-on-parsed-fields:">&#182;</a></h4><ul>
-<li><strong>LogDNA</strong>:
-In the search input field you can enter your search term: <ul>
-<li>for prefix match on the parsed field (case insensitive): <code>&lt;name of parsed field&gt;:&lt;some value&gt;</code> </li>
-<li>for term match (case insensitive): <code>&lt;name of parsed field&gt;:==&lt;some value&gt;</code></li>
-<li>for prefix match on the parsed field (case sensitive): <code>&lt;name of parsed field&gt;:=&lt;some value&gt;</code></li>
-<li>for term match (case sensitive): <code>&lt;name of parsed field&gt;:===&lt;some value&gt;</code></li>
-<li>for a list of prefix matches (case insensitive): <code>&lt;name of parsed field&gt;:[value1, value2]</code></li>
-<li>for log records that contain the parsed field, but the value doesn't matter: <code>&lt;name of parsed field&gt;:*</code>
-<br><br></li>
+<li><strong>LogDNA</strong>:</li>
 </ul>
-</li>
-<li><strong>Data Engine</strong>:
-When archiving, the log records all parsed fields are preserved in the log records, so it is possible to query them with Data Engine. You don't have the full-text search capability of LogDNA, however you can work with the <code>LIKE</code> operator and wildcards on specific fields.<ul>
-<li>for prefix match on the parsed field (case sensitive):<div class="highlight"><pre><span></span><span class="k">WHERE</span> <span class="n">_source</span><span class="p">.</span><span class="n">nameOfParsedField</span> <span class="k">LIKE</span> <span class="ss">&quot;SomeValue%&quot;</span>
-</pre></div>
-</li>
-<li>for term match on the parsed field:<div class="highlight"><pre><span></span><span class="k">WHERE</span> <span class="n">_source</span><span class="p">.</span><span class="n">nameOfParsedField</span> <span class="k">LIKE</span> <span class="ss">&quot;%SomeValue%&quot;</span>
-</pre></div>
-If in addition case insensitive search is required, the field can be converted to lower case with <code>LOWER()</code>. Make sure to use a lower case search pattern in this case, for example:<div class="highlight"><pre><span></span><span class="k">WHERE</span> <span class="k">LOWER</span><span class="p">(</span><span class="n">_source</span><span class="p">.</span><span class="n">nameOfParsedField</span><span class="p">)</span> <span class="k">LIKE</span> <span class="ss">&quot;%somevalue%&quot;</span>
-</pre></div>
-</li>
-<li>for list of prefix matches:<div class="highlight"><pre><span></span><span class="k">WHERE</span> <span class="n">_source</span><span class="p">.</span><span class="n">nameOfParsedField</span> <span class="k">LIKE</span> <span class="ss">&quot;value1%&quot;</span> <span class="k">OR</span> <span class="n">_source</span><span class="p">.</span><span class="n">nameOfParsedField</span> <span class="k">LIKE</span> <span class="ss">&quot;value2%&quot;</span>
-</pre></div>
-</li>
-<li>find log records that contain the parsed field, the value doesn't matter:<div class="highlight"><pre><span></span><span class="k">WHERE</span> <span class="n">_source</span><span class="p">.</span><span class="n">nameOfParsedField</span> <span class="k">IS</span> <span class="k">NOT</span> <span class="k">NULL</span>
-</pre></div>
-</li>
+<p>In the search input field you can enter your search term: 
+      - for prefix match on the parsed field (case insensitive): <code>&lt;name of parsed field&gt;:&lt;some value&gt;</code> 
+      - for term match (case insensitive): <code>&lt;name of parsed field&gt;:==&lt;some value&gt;</code>
+      - for prefix match on the parsed field (case sensitive): <code>&lt;name of parsed field&gt;:=&lt;some value&gt;</code>
+      - for term match (case sensitive): <code>&lt;name of parsed field&gt;:===&lt;some value&gt;</code>
+      - for a list of prefix matches (case insensitive): <code>&lt;name of parsed field&gt;:[value1, value2]</code>
+      - for log records that contain the parsed field, but the value doesn't matter: <code>&lt;name of parsed field&gt;:*</code>
+<br><br></p>
+<ul>
+<li><strong>Data Engine</strong>:</li>
 </ul>
-</li>
-</ul>
+<p>When archiving, the log records all parsed fields are preserved in the log records, so it is possible to query them with Data Engine. You don't have the full-text search capability of LogDNA, however you can work with the <code>LIKE</code> operator and wildcards on specific fields.
+      - for prefix match on the parsed field (case sensitive):</p>
+<div class="highlight"><pre><span></span><span class="k">WHERE</span><span class="w"> </span><span class="n">_source</span><span class="p">.</span><span class="n">nameOfParsedField</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="ss">&quot;SomeValue%&quot;</span>
+</pre></div>
+<pre><code>  - for term match on the parsed field:
+</code></pre>
+<div class="highlight"><pre><span></span><span class="k">WHERE</span><span class="w"> </span><span class="n">_source</span><span class="p">.</span><span class="n">nameOfParsedField</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="ss">&quot;%SomeValue%&quot;</span>
+</pre></div>
+<p>If in addition case insensitive search is required, the field can be converted to lower case with <code>LOWER()</code>. Make sure to use a lower case search pattern in this case, for example:</p>
+<div class="highlight"><pre><span></span><span class="k">WHERE</span><span class="w"> </span><span class="k">LOWER</span><span class="p">(</span><span class="n">_source</span><span class="p">.</span><span class="n">nameOfParsedField</span><span class="p">)</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="ss">&quot;%somevalue%&quot;</span>
+</pre></div>
+<pre><code>  - for list of prefix matches:
+</code></pre>
+<div class="highlight"><pre><span></span><span class="k">WHERE</span><span class="w"> </span><span class="n">_source</span><span class="p">.</span><span class="n">nameOfParsedField</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="ss">&quot;value1%&quot;</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="n">_source</span><span class="p">.</span><span class="n">nameOfParsedField</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="ss">&quot;value2%&quot;</span>
+</pre></div>
+<pre><code>  - find log records that contain the parsed field, the value doesn't matter:
+</code></pre>
+<div class="highlight"><pre><span></span><span class="k">WHERE</span><span class="w"> </span><span class="n">_source</span><span class="p">.</span><span class="n">nameOfParsedField</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
+</pre></div>
 <h4 id="4.3-Jump-to-timeframe:">4.3<a id="jumptime" /> Jump to timeframe:<a class="anchor-link" href="#4.3-Jump-to-timeframe:">&#182;</a></h4><ul>
-<li><strong>LogDNA</strong>: In the <strong>Jump to timeframe</strong> box you can enter the desired day and time, e.g. <code>today at 11am</code> or a timeframe, e.g. <code>last fri 4:30p to 11/12 1 AM</code>. </li>
+<li><strong>LogDNA</strong>: In the <strong>Jump to timeframe</strong> box you can enter the desired day and time, e.g. <code>today at 11am</code> or a timeframe, e.g. <code>last fri 4:30p to 11/12 1 AM</code>.</li>
 <li><strong>Data Engine</strong>: The LogDNA archived logs contain the field <code>_source._ts</code> which contains a timestamp in milli-second granularity in UTC. Find an example below on how to convert a local datetime string into a timestamp that you can use in your query.</li>
 </ul>
 
@@ -16097,9 +16102,7 @@ If in addition case insensitive search is required, the field can be converted t
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -16121,7 +16124,7 @@ If in addition case insensitive search is required, the field can be converted t
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h4 id="4.4-Retrieving-schema-information:">4.4<a id="schema" /> Retrieving schema information:<a class="anchor-link" href="#4.4-Retrieving-schema-information:">&#182;</a></h4><h5 id="1.-Get-a-list-of-sources-and-application-names:">1. Get a list of sources and application names:<a class="anchor-link" href="#1.-Get-a-list-of-sources-and-application-names:">&#182;</a></h5><p>LogDNA UI lists the application and sources, that you log data for, in the respective drop-down lists.<br>
+<h4 id="4.4-Retrieving-schema-information:">4.4<a id="schema" /> Retrieving schema information:<a class="anchor-link" href="#4.4-Retrieving-schema-information:">&#182;</a></h4><h5 id="1.-Get-a-list-of-sources-and-application-names:">1. Get a list of sources and application names:<a class="anchor-link" href="#1.-Get-a-list-of-sources-and-application-names:">&#182;</a></h5><p>LogDNA UI lists the application and sources, that you log data for, in the respective drop-down lists.<br />
 With Data Engine this information can be retrieved as follows:</p>
 
 </div>
@@ -16165,9 +16168,7 @@ With Data Engine this information can be retrieved as follows:</p>
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -16180,9 +16181,7 @@ With Data Engine this information can be retrieved as follows:</p>
 </pre>
 </div>
 </div>
-
-<div class="jp-OutputArea-child">
-
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
 
@@ -16239,9 +16238,9 @@ With Data Engine this information can be retrieved as follows:</p>
 As a general rule:</p>
 <ul>
 <li>fields generated by LogDNA start with a underscore in the archived log records, e.g. _source, _app</li>
-<li>fields parsed from log records are passed along as is to the archived logs, e.g. level 
-<br></li>
+<li>fields parsed from log records are passed along as is to the archived logs, e.g. level</li>
 </ul>
+<br>
 <p>With Data Engine schema information can be retrieved by using <a href="https://cloud.ibm.com/docs/services/sql-query?topic=sql-query-sql-reference#tableTransformer" target="_blank">DESCRIBE</a>. Running DESCRIBE on the whole log file results in a schema that gives you the fields for all applications. To get a more manageable schema file, first retrieve the logs for the application you are interested in and then run DESCRIBE on it. This returns a JSON object. Then you can switch to the Data Engine UI to view its content. Alternatively you can run <a href="https://cloud.ibm.com/docs/services/sql-query?topic=sql-query-sql-reference#tableTransformer" target="_blank">FLATTEN</a> before DESCRIBE to flatten the nested JSON and then retrieve the result to view in the notebook.</p>
 
 </div>
@@ -16301,9 +16300,7 @@ As a general rule:</p>
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -16353,21 +16350,18 @@ https://sql-query.cloud.ibm.com/sqlquery/?instance_crn=crn:v1:bluemix:public:sql
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
-<pre>Schema information:
+<pre>
+Schema information:
 </pre>
 </div>
 </div>
-
-<div class="jp-OutputArea-child">
-
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
 
@@ -16673,7 +16667,7 @@ https://sql-query.cloud.ibm.com/sqlquery/?instance_crn=crn:v1:bluemix:public:sql
 <ul>
 <li>In the Data Engine UI you get a SQL Editor with syntax highlighting and validation, so it is probably most effective to use the UI to develop a SQL and then copy it over to the notebook.</li>
 <li>You may submit Data Engine jobs to run in the background and then retrieve the results when the job is done. This allows you to continue the work on your notebook while the query is running.</li>
-<li>Storing the job ID in your notebook allows you to retrieve the persisted results without having to rerun the query. </li>
+<li>Storing the job ID in your notebook allows you to retrieve the persisted results without having to rerun the query.</li>
 </ul>
 
 </div>
@@ -16704,9 +16698,7 @@ https://sql-query.cloud.ibm.com/sqlquery/?instance_crn=crn:v1:bluemix:public:sql
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -16776,9 +16768,7 @@ https://sql-query.cloud.ibm.com/sqlquery/?instance_crn=crn:v1:bluemix:public:sql
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -16863,9 +16853,7 @@ jobId: 4ac934da-6b45-46b1-a805-afda5f69fe3c
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -16929,9 +16917,7 @@ jobId: 4ac934da-6b45-46b1-a805-afda5f69fe3c
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -17010,9 +16996,7 @@ jobId: 4ac934da-6b45-46b1-a805-afda5f69fe3c
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -17086,9 +17070,7 @@ jobId: 4ac934da-6b45-46b1-a805-afda5f69fe3c
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -17167,9 +17149,7 @@ jobId: a4c6649f-246e-4a57-b7db-b182e9964152
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -17456,9 +17436,7 @@ jobId: a4c6649f-246e-4a57-b7db-b182e9964152
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -17508,9 +17486,7 @@ jobId: a4c6649f-246e-4a57-b7db-b182e9964152
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -17797,9 +17773,7 @@ jobId: a4c6649f-246e-4a57-b7db-b182e9964152
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -17849,9 +17823,7 @@ jobId: a4c6649f-246e-4a57-b7db-b182e9964152
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -17877,34 +17849,34 @@ jobId: a4c6649f-246e-4a57-b7db-b182e9964152
 <h3 id="6.-Using-Data-Engine-time-series-features">6.<a id="timeseries" /> Using Data Engine time-series features<a class="anchor-link" href="#6.-Using-Data-Engine-time-series-features">&#182;</a></h3><p>In the following we will give some examples on how to benefit from Data Engine's timeseries support when analyzing ingress log records. First we will show a simple example of retrieving the average request time per hour.<br></p>
 <p>We first create a time-series for each combination of node and status with the following statement:</p>
 <div class="highlight"><pre><span></span><span class="k">select</span>
-    <span class="n">_source</span><span class="p">.</span><span class="n">node</span> <span class="k">as</span> <span class="n">node</span><span class="p">,</span> 
-    <span class="n">_source</span><span class="p">.</span><span class="n">_status</span> <span class="k">as</span> <span class="n">status</span><span class="p">,</span>
-    <span class="n">time_series_da</span><span class="p">(</span><span class="n">_source</span><span class="p">.</span><span class="n">_ts</span><span class="p">,</span> <span class="nb">array</span><span class="p">(</span><span class="n">_source</span><span class="p">.</span><span class="n">_status</span><span class="p">,</span> <span class="n">_source</span><span class="p">.</span><span class="n">request_time</span><span class="p">))</span> <span class="k">as</span> <span class="n">ts</span>
-<span class="k">from</span> <span class="n">cos</span><span class="p">:</span><span class="o">//</span><span class="n">us</span><span class="o">-</span><span class="n">geo</span><span class="o">/</span><span class="k">sql</span><span class="o">/</span><span class="n">LogDNA</span> <span class="n">STORED</span> <span class="k">AS</span> <span class="n">JSON</span>
-<span class="k">WHERE</span> 
-    <span class="n">_source</span><span class="p">.</span><span class="n">_app</span> <span class="o">=</span> <span class="s1">&#39;nginx-ingress&#39;</span> <span class="k">AND</span> 
-    <span class="n">_source</span><span class="p">.</span><span class="n">_status</span> <span class="o">=</span> <span class="mi">200</span> <span class="k">AND</span>                                  
-    <span class="n">_source</span><span class="p">.</span><span class="n">_status</span> <span class="k">IS</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="k">AND</span> 
-    <span class="n">_year</span> <span class="o">=</span> <span class="mi">2019</span> <span class="k">AND</span> 
-    <span class="n">_dayofyear</span> <span class="k">BETWEEN</span> <span class="mi">224</span> <span class="k">and</span> <span class="mi">227</span>
-<span class="k">group</span> <span class="k">by</span> <span class="n">_source</span><span class="p">.</span><span class="n">node</span><span class="p">,</span> <span class="n">_source</span><span class="p">.</span><span class="n">_status</span>
+<span class="w">    </span><span class="n">_source</span><span class="p">.</span><span class="n">node</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">node</span><span class="p">,</span><span class="w"> </span>
+<span class="w">    </span><span class="n">_source</span><span class="p">.</span><span class="n">_status</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">status</span><span class="p">,</span>
+<span class="w">    </span><span class="n">time_series_da</span><span class="p">(</span><span class="n">_source</span><span class="p">.</span><span class="n">_ts</span><span class="p">,</span><span class="w"> </span><span class="nb">array</span><span class="p">(</span><span class="n">_source</span><span class="p">.</span><span class="n">_status</span><span class="p">,</span><span class="w"> </span><span class="n">_source</span><span class="p">.</span><span class="n">request_time</span><span class="p">))</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">ts</span>
+<span class="k">from</span><span class="w"> </span><span class="n">cos</span><span class="p">:</span><span class="o">//</span><span class="n">us</span><span class="o">-</span><span class="n">geo</span><span class="o">/</span><span class="k">sql</span><span class="o">/</span><span class="n">LogDNA</span><span class="w"> </span><span class="n">STORED</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">JSON</span>
+<span class="k">WHERE</span><span class="w"> </span>
+<span class="w">    </span><span class="n">_source</span><span class="p">.</span><span class="n">_app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;nginx-ingress&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span>
+<span class="w">    </span><span class="n">_source</span><span class="p">.</span><span class="n">_status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="k">AND</span><span class="w">                                  </span>
+<span class="w">    </span><span class="n">_source</span><span class="p">.</span><span class="n">_status</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span>
+<span class="w">    </span><span class="n">_year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2019</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span>
+<span class="w">    </span><span class="n">_dayofyear</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="mi">224</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="mi">227</span>
+<span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">_source</span><span class="p">.</span><span class="n">node</span><span class="p">,</span><span class="w"> </span><span class="n">_source</span><span class="p">.</span><span class="n">_status</span>
 </pre></div>
 <p>In Data Engine, we treat Time-Series datatypes as first class citizens, so they can be stored as any other data type.</p>
 <p>Using the created time-series, we can peform segmentation, in this case time based segmentation (hourly) per time-series and flatten the series which will split each segment of each time-series into its own row. This can be done with the below statement:</p>
 <div class="highlight"><pre><span></span><span class="k">select</span>
-    <span class="n">node</span><span class="p">,</span>
-    <span class="n">status</span><span class="p">,</span>
-    <span class="n">ts_flatten</span><span class="p">(</span><span class="n">ts_segment_by_time</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">3600000</span> <span class="p">,</span> <span class="mi">3600000</span><span class="p">))</span> <span class="k">as</span> <span class="p">(</span><span class="n">segment_id</span><span class="p">,</span> <span class="n">segment_index</span><span class="p">,</span> <span class="n">segment</span><span class="p">)</span>
-<span class="k">from</span> <span class="n">da_ts_table</span>
+<span class="w">    </span><span class="n">node</span><span class="p">,</span>
+<span class="w">    </span><span class="n">status</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ts_flatten</span><span class="p">(</span><span class="n">ts_segment_by_time</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="w"> </span><span class="mi">3600000</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="mi">3600000</span><span class="p">))</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="p">(</span><span class="n">segment_id</span><span class="p">,</span><span class="w"> </span><span class="n">segment_index</span><span class="p">,</span><span class="w"> </span><span class="n">segment</span><span class="p">)</span>
+<span class="k">from</span><span class="w"> </span><span class="n">da_ts_table</span>
 </pre></div>
 <p>Finally, using the output windows from the above statement, we can reduce each window to a single value, in this case, the average per window. The following is how that is done:</p>
 <div class="highlight"><pre><span></span><span class="k">select</span>
-    <span class="n">node</span><span class="p">,</span>
-    <span class="n">status</span><span class="p">,</span>
-    <span class="n">segment_id</span><span class="p">,</span>
-    <span class="n">segment_index</span><span class="p">,</span>
-    <span class="n">ts_avg</span><span class="p">(</span><span class="n">ts_index</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="k">as</span> <span class="n">avg_request_time</span>
-<span class="k">from</span> <span class="n">segments_table</span>
+<span class="w">    </span><span class="n">node</span><span class="p">,</span>
+<span class="w">    </span><span class="n">status</span><span class="p">,</span>
+<span class="w">    </span><span class="n">segment_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">segment_index</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ts_avg</span><span class="p">(</span><span class="n">ts_index</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">avg_request_time</span>
+<span class="k">from</span><span class="w"> </span><span class="n">segments_table</span>
 </pre></div>
 
 </div>
@@ -17969,9 +17941,7 @@ jobId: a4c6649f-246e-4a57-b7db-b182e9964152
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -18048,9 +18018,7 @@ jobId: 6101c002-6823-47ed-bc23-f2b9acaf1a59
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -18311,16 +18279,16 @@ jobId: 6101c002-6823-47ed-bc23-f2b9acaf1a59
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p>The power of using this method is not only its readability, but most importantly, its reuseability. Take for example:</p>
-<div class="highlight"><pre><span></span><span class="n">ts_segment_by_time</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">3600000</span><span class="p">,</span> <span class="mi">3600000</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="n">ts_segment_by_time</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="w"> </span><span class="mi">3600000</span><span class="p">,</span><span class="w"> </span><span class="mi">3600000</span><span class="p">)</span>
 </pre></div>
 <p>This statement could easily be changed to apply to very different transformations. For instance, getting the average request time when a status code 500 occurs:</p>
-<div class="highlight"><pre><span></span><span class="n">ts_segment_by_anchor</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">ts_anchor_index</span><span class="p">(</span><span class="n">ts_anchor_gte</span><span class="p">(</span><span class="mi">500</span><span class="p">.</span><span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">1800000</span><span class="p">,</span> <span class="mi">1800000</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="n">ts_segment_by_anchor</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="w"> </span><span class="n">ts_anchor_index</span><span class="p">(</span><span class="n">ts_anchor_gte</span><span class="p">(</span><span class="mi">500</span><span class="p">.</span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span><span class="w"> </span><span class="mi">1800000</span><span class="p">,</span><span class="w"> </span><span class="mi">1800000</span><span class="p">)</span>
 </pre></div>
 <p>or when a user wants to get the average request time during bursts of activity:</p>
-<div class="highlight"><pre><span></span><span class="n">ts_segment_by_smoothed_silence</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1800000</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><span class="n">ts_segment_by_smoothed_silence</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1800000</span><span class="p">)</span>
 </pre></div>
 <p>The same can be said of performing reduction on a window. Take for example:</p>
-<div class="highlight"><pre><span></span><span class="n">ts_avg</span><span class="p">(</span><span class="n">ts_index</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<div class="highlight"><pre><span></span><span class="n">ts_avg</span><span class="p">(</span><span class="n">ts_index</span><span class="p">(</span><span class="n">segment</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 <p>The above statement can be anything from <code>TS_SUM</code> (sum over window) to <code>TS_FFT</code> (fft over window)</p>
 
@@ -18385,9 +18353,7 @@ jobId: 6101c002-6823-47ed-bc23-f2b9acaf1a59
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -18464,9 +18430,7 @@ jobId: aa201750-5298-4bcf-8a01-2b3f4d4394d9
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -18523,8 +18487,8 @@ jobId: aa201750-5298-4bcf-8a01-2b3f4d4394d9
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><hr>
-Copyright &copy; IBM Corp. 2019. This notebook and its source code are released under the terms of the MIT License.</p>
+<hr>
+Copyright &copy; IBM Corp. 2019. This notebook and its source code are released under the terms of the MIT License.
 
 </div>
 </div>
@@ -18540,8 +18504,9 @@ Copyright &copy; IBM Corp. 2019. This notebook and its source code are released 
 <span style="font-size:18px;color:#152935;">Love this notebook? </span>
 <span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
 <span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
-<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://www.ibm.com/products/watson-studio" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
 </div>
+
 </div>
 </div>
 </div>
