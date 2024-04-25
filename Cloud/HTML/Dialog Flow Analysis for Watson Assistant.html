@@ -36,6 +36,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -201,6 +202,10 @@ background-color: transparent;
 
 .notebook_app .container {
 width: 100% !important;
+}
+
+.jupyter-resource-usage-hide {
+display: none !important;
 }
 
 .notebook_app #notebook {
@@ -15442,10 +15447,6 @@ a.anchor-link {
   display: none;
 }
 
-.highlight  {
-  margin: 0.4em;
-}
-
 /* Input area styling */
 .jp-InputArea {
   overflow: hidden;
@@ -15455,9 +15456,26 @@ a.anchor-link {
   overflow: hidden;
 }
 
-.CodeMirror pre {
+.CodeMirror.cm-s-jupyter .highlight pre {
+/* weird, but --jp-code-padding defined to be 5px but 4px horizontal padding is hardcoded for pre.CodeMirror-line */
+  padding: var(--jp-code-padding) 4px;
   margin: 0;
-  padding: 0;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+}
+
+.jp-OutputArea-output pre {
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.jp-RenderedText pre {
+  color: var(--jp-content-font-color1);
+  font-size: var(--jp-code-font-size);
 }
 
 /* Using table instead of flexbox so that we can use break-inside property */
@@ -15501,6 +15519,10 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 /* Hiding the collapser by default */
 .jp-Collapser {
   display: none;
+}
+
+@page {
+    margin: 0.5in; /* Margin for each printed piece of paper */
 }
 
 @media print {
@@ -15568,10 +15590,11 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><img src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/flow-vis.png" width="70%"></p>
+<img src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/flow-vis.png" width="70%">
 <h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>This notebook demonstrates the use of visual analytics tools that help you measure and understand user journeys within the dialog logic of your Watson Assistant system, discover where user abandonments take place, and reason about possible sources of issues. The visual interface can also help to better understand how users interact with different elements of the dialog flow, and gain more confidence in making changes to it. The source of information is your Watson Assistant skill definitions and conversation logs.</p>
 <p>As described in <a href="https://github.com/watson-developer-cloud/assistant-improve-recommendations-notebook/raw/master/notebook/IBM%20Watson%20Assistant%20Continuous%20Improvement%20Best%20Practices.pdf" target="_blank" rel="noopener noreferrer">Watson Assistant Continuous Improvement Best Practices</a>, you can use this notebook to measure and understand in detail the behavior of users in areas that are not performing well, e.g. having low <strong>Task Completion Rates</strong>.</p>
-<blockquote><p><strong>Task Completion Rate</strong> - is the percentage of user journeys within key tasks/flows of your virtual assistant that reach a successful resolution. This metric is one of the metrics you can use to measure the <strong>Effectiveness</strong> of your assistant.</p>
+<blockquote>
+<p><strong>Task Completion Rate</strong> - is the percentage of user journeys within key tasks/flows of your virtual assistant that reach a successful resolution. This metric is one of the metrics you can use to measure the <strong>Effectiveness</strong> of your assistant.</p>
 </blockquote>
 <h3 id="Prerequisites">Prerequisites<a class="anchor-link" href="#Prerequisites">&#182;</a></h3><p>This notebook assumes some familiarity with the Watson Assistant dialog programming model, such as skills (formerly workspaces), and dialog nodes. Some familiarity with Python is recommended. This notebook runs on Python.</p>
 
@@ -15667,7 +15690,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Note, on Watson Studio the pip magic command `%pip` is not supported from within the notebook.  Use !pip instead. </span>
-<span class="o">!</span>pip install --user conversation_analytics_toolkit
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>conversation_analytics_toolkit
 </pre></div>
 
      </div>
@@ -15829,13 +15852,13 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><img style="float:right;margin-left: 10px" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/load.png" width="40%">
-The analytics in this notebook are based on two main artifacts:</p>
+<img style="float:right;margin-left: 10px" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/load.png" width="40%">
+The analytics in this notebook are based on two main artifacts:
 <ol>
 <li><strong>Assistant logs</strong> - logs generated from the communication with Watson Assistant via the /message API;</li>
-<li><strong>Assistant skill(s)</strong> - the skills that comprise the virtual assistant (aka <a href="https://cloud.ibm.com/apidocs/assistant#get-information-about-a-workspace">"workspace"</a>).
-<br><br></li>
+<li><strong>Assistant skill(s)</strong> - the skills that comprise the virtual assistant (aka <a href="https://cloud.ibm.com/apidocs/assistant#get-information-about-a-workspace">&quot;workspace&quot;</a>).</li>
 </ol>
+<p><br><br></p>
 <p>These artifacts can be loaded from multiple sources, such as directly from Watson Assistant <a href="https://cloud.ibm.com/apidocs/assistant#list-log-events-in-a-workspace">log</a> or <a href="https://cloud.ibm.com/apidocs/assistant#get-response-to-user-input">message</a> APIs, or from other locations such as local/remote file system, Cloud Object Storage, or a Database.</p>
 <p><strong>Note</strong>: below are a set of options to load workspace(s) and log data from different sources into the notebook. Use only <strong>one</strong> of these methods, and then skip to <a href="#organize_skills">section 2.2</a></p>
 
@@ -15963,9 +15986,9 @@ The analytics in this notebook are based on two main artifacts:</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <div class="alert alert-block alert-info">
-
-Note: This cell should be run to load the sample data this notebook uses as examplar. To load your own logs, please replace the `requests.get` argument with the location of your JSON files and rectify the rest of the code accordingly. In this example, we will analyze a banking sample dataset.
+<p>Note: This cell should be run to load the sample data this notebook uses as examplar. To load your own logs, please replace the <code>requests.get</code> argument with the location of your JSON files and rectify the rest of the code accordingly. In this example, we will analyze a banking sample dataset.</p>
 </div>
+
 </div>
 </div>
 </div>
@@ -16081,9 +16104,9 @@ Note: This cell should be run to load the sample data this notebook uses as exam
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="extract_transform"></a></p>
-<h2 id="3-Extract-and-Transform">3 Extract and Transform<a class="anchor-link" href="#3-Extract-and-Transform">&#182;</a></h2><p><img src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/extract-transform.png" width="50%"> 
-During this step, relevant information is extracted from the assistant logs, and combined with information from the assistant skills to create single ("canonical") dataframe for the analyses in this notebook.</p>
-<p><strong>Note</strong>: If your logs are in a custom format or you wish to extract additional fields, you may need to customize the extraction process.  You can learn more about this topic <a href="./FAQ.md#canonical-data-model&quot;">here</a>.</p>
+<h2 id="3-Extract-and-Transform">3 Extract and Transform<a class="anchor-link" href="#3-Extract-and-Transform">&#182;</a></h2><img src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/extract-transform.png" width="50%"> 
+During this step, relevant information is extracted from the assistant logs, and combined with information from the assistant skills to create single ("canonical") dataframe for the analyses in this notebook.
+<p><strong>Note</strong>: If your logs are in a custom format or you wish to extract additional fields, you may need to customize the extraction process.  You can learn more about this topic <a href="./FAQ.md#canonical-data-model%22">here</a>.</p>
 
 </div>
 </div>
@@ -16132,7 +16155,7 @@ During this step, relevant information is extracted from the assistant logs, and
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h4 id="Step-2:-Extract-and-Transform">Step 2: Extract and Transform<a class="anchor-link" href="#Step-2:-Extract-and-Transform">&#182;</a></h4><p>Call the <code>to_canonical_WA_v2()</code> function to perform the extract and transform steps</p>
-<p>If your assistant is <strong>multi-skill</strong>, set <code>skill_id_field="workspace_id"</code> to link information in the logs, with the corresponding workspace object based on the value of the <code>workspace_id</code> attribute in the logs.</p>
+<p>If your assistant is <strong>multi-skill</strong>, set <code>skill_id_field=&quot;workspace_id&quot;</code> to link information in the logs, with the corresponding workspace object based on the value of the <code>workspace_id</code> attribute in the logs.</p>
 
 </div>
 </div>
@@ -16186,7 +16209,7 @@ During this step, relevant information is extracted from the assistant logs, and
 <p>This notebook demonstrates how to construct the visualization at two levels of abstraction</p>
 <ul>
 <li><strong>turn-based</strong> - for measuring and discovering how conversations progress across every turn in the conversation.</li>
-<li><strong>milestone-based</strong> - for measuring how conversations progress between key points of interest ("milestones") within the conversation</li>
+<li><strong>milestone-based</strong> - for measuring how conversations progress between key points of interest (&quot;milestones&quot;) within the conversation</li>
 </ul>
 
 </div>
@@ -16199,9 +16222,10 @@ During this step, relevant information is extracted from the assistant logs, and
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><img style="float: right;margin: 13px;" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/turn-flow.png" width="40%"> 
-<a id="flow_turn_based"></a></p>
-<h2 id="4.1-Visualize-dialog-flow-(turn-based)">4.1 Visualize dialog flow (turn-based)<a class="anchor-link" href="#4.1-Visualize-dialog-flow-(turn-based)">&#182;</a></h2><p>Use the <code>draw_flowchart</code> function to create a flow-based visualization on the canonical dataset.  By default, the visualization will present the progression of conversations on a turn-by-turn basis, aggregated and sorted by visit sequence frequencies.  You can control many of the default, by modifying the <code>config</code> object.</p>
+<img style="float: right;margin: 13px;" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/turn-flow.png" width="40%"> 
+<a id="flow_turn_based"></a>
+## 4.1 Visualize dialog flow (turn-based)
+Use the `draw_flowchart` function to create a flow-based visualization on the canonical dataset.  By default, the visualization will present the progression of conversations on a turn-by-turn basis, aggregated and sorted by visit sequence frequencies.  You can control many of the default, by modifying the `config` object.
 <p>The following mouse interactions are supported:</p>
 <ul>
 <li><strong>click</strong> on a node to expand/collapse its children</li>
@@ -16211,7 +16235,7 @@ During this step, relevant information is extracted from the assistant logs, and
 <p>When you hover or click on a node the following information is displayed:</p>
 <ul>
 <li><strong>visits:</strong> the number of conversations that progressed along a specific path of conversation steps.</li>
-<li><strong>drop offs:</strong> the number of conversations that ended at this conversation step </li>
+<li><strong>drop offs:</strong> the number of conversations that ended at this conversation step</li>
 </ul>
 <p>The examples below demonstrate how to create a turn-based flow analysis: (1) for all conversations in the dataset; and (2) for a subset of conversations that were escalated (denoted by visiting the node <strong>Transfer to Live Agent</strong>)</p>
 
@@ -16329,15 +16353,15 @@ During this step, relevant information is extracted from the assistant logs, and
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="flow_milestone_based"></a></p>
-<h2 id="4.2-Visualize-dialog-flow-(milestone-based)">4.2 Visualize dialog flow (milestone-based)<a class="anchor-link" href="#4.2-Visualize-dialog-flow-(milestone-based)">&#182;</a></h2><p>Use the milestone-based dialog visualization to measure the flow of visits and abandonment between key points of interest (aka "milestones") in your assistant.</p>
+<h2 id="4.2-Visualize-dialog-flow-(milestone-based)">4.2 Visualize dialog flow (milestone-based)<a class="anchor-link" href="#4.2-Visualize-dialog-flow-(milestone-based)">&#182;</a></h2><p>Use the milestone-based dialog visualization to measure the flow of visits and abandonment between key points of interest (aka &quot;milestones&quot;) in your assistant.</p>
 <p>The milestone-based visualization requires two extra steps:</p>
 <ol>
-<li>definition of the milestones names, and mapping of which dialog nodes map to each milestone. </li>
-<li>processing of the log data to find and filter log rows that are part of a milestone.  </li>
+<li>definition of the milestones names, and mapping of which dialog nodes map to each milestone.</li>
+<li>processing of the log data to find and filter log rows that are part of a milestone.</li>
 </ol>
-<p>Use the <code>mode="milestone-based"</code> to configure the flow aggregation and visualization steps.  The visualization uses a special <strong>Other</strong> node to model conversations that are flowing to other parts of the dialog which were not defined to be of interest in the milestone definitions.</p>
+<p>Use the <code>mode=&quot;milestone-based&quot;</code> to configure the flow aggregation and visualization steps.  The visualization uses a special <strong>Other</strong> node to model conversations that are flowing to other parts of the dialog which were not defined to be of interest in the milestone definitions.</p>
 <p>In this notebook we demonstrate how to produce a milestone dialog flow key points of interest that are part of the <strong>Schedule Appointment</strong> task of the assistant.</p>
-<p><img src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/milestone-flow.png" width="80%"></p>
+<img src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/milestone-flow.png" width="80%">
 
 </div>
 </div>
@@ -16473,10 +16497,11 @@ During this step, relevant information is extracted from the assistant logs, and
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="flow_selection"></a></p>
-<h2 id="4.3-Select-conversations-at-the-point-of-abandonment">4.3 Select conversations at the point of abandonment<a class="anchor-link" href="#4.3-Select-conversations-at-the-point-of-abandonment">&#182;</a></h2><p><img style="float: right;margin:15px;" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/abandonment.png" width="40%"> 
-Selecting nodes in the visualization enables you to explore and analyze abandoned conversations with a common conversation path. You can use the visualization to identify large volumes of conversations that users abandon at unexpected locations during the conversation.</p>
+<h2 id="4.3-Select-conversations-at-the-point-of-abandonment">4.3 Select conversations at the point of abandonment<a class="anchor-link" href="#4.3-Select-conversations-at-the-point-of-abandonment">&#182;</a></h2><img style="float: right;margin:15px;" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/abandonment.png" width="40%"> 
+Selecting nodes in the visualization enables you to explore and analyze abandoned conversations with a common conversation path. You can use the visualization to identify large volumes of conversations that users abandon at unexpected locations during the conversation.
 <p><strong>Note:</strong></p>
-<blockquote><p>Selecting a node in the visualization will also copy the selection from the visualization into the variable designated by <code>python_selection_var</code>, thus making the selection available to other cells of this notebook.</p>
+<blockquote>
+<p>Selecting a node in the visualization will also copy the selection from the visualization into the variable designated by <code>python_selection_var</code>, thus making the selection available to other cells of this notebook.</p>
 </blockquote>
 <p>Before you run the next cell, you will interact with the milestone dialog visualization above to select a portion of the dialog to analyze. First, interact with the milestone dialog visualization to observe visit frequencies and abandonments within the milestones of <code>Schedule Appointment</code>. Click on nodes to drill down and expand the next step in sequence. Navigate along this path:  <code>Appointment scheduling start</code>--&gt;<code>Schedule time</code>--&gt;<code>Enter zip code</code>--&gt;<code>Branch selection</code> to observe a relative high proportion of abandonments that occur in the middle of the flow. Select the <code>Branch selection</code> node. Note the large volume and ratio of abandoned conversations. Now run the following cell to process conversations that were abandoned at your point of selection.</p>
 
@@ -16515,7 +16540,7 @@ Selecting nodes in the visualization enables you to explore and analyze abandone
 <h2 id="5.-Analyzing-abandoned-conversations">5. Analyzing abandoned conversations<a class="anchor-link" href="#5.-Analyzing-abandoned-conversations">&#182;</a></h2><p>After selecting a large group of abandoned conversations and their corresponding log records, you can apply additional analyses to better understand why these conversations were lost.</p>
 <p>Some possible reasons could be:</p>
 <ul>
-<li>The assistant didn't anticipate or understand the user utterance. This means the dialog skill is not trained to “cover” the user utterance. Coverage is an important measure of how well your assistant is performing. See the <a href="https://github.com/watson-developer-cloud/assistant-improve-recommendations-notebook/raw/master/notebook/IBM%20Watson%20Assistant%20Continuous%20Improvement%20Best%20Practices.pdf">Watson Assistant Continuous Improvement Best Practices</a> for details on how to measure and improve coverage </li>
+<li>The assistant didn't anticipate or understand the user utterance. This means the dialog skill is not trained to “cover” the user utterance. Coverage is an important measure of how well your assistant is performing. See the <a href="https://github.com/watson-developer-cloud/assistant-improve-recommendations-notebook/raw/master/notebook/IBM%20Watson%20Assistant%20Continuous%20Improvement%20Best%20Practices.pdf">Watson Assistant Continuous Improvement Best Practices</a> for details on how to measure and improve coverage</li>
 <li>The options presented to the user were not relevant</li>
 <li>The conversation didn't progress in the right direction</li>
 <li>The assistant’s response wasn't accurate or relevant</li>
@@ -16537,8 +16562,8 @@ Selecting nodes in the visualization enables you to explore and analyze abandone
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="transcript_vis"></a></p>
-<h2 id="5.1-Explore-conversation-transcripts-for-qualitative-analysis">5.1 Explore conversation transcripts for qualitative analysis<a class="anchor-link" href="#5.1-Explore-conversation-transcripts-for-qualitative-analysis">&#182;</a></h2><p><img style="float: right;margin:13px;" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/transcript-vis.png" width="50%"> 
-The transcript visualization shows the full sequence of conversation steps in the selected group of conversations. You can view the user utterances as well as observe the assistant response and the dialog nodes that were triggered to produce those responses.</p>
+<h2 id="5.1-Explore-conversation-transcripts-for-qualitative-analysis">5.1 Explore conversation transcripts for qualitative analysis<a class="anchor-link" href="#5.1-Explore-conversation-transcripts-for-qualitative-analysis">&#182;</a></h2><img style="float: right;margin:13px;" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/transcript-vis.png" width="50%"> 
+The transcript visualization shows the full sequence of conversation steps in the selected group of conversations. You can view the user utterances as well as observe the assistant response and the dialog nodes that were triggered to produce those responses.
 <p>Try to navigate to the 3rd conversation (conversation_id == <code>0Aw68rNq6kSGxaDurGG1NSf3c9LtLK3kurWm</code>) using the toggle buttons, and scroll down to view the user's last utterance before abandoning the conversation (where user utterance is <code>wrong map</code>). In this conversation, the assistant response in the previous step wasn't satisfactory and when the user communicated that to the assistant, the assistant didn't understand his utterance. This may indicate that some modification to the dialog logic might be needed to better respond in this situation, as well as the service itself might need to be fixed.</p>
 <p>You might want to check if this situation occurs in other conversations too. A complementary approach is to try to find frequent terms in user utterances and see how prevalent this is across all abandoned conversations (see <a href="#keywords_analysis">next section</a> for details).</p>
 
@@ -16606,8 +16631,8 @@ The transcript visualization shows the full sequence of conversation steps in th
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="keywords_analysis"></a></p>
-<h2 id="5.2-Identify-key-words-and-phrases-at-point-of-abandonment">5.2 Identify key words and phrases at point of abandonment<a class="anchor-link" href="#5.2-Identify-key-words-and-phrases-at-point-of-abandonment">&#182;</a></h2><p><img style="float: right;" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/keywords.png" width="30%"> 
-The keywords and phrases analysis allows you to check if the phrase <code>wrong map</code> is prevalent in many of the abandoned conversations, or what are the most common words or phrases overall.</p>
+<h2 id="5.2-Identify-key-words-and-phrases-at-point-of-abandonment">5.2 Identify key words and phrases at point of abandonment<a class="anchor-link" href="#5.2-Identify-key-words-and-phrases-at-point-of-abandonment">&#182;</a></h2><img style="float: right;" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/keywords.png" width="30%"> 
+The keywords and phrases analysis allows you to check if the phrase `wrong map` is prevalent in many of the abandoned conversations, or what are the most common words or phrases overall.
 <p>The analysis performs some basic linguistic processing from a group of utterances, such as removal of stop words, or extraction of the base form of words, and then computes their frequencies. Frequencies for words that appear together in sequence (bi-grams, tri-grams) are also computed.</p>
 <p>Finally, the visualization displays the most frequent words and phrases.</p>
 
@@ -16713,9 +16738,9 @@ The keywords and phrases analysis allows you to check if the phrase <code>wrong 
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="tasks"></a></p>
-<h2 id="6.-Measuring-high-level-tasks-of-the-Assistant">6. Measuring high level tasks of the Assistant<a class="anchor-link" href="#6.-Measuring-high-level-tasks-of-the-Assistant">&#182;</a></h2><p><img style="float:right;margin-left: 10px" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/flow-def.png" width="60%"> 
-In some scenarios you might want to first measure the effectiveness of your assistant at key areas within the skill, before drilling into specific flows.  Measuring the volume and effectiveness of specific key areas, can help you detect trends around your release dates, as well as prioritize your improvement efforts.</p>
-<p>A conversation can be view and measured as being composed of one or more logical tasks (aka "high level flows"). This section of the notebook demonstrates measuring <strong>transactional tasks</strong> (aka <strong>"flows"</strong>) by defining their corresponding starting (parent) and successful ending dialog nodes.</p>
+<h2 id="6.-Measuring-high-level-tasks-of-the-Assistant">6. Measuring high level tasks of the Assistant<a class="anchor-link" href="#6.-Measuring-high-level-tasks-of-the-Assistant">&#182;</a></h2><img style="float:right;margin-left: 10px" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/flow-def.png" width="60%"> 
+In some scenarios you might want to first measure the effectiveness of your assistant at key areas within the skill, before drilling into specific flows.  Measuring the volume and effectiveness of specific key areas, can help you detect trends around your release dates, as well as prioritize your improvement efforts.
+<p>A conversation can be view and measured as being composed of one or more logical tasks (aka &quot;high level flows&quot;). This section of the notebook demonstrates measuring <strong>transactional tasks</strong> (aka <strong>&quot;flows&quot;</strong>) by defining their corresponding starting (parent) and successful ending dialog nodes.</p>
 <p>You can define and measure a task by providing a mapping to dialog nodes that correspond to the start and successful end of a task.</p>
 
 </div>
@@ -16732,7 +16757,8 @@ In some scenarios you might want to first measure the effectiveness of your assi
 <p>You can use the programmatic and interactive search options as showed in <a href="#search">section 7.1</a> to locate and copy corresponding dialog node ids, and use them in the flows definition as shown below.</p>
 <p>The example below shows how to define the <strong>Credit card payment</strong> and <strong>Schedule appointments</strong> tasks.  In this example, the starting point was mapped to the node that has a condition on the corresponding intent, and the completion nodes to the nodes that generate the confirmation response.</p>
 <p><strong>Note:</strong></p>
-<blockquote><p>Parent and completion nodes can be defined using one or more nodes. Defining multiple parent nodes is useful if a single logical flow is implemented across different branches of the dialog tree. Defining multiple completion nodes can be relevant if you have more than one location in the dialog that can determine successful ending of the flow.</p>
+<blockquote>
+<p>Parent and completion nodes can be defined using one or more nodes. Defining multiple parent nodes is useful if a single logical flow is implemented across different branches of the dialog tree. Defining multiple completion nodes can be relevant if you have more than one location in the dialog that can determine successful ending of the flow.</p>
 </blockquote>
 
 </div>
@@ -16854,13 +16880,13 @@ Using the task's flow definition and enrichment of the logs, we can now measure 
 <p>Sample usage of the API:</p>
 <ul>
 <li><code>re_search_in_dialog_nodes(search_term)</code> - search in all fields, in all skills</li>
-<li><code>re_search_in_dialog_nodes(search_term, keys=['condition'], in_skill=skill_id)</code> - search only in condition fields of nodes in specific skill </li>
+<li><code>re_search_in_dialog_nodes(search_term, keys=['condition'], in_skill=skill_id)</code> - search only in condition fields of nodes in specific skill</li>
 </ul>
 <p>Examples of search terms:</p>
 <ul>
-<li><code>"card"</code> - search for a word </li>
-<li><code>"@CC_Types"</code> - search for an entity</li>
-<li><code>"#General_Conversation-VA_State"</code> - search for an intent</li>
+<li><code>&quot;card&quot;</code> - search for a word</li>
+<li><code>&quot;@CC_Types&quot;</code> - search for an entity</li>
+<li><code>&quot;#General_Conversation-VA_State&quot;</code> - search for an intent</li>
 <li><code>'#.*banking.*card'</code> - search for intent that includes banking and card</li>
 </ul>
 
@@ -16893,7 +16919,7 @@ Using the task's flow definition and enrichment of the logs, we can now measure 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p><img style="float: right;margin: 35px;" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/search.png" width="40%"></p>
+<img style="float: right;margin: 35px;" src="https://raw.githubusercontent.com/watson-developer-cloud/assistant-dialog-flow-analysis/master/notebooks/images/search.png" width="40%">
 <p><a id="search_visually"></a></p>
 <h2 id="7.1.3-Interactive-search-and-exploration">7.1.3 Interactive search and exploration<a class="anchor-link" href="#7.1.3-Interactive-search-and-exploration">&#182;</a></h2><p>You can use the <code>draw_wa_dialog_chart()</code> to visualize the dialog nodes of a specific skill in the same tree layout as in Watson Assistant Dialog Editor.  You can interact with the visualization to navigate to, or search for, a particular node, from which you can copy its <code>node_id</code></p>
 
@@ -16932,7 +16958,7 @@ Using the task's flow definition and enrichment of the logs, we can now measure 
 <h2 id="7.2-Filtering">7.2 Filtering<a class="anchor-link" href="#7.2-Filtering">&#182;</a></h2><p>You can use a built-in filter to narrow down your log records and focus on specific conversations or journey steps.  There are two types of filters</p>
 <ol>
 <li><strong>selection</strong> - filters that select a subset of conversations based on some criteria.  Example of selection filters: <code>by_dialog_node_id</code>, <code>by_turn_label</code>, <code>by_date_range</code>, <code>by_dialog_node_str</code></li>
-<li><strong>selection and trimming</strong> - filters that select a subset of conversations and in addition remove some of the conversation steps before a specific point of interest. This allows you to focus on how conversation journeys progress from that point on.  Example of these filters: <code>trim_from_node_id</code>, <code>trim_from_turn_label</code> </li>
+<li><strong>selection and trimming</strong> - filters that select a subset of conversations and in addition remove some of the conversation steps before a specific point of interest. This allows you to focus on how conversation journeys progress from that point on.  Example of these filters: <code>trim_from_node_id</code>, <code>trim_from_turn_label</code></li>
 </ol>
 <p>You can create a chain of filters to work in sequence to narrow down the log records for specific exploration activities.</p>
 <p>Below is an example of a chained filter that finds conversations that pass through the 'Collect Appointment Data' node during Jan 2020</p>
@@ -17129,14 +17155,14 @@ Using the task's flow definition and enrichment of the logs, we can now measure 
 <li>out of scope, candidate for more training</li>
 <li>dialog logic (sequence of steps, context, changes to condition, list and order of options,. etc)</li>
 <li>bot response was not relevant</li>
-<li>backend/webhook related </li>
+<li>backend/webhook related</li>
 </ul>
 </li>
 </ul>
 </li>
 <li><strong>Export candidate utterances for expanding the coverage of your intents</strong><ul>
 <li>Export candidate utterances from selected conversations</li>
-<li>Upload the utterances as a CSV to Watson Assistant using the <a href="https://cloud.ibm.com/docs/services/assistant?topic=assistant-intent-recommendations#intent-recommendations-log-files-add">Intent Recommendations</a> feature </li>
+<li>Upload the utterances as a CSV to Watson Assistant using the <a href="https://cloud.ibm.com/docs/services/assistant?topic=assistant-intent-recommendations#intent-recommendations-log-files-add">Intent Recommendations</a> feature</li>
 </ul>
 </li>
 <li><strong>Perform detailed analysis to identify the changes needed to the dialog logic</strong><ul>
@@ -17257,8 +17283,9 @@ Using the task's flow definition and enrichment of the logs, we can now measure 
 <span style="font-size:18px;color:#152935;">Love this notebook? </span>
 <span style="font-size:15px;color:#152935;float:right;margin-right:40px;">Don't have an account yet?</span><br>
 <span style="color:#5A6872;">Share it with your colleagues and help them discover the power of Watson Studio!</span>
-<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://ibm.co/wsnotebooks" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
+<span style="border: 1px solid #3d70b2;padding:8px;float:right;margin-right:40px; color:#3d70b2;"><a href="https://www.ibm.com/products/watson-studio" target="_blank" style="color: #3d70b2;text-decoration: none;">Sign Up</a></span><br>
 </div>
+
 </div>
 </div>
 </div>
