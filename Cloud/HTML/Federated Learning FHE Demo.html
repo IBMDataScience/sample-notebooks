@@ -15807,7 +15807,7 @@ This installation is required for any Python environment that will be used for r
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">pip</span> install --upgrade &#39;ibm_watson_machine_learning[fl-rt22.2-py3.10,fl-crypto]&#39;
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">pip</span> install --upgrade &#39;ibm_watson_machine_learning[fl-rt23.1-py3.10,fl-crypto]&#39;
 </pre></div>
 
      </div>
@@ -15842,7 +15842,7 @@ This installation is required for any Python environment that will be used for r
 <span class="kn">import</span> <span class="nn">requests</span>
 <span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">()</span>
 
-<span class="n">cmd</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s2">&quot;pip list | grep &#39;ibm-watson-machine-learning&#39;&quot;</span><span class="p">,</span> 
+<span class="n">cmd</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="s2">&quot;pip list | grep -E &#39;ibm-watson-machine-learning|ibm_watson_machine_learning&#39;&quot;</span><span class="p">,</span> 
     <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span>
 <span class="n">wml_installed</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">wml_installed</span><span class="p">:</span>
@@ -15870,7 +15870,7 @@ This installation is required for any Python environment that will be used for r
 <span class="n">WML_SERVICES_LOCATION</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="c1"># TBD [mandatory] See the prerequisites section for details.</span>
 <span class="n">WML_SERVICES_URL</span> <span class="o">=</span> <span class="s1">&#39;https://&#39;</span> <span class="o">+</span> <span class="n">WML_SERVICES_LOCATION</span> <span class="o">+</span> <span class="s1">&#39;.ml.cloud.ibm.com&#39;</span>
 <span class="n">NUM_RTS</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># TBD [optional] This parameter enables to specify the number of parties for a training experiment.</span>
-<span class="n">SW_SPEC_NAME</span> <span class="o">=</span> <span class="s1">&#39;runtime-22.2-py3.10&#39;</span>
+<span class="n">SW_SPEC_NAME</span> <span class="o">=</span> <span class="s1">&#39;runtime-23.1-py3.10&#39;</span>
 <span class="n">HW_SPEC_NAME</span> <span class="o">=</span> <span class="s1">&#39;S&#39;</span>
 <span class="n">RSC_TAGS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;wml_fl_fhe_nb_example&#39;</span><span class="p">]</span>
 <span class="n">TIMEOUT_TRAINING_SEC</span> <span class="o">=</span> <span class="mi">600</span>
@@ -15883,7 +15883,7 @@ This installation is required for any Python environment that will be used for r
 <span class="n">prt_data_file_prefix</span> <span class="o">=</span> <span class="s1">&#39;data_party_&#39;</span>
 <span class="n">NUM_MODELS</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">MODEL_NAME</span> <span class="o">=</span> <span class="s1">&#39;pytorch&#39;</span>
-<span class="n">MODEL_TYPE</span> <span class="o">=</span> <span class="s1">&#39;pytorch-onnx_1.12&#39;</span>
+<span class="n">MODEL_TYPE</span> <span class="o">=</span> <span class="s1">&#39;pytorch-onnx_2.0&#39;</span>
 <span class="n">INIT_MODEL_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;pt_mnist_init_model.zip&#39;</span>
 <span class="n">INIT_MODEL_URL</span> <span class="o">=</span> <span class="s1">&#39;https://github.com/IBMDataScience/sample-notebooks/raw/master/Files/pt_mnist_init_model.zip&#39;</span>
 <span class="n">DATA_HANDLER_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;mnist_pytorch_data_handler.py&#39;</span>
@@ -17128,7 +17128,7 @@ Following is a description of the encryption levels:</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <hr>
-<p>Copyright © IBM Corp. 2022. This notebook and its source code are released under the terms of the MIT License.</p>
+<p>Copyright © IBM Corp. 2022-2024. This notebook and its source code are released under the terms of the MIT License.</p>
 
 </div>
 </div>
