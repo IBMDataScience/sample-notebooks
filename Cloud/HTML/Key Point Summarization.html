@@ -15580,8 +15580,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h1 id="Key-Point-Summarization">Key Point Summarization<a class="anchor-link" href="#Key-Point-Summarization">&#182;</a></h1><h2 id="Extracting-meaningful-insights-from-reviews,-surveys,-and-customer-feedback">Extracting meaningful insights from reviews, surveys, and customer feedback<a class="anchor-link" href="#Extracting-meaningful-insights-from-reviews,-surveys,-and-customer-feedback">&#182;</a></h2><p>When dealing with large collections of text representing people's opinions, such as product reviews, survey responses, customer feedback, or social media posts, understanding the key issues within the data can be challenging. Manually reviewing thousands of comments is time-consuming and cost-prohibitive.
-Existing automated approaches often fall short, typically limited to identifying recurring phrases or concepts and gauging overall sentiment. While useful, these methods often fail to provide detailed, actionable insights.
-Key Point Summarization maps the input texts to a set of automatically-extracted short sentences and phrases, termed Key Points, which provide a concise plain-text summary of the data. The prevalence of each key point may be quantified as the number of its matching sentences.</p>
+Existing automated approaches are typically limited to identifying recurring phrases or concepts and gauging overall sentiment. Such methods often fail to provide fine-grained, actionable insights.
+Key Point Summarization maps the input texts to a set of automatically-extracted short sentences and phrases, termed Key Points, which provide a concise plain-text summary of the data. The prevalence of each key point is quantified as the number of its matching sentences.</p>
 <p>In this tutorial, you will gain hands-on experience using Key Point Summarization (KPS) to analyze and derive insights from free-text feedback.
 The data we will use is <a href="https://data.austintexas.gov/dataset/Community-Survey/s2py-ceb7">a community survey conducted in the city of Austin</a>. In this survey, the citizens of Austin were asked &quot;If there was ONE thing you could share with the Mayor regarding the City of Austin (any comment, suggestion, etc.), what would it be?&quot;.</p>
 <p>KPS utilizes fine-tuned language models for data analysis. Therefore, an environment based on runtime 24.1 and with a GPU is required to run this tutorial effectively.</p>
@@ -15611,6 +15611,7 @@ The data we will use is <a href="https://data.austintexas.gov/dataset/Community-
 <h2 id="Contents">Contents<a class="anchor-link" href="#Contents">&#182;</a></h2><p>This notebook contains the following parts:</p>
 <ul>
 <li><a href="#setup">Initialization and data loading for analysis</a></li>
+<li><a href="#summary">Creating a summary</a></li>
 <li><a href="#exam">Examining and saving results</a></li>
 </ul>
 
@@ -15684,7 +15685,7 @@ The data we will use is <a href="https://data.austintexas.gov/dataset/Community-
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Lets run self_check and make sure all is configured correctly and working.
+<p>Let's run self_check and make sure all is configured correctly and working.
 self_check outputs
 {'status': 'UP'} when all is working or {'status': 'DOWN'} if a problem is detected. We can also see if GPUs are used or not.</p>
 
@@ -15714,7 +15715,7 @@ self_check outputs
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Let's read the data from dataset_austin.csv file, which holds the Austin survey dataset.</p>
+<p>Next, we read the Austin survey dataset from the dataset_austin.csv file.</p>
 
 </div>
 </div>
@@ -15749,7 +15750,7 @@ self_check outputs
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Let's first load the data into a list of strings and limit the number of comments for quick analysis:</p>
+<p>We load the data into a list of strings and limit the number of comments for quick analysis:</p>
 
 </div>
 </div>
@@ -15782,9 +15783,9 @@ self_check outputs
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h2 id="Creating-a-summarization">Creating a summarization<a class="anchor-link" href="#Creating-a-summarization">&#182;</a></h2><p>We will now analyze the comments using the <code>client.run_full_kps_flow</code> method. This may take a little while. The more comments we have, the longer it will take.</p>
-<p>Comments are analyzed in the scope of a domain. The data is temporarily stored in a domain. 
-A user can create several domains, one for each dataset.</p>
+<p><a id="summary"></a></p>
+<h2 id="Creating-a-summary">Creating a summary<a class="anchor-link" href="#Creating-a-summary">&#182;</a></h2><p>We will now analyze the comments using the <code>client.run_full_kps_flow</code> method. This may take a little while. Run time depends on the input size.</p>
+<p>Each dataset is temporarily stored in a domain, to which the analysis is applied.</p>
 
 </div>
 </div>
@@ -15814,7 +15815,7 @@ A user can create several domains, one for each dataset.</p>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><a id="exam"></a></p>
-<h2 id="Examining-and-saving-results">Examining and saving results<a class="anchor-link" href="#Examining-and-saving-results">&#182;</a></h2><p>Results are now available. Lets print a summary of the analysis.</p>
+<h2 id="Examining-and-saving-results">Examining and saving results<a class="anchor-link" href="#Examining-and-saving-results">&#182;</a></h2><p>Results are now available. Let’s print a summary of the analysis. For example, we can print the top 40 key points in the dataset, along with the top 3 matching sentences for each key point. The total number of matches for each key point is also indicated.</p>
 
 </div>
 </div>
@@ -15842,7 +15843,7 @@ A user can create several domains, one for each dataset.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>We can also export the results into files (summary file, full analysis, as well as a user-friendly DOCX report).</p>
+<p>We can also export the results into files, including summary and full analysis csv files, as well as a user-friendly Word Document report.</p>
 
 </div>
 </div>
@@ -15902,9 +15903,9 @@ A user can create several domains, one for each dataset.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="Authors:">Authors:<a class="anchor-link" href="#Authors:">&#182;</a></h3><p><strong>Yoav Katz</strong>, 
-<strong>Roy Bar-Haim</strong>, 
-<strong>Yoav Kantor</strong>, 
+<h3 id="Authors:">Authors:<a class="anchor-link" href="#Authors:">&#182;</a></h3><p><strong>Yoav Katz</strong>
+<strong>Roy Bar-Haim</strong>
+<strong>Yoav Kantor</strong>
 <strong>Lilach Edelstein</strong></p>
 
 </div>
