@@ -15929,20 +15929,20 @@ and set it in the &quot;project_token&quot; variable. We can now read the file:<
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">project_token</span> <span class="o">=</span> <span class="s1">&#39;&lt;project_token&gt;&#39;</span> <span class="c1"># The project&#39;s token.</span>
 <span class="k">def</span> <span class="nf">upload_files_from_directory_to_project_assets</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">project_token</span><span class="p">):</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">ibm_watson_studio_lib</span> <span class="kn">import</span> <span class="n">access_project_or_space</span>
-<span class="n">wslib</span> <span class="o">=</span> <span class="n">access_project_or_space</span><span class="p">({</span><span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">project_token</span><span class="p">})</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="kn">from</span> <span class="nn">ibm_watson_studio_lib</span> <span class="kn">import</span> <span class="n">access_project_or_space</span>
+    <span class="n">wslib</span> <span class="o">=</span> <span class="n">access_project_or_space</span><span class="p">({</span><span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">project_token</span><span class="p">})</span>
 
-<span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
-    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">output_dir</span><span class="p">):</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)</span>
     
-    <span class="c1"># Check if it&#39;s a file (and not a subdirectory)</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
-        <span class="c1"># Read file content</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">file_content</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-            <span class="n">wslib</span><span class="o">.</span><span class="n">save_data</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">file_content</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploaded </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># Check if it&#39;s a file (and not a subdirectory)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="c1"># Read file content</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+                <span class="n">file_content</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+                <span class="n">wslib</span><span class="o">.</span><span class="n">save_data</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">file_content</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Uploaded </span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="n">upload_files_from_directory_to_project_assets</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">project_token</span><span class="p">)</span>
 </pre></div>
 
