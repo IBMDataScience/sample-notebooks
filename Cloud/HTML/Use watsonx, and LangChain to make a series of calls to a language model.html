@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Use watsonx, and LangChain to make a series of cal</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Use watsonx and LangChain to make a series of call</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -8660,9 +8660,8 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"langchain_ibm==0.1.12"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
-<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"langchain==0.2.16"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
-<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">"pydantic&gt;=1.10.0"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">"langchain&gt;=0.3,&lt;0.4"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
+<span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">"langchain_ibm&gt;=0.3,&lt;0.4"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
 </div>
@@ -8737,6 +8736,33 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>Create an instance of APIClient with authentication details.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watsonx_ai</span> <span class="kn">import</span> <span class="n">APIClient</span>
+
+<span class="n">api_client</span> <span class="o">=</span> <span class="n">APIClient</span><span class="p">(</span><span class="n">credentials</span><span class="o">=</span><span class="n">credentials</span><span class="p">,</span> <span class="n">project_id</span><span class="o">=</span><span class="n">project_id</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p><a id="models"></a></p>
 <h2 id="Foundation-Models-on-watsonx.ai">Foundation Models on <code>watsonx.ai</code><a class="anchor-link" href="#Foundation-Models-on-watsonx.ai">¶</a></h2>
 </div>
@@ -8749,7 +8775,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h4 id="List-available-models">List available models<a class="anchor-link" href="#List-available-models">¶</a></h4><p>All avaliable models are presented under <code>ModelTypes</code> class.</p>
+<h4 id="List-available-models">List available models<a class="anchor-link" href="#List-available-models">¶</a></h4><p>All avaliable models are presented under <code>TextModels</code> class.</p>
 </div>
 </div>
 </div>
@@ -8758,12 +8784,10 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watsonx_ai.foundation_models.utils.enums</span> <span class="kn">import</span> <span class="n">ModelTypes</span>
-
-<span class="nb">print</span><span class="p">([</span><span class="n">model</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">ModelTypes</span><span class="p">])</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">api_client</span><span class="o">.</span><span class="n">foundation_models</span><span class="o">.</span><span class="n">TextModels</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -8776,7 +8800,7 @@ a.anchor-link {
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>['FLAN_T5_XXL', 'FLAN_UL2', 'MT0_XXL', 'GPT_NEOX', 'MPT_7B_INSTRUCT2', 'STARCODER', 'LLAMA_2_70B_CHAT', 'LLAMA_2_13B_CHAT', 'GRANITE_13B_INSTRUCT', 'GRANITE_13B_CHAT', 'FLAN_T5_XL', 'GRANITE_13B_CHAT_V2', 'GRANITE_13B_INSTRUCT_V2', 'ELYZA_JAPANESE_LLAMA_2_7B_INSTRUCT', 'MIXTRAL_8X7B_INSTRUCT_V01_Q', 'CODELLAMA_34B_INSTRUCT_HF', 'GRANITE_20B_MULTILINGUAL', 'MERLINITE_7B', 'GRANITE_20B_CODE_INSTRUCT', 'GRANITE_34B_CODE_INSTRUCT', 'GRANITE_3B_CODE_INSTRUCT', 'GRANITE_7B_LAB', 'GRANITE_8B_CODE_INSTRUCT', 'LLAMA_3_70B_INSTRUCT', 'LLAMA_3_8B_INSTRUCT', 'MIXTRAL_8X7B_INSTRUCT_V01']
+<pre>{'MT0_XXL': 'bigscience/mt0-xxl', 'CODELLAMA_34B_INSTRUCT_HF': 'codellama/codellama-34b-instruct-hf', 'JAIS_13B_CHAT': 'core42/jais-13b-chat', 'ELYZA_JAPANESE_LLAMA_2_7B_INSTRUCT': 'elyza/elyza-japanese-llama-2-7b-instruct', 'FLAN_T5_XL': 'google/flan-t5-xl', 'FLAN_T5_XXL': 'google/flan-t5-xxl', 'FLAN_UL2': 'google/flan-ul2', 'GRANITE_13B_CHAT_V2': 'ibm/granite-13b-chat-v2', 'GRANITE_13B_INSTRUCT_V2': 'ibm/granite-13b-instruct-v2', 'GRANITE_20B_CODE_INSTRUCT': 'ibm/granite-20b-code-instruct', 'GRANITE_20B_MULTILINGUAL': 'ibm/granite-20b-multilingual', 'GRANITE_3_2B_INSTRUCT': 'ibm/granite-3-2b-instruct', 'GRANITE_3_8B_INSTRUCT': 'ibm/granite-3-8b-instruct', 'GRANITE_34B_CODE_INSTRUCT': 'ibm/granite-34b-code-instruct', 'GRANITE_3B_CODE_INSTRUCT': 'ibm/granite-3b-code-instruct', 'GRANITE_7B_LAB': 'ibm/granite-7b-lab', 'GRANITE_8B_CODE_INSTRUCT': 'ibm/granite-8b-code-instruct', 'GRANITE_8B_JAPANESE': 'ibm/granite-8b-japanese', 'GRANITE_GUARDIAN_3_2B': 'ibm/granite-guardian-3-2b', 'GRANITE_GUARDIAN_3_8B': 'ibm/granite-guardian-3-8b', 'LLAMA_2_13B_CHAT': 'meta-llama/llama-2-13b-chat', 'LLAMA_3_1_70B_INSTRUCT': 'meta-llama/llama-3-1-70b-instruct', 'LLAMA_3_1_8B_INSTRUCT': 'meta-llama/llama-3-1-8b-instruct', 'LLAMA_3_2_11B_VISION_INSTRUCT': 'meta-llama/llama-3-2-11b-vision-instruct', 'LLAMA_3_2_1B_INSTRUCT': 'meta-llama/llama-3-2-1b-instruct', 'LLAMA_3_2_3B_INSTRUCT': 'meta-llama/llama-3-2-3b-instruct', 'LLAMA_3_2_90B_VISION_INSTRUCT': 'meta-llama/llama-3-2-90b-vision-instruct', 'LLAMA_3_405B_INSTRUCT': 'meta-llama/llama-3-405b-instruct', 'LLAMA_3_70B_INSTRUCT': 'meta-llama/llama-3-70b-instruct', 'LLAMA_3_8B_INSTRUCT': 'meta-llama/llama-3-8b-instruct', 'LLAMA_GUARD_3_11B_VISION': 'meta-llama/llama-guard-3-11b-vision', 'MISTRAL_LARGE': 'mistralai/mistral-large', 'MIXTRAL_8X7B_INSTRUCT_V01': 'mistralai/mixtral-8x7b-instruct-v01', 'PIXTRAL_12B': 'mistralai/pixtral-12b', 'LLAMA2_13B_DPO_V7': 'mncai/llama2-13b-dpo-v7', 'ALLAM_1_13B_INSTRUCT': 'sdaia/allam-1-13b-instruct'}
 </pre>
 </div>
 </div>
@@ -8798,11 +8822,11 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">model_id_1</span> <span class="o">=</span> <span class="n">ModelTypes</span><span class="o">.</span><span class="n">FLAN_UL2</span><span class="o">.</span><span class="n">value</span>
-<span class="n">model_id_2</span> <span class="o">=</span> <span class="n">ModelTypes</span><span class="o">.</span><span class="n">FLAN_T5_XXL</span><span class="o">.</span><span class="n">value</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">model_id_1</span> <span class="o">=</span> <span class="s2">"google/flan-ul2"</span>
+<span class="n">model_id_2</span> <span class="o">=</span> <span class="s2">"google/flan-t5-xxl"</span>
 </pre></div>
 </div>
 </div>
@@ -8825,7 +8849,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ibm_watsonx_ai.metanames</span> <span class="kn">import</span> <span class="n">GenTextParamsMetaNames</span> <span class="k">as</span> <span class="n">GenParams</span>
@@ -8863,7 +8887,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">langchain_ibm</span> <span class="kn">import</span> <span class="n">WatsonxLLM</span>
@@ -8902,7 +8926,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">flan_ul2_llm</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
@@ -8916,18 +8940,18 @@ a.anchor-link {
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[12]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>{'model_id': 'google/flan-ul2',
- 'deployment_id': '',
+ 'deployment_id': None,
  'params': {'decoding_method': 'sample',
   'max_new_tokens': 100,
   'min_new_tokens': 1,
   'temperature': 0.5,
   'top_k': 50,
   'top_p': 1},
- 'project_id': '7e8b59ba-2610-4a29-9d90-dc02483ed5f4',
- 'space_id': '',
+ 'project_id': 'd2436d2e-5814-4370-bd06-1754670e7d46',
+ 'space_id': None,
  '_type': 'IBM watsonx.ai'}</pre>
 </div>
 </div>
@@ -8963,7 +8987,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">langchain_core.prompts</span> <span class="kn">import</span> <span class="n">PromptTemplate</span>
@@ -8998,7 +9022,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">langchain.chains</span> <span class="kn">import</span> <span class="n">LLMChain</span>
@@ -9025,7 +9049,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">flan_to_t5</span> <span class="o">=</span> <span class="n">LLMChain</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="n">flan_t5_llm</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">prompt_2</span><span class="p">,</span> <span class="n">output_key</span><span class="o">=</span><span class="s1">'answer'</span><span class="p">)</span>
@@ -9050,7 +9074,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">langchain.chains</span> <span class="kn">import</span> <span class="n">SequentialChain</span>
@@ -9077,7 +9101,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">qa</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">"topic"</span><span class="p">:</span> <span class="s2">"life"</span><span class="p">})</span>
@@ -9102,11 +9126,11 @@ a.anchor-link {
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[15]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[17]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>{'topic': 'life',
- 'question': 'What is the most common cause of death in the US?',
- 'answer': 'heart disease'}</pre>
+ 'question': 'What is the name of the largest zoo in the world?',
+ 'answer': 'zoo sao paulo brazil'}</pre>
 </div>
 </div>
 </div>
@@ -9139,7 +9163,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">ai_params</span> <span class="o">=</span> <span class="p">{</span>
@@ -9158,7 +9182,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">chain_text_generator</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">ai_params</span><span class="p">):</span>
@@ -9208,7 +9232,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">sample_payload</span> <span class="o">=</span> <span class="p">{</span>
@@ -9232,12 +9256,12 @@ a.anchor-link {
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[18]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[20]:</div>
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
 <pre>{'predictions': [{'fields': ['topic', 'question', 'answer'],
    'values': ['life',
-    'What is the name of the famous painting by Van Gogh?',
-    'sunflowers']}]}</pre>
+    'What is the term for the process of a living thing gaining nutrients from dead organisms?',
+    'decomposition']}]}</pre>
 </div>
 </div>
 </div>
@@ -9280,9 +9304,8 @@ a.anchor-link {
 <span class="sd">  - empty</span>
 <span class="sd">dependencies:</span>
 <span class="sd">  - pip:</span>
-<span class="sd">    - langchain_ibm==0.1.12</span>
-<span class="sd">    - langchain==0.2.16</span>
-<span class="sd">    - pydantic&gt;=1.10.0</span>
+<span class="sd">    - langchain_ibm==0.3.3</span>
+<span class="sd">    - langchain==0.3.7</span>
 <span class="sd">prefix: /opt/anaconda3/envs/python311</span>
 <span class="sd">"""</span>
 
