@@ -3,7 +3,7 @@
 <html lang="en">
 <head><meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>GenSL_SQLGen_Gosales_WXAI</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>GenSL_SQLGen_Gosales_watsonx_ai</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <style type="text/css">
     pre { line-height: 125%; }
 td.linenos .normal { color: inherit; background-color: transparent; padding-left: 5px; padding-right: 5px; }
@@ -8598,7 +8598,6 @@ a.anchor-link {
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 <span class="kn">import</span> <span class="nn">urllib3</span>
 <span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">(</span><span class="n">urllib3</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InsecureRequestWarning</span><span class="p">)</span>
 </pre></div>
@@ -8613,7 +8612,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h1 id="Inferencing-with-Granite-Text-to-SQL-Models">Inferencing with Granite Text-to-SQL Models<a class="anchor-link" href="#Inferencing-with-Granite-Text-to-SQL-Models">¶</a></h1><p>This notebook demonstrates how to use the two Text2SQL pipeline components, the Schema Linking model (SL) and SQL Generation model (SQL Gen). The inputs of Text2SQL pipeline include a natural language question (NLQ), a database schema in the JSON format, and optionally an evidence (or hint) for models to generate a better SQL query. Inference calls to two models are done via WX.AI REST API Endpoints as shown in the sample code in the steps below. This notebook also shows the input prompt and output of each component in the pipeline.</p>
+<h1 id="Inferencing-with-Granite-Text-to-SQL-Models">Inferencing with Granite Text-to-SQL Models<a class="anchor-link" href="#Inferencing-with-Granite-Text-to-SQL-Models">¶</a></h1><p>This notebook demonstrates how to use the two Text2SQL pipeline components, the Schema Linking model (SL) and SQL Generation model (SQL Gen). The inputs of Text2SQL pipeline include a natural language question (NLQ), a database schema in the JSON format, and optionally an evidence (or hint) for models to generate a better SQL query. Inference calls to two models are done via watsonx.ai REST API Endpoints as shown in the sample code in the steps below. This notebook also shows the input prompt and output of each component in the pipeline.</p>
 </div>
 </div>
 </div>
@@ -8627,10 +8626,10 @@ a.anchor-link {
 <h2 id="Table-of-Contents">Table of Contents<a class="anchor-link" href="#Table-of-Contents">¶</a></h2><ol>
 <li><a href="#setup">Setup</a></li>
 <li><a href="#schemaprompt">Create a prompt for the Schema Linking Model</a></li>
-<li><a href="#schemainference">Perform an inference on the Schema Linking model using the WX.AI endpoint</a></li>
+<li><a href="#schemainference">Perform an inference on the Schema Linking model using the watsonx.ai endpoint</a></li>
 <li><a href="#schemapost">Post the process of the Schema Linking model output</a></li>
-<li><a href="#sqlprompt">Create a prompt for the SQL Geneneration model</a></li>
-<li><a href="#sqlinference">Perform an inference on the SQL Generation model using the WX.AI endpoint</a></li>
+<li><a href="#sqlprompt">Create a prompt for the SQL Generation model</a></li>
+<li><a href="#sqlinference">Perform an inference on the SQL Generation model using the watsonx.ai endpoint</a></li>
 </ol>
 </div>
 </div>
@@ -8643,8 +8642,21 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 id="Setup">Setup<a class="anchor-link" href="#Setup">¶</a></h2><p><a id="setup"></a></p>
-<p>You need to provide an API key and a project ID. You can either enter them in the code samples below or set them as these environment variables: <code>WATSONX_APIKEY</code> and <code>WATSONX_PROJECTID</code>.</p>
-<p>First, provide your watsonx API key.</p>
+<p>You need to provide an API key, see <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/manage-data/task-credentials.html?context=wx&amp;locale=en&amp;audience=wdp">here</a> for more details. You can either enter it in the code samples below or set them as environment variable: <code>WATSONX_APIKEY</code>.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6a7c2da8-925f-4ef4-9b6f-8660586dcb4c">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">CLOUD_HOSTNAME</span> <span class="o">=</span> <span class="s2">"https://us-south.ml.cloud.ibm.com"</span> <span class="c1"># TODO: change this to your cloud hostname if using other cluster</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -8653,73 +8665,19 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">dotenv</span> <span class="kn">import</span> <span class="n">find_dotenv</span><span class="p">,</span> <span class="n">load_dotenv</span>
+<span class="kn">from</span> <span class="nn">getpass</span> <span class="kn">import</span> <span class="n">getpass</span>
 
 <span class="n">load_dotenv</span><span class="p">(</span><span class="n">find_dotenv</span><span class="p">())</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">ibm_cloud_api_key</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">'Enter WatsonX API Key: '</span><span class="p">)</span>
+    <span class="n">IBM_CLOUD_API_KEY</span> <span class="o">=</span> <span class="n">getpass</span><span class="p">(</span><span class="s2">"Please enter your watsonx.ai API key (hit enter): "</span><span class="p">)</span>
+
 <span class="k">except</span><span class="p">:</span>
-    <span class="n">ibm_cloud_api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"WATSONX_APIKEY"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2bca719e">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>Next, provide the project ID.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=ade712a1-3bbb-480b-9ff5-481404b6d100">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">project_id</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">'Enter WatsonX Project ID: '</span><span class="p">)</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="n">project_id</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"WATSONX_PROJECTID"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5ab14bb8-df7e-40f2-a92f-68cdf4d252e9">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">ibm_cloud_api_key</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=88c2eee5-b04b-4e29-8dca-16952561440a">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">project_id</span>
+    <span class="n">IBM_CLOUD_API_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"WATSONX_APIKEY"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8730,10 +8688,252 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">IBM_CLOUD_API_KEY</span><span class="p">,</span> <span class="s2">"WATSONX_APIKEY must be set"</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=6b467a1a-bab9-47ae-8204-ffb03a753540">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Setup-access-token">Setup access token<a class="anchor-link" href="#Setup-access-token">¶</a></h3><p>Using the above API key, we generate an access token. If the token expires (each token lasts an hour), we need to request a new one.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=b0a30da8-726c-4616-b18d-5994bd3ebb5c">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">ibm_cloud_api_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">project_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"Both WATSONX_APIKEY and WATSONX_PROJECTID must be set"</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Get a IAM Bearer token </span>
+<span class="n">token_url</span> <span class="o">=</span> <span class="s2">"https://iam.cloud.ibm.com/identity/token"</span>
+<span class="n">token_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/x-www-form-urlencoded"</span><span class="p">}</span>
+<span class="n">token_data</span> <span class="o">=</span>  <span class="p">{</span><span class="s2">"grant_type"</span><span class="p">:</span> <span class="s2">"urn:ibm:params:oauth:grant-type:apikey"</span><span class="p">,</span> <span class="s2">"apikey"</span><span class="p">:</span> <span class="n">IBM_CLOUD_API_KEY</span><span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">token_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">token_headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">token_data</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+	<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Non-200 response: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+
+<span class="n">ACCESS_TOKEN</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">"access_token"</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0416b7c1-c10d-4fde-96df-4a56ce40c181">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">ACCESS_TOKEN</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=69993720-63dc-42fa-8de0-bd8c76f2e2b0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Deploy-models">Deploy models<a class="anchor-link" href="#Deploy-models">¶</a></h3><p>We follow the instructions <a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/deploy-on-demand-rest-api.html?context=wx&amp;locale=en&amp;audience=wdp">here</a> to deploy the 2 models:</p>
+<ul>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models-details.html?context=wx&amp;locale=en&amp;audience=wdp#granite-code-models">granite-20b-code-base-schema-linking</a></li>
+<li><a href="https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models-details.html?context=wx&amp;locale=en&amp;audience=wdp#granite-code-models">granite-20b-code-base-sql-gen</a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=9efe4af9">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h4 id="Working-with-spaces">Working with spaces<a class="anchor-link" href="#Working-with-spaces">¶</a></h4><p>You need to create a space that will be used for your work. If you do not have a space, you can use <a href="https://dataplatform.cloud.ibm.com/ml-runtime/spaces?context=wx">Deployment Spaces Dashboard</a> to create one.</p>
+<ul>
+<li>Click <strong>New Deployment Space</strong></li>
+<li>Create an empty space</li>
+<li>Select Cloud Object Storage</li>
+<li>Select watsonx.ai Runtime instance and press <strong>Create</strong></li>
+<li>Go to <strong>Manage</strong> tab</li>
+<li>Copy <code>Space GUID</code> and paste it below</li>
+</ul>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3c1cce22-8fef-436b-9f3b-17e7295fd300">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">SPACE_ID</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">'Enter watsonx.ai space id: '</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">SPACE_ID</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">"WATSONX_SPACE_ID"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fcb926ad-77e2-4aeb-9623-2118f728a7a5">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">SPACE_ID</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fe2655f8-4daa-4d01-a3f1-660ebbcf20b5">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">assert</span> <span class="n">SPACE_ID</span><span class="p">,</span> <span class="s2">"SPACE_ID must be set"</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d6a4c318-3976-44ff-b706-5e53eabaffe8">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h4 id="Creating-model-asset">Creating model asset<a class="anchor-link" href="#Creating-model-asset">¶</a></h4><p>This step can be done once, if you already have a model asset, just provide the asset id for <code>sl_asset_id</code> and <code>sql_gen_asset_id</code>.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0e0edf4a-797b-4084-8f41-d5fd5c6325c4">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">create_model_asset</span><span class="p">(</span><span class="n">model_id</span><span class="p">,</span> <span class="n">space_id</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">asset_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">asset_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">CLOUD_HOSTNAME</span><span class="si">}</span><span class="s2">/ml/v4/models?version=2024-01-29"</span>
+    <span class="n">asset_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
+                  <span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">access_token</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
+
+    <span class="n">asset_payload</span> <span class="o">=</span>  <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"curated_foundation_model_1.0"</span><span class="p">,</span>
+                       <span class="s2">"version"</span><span class="p">:</span> <span class="s2">"1.0"</span><span class="p">,</span>
+                       <span class="s2">"name"</span><span class="p">:</span> <span class="n">model_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">asset_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">asset_name</span><span class="p">,</span>
+                       <span class="s2">"space_id"</span><span class="p">:</span> <span class="n">space_id</span><span class="p">,</span>
+                       <span class="s2">"foundation_model"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"model_id"</span><span class="p">:</span> <span class="n">model_id</span><span class="p">}</span>
+                      <span class="p">}</span>
+    
+    <span class="n">asset_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">asset_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">asset_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">asset_payload</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">asset_response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3d41216b-2b2b-46e5-a7b0-27492e150020">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">sl_asset_response</span> <span class="o">=</span> <span class="n">create_model_asset</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="s2">"ibm/granite-20b-code-base-schema-linking-curated"</span><span class="p">,</span>
+                                       <span class="n">space_id</span><span class="o">=</span><span class="n">SPACE_ID</span><span class="p">,</span>
+                                       <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">)</span>
+<span class="n">sql_gen_asset_response</span> <span class="o">=</span> <span class="n">create_model_asset</span><span class="p">(</span><span class="n">model_id</span><span class="o">=</span><span class="s2">"ibm/granite-20b-code-base-sql-gen-curated"</span><span class="p">,</span>
+                                            <span class="n">space_id</span><span class="o">=</span><span class="n">SPACE_ID</span><span class="p">,</span>
+                                            <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=81bc39cc-e013-43a4-827f-5687f7a3e3e8">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">sl_asset_id</span> <span class="o">=</span> <span class="n">sl_asset_response</span><span class="p">[</span><span class="s2">"metadata"</span><span class="p">][</span><span class="s2">"id"</span><span class="p">]</span> <span class="c1"># TODO: override if asset had already been created</span>
+<span class="n">sql_gen_asset_id</span> <span class="o">=</span> <span class="n">sql_gen_asset_response</span><span class="p">[</span><span class="s2">"metadata"</span><span class="p">][</span><span class="s2">"id"</span><span class="p">]</span> <span class="c1"># TODO: override if asset had already been created</span>
+<span class="n">sl_asset_id</span><span class="p">,</span> <span class="n">sql_gen_asset_id</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[ ]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>('deee5205-9cf0-41f8-9826-7cdb5d2d5393',
+ 'f6af013a-4645-42c4-b9d6-1dcd39fa0f5c')</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3c821ac1-9dd8-47ae-84d6-7a65f24b4ee1">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># sl_deploy_response # uncomment to see detailed response</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9982832d-f479-4a1a-ad29-c9bd4ca635fa">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># sql_gen_deploy_response # uncomment to see detailed response</span>
 </pre></div>
 </div>
 </div>
@@ -8746,7 +8946,178 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="Set-up-your-WX.AI-model-IDs-and-Endpoints">Set up your WX.AI model IDs and Endpoints<a class="anchor-link" href="#Set-up-your-WX.AI-model-IDs-and-Endpoints">¶</a></h3>
+<h4 id="Model-deployment-and-endpoints-setup">Model deployment and endpoints setup<a class="anchor-link" href="#Model-deployment-and-endpoints-setup">¶</a></h4><p>Once the models are deployed, fill in required information below.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=cdc14e9d-f962-4dde-90ea-4ffc7ef046c3">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># watsonx.ai deployment information</span>
+<span class="n">SL_MODEL_ID</span> <span class="o">=</span> <span class="s2">"granite20b_schema_linking"</span> <span class="c1"># Note: serving name of schema linking model, can only use '-' with numbers/letters, need to be unique</span>
+<span class="n">SQL_GEN_MODEL_ID</span> <span class="o">=</span> <span class="s2">"granite_20b_sql_gen"</span> <span class="c1"># Note: serving name of sql gen model, can only use '-' with numbers/letters, need to be unique</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=2be0784e-a892-4032-976d-68f0b83b21d7">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">deploy_model</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">serving_name</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">deployment_name</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
+    <span class="n">deploy_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">CLOUD_HOSTNAME</span><span class="si">}</span><span class="s2">/ml/v4/deployments?version=2024-01-29"</span>
+    <span class="n">deploy_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
+                  <span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">access_token</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
+    <span class="n">deploy_payload</span> <span class="o">=</span>  <span class="p">{</span> <span class="s2">"asset"</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">"id"</span><span class="p">:</span> <span class="n">asset_id</span>
+                          <span class="p">},</span>
+                          <span class="s2">"online"</span><span class="p">:</span> <span class="p">{</span>
+                            <span class="s2">"parameters"</span><span class="p">:</span> <span class="p">{</span>
+                              <span class="s2">"serving_name"</span><span class="p">:</span> <span class="n">serving_name</span>
+                            <span class="p">}</span>
+                          <span class="p">},</span>
+                          <span class="s2">"description"</span><span class="p">:</span> <span class="s2">""</span><span class="p">,</span>
+                          <span class="s2">"name"</span><span class="p">:</span> <span class="n">deployment_name</span><span class="p">,</span>
+                          <span class="s2">"space_id"</span><span class="p">:</span> <span class="n">SPACE_ID</span>
+                        <span class="p">}</span>
+    
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">deploy_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">deploy_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">deploy_payload</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">get_deployment_info</span><span class="p">(</span><span class="n">deploy_id</span><span class="p">,</span> <span class="n">space_id</span><span class="p">,</span> <span class="n">access_token</span><span class="p">):</span>
+    <span class="n">deploy_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">CLOUD_HOSTNAME</span><span class="si">}</span><span class="s2">/ml/v4/deployments/</span><span class="si">{</span><span class="n">deploy_id</span><span class="si">}</span><span class="s2">?version=2024-01-29&amp;space_id=</span><span class="si">{</span><span class="n">space_id</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">deploy_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span>
+                  <span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">access_token</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
+
+    
+    <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">deploy_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">deploy_headers</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">is_deployment_ready</span><span class="p">(</span><span class="n">deploy_id</span><span class="p">,</span> <span class="n">space_id</span><span class="p">,</span> <span class="n">access_token</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">get_deployment_info</span><span class="p">(</span><span class="n">deploy_id</span><span class="o">=</span><span class="n">deploy_id</span><span class="p">,</span> <span class="n">space_id</span><span class="o">=</span><span class="n">space_id</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">access_token</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">response</span><span class="p">[</span><span class="s2">"entity"</span><span class="p">][</span><span class="s2">"status"</span><span class="p">][</span><span class="s2">"state"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"ready"</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<span class="k">def</span> <span class="nf">delete_deployment</span><span class="p">(</span><span class="n">deploy_id</span><span class="p">,</span> <span class="n">space_id</span><span class="p">,</span> <span class="n">access_token</span><span class="p">):</span>
+    <span class="n">deploy_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">CLOUD_HOSTNAME</span><span class="si">}</span><span class="s2">/ml/v4/deployments/</span><span class="si">{</span><span class="n">deploy_id</span><span class="si">}</span><span class="s2">?version=2024-01-29&amp;space_id=</span><span class="si">{</span><span class="n">space_id</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">deploy_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">access_token</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">requests</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">deploy_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">deploy_headers</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=fdde32c7-b7f2-4e6c-829b-15f06860cee4">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [18]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">sl_deploy_response</span> <span class="o">=</span> <span class="n">deploy_model</span><span class="p">(</span><span class="n">sl_asset_id</span><span class="p">,</span>
+                                  <span class="n">serving_name</span><span class="o">=</span><span class="n">SL_MODEL_ID</span><span class="p">,</span>
+                                  <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">,</span>
+                                  <span class="n">deployment_name</span><span class="o">=</span><span class="s2">"schema-linking-deployment"</span><span class="p">,</span>
+                                  <span class="n">description</span><span class="o">=</span><span class="s2">"granite20b-schema-linking deployment"</span><span class="p">)</span>
+
+<span class="n">sql_gen_deploy_response</span> <span class="o">=</span> <span class="n">deploy_model</span><span class="p">(</span><span class="n">sql_gen_asset_id</span><span class="p">,</span>
+                                       <span class="n">serving_name</span><span class="o">=</span><span class="n">SQL_GEN_MODEL_ID</span><span class="p">,</span>
+                                       <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">,</span>
+                                       <span class="n">deployment_name</span><span class="o">=</span><span class="s2">"sql-gen-deployment"</span><span class="p">,</span>
+                                       <span class="n">description</span><span class="o">=</span><span class="s2">"granite20b-sql-gen deployment"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=63636f4a-d70d-4965-b76f-587b9fc3c540">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [19]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># sl_deploy_response # uncomment to see detailed response</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4ceba7b4-1f7e-4bfd-87e3-3ee9d5eae1ba">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># sql_gen_deploy_response # uncomment to see detailed response</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=8d14e0dc-c104-49f1-9dcd-49ea255f2964">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [21]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="s2">"errors"</span> <span class="ow">in</span> <span class="n">sl_deploy_response</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sl_deploy_response</span><span class="p">[</span><span class="s2">"errors"</span><span class="p">])</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">SL_DEPLOYMENT_ID</span> <span class="o">=</span> <span class="n">sl_deploy_response</span><span class="p">[</span><span class="s2">"metadata"</span><span class="p">][</span><span class="s2">"id"</span><span class="p">]</span>
+<span class="k">if</span> <span class="s2">"errors"</span> <span class="ow">in</span> <span class="n">sql_gen_deploy_response</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sql_gen_deploy_response</span><span class="p">[</span><span class="s2">"errors"</span><span class="p">])</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">SQL_GEN_DEPLOYMENT_ID</span> <span class="o">=</span> <span class="n">sql_gen_deploy_response</span><span class="p">[</span><span class="s2">"metadata"</span><span class="p">][</span><span class="s2">"id"</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=82b34aab-dcfd-41a6-9328-1dd2f1b473e7">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [22]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">SL_DEPLOYMENT_ID</span><span class="p">,</span> <span class="n">SQL_GEN_DEPLOYMENT_ID</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[22]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>('f95334ab-25f1-42dd-a506-5e0a7157edbc',
+ 'a87bf110-2ea6-42ad-971d-d7d28788c358')</pre>
+</div>
 </div>
 </div>
 </div>
@@ -8755,31 +9126,15 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [23]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Get a Watson Studio Bearer token </span>
-<span class="n">token_url</span> <span class="o">=</span> <span class="s2">"https://iam.cloud.ibm.com/identity/token"</span>
-<span class="n">token_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/x-www-form-urlencoded"</span><span class="p">}</span>
-<span class="n">token_data</span> <span class="o">=</span>  <span class="p">{</span><span class="s2">"grant_type"</span><span class="p">:</span> <span class="s2">"urn:ibm:params:oauth:grant-type:apikey"</span><span class="p">,</span> <span class="s2">"apikey"</span><span class="p">:</span> <span class="n">ibm_cloud_api_key</span><span class="p">}</span>
-
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">token_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">token_headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">token_data</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
-	<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">"Non-200 response: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
-
-<span class="n">access_token</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">"access_token"</span><span class="p">]</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># define inference URLs</span>
+<span class="n">SL_PROD_URL</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">CLOUD_HOSTNAME</span><span class="si">}</span><span class="s2">/ml/v1/deployments/</span><span class="si">{</span><span class="n">SL_DEPLOYMENT_ID</span><span class="si">}</span><span class="s2">/text/generation?version=2024-01-29"</span>
+<span class="n">SQL_GEN_PROD_URL</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">CLOUD_HOSTNAME</span><span class="si">}</span><span class="s2">/ml/v1/deployments/</span><span class="si">{</span><span class="n">SQL_GEN_DEPLOYMENT_ID</span><span class="si">}</span><span class="s2">/text/generation?version=2024-01-29"</span>
 
 <span class="c1"># Headers for REST API request</span>
-<span class="n">BASE_HEADERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span> <span class="s2">"accept"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">}</span>
-
-<span class="c1">## WX.AI Model IDs</span>
-<span class="n">SL_MODEL_ID</span> <span class="o">=</span> <span class="s2">"ibm/granite-20b-code-base-schema-linking"</span>
-<span class="n">SQL_GEN_MODEL_ID</span> <span class="o">=</span> <span class="s2">"ibm/granite-20b-code-base-sql-gen"</span>
-
-<span class="c1">## WXAI API setup</span>
-<span class="n">PROD_URL</span> <span class="o">=</span> <span class="s2">"https://us-south.ml.cloud.ibm.com/ml/v1/text/generation?version=2024-03-19"</span>
-<span class="n">PROD_HEADERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span> <span class="s2">"accept"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span> <span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">access_token</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
+<span class="n">PROD_HEADERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Content-Type"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span> <span class="s2">"accept"</span><span class="p">:</span> <span class="s2">"application/json"</span><span class="p">,</span> <span class="s2">"Authorization"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"Bearer </span><span class="si">{</span><span class="n">ACCESS_TOKEN</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -8801,7 +9156,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [24]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">nl_question</span> <span class="o">=</span> <span class="s2">"Show me production cost of products in orders with quantity greater than 10"</span>
@@ -8847,7 +9202,7 @@ a.anchor-link {
 <div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Json DB Schema</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># JSON Database Schema</span>
 <span class="n">db_json_schema</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="s1">'{"name": "GOSALES", "tables": {"inventory_levels": {"name": "inventory_levels", "columns": [{"name": "inventory_year", "type": "SMALLINT", "primary_key": true, "foreign_key": null, "value_samples": ["2007", "2004", "2005", "2006"]}, {"name": "inventory_month", "type": "SMALLINT", "primary_key": true, "foreign_key": null, "value_samples": ["9", "12", "11"]}, {"name": "warehouse_branch_code", "type": "INTEGER", "primary_key": true, "foreign_key": null, "value_samples": ["40", "28", "30"]}, {"name": "product_number", "type": "INTEGER", "primary_key": true, "foreign_key": ["product", "product_number"], "value_samples": ["125130", "122150", "149110"]}, {"name": "opening_inventory", "type": "INTEGER", "primary_key": false, "foreign_key": null, "value_samples": ["2", "2152", "2148"]}, {"name": "quantity_shipped", "type": "INTEGER", "primary_key": false, "foreign_key": null, "value_samples": ["2", "1999", "1928"]}, {"name": "additions", "type": "INTEGER", "primary_key": false, "foreign_key": null, "value_samples": ["1129", "1787", "1770"]}, {"name": "unit_cost", "type": "DECIMAL(19, 2)", "primary_key": false, "foreign_key": null, "value_samples": ["4.45", "5.03", "5.02"]}, {"name": "closing_inventory", "type": "INTEGER", "primary_key": false, "foreign_key": null, "value_samples": ["2", "2192", "2152"]}, {"name": "average_unit_cost", "type": "DECIMAL(19, 2)", "primary_key": false, "foreign_key": null, "value_samples": ["2.15", "2.75", "2.31"]}]}, "order_details": {"name": "order_details", "columns": [{"name": "order_detail_code", "type": "INTEGER", "primary_key": true, "foreign_key": null, "value_samples": ["1000001", "1000016", "1000015"]}, {"name": "order_number", "type": "INTEGER", "primary_key": false, "foreign_key": null, "value_samples": ["100015", "100073", "100072"]}, {"name": "ship_date", "type": "TIMESTAMP", "primary_key": false, "foreign_key": null, "value_samples": ["2004-03-05 00:00:00", "2004-08-06 00:00:00", "2004-08-04 00:00:00"]}, {"name": "product_number", "type": "INTEGER", "primary_key": false, "foreign_key": ["product", "product_number"], "value_samples": ["125130", "149110", "123130"]}, {"name": "promotion_code", "type": "INTEGER", "primary_key": false, "foreign_key": null, "value_samples": ["10203", "10223", "10213"]}, {"name": "quantity", "type": "INTEGER", "primary_key": false, "foreign_key": null, "value_samples": ["1532", "1777", "1771"]}, {"name": "unit_cost", "type": "DECIMAL(19, 2)", "primary_key": false, "foreign_key": null, "value_samples": ["43.73", "31.24", "73.96"]}, {"name": "unit_price", "type": "DECIMAL(19, 2)", "primary_key": false, "foreign_key": null, "value_samples": ["72.0", "98.0", "34.8"]}, {"name": "unit_sale_price", "type": "DECIMAL(19, 2)", "primary_key": false, "foreign_key": null, "value_samples": ["12.52", "96.44", "94.8"]}]}, "product": {"name": "product", "columns": [{"name": "product_number", "type": "INTEGER", "primary_key": true, "foreign_key": null, "value_samples": ["1110", "6110", "5110"]}, {"name": "base_product_number", "type": "INTEGER", "primary_key": false, "foreign_key": null, "value_samples": ["1", "6", "5"]}, {"name": "introduction_date", "type": "TIMESTAMP", "primary_key": false, "foreign_key": null, "value_samples": ["1999-06-12 00:00:00", "2004-01-15 00:00:00", "2004-01-13 00:00:00"]}, {"name": "discontinued_date", "type": "TIMESTAMP", "primary_key": false, "foreign_key": null, "value_samples": ["2005-02-28 00:00:00", "2006-05-31 00:00:00", "2006-03-31 00:00:00"]}, {"name": "product_type_code", "type": "INTEGER", "primary_key": false, "foreign_key": null, "value_samples": ["970", "956", "971"]}, {"name": "product_color_code", "type": "INTEGER", "primary_key": false, "foreign_key": null, "value_samples": ["900", "924", "921"]}, {"name": "product_size_code", "type": "INTEGER", "primary_key": false, "foreign_key": null, "value_samples": ["801", "812", "810"]}, {"name": "product_brand_code", "type": "INTEGER", "primary_key": false, "foreign_key": null, "value_samples": ["703", "714", "715"]}, {"name": "production_cost", "type": "DECIMAL(19, 2)", "primary_key": false, "foreign_key": null, "value_samples": ["1.0", "11.43", "9.22"]}, {"name": "gross_margin", "type": "DOUBLE", "primary_key": false, "foreign_key": null, "value_samples": ["0.3", "0.7", "0.41"]}, {"name": "product_image", "type": "VARCHAR(60)", "primary_key": false, "foreign_key": null, "value_samples": ["</span><span class="se">\'</span><span class="s1">P01CE1CG1.jpg</span><span class="se">\'</span><span class="s1">", "</span><span class="se">\'</span><span class="s1">P06CE1CG1.jpg</span><span class="se">\'</span><span class="s1">", "</span><span class="se">\'</span><span class="s1">P05CE1CG1.jpg</span><span class="se">\'</span><span class="s1">"]}]}, "product_name_lookup": {"name": "product_name_lookup", "columns": [{"name": "product_number", "type": "INTEGER", "primary_key": true, "foreign_key": ["product", "product_number"], "value_samples": ["1110", "6110", "5110"]}, {"name": "product_language", "type": "VARCHAR(30)", "primary_key": true, "foreign_key": null, "value_samples": ["</span><span class="se">\'</span><span class="s1">CS</span><span class="se">\'</span><span class="s1">", "</span><span class="se">\'</span><span class="s1">ES</span><span class="se">\'</span><span class="s1">", "</span><span class="se">\'</span><span class="s1">EN</span><span class="se">\'</span><span class="s1">"]}, {"name": "product_name", "type": "VARCHAR(150)", "primary_key": false, "foreign_key": null, "value_samples": ["</span><span class="se">\'\\</span><span class="s1">"</span><span class="se">\\</span><span class="s1">u0412</span><span class="se">\\</span><span class="s1">u0435</span><span class="se">\\</span><span class="s1">u0447</span><span class="se">\\</span><span class="s1">u043d</span><span class="se">\\</span><span class="s1">u044b</span><span class="se">\\</span><span class="s1">u0439 </span><span class="se">\\</span><span class="s1">u0441</span><span class="se">\\</span><span class="s1">u0432</span><span class="se">\\</span><span class="s1">u0435</span><span class="se">\\</span><span class="s1">u0442</span><span class="se">\\</span><span class="s1">" - </span><span class="se">\\</span><span class="s1">u0411</span><span class="se">\\</span><span class="s1">u0443</span><span class="se">\\</span><span class="s1">u0442</span><span class="se">\\</span><span class="s1">u0430</span><span class="se">\\</span><span class="s1">u043d</span><span class="se">\\</span><span class="s1">u043e</span><span class="se">\\</span><span class="s1">u0432</span><span class="se">\\</span><span class="s1">u044b</span><span class="se">\\</span><span class="s1">u0439</span><span class="se">\'</span><span class="s1">", "</span><span class="se">\'\\</span><span class="s1">"</span><span class="se">\\</span><span class="s1">u041c</span><span class="se">\\</span><span class="s1">u0443</span><span class="se">\\</span><span class="s1">u0445</span><span class="se">\\</span><span class="s1">u043e-</span><span class="se">\\</span><span class="s1">u0429</span><span class="se">\\</span><span class="s1">u0438</span><span class="se">\\</span><span class="s1">u0442</span><span class="se">\\</span><span class="s1">" </span><span class="se">\\</span><span class="s1">u0410</span><span class="se">\\</span><span class="s1">u044d</span><span class="se">\\</span><span class="s1">u0440</span><span class="se">\\</span><span class="s1">u043e</span><span class="se">\\</span><span class="s1">u0437</span><span class="se">\\</span><span class="s1">u043e</span><span class="se">\\</span><span class="s1">u043b</span><span class="se">\\</span><span class="s1">u044c</span><span class="se">\'</span><span class="s1">", "</span><span class="se">\'\\</span><span class="s1">"</span><span class="se">\\</span><span class="s1">u041c</span><span class="se">\\</span><span class="s1">u0443</span><span class="se">\\</span><span class="s1">u0445</span><span class="se">\\</span><span class="s1">u043e-</span><span class="se">\\</span><span class="s1">u0429</span><span class="se">\\</span><span class="s1">u0438</span><span class="se">\\</span><span class="s1">u0442</span><span class="se">\\</span><span class="s1">" - </span><span class="se">\\</span><span class="s1">u0421</span><span class="se">\\</span><span class="s1">u0443</span><span class="se">\\</span><span class="s1">u043f</span><span class="se">\\</span><span class="s1">u0435</span><span class="se">\\</span><span class="s1">u0440</span><span class="se">\'</span><span class="s1">"]}, {"name": "product_description", "type": "VARCHAR(765)", "primary_key": false, "foreign_key": null, "value_samples": []}]}}}'</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -8865,16 +9220,58 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=7f8e71be-d7f3-479c-a164-4c6106a4e9ee">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=7f8e71be-d7f3-479c-a164-4c6106a4e9ee">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [26]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">db_json_schema</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[:</span><span class="mi">30</span><span class="p">]))</span>
 </pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{
+  "name": "GOSALES",
+  "tables": {
+    "inventory_levels": {
+      "name": "inventory_levels",
+      "columns": [
+        {
+          "name": "inventory_year",
+          "type": "SMALLINT",
+          "primary_key": true,
+          "foreign_key": null,
+          "value_samples": [
+            "2007",
+            "2004",
+            "2005",
+            "2006"
+          ]
+        },
+        {
+          "name": "inventory_month",
+          "type": "SMALLINT",
+          "primary_key": true,
+          "foreign_key": null,
+          "value_samples": [
+            "9",
+            "12",
+            "11"
+          ]
+        },
+        {
+</pre>
 </div>
 </div>
 </div>
@@ -8926,7 +9323,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [27]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Helper functions to parse the input JSON DB schema and create prompt for Schema Linking model</span>
@@ -9024,7 +9421,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [28]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">sl_prompt</span> <span class="o">=</span> <span class="n">create_sl_prompt</span><span class="p">(</span><span class="n">question</span><span class="o">=</span><span class="n">nl_question</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">db_json_schema</span><span class="p">)</span>
@@ -9044,16 +9441,127 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0941c9e5-8b5c-47fd-946e-69f344ae548e">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=0941c9e5-8b5c-47fd-946e-69f344ae548e">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [29]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">sl_prompt</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Note:
+
+Consider:
+Show me production cost of products in orders with quantity greater than 10
+
+CREATE TABLE inventory_levels (
+ inventory_year SMALLINT PRIMARY KEY,
+ inventory_month SMALLINT PRIMARY KEY,
+ warehouse_branch_code INTEGER PRIMARY KEY,
+ product_number INTEGER PRIMARY KEY,
+ opening_inventory INTEGER,
+ quantity_shipped INTEGER,
+ additions INTEGER,
+ unit_cost DECIMAL(19, 2),
+ closing_inventory INTEGER,
+ average_unit_cost DECIMAL(19, 2),
+ FOREIGN KEY(product_number) REFERENCES product(product_number)
+);
+
+inventory_levels.inventory_year: 2007, 2004, 2005, 2006
+inventory_levels.inventory_month: 9, 12, 11
+inventory_levels.warehouse_branch_code: 40, 28, 30
+inventory_levels.product_number: 125130, 122150, 149110
+inventory_levels.opening_inventory: 2, 2152, 2148
+inventory_levels.quantity_shipped: 2, 1999, 1928
+inventory_levels.additions: 1129, 1787, 1770
+inventory_levels.unit_cost: 4.45, 5.03, 5.02
+inventory_levels.closing_inventory: 2, 2192, 2152
+inventory_levels.average_unit_cost: 2.15, 2.75, 2.31
+
+CREATE TABLE order_details (
+ order_detail_code INTEGER PRIMARY KEY,
+ order_number INTEGER,
+ ship_date TIMESTAMP,
+ product_number INTEGER,
+ promotion_code INTEGER,
+ quantity INTEGER,
+ unit_cost DECIMAL(19, 2),
+ unit_price DECIMAL(19, 2),
+ unit_sale_price DECIMAL(19, 2),
+ FOREIGN KEY(product_number) REFERENCES product(product_number)
+);
+
+order_details.order_detail_code: 1000001, 1000016, 1000015
+order_details.order_number: 100015, 100073, 100072
+order_details.ship_date: 2004-03-05 00:00:00, 2004-08-06 00:00:00, 2004-08-04 00:00:00
+order_details.product_number: 125130, 149110, 123130
+order_details.promotion_code: 10203, 10223, 10213
+order_details.quantity: 1532, 1777, 1771
+order_details.unit_cost: 43.73, 31.24, 73.96
+order_details.unit_price: 72.0, 98.0, 34.8
+order_details.unit_sale_price: 12.52, 96.44, 94.8
+
+CREATE TABLE product (
+ product_number INTEGER PRIMARY KEY,
+ base_product_number INTEGER,
+ introduction_date TIMESTAMP,
+ discontinued_date TIMESTAMP,
+ product_type_code INTEGER,
+ product_color_code INTEGER,
+ product_size_code INTEGER,
+ product_brand_code INTEGER,
+ production_cost DECIMAL(19, 2),
+ gross_margin DOUBLE,
+ product_image VARCHAR(60),
+);
+
+product.product_number: 1110, 6110, 5110
+product.base_product_number: 1, 6, 5
+product.introduction_date: 1999-06-12 00:00:00, 2004-01-15 00:00:00, 2004-01-13 00:00:00
+product.discontinued_date: 2005-02-28 00:00:00, 2006-05-31 00:00:00, 2006-03-31 00:00:00
+product.product_type_code: 970, 956, 971
+product.product_color_code: 900, 924, 921
+product.product_size_code: 801, 812, 810
+product.product_brand_code: 703, 714, 715
+product.production_cost: 1.0, 11.43, 9.22
+product.gross_margin: 0.3, 0.7, 0.41
+product.product_image: 'P01CE1CG1.jpg', 'P06CE1CG1.jpg', 'P05CE1CG1.jpg'
+
+CREATE TABLE product_name_lookup (
+ product_number INTEGER PRIMARY KEY,
+ product_language VARCHAR(30) PRIMARY KEY,
+ product_name VARCHAR(150),
+ product_description VARCHAR(765),
+ FOREIGN KEY(product_number) REFERENCES product(product_number)
+);
+
+product_name_lookup.product_number: 1110, 6110, 5110
+product_name_lookup.product_language: 'CS', 'ES', 'EN'
+product_name_lookup.product_name: '"Вечный свет" - Бутановый', '"Мухо-Щит" Аэрозоль', '"Мухо-Щит" - Супер'
+product_name_lookup.product_description
+
+Note:
+
+
+To answer:
+Show me production cost of products in orders with quantity greater than 10
+We need columns:
+
+</pre>
 </div>
 </div>
 </div>
@@ -9065,8 +9573,60 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Perform-an-inference-on-the-Schema-Linking-model-using-the-WX.AI-endpoint">Perform an inference on the Schema Linking model using the WX.AI endpoint<a class="anchor-link" href="#Perform-an-inference-on-the-Schema-Linking-model-using-the-WX.AI-endpoint">¶</a></h2><p><a id="schemainference"></a></p>
+<h2 id="Perform-an-inference-on-the-Schema-Linking-model-using-the-watsonx.ai-endpoint">Perform an inference on the Schema Linking model using the watsonx.ai endpoint<a class="anchor-link" href="#Perform-an-inference-on-the-Schema-Linking-model-using-the-watsonx.ai-endpoint">¶</a></h2><p><a id="schemainference"></a></p>
 <p>Send a request to the Schema Linking model, generate outputs based on the provided configuration, and return the top-scoring outputs.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=d013df46-2038-43da-adc3-69f3ed7a0d93">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Check-SL-Model-Deployment">Check SL Model Deployment<a class="anchor-link" href="#Check-SL-Model-Deployment">¶</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=cd4724d1-5e11-49e6-b5ab-5d007937c67a">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [30]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># wait till deployment is up, should take a few minutes for each model</span>
+<span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="n">is_deployment_ready</span><span class="p">(</span><span class="n">deploy_id</span><span class="o">=</span><span class="n">SL_DEPLOYMENT_ID</span><span class="p">,</span> <span class="n">space_id</span><span class="o">=</span><span class="n">SPACE_ID</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">)):</span>
+    <span class="k">pass</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SL model deployment is ready!"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>SL model deployment is ready!
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bdd85d77-a7ee-45c5-b665-490763fffb66">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Perform-SL-inference">Perform SL inference<a class="anchor-link" href="#Perform-SL-inference">¶</a></h3>
 </div>
 </div>
 </div>
@@ -9090,7 +9650,7 @@ a.anchor-link {
         <span class="n">payload</span><span class="p">[</span><span class="s2">"parameters"</span><span class="p">][</span><span class="s2">"temperature"</span><span class="p">]</span> <span class="o">=</span> <span class="n">temperature</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">wxai_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">wxai_headers</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">payload</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"WX.AI model request failed, got code </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"watsonx.ai model request failed, got code </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="n">is_added</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">'results'</span><span class="p">]:</span>
@@ -9130,7 +9690,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [33]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">scored_preds</span> <span class="o">=</span><span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">()</span>
@@ -9142,9 +9702,7 @@ a.anchor-link {
 
 <span class="c1"># sl inference</span>
 <span class="n">sl_inference_payload</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"model_id"</span><span class="p">:</span> <span class="n">SL_MODEL_ID</span><span class="p">,</span>
     <span class="s2">"input"</span><span class="p">:</span> <span class="n">sl_prompt</span><span class="p">,</span>
-    <span class="s2">"project_id"</span><span class="p">:</span> <span class="n">project_id</span><span class="p">,</span>
     <span class="s2">"parameters"</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">"decoding_method"</span><span class="p">:</span> <span class="s2">"sample"</span><span class="p">,</span>
         <span class="s2">"max_new_tokens"</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
@@ -9152,8 +9710,43 @@ a.anchor-link {
         <span class="s2">"return_options"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"generated_tokens"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"token_logprobs"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
     <span class="p">}</span>
 <span class="p">}</span>
-<span class="n">all_sl_outputs</span> <span class="o">=</span> <span class="n">wxai_generate</span><span class="p">(</span><span class="n">payload</span><span class="o">=</span><span class="n">sl_inference_payload</span><span class="p">,</span> <span class="n">wxai_url</span><span class="o">=</span><span class="n">PROD_URL</span><span class="p">,</span> <span class="n">wxai_headers</span><span class="o">=</span><span class="n">PROD_HEADERS</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">all_sl_outputs</span> <span class="o">=</span> <span class="n">wxai_generate</span><span class="p">(</span><span class="n">payload</span><span class="o">=</span><span class="n">sl_inference_payload</span><span class="p">,</span> <span class="n">wxai_url</span><span class="o">=</span><span class="n">SL_PROD_URL</span><span class="p">,</span> <span class="n">wxai_headers</span><span class="o">=</span><span class="n">PROD_HEADERS</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a83669a3-6f94-403e-851e-b652890a0d44">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [34]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">all_sl_outputs</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[34]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>[{'score': -0.015094118463691152,
+  'text': 'order_details.product_number, order_details.quantity, product.product_number, product.production_cost'},
+ {'score': -0.015094118463691152,
+  'text': 'order_details.product_number, order_details.quantity, product.product_number, product.production_cost'},
+ {'score': -0.015094118463691152,
+  'text': 'order_details.product_number, order_details.quantity, product.product_number, product.production_cost'},
+ {'score': -0.015094118463691152,
+  'text': 'order_details.product_number, order_details.quantity, product.product_number, product.production_cost'},
+ {'score': -0.22286841453048314,
+  'text': 'inventory_levels.product_number, order_details.order_number, order_details.product_number, order_details.quantity, product.product_number, product.production_cost'}]</pre>
 </div>
 </div>
 </div>
@@ -9175,7 +9768,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [35]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
@@ -9222,12 +9815,12 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=5990caea-4b08-49f9-a111-920407557fe8">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=5990caea-4b08-49f9-a111-920407557fe8">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [36]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">all_sl_outputs</span><span class="p">:</span>
@@ -9248,12 +9841,54 @@ a.anchor-link {
 </div>
 </div>
 </div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>{
+  "order_details.product_number": 5,
+  "order_details.quantity": 5,
+  "product.product_number": 5,
+  "product.production_cost": 5,
+  "inventory_levels.product_number": 1,
+  "order_details.order_number": 1,
+  "inventory_levels.inventory_year": -10,
+  "inventory_levels.inventory_month": -10,
+  "inventory_levels.warehouse_branch_code": -10,
+  "inventory_levels.opening_inventory": -10,
+  "inventory_levels.quantity_shipped": -10,
+  "inventory_levels.additions": -10,
+  "inventory_levels.unit_cost": -10,
+  "inventory_levels.closing_inventory": -10,
+  "inventory_levels.average_unit_cost": -10,
+  "order_details.order_detail_code": -10,
+  "order_details.ship_date": -10,
+  "order_details.promotion_code": -10,
+  "order_details.unit_cost": -10,
+  "order_details.unit_price": -10,
+  "order_details.unit_sale_price": -10,
+  "product.base_product_number": -10,
+  "product.introduction_date": -10,
+  "product.discontinued_date": -10,
+  "product.product_type_code": -10,
+  "product.product_color_code": -10,
+  "product.product_size_code": -10,
+  "product.product_brand_code": -10,
+  "product.gross_margin": -10,
+</pre>
+</div>
+</div>
+</div>
+</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=4ca130fb-0a24-40cf-a0bb-f180f6b1ae85">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [37]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">col_predictions</span> <span class="o">=</span> <span class="n">process_generative_sl_api_outputs</span><span class="p">(</span><span class="n">col_predictions</span><span class="o">=</span><span class="n">col_predictions</span><span class="p">)</span>
@@ -9278,7 +9913,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [38]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">qualified_columns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">col_predictions</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -9304,7 +9939,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [39]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">create_sql_gen_prompt</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">schema</span><span class="p">,</span> <span class="n">evidence</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">qualified_columns</span><span class="p">:</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -9328,7 +9963,7 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [40]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">sql_gen_prompt</span> <span class="o">=</span> <span class="n">create_sql_gen_prompt</span><span class="p">(</span><span class="n">question</span><span class="o">=</span><span class="n">nl_question</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">db_json_schema</span><span class="p">,</span> <span class="n">qualified_columns</span><span class="o">=</span><span class="n">qualified_columns</span><span class="p">)</span>
@@ -9337,16 +9972,125 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=392a5eb8-c47f-48bc-9086-ad2e16c4a4c7">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=392a5eb8-c47f-48bc-9086-ad2e16c4a4c7">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [41]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">sql_gen_prompt</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Note:
+Show me production cost of products in orders with quantity greater than 10
+
+CREATE TABLE inventory_levels (
+ product_number INTEGER PRIMARY KEY,
+ FOREIGN KEY(product_number) REFERENCES product(product_number)
+);
+
+inventory_levels.inventory_year: 2007, 2004, 2005, 2006
+inventory_levels.inventory_month: 9, 12, 11
+inventory_levels.warehouse_branch_code: 40, 28, 30
+inventory_levels.product_number: 125130, 122150, 149110
+inventory_levels.opening_inventory: 2, 2152, 2148
+inventory_levels.quantity_shipped: 2, 1999, 1928
+inventory_levels.additions: 1129, 1787, 1770
+inventory_levels.unit_cost: 4.45, 5.03, 5.02
+inventory_levels.closing_inventory: 2, 2192, 2152
+inventory_levels.average_unit_cost: 2.15, 2.75, 2.31
+
+CREATE TABLE order_details (
+ order_number INTEGER,
+ product_number INTEGER,
+ quantity INTEGER,
+ FOREIGN KEY(product_number) REFERENCES product(product_number)
+);
+
+order_details.order_detail_code: 1000001, 1000016, 1000015
+order_details.order_number: 100015, 100073, 100072
+order_details.ship_date: 2004-03-05 00:00:00, 2004-08-06 00:00:00, 2004-08-04 00:00:00
+order_details.product_number: 125130, 149110, 123130
+order_details.promotion_code: 10203, 10223, 10213
+order_details.quantity: 1532, 1777, 1771
+order_details.unit_cost: 43.73, 31.24, 73.96
+order_details.unit_price: 72.0, 98.0, 34.8
+order_details.unit_sale_price: 12.52, 96.44, 94.8
+
+CREATE TABLE product (
+ product_number INTEGER PRIMARY KEY,
+ production_cost DECIMAL(19, 2),
+);
+
+product.product_number: 1110, 6110, 5110
+product.base_product_number: 1, 6, 5
+product.introduction_date: 1999-06-12 00:00:00, 2004-01-15 00:00:00, 2004-01-13 00:00:00
+product.discontinued_date: 2005-02-28 00:00:00, 2006-05-31 00:00:00, 2006-03-31 00:00:00
+product.product_type_code: 970, 956, 971
+product.product_color_code: 900, 924, 921
+product.product_size_code: 801, 812, 810
+product.product_brand_code: 703, 714, 715
+product.production_cost: 1.0, 11.43, 9.22
+product.gross_margin: 0.3, 0.7, 0.41
+product.product_image: 'P01CE1CG1.jpg', 'P06CE1CG1.jpg', 'P05CE1CG1.jpg'
+
+Note:
+Show me production cost of products in orders with quantity greater than 10
+Generate SQL:
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=5f18fcec-28e8-4083-aa3a-c55ca36e6b12">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="Check-SQL-Gen-Model-Deployment">Check SQL Gen Model Deployment<a class="anchor-link" href="#Check-SQL-Gen-Model-Deployment">¶</a></h3>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=dc11c09e-fd7e-416c-988e-73382038fcf7">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [42]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># wait till deployment is up, should take a few minutes for each model</span>
+<span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="n">is_deployment_ready</span><span class="p">(</span><span class="n">deploy_id</span><span class="o">=</span><span class="n">SQL_GEN_DEPLOYMENT_ID</span><span class="p">,</span> <span class="n">space_id</span><span class="o">=</span><span class="n">SPACE_ID</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">)):</span>
+    <span class="k">pass</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SQL gen model deployment is ready!"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>SQL gen model deployment is ready!
+</pre>
 </div>
 </div>
 </div>
@@ -9358,7 +10102,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="Perform-an-inference-on-the-SQL-Generation-model-using-the-WX.AI-endpoint">Perform an inference on the SQL Generation model using the WX.AI endpoint<a class="anchor-link" href="#Perform-an-inference-on-the-SQL-Generation-model-using-the-WX.AI-endpoint">¶</a></h2><p><a id="sqlinference"></a></p>
+<h2 id="Perform-an-inference-on-the-SQL-Generation-model-using-the-watsonx.ai-endpoint">Perform an inference on the SQL Generation model using the watsonx.ai endpoint<a class="anchor-link" href="#Perform-an-inference-on-the-SQL-Generation-model-using-the-watsonx.ai-endpoint">¶</a></h2><p><a id="sqlinference"></a></p>
 <p>Generate three unique SQL queries based on the prompt string and store the outputs.</p>
 </div>
 </div>
@@ -9368,14 +10112,12 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [43]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># sql gen inference</span>
 <span class="n">sql_gen_inference_payload</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">"model_id"</span><span class="p">:</span> <span class="n">SQL_GEN_MODEL_ID</span><span class="p">,</span>
     <span class="s2">"input"</span><span class="p">:</span> <span class="n">sql_gen_prompt</span><span class="p">,</span>
-    <span class="s2">"project_id"</span><span class="p">:</span> <span class="n">project_id</span><span class="p">,</span>
     <span class="s2">"parameters"</span><span class="p">:</span> <span class="p">{</span>
         <span class="s2">"decoding_method"</span><span class="p">:</span> <span class="s2">"sample"</span><span class="p">,</span>
         <span class="s2">"max_new_tokens"</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
@@ -9384,22 +10126,226 @@ a.anchor-link {
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="n">all_sql_gen_outputs</span> <span class="o">=</span> <span class="n">wxai_generate</span><span class="p">(</span><span class="n">payload</span><span class="o">=</span><span class="n">sql_gen_inference_payload</span><span class="p">,</span> <span class="n">wxai_url</span><span class="o">=</span><span class="n">PROD_URL</span><span class="p">,</span> <span class="n">wxai_headers</span><span class="o">=</span><span class="n">PROD_HEADERS</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">allow_duplicates</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">all_sql_gen_outputs</span> <span class="o">=</span> <span class="n">wxai_generate</span><span class="p">(</span><span class="n">payload</span><span class="o">=</span><span class="n">sql_gen_inference_payload</span><span class="p">,</span> <span class="n">wxai_url</span><span class="o">=</span><span class="n">SQL_GEN_PROD_URL</span><span class="p">,</span> <span class="n">wxai_headers</span><span class="o">=</span><span class="n">PROD_HEADERS</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">allow_duplicates</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=0f5bd4e7-5c0b-47a2-af09-a7b0699d3ddb">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=0f5bd4e7-5c0b-47a2-af09-a7b0699d3ddb">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [44]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">all_sql_gen_outputs</span>
 </pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[44]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>[{'score': -0.02310277242189,
+  'text': ' SELECT product.production_cost FROM order_details JOIN product ON order_details.product_number = product.product_number WHERE order_details.quantity &gt; 10'},
+ {'score': -0.05095982284078461,
+  'text': ' SELECT product.production_cost FROM product JOIN order_details ON product.product_number = order_details.product_number WHERE order_details.quantity &gt; 10'},
+ {'score': -0.09621994493760405,
+  'text': ' SELECT product.production_cost FROM order_details JOIN product ON product.product_number = order_details.product_number WHERE order_details.quantity &gt; 10'}]</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=66928b16-bf71-4e20-98cb-22bdc9c3060d">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h1 id="Delete-deployment">Delete deployment<a class="anchor-link" href="#Delete-deployment">¶</a></h1>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=a586743c-d93f-4b7b-a66d-e40f4d7bb08d">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [45]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">get_deployment_info</span><span class="p">(</span><span class="n">deploy_id</span><span class="o">=</span><span class="n">SL_DEPLOYMENT_ID</span><span class="p">,</span> <span class="n">space_id</span><span class="o">=</span><span class="n">SPACE_ID</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[45]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>{'entity': {'asset': {'id': 'deee5205-9cf0-41f8-9826-7cdb5d2d5393'},
+  'base_model_id': 'ibm/granite-20b-code-base-schema-linking-curated',
+  'custom': {},
+  'deployed_asset_type': 'curated_foundation_model',
+  'hardware_request': {'num_nodes': 1, 'size': 'gpu_s'},
+  'name': 'schema-linking-deployment',
+  'online': {'parameters': {'serving_name': 'granite20b_schema_linking'}},
+  'space_id': '21b7ac7b-fd1f-4a97-9927-65121d937dae',
+  'status': {'inference': [{'url': 'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/granite20b_schema_linking/text/generation',
+     'uses_serving_name': True},
+    {'sse': True,
+     'url': 'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/granite20b_schema_linking/text/generation_stream',
+     'uses_serving_name': True},
+    {'url': 'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/f95334ab-25f1-42dd-a506-5e0a7157edbc/text/generation'},
+    {'sse': True,
+     'url': 'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/f95334ab-25f1-42dd-a506-5e0a7157edbc/text/generation_stream'}],
+   'serving_urls': ['https://us-south.ml.cloud.ibm.com/ml/v1/deployments/f95334ab-25f1-42dd-a506-5e0a7157edbc/text/generation',
+    'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/f95334ab-25f1-42dd-a506-5e0a7157edbc/text/generation_stream',
+    'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/granite20b_schema_linking/text/generation',
+    'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/granite20b_schema_linking/text/generation_stream'],
+   'state': 'ready'}},
+ 'metadata': {'created_at': '2024-12-10T18:34:26.035Z',
+  'id': 'f95334ab-25f1-42dd-a506-5e0a7157edbc',
+  'modified_at': '2024-12-10T18:34:26.035Z',
+  'name': 'schema-linking-deployment',
+  'owner': 'IBMid-6630033MST',
+  'space_id': '21b7ac7b-fd1f-4a97-9927-65121d937dae'}}</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=0b21e4f9-1a70-497f-9085-76347c52cee0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [46]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">get_deployment_info</span><span class="p">(</span><span class="n">deploy_id</span><span class="o">=</span><span class="n">SQL_GEN_DEPLOYMENT_ID</span><span class="p">,</span> <span class="n">space_id</span><span class="o">=</span><span class="n">SPACE_ID</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[46]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>{'entity': {'asset': {'id': 'f6af013a-4645-42c4-b9d6-1dcd39fa0f5c'},
+  'base_model_id': 'ibm/granite-20b-code-base-sql-gen-curated',
+  'custom': {},
+  'deployed_asset_type': 'curated_foundation_model',
+  'hardware_request': {'num_nodes': 1, 'size': 'gpu_s'},
+  'name': 'sql-gen-deployment',
+  'online': {'parameters': {'serving_name': 'granite_20b_sql_gen'}},
+  'space_id': '21b7ac7b-fd1f-4a97-9927-65121d937dae',
+  'status': {'inference': [{'url': 'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/granite_20b_sql_gen/text/generation',
+     'uses_serving_name': True},
+    {'sse': True,
+     'url': 'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/granite_20b_sql_gen/text/generation_stream',
+     'uses_serving_name': True},
+    {'url': 'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/a87bf110-2ea6-42ad-971d-d7d28788c358/text/generation'},
+    {'sse': True,
+     'url': 'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/a87bf110-2ea6-42ad-971d-d7d28788c358/text/generation_stream'}],
+   'serving_urls': ['https://us-south.ml.cloud.ibm.com/ml/v1/deployments/a87bf110-2ea6-42ad-971d-d7d28788c358/text/generation',
+    'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/a87bf110-2ea6-42ad-971d-d7d28788c358/text/generation_stream',
+    'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/granite_20b_sql_gen/text/generation',
+    'https://us-south.ml.cloud.ibm.com/ml/v1/deployments/granite_20b_sql_gen/text/generation_stream'],
+   'state': 'ready'}},
+ 'metadata': {'created_at': '2024-12-10T18:34:27.935Z',
+  'id': 'a87bf110-2ea6-42ad-971d-d7d28788c358',
+  'modified_at': '2024-12-10T18:34:27.935Z',
+  'name': 'sql-gen-deployment',
+  'owner': 'IBMid-6630033MST',
+  'space_id': '21b7ac7b-fd1f-4a97-9927-65121d937dae'}}</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=9157e8e5-079a-4691-826d-612a8acb7142">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [47]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># delete 2 deployments</span>
+<span class="n">delete_deployment</span><span class="p">(</span><span class="n">deploy_id</span><span class="o">=</span><span class="n">SL_DEPLOYMENT_ID</span><span class="p">,</span> <span class="n">space_id</span><span class="o">=</span><span class="n">SPACE_ID</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">)</span>
+<span class="n">delete_deployment</span><span class="p">(</span><span class="n">deploy_id</span><span class="o">=</span><span class="n">SQL_GEN_DEPLOYMENT_ID</span><span class="p">,</span> <span class="n">space_id</span><span class="o">=</span><span class="n">SPACE_ID</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=29c90865-fa4d-4ad6-ace3-3b9d149cdfbc">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [48]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">get_deployment_info</span><span class="p">(</span><span class="n">deploy_id</span><span class="o">=</span><span class="n">SL_DEPLOYMENT_ID</span><span class="p">,</span> <span class="n">space_id</span><span class="o">=</span><span class="n">SPACE_ID</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[48]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>{'trace': 'ca13682a8ef1df103aa8e3fdc5f30147',
+ 'errors': [{'code': 'deployment_does_not_exist',
+   'message': "Deployment with id 'f95334ab-25f1-42dd-a506-5e0a7157edbc' does not exist. Re-try with a valid deployment id."}]}</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=db28b16b-1bf5-4f7c-a1c7-b1bea7bde921">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [49]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">get_deployment_info</span><span class="p">(</span><span class="n">deploy_id</span><span class="o">=</span><span class="n">SQL_GEN_DEPLOYMENT_ID</span><span class="p">,</span> <span class="n">space_id</span><span class="o">=</span><span class="n">SPACE_ID</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="n">ACCESS_TOKEN</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[49]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>{'trace': '98981c3fd5310682aaa10d4ac82cdced',
+ 'errors': [{'code': 'deployment_does_not_exist',
+   'message': "Deployment with id 'a87bf110-2ea6-42ad-971d-d7d28788c358' does not exist. Re-try with a valid deployment id."}]}</pre>
 </div>
 </div>
 </div>
@@ -9423,10 +10369,10 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h2 id="Authors">Authors<a class="anchor-link" href="#Authors">¶</a></h2><ul>
-<li><strong>Long Vu</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e985819f9ca99c9ac7808b84c78a8684">[email&#160;protected]</a></li>
-<li><strong>Nhan Pham</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7c12140c3c090f52151e11521f1311">[email&#160;protected]</a></li>
-<li><strong>Michael Glass</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="29445b4e45485a5a695c5a07404b44074a4644">[email&#160;protected]</a></li>
-<li><strong>Shankar Subramanian</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2d49454c5f404c5e456d585e03444f40034e4240">[email&#160;protected]</a></li>
+<li><strong>Long Vu</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dbb7b3adae9baea8f5b2b9b6f5b8b4b6">[email&#160;protected]</a></li>
+<li><strong>Nhan Pham</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3f51574f7f565d52115c5052">[email&#160;protected]</a></li>
+<li><strong>Michael Glass</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dbb6a9bcb7baa8a89baea8f5b2b9b6f5b8b4b6">[email&#160;protected]</a></li>
+<li><strong>Shankar Subramanian</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f3979b92819e92809bb38680dd9a919edd909c9e">[email&#160;protected]</a></li>
 </ul>
 <p>IBM TJ Watson Research Center, New York, United States of America</p>
 </div>
