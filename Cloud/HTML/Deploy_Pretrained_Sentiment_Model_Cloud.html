@@ -88,7 +88,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 	font-size: 0.875rem;
 	padding-left: 0px !important;
 }
-	
+
 .jp-NotebookPanel-toolbar .f1vya9e0 svg {
 	height:20px !important;
 	width:20px !important;
@@ -130,7 +130,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 	background: none !important;
 	cursor: pointer !important;
 }
-  
+
 .lm-MenuBar.lm-mod-active .lm-MenuBar-item.lm-mod-active {
 	z-index: none !important;
 	background: none !important;
@@ -162,7 +162,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 	fill: var(--carbon-interactive-01) !important;
 }
 
-#main-panel { 
+#main-panel {
 	top: 20px !important;
 }
 /*for the error, connecting & renaming window*/
@@ -455,11 +455,11 @@ position: absolute;
 display: block;
 bottom: 0.575rem;
 right: 1rem;
-width: 0; 
-height: 0; 
+width: 0;
+height: 0;
 content: '';
 border-left: 0.3125rem solid transparent;
-border-right: 0.3125rem solid transparent; 
+border-right: 0.3125rem solid transparent;
 border-top: 0.3125rem solid var(--carbon-interactive-01);
 z-index: -1;
 }
@@ -8903,28 +8903,28 @@ a.anchor-link {
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">detect_sentiment</span><span class="p">():</span>
     <span class="kn">import</span> <span class="nn">watson_nlp</span>
-    
+
     <span class="n">sentiment_model</span> <span class="o">=</span> <span class="n">targets_sentiment_model</span> <span class="o">=</span> <span class="n">watson_nlp</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'targets-sentiment_transformer-workflow_multilingual_slate.153m.distilled-cpu'</span><span class="p">)</span>
-    
+
     <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
         <span class="n">scoring_prediction_out</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">input_data_row</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">[</span><span class="s2">"input_data"</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">"values"</span><span class="p">]:</span> 
+        <span class="k">for</span> <span class="n">input_data_row</span> <span class="ow">in</span> <span class="nb">input</span><span class="p">[</span><span class="s2">"input_data"</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">"values"</span><span class="p">]:</span>
             <span class="n">scoring_prediction_row</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">input_data</span> <span class="ow">in</span> <span class="n">input_data_row</span><span class="p">:</span>            
+            <span class="k">for</span> <span class="n">input_data</span> <span class="ow">in</span> <span class="n">input_data_row</span><span class="p">:</span>
                 <span class="n">targets_sentiments</span> <span class="o">=</span> <span class="n">targets_sentiment_model</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
                 <span class="n">scoring_prediction_row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">targets_sentiments</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
-                
+
             <span class="n">scoring_prediction_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scoring_prediction_row</span><span class="p">)</span>
-            
+
         <span class="c1"># Score using the pre-defined model</span>
         <span class="n">scoring_response</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">'predictions'</span><span class="p">:</span> <span class="p">[{</span><span class="s1">'fields'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'nlp_prediction'</span><span class="p">],</span> 
+            <span class="s1">'predictions'</span><span class="p">:</span> <span class="p">[{</span><span class="s1">'fields'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'nlp_prediction'</span><span class="p">],</span>
                              <span class="s1">'values'</span><span class="p">:</span> <span class="n">scoring_prediction_out</span>
                             <span class="p">}]</span>
         <span class="p">}</span>
 
         <span class="k">return</span> <span class="n">scoring_response</span>
-    
+
     <span class="k">return</span> <span class="n">score</span>
 </pre></div>
 </div>
@@ -8991,7 +8991,7 @@ a.anchor-link {
 <span class="n">meta_props</span> <span class="o">=</span> <span class="p">{</span>
    <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">NAME</span><span class="p">:</span> <span class="s2">"nlp-sentiment-deploy"</span><span class="p">,</span>
    <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">DESCRIPTION</span><span class="p">:</span> <span class="s2">"nlp-sentiment-deploy"</span><span class="p">,</span>
-   <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">HARDWARE_SPEC</span><span class="p">:</span> <span class="p">{</span> <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'S'</span><span class="p">},</span>  
+   <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">HARDWARE_SPEC</span><span class="p">:</span> <span class="p">{</span> <span class="s1">'name'</span><span class="p">:</span> <span class="s1">'S'</span><span class="p">},</span>
    <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">ConfigurationMetaNames</span><span class="o">.</span><span class="n">ONLINE</span><span class="p">:</span> <span class="p">{</span>   <span class="p">}</span>
 <span class="p">}</span>
 
@@ -9231,7 +9231,7 @@ Successfully finished deployment creation, deployment_uid='4b6b02b2-d256-45ae-b6
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">scoring_payload</span> <span class="o">=</span> <span class="p">{</span>
-   <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">ScoringMetaNames</span><span class="o">.</span><span class="n">INPUT_DATA</span><span class="p">:</span> <span class="p">[{</span>  
+   <span class="n">client</span><span class="o">.</span><span class="n">deployments</span><span class="o">.</span><span class="n">ScoringMetaNames</span><span class="o">.</span><span class="n">INPUT_DATA</span><span class="p">:</span> <span class="p">[{</span>
         <span class="s1">'fields'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Text"</span><span class="p">],</span>
         <span class="s1">'values'</span><span class="p">:</span> <span class="p">[[</span><span class="s2">"The room is nice, but the price is too expensive. The window frame is made of wood."</span><span class="p">],</span>
                    <span class="p">[</span><span class="s2">"The check-in was horrible."</span><span class="p">],</span>
@@ -9317,20 +9317,6 @@ Successfully finished deployment creation, deployment_uid='4b6b02b2-d256-45ae-b6
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p>Copyright © 2024 IBM. This notebook and its source code are released under the terms of the MIT License.</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-</div>
 </div>
 </div>
 </div>
